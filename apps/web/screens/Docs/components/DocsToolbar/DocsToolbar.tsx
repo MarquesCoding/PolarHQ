@@ -1,7 +1,7 @@
 "use client"
 
 import { usePathname, useRouter } from "next/navigation"
-import { createDoc } from "@lib/docs"
+import { createEncryptedDoc } from "@lib/e2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { IconFilePlus } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
@@ -20,7 +20,7 @@ const DocsToolbar = () => {
 
   const newDocument = async () => {
     try {
-      const doc = await createDoc()
+      const doc = await createEncryptedDoc()
       void queryClient.invalidateQueries({ queryKey: ["docs"] })
       router.push(`/docs/${doc.id}`)
     } catch {

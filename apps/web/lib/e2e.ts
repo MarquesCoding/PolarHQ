@@ -1,6 +1,7 @@
 "use client"
 
 import { apiFetch } from "@lib/apiClient"
+import { type DocMeta, createDoc } from "@lib/docs"
 import {
   type Keypair,
   cryptoReady,
@@ -152,20 +153,33 @@ export const getDocContentKey = async (nodeId: string): Promise<Uint8Array | nul
 }
 
 /** Generate a content key for a doc and store it wrapped to the owner. Returns the key. */
-export const enableDocEncryption = async (
-  nodeId: string,
-  selfUserId: string,
-): Promise<Uint8Array> => {
+export const enableDocEncryption = async (nodeId: string): Promise<Uint8Array> => {
   if (!keypair) throw new Error("locked")
   const key = newContentKey()
-  await apiFetch(`/api/v1/docs/documents/${nodeId}/keys`, {
+  await apiFetch(`/api/v1/docs/documents/${nodeId}/self-key`, {
     method: "POST",
-    body: JSON.stringify({
-      keys: [{ userId: selfUserId, wrappedKey: toB64(sealTo(key, keypair.publicKey)) }],
-    }),
+    body: JSON.stringify({ wrappedKey: toB64(sealTo(key, keypair.publicKey)) }),
   })
   contentKeyCache.set(nodeId, key)
   return key
+}
+
+/**
+ * Create a document, encrypted by default: a new doc whose content key is generated
+ * and stored wrapped to the owner. Falls back to a plaintext doc only if encryption
+ * keys aren't available (e.g. the user never signed in this session).
+ */
+export const createEncryptedDoc = async (parentId?: string | null): Promise<DocMeta> => {
+  const doc = await createDoc(parentId)
+  await e2eReady()
+  if (isUnlocked()) {
+    try {
+      await enableDocEncryption(doc.id)
+    } catch {
+      /* leave plaintext if key storage fails */
+    }
+  }
+  return doc
 }
 
 /** Wrap a doc's content key to a collaborator (by email). False if they have no keys yet. */
