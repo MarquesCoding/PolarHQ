@@ -8,7 +8,11 @@ export {
 } from "./queues"
 export {
   type OrbitEvent,
+  type DocSyncMessage,
   userEventChannel,
   publishUserEvent,
   subscribeUserEvents,
+  docSyncChannel,
+  publishDocSync,
+  subscribeDocRoom,
 } from "./events"
