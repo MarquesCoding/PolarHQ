@@ -33,3 +33,37 @@ export const collaborators = docs.table(
     index("docs_collaborators_node_idx").on(t.nodeId),
   ],
 )
+
+/**
+ * Per-user E2E key bundle. The server only stores the public key plus the private
+ * key wrapped by a password-derived key (and a recovery key) — never the password,
+ * the derived key, or the plaintext private key.
+ */
+export const userKeys = docs.table("user_keys", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  publicKey: text("public_key").notNull(),
+  wrappedPrivateKey: text("wrapped_private_key").notNull(),
+  kdfSalt: text("kdf_salt").notNull(),
+  recoveryWrapped: text("recovery_wrapped"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+})
+
+/** A document's symmetric content key, sealed to a specific user's public key. */
+export const docKeys = docs.table(
+  "doc_keys",
+  {
+    id: id(),
+    nodeId: text("node_id").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    wrappedKey: text("wrapped_key").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    unique("docs_doc_keys_node_user_uniq").on(t.nodeId, t.userId),
+    index("docs_doc_keys_node_idx").on(t.nodeId),
+  ],
+)
