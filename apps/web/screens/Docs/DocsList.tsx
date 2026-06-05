@@ -2,26 +2,60 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { formatBytes } from "@lib/format"
 import { type DocMeta, createDoc, fetchDocs } from "@lib/docs"
+import { trashDriveNode } from "@lib/drive"
+import { usePersistentNumber } from "@lib/persistentSetting"
+import { SelectionProvider, useSelection } from "@lib/selection"
+import { useArmedConfirm } from "@lib/useArmedConfirm"
+import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
 import { useAppSelector } from "@store/hooks"
-import { IconFileText, IconPlus } from "@tabler/icons-react"
-import { useQuery } from "@tanstack/react-query"
+import { IconFileText, IconPencil, IconPlus } from "@tabler/icons-react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
+import { Icon } from "@lib/icons"
 import { toast } from "sonner"
+import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
+import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
+import DocCard from "@pages/Docs/components/DocCard/DocCard"
+import DocContextMenu, { type DocActions } from "@pages/Docs/components/DocContextMenu/DocContextMenu"
+import RenameDialog from "@pages/Drive/components/RenameDialog/RenameDialog"
 
-/** The Docs home: a grid of the user's documents with a create-new action. */
-const DocsList = () => {
+const downloadDoc = (doc: DocMeta) => {
+  const anchor = document.createElement("a")
+  anchor.href = doc.downloadUrl
+  anchor.download = doc.name
+  document.body.appendChild(anchor)
+  anchor.click()
+  anchor.remove()
+}
+
+const DocsListInner = () => {
   const router = useRouter()
+  const queryClient = useQueryClient()
+  const selection = useSelection()
   const search = useAppSelector((state) => state.ui.searchQuery).trim().toLowerCase()
+  const [tileSize] = usePersistentNumber("docs.tileSize", 150)
   const [creating, setCreating] = useState(false)
+  const [renaming, setRenaming] = useState<DocMeta | null>(null)
+
   const { data, isLoading } = useQuery({ queryKey: ["docs", "list"], queryFn: fetchDocs })
+
+  const invalidate = () => {
+    void queryClient.invalidateQueries({ queryKey: ["docs"] })
+    void queryClient.invalidateQueries({ queryKey: ["drive"] })
+  }
+
+  const docs = data ?? []
+  const visible = search ? docs.filter((doc) => doc.name.toLowerCase().includes(search)) : docs
+  const ordered = visible.map((doc) => doc.id)
+  const byId = new Map(visible.map((doc) => [doc.id, doc]))
 
   const create = async () => {
     setCreating(true)
     try {
       const doc = await createDoc()
+      invalidate()
       router.push(`/docs/${doc.id}`)
     } catch {
       toast.error("Could not create document")
@@ -29,17 +63,41 @@ const DocsList = () => {
     }
   }
 
-  const docs = data ?? []
-  const visible = search ? docs.filter((doc) => doc.name.toLowerCase().includes(search)) : docs
+  const select = (doc: DocMeta, shiftKey: boolean, additive: boolean) => {
+    if (shiftKey) selection.rangeTo(doc.id, ordered)
+    else if (additive) selection.toggle(doc.id, ordered)
+    else selection.selectOnly(doc.id)
+  }
+
+  const trash = async (ids: string[]) => {
+    if (ids.length === 0) return
+    try {
+      await Promise.all(ids.map((id) => trashDriveNode(id)))
+      toast.success("Moved to trash")
+      selection.clear()
+      invalidate()
+    } catch {
+      toast.error("Could not delete")
+    }
+  }
+
+  const ids = [...selection.selected]
+  const single = ids.length === 1 ? byId.get(ids[0]!) : undefined
+
+  const actions: DocActions = {
+    open: (doc) => router.push(`/docs/${doc.id}`),
+    rename: (doc) => setRenaming(doc),
+    download: (doc) => downloadDoc(doc),
+    trash: (doc) => void trash([doc.id]),
+  }
+
+  const trashConfirm = useArmedConfirm(() => void trash(ids))
+  useSelectionHotkeys({ active: selection.count > 0, onClear: selection.clear, confirm: trashConfirm })
 
   return (
     <div className="flex flex-1 flex-col gap-5 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold">Documents</h1>
-        <Button size="sm" disabled={creating} onClick={create}>
-          <IconPlus className="size-4" />
-          New document
-        </Button>
       </div>
 
       {isLoading ? (
@@ -50,34 +108,66 @@ const DocsList = () => {
           <p className="text-sm">
             {search ? "No documents match your search." : "No documents yet — create one to start."}
           </p>
+          {!search ? (
+            <Button size="sm" disabled={creating} onClick={create}>
+              <IconPlus className="size-4" />
+              New document
+            </Button>
+          ) : null}
         </div>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-4">
+        <div
+          className="grid justify-start gap-2"
+          style={{ gridTemplateColumns: `repeat(auto-fill, ${tileSize}px)` }}
+        >
           {visible.map((doc) => (
-            <DocCard key={doc.id} doc={doc} onOpen={() => router.push(`/docs/${doc.id}`)} />
+            <DocContextMenu key={doc.id} doc={doc} actions={actions}>
+              <DocCard
+                doc={doc}
+                selected={selection.isSelected(doc.id)}
+                onOpen={(value) => router.push(`/docs/${value.id}`)}
+                onSelect={select}
+                onToggle={(value) => selection.toggle(value.id, ordered)}
+              />
+            </DocContextMenu>
           ))}
         </div>
       )}
+
+      <SelectionBar>
+        <Button variant="ghost" size="sm" onClick={() => ids.forEach((id) => byId.get(id) && downloadDoc(byId.get(id)!))}>
+          <Icon name="download" className="size-4" />
+          Download
+        </Button>
+        {single ? (
+          <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
+            <IconPencil className="size-4" />
+            Rename
+          </Button>
+        ) : null}
+        <ConfirmButton
+          icon={<Icon name="trash" className="size-4" />}
+          armed={trashConfirm.armed}
+          onTrigger={trashConfirm.trigger}
+        >
+          Trash
+        </ConfirmButton>
+      </SelectionBar>
+
+      <RenameDialog
+        node={renaming}
+        onOpenChange={(value) => !value && setRenaming(null)}
+        onDone={invalidate}
+      />
     </div>
   )
 }
 
-const DocCard = ({ doc, onOpen }: { doc: DocMeta; onOpen: () => void }) => (
-  <button
-    type="button"
-    onClick={onOpen}
-    className="group flex flex-col gap-2 text-left"
-  >
-    <div className="bg-card group-hover:border-primary/40 flex aspect-[4/5] items-center justify-center rounded-xl border transition">
-      <IconFileText className="text-sky-400 size-12" />
-    </div>
-    <div className="flex flex-col">
-      <span className="truncate text-sm font-medium">{doc.name}</span>
-      <span className="text-muted-foreground text-xs">
-        {new Date(doc.updatedAt).toLocaleDateString()} · {formatBytes(doc.sizeBytes ?? 0)}
-      </span>
-    </div>
-  </button>
+/** The Docs home: a selectable grid of the user's documents. */
+const DocsList = () => (
+  <SelectionProvider>
+    <DocsListInner />
+  </SelectionProvider>
 )
 
 export default DocsList

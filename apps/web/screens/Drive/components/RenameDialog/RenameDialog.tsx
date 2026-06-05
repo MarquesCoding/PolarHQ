@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { type DriveNode, renameDriveNode } from "@lib/drive"
+import { renameDriveNode } from "@lib/drive"
 import { useMutation } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -15,7 +15,7 @@ import { Input } from "@workspace/ui/components/input"
 import { toast } from "sonner"
 
 interface RenameDialogProps {
-  node: DriveNode | null
+  node: { id: string; name: string } | null
   onOpenChange: (open: boolean) => void
   onDone: () => void
 }

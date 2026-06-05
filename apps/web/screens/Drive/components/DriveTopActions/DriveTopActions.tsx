@@ -42,6 +42,7 @@ const DriveTopActions = () => {
   const newDocument = async () => {
     try {
       const doc = await createDoc(parentId)
+      void queryClient.invalidateQueries({ queryKey: ["docs"] })
       router.push(`/docs/${doc.id}`)
     } catch {
       toast.error("Could not create document")

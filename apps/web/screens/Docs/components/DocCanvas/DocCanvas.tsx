@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { renameDriveNode } from "@lib/drive"
 import { type DocMeta, saveDocContent } from "@lib/docs"
 import { Collaboration } from "@tiptap/extension-collaboration"
@@ -18,11 +18,14 @@ import { TextAlign } from "@tiptap/extension-text-align"
 import { TextStyle } from "@tiptap/extension-text-style"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
+import { IconDeviceFloppy } from "@tabler/icons-react"
+import { useQueryClient } from "@tanstack/react-query"
+import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import * as Y from "yjs"
 import EditorToolbar from "@pages/Docs/components/EditorToolbar/EditorToolbar"
 
-type SaveState = "saved" | "saving"
+type SaveState = "saved" | "saving" | "dirty"
 
 interface DocCanvasProps {
   nodeId: string
@@ -30,11 +33,34 @@ interface DocCanvasProps {
   doc: DocMeta
 }
 
+const formatTime = (ms: number): string =>
+  new Date(ms).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+
 /** The TipTap editing surface for a single document, bound to a (already loaded) Yjs document. */
 const DocCanvas = ({ nodeId, ydoc, doc }: DocCanvasProps) => {
+  const queryClient = useQueryClient()
   const [title, setTitle] = useState(doc.name)
   const [saveState, setSaveState] = useState<SaveState>("saved")
+  const [lastSavedAt, setLastSavedAt] = useState<number | null>(() =>
+    doc.updatedAt ? new Date(doc.updatedAt).getTime() : null,
+  )
   const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const dirtyRef = useRef(false)
+
+  const flush = useCallback(async () => {
+    clearTimeout(saveTimer.current)
+    if (!dirtyRef.current) return
+    dirtyRef.current = false
+    setSaveState("saving")
+    try {
+      await saveDocContent(nodeId, Y.encodeStateAsUpdate(ydoc))
+      setLastSavedAt(Date.now())
+      setSaveState("saved")
+    } catch {
+      dirtyRef.current = true
+      setSaveState("dirty")
+    }
+  }, [nodeId, ydoc])
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -60,21 +86,26 @@ const DocCanvas = ({ nodeId, ydoc, doc }: DocCanvasProps) => {
   })
 
   useEffect(() => {
-    const persist = () => {
+    const onUpdate = () => {
+      dirtyRef.current = true
+      setSaveState("dirty")
       clearTimeout(saveTimer.current)
-      setSaveState("saving")
-      saveTimer.current = setTimeout(() => {
-        void saveDocContent(nodeId, Y.encodeStateAsUpdate(ydoc))
-          .then(() => setSaveState("saved"))
-          .catch(() => setSaveState("saved"))
-      }, 800)
+      saveTimer.current = setTimeout(() => void flush(), 800)
     }
-    ydoc.on("update", persist)
+    ydoc.on("update", onUpdate)
     return () => {
-      ydoc.off("update", persist)
+      ydoc.off("update", onUpdate)
       clearTimeout(saveTimer.current)
+      // flush any pending edits and refresh list ordering when leaving the editor
+      void flush().finally(() => queryClient.invalidateQueries({ queryKey: ["docs"] }))
     }
-  }, [ydoc, nodeId])
+  }, [ydoc, flush, queryClient])
+
+  const manualSave = async () => {
+    dirtyRef.current = true
+    await flush()
+    void queryClient.invalidateQueries({ queryKey: ["docs"] })
+  }
 
   const commitTitle = () => {
     const next = title.trim()
@@ -82,8 +113,17 @@ const DocCanvas = ({ nodeId, ydoc, doc }: DocCanvasProps) => {
       setTitle(doc.name)
       return
     }
-    void renameDriveNode(nodeId, next)
+    void renameDriveNode(nodeId, next).then(() =>
+      queryClient.invalidateQueries({ queryKey: ["docs"] }),
+    )
   }
+
+  const status =
+    saveState === "saving"
+      ? "Saving…"
+      : lastSavedAt
+        ? `Saved ${formatTime(lastSavedAt)}`
+        : "Not saved yet"
 
   return (
     <div className="flex min-h-full flex-1 flex-col gap-3 p-4">
@@ -96,9 +136,16 @@ const DocCanvas = ({ nodeId, ydoc, doc }: DocCanvasProps) => {
           aria-label="Document title"
           className="h-auto border-none bg-transparent px-0 text-2xl font-semibold shadow-none focus-visible:ring-0"
         />
-        <span className="text-muted-foreground shrink-0 text-xs">
-          {saveState === "saving" ? "Saving…" : "Saved"}
-        </span>
+        <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{status}</span>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={saveState === "saving"}
+          onClick={() => void manualSave()}
+        >
+          <IconDeviceFloppy className="size-4" />
+          Save
+        </Button>
       </div>
 
       {editor ? (
