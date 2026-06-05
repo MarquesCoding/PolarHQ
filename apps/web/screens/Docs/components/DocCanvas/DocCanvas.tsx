@@ -2,6 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { authClient } from "@lib/authClient"
+import {
+  CommentMark,
+  type CommentThread,
+  type DocComment,
+  findThreadRange,
+} from "@lib/commentMark"
 import { renameDriveNode } from "@lib/drive"
 import { type DocMeta, saveDocContent } from "@lib/docs"
 import { imageFilesFrom, insertImageFiles } from "@lib/editorImages"
@@ -22,11 +28,12 @@ import { TextAlign } from "@tiptap/extension-text-align"
 import { TextStyle } from "@tiptap/extension-text-style"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import { IconDeviceFloppy, IconUserPlus } from "@tabler/icons-react"
+import { IconDeviceFloppy, IconMessage, IconMessagePlus, IconUserPlus } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import * as Y from "yjs"
+import CommentsPanel from "@pages/Docs/components/CommentsPanel/CommentsPanel"
 import EditorToolbar from "@pages/Docs/components/EditorToolbar/EditorToolbar"
 import ShareDocDialog from "@pages/Docs/components/ShareDocDialog/ShareDocDialog"
 
@@ -106,6 +113,14 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
   }))
   const [peers, setPeers] = useState<CollaboratorIdentity[]>([])
   const [shareOpen, setShareOpen] = useState(false)
+  const [hasSelection, setHasSelection] = useState(false)
+  const [commentsOpen, setCommentsOpen] = useState(false)
+  const [activeThread, setActiveThread] = useState<string | null>(null)
+  const [draft, setDraft] = useState<{ threadId: string; range: { from: number; to: number } } | null>(
+    null,
+  )
+  const [threads, setThreads] = useState<CommentThread[]>([])
+  const [comments, setComments] = useState<DocComment[]>([])
   const [title, setTitle] = useState(doc.name)
   const [saveState, setSaveState] = useState<SaveState>("saved")
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(() =>
@@ -131,8 +146,10 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
 
   const editor = useEditor({
     immediatelyRender: false,
+    onSelectionUpdate: ({ editor: instance }) => setHasSelection(!instance.state.selection.empty),
     extensions: [
       StarterKit.configure({ undoRedo: false, link: { openOnClick: false } }),
+      CommentMark,
       TextStyle,
       Color,
       Highlight,
@@ -162,6 +179,18 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
     ],
     editorProps: {
       attributes: { class: "doc-editor min-h-[60vh] max-w-[800px]" },
+      handleClick: (view, pos) => {
+        const mark = view.state.doc
+          .resolve(pos)
+          .marks()
+          .find((candidate) => candidate.type.name === "comment")
+        const threadId = mark?.attrs.threadId as string | undefined
+        if (threadId) {
+          setActiveThread(threadId)
+          setCommentsOpen(true)
+        }
+        return false
+      },
       handlePaste: (view, event) => {
         const files = imageFilesFrom(event.clipboardData)
         if (files.length === 0) return false
@@ -209,6 +238,85 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
     update()
     return () => provider.awareness.off("change", update)
   }, [provider, ydoc])
+
+  useEffect(() => {
+    const threadsMap = ydoc.getMap("docThreads")
+    const commentsArr = ydoc.getArray("docComments")
+    const sync = () => {
+      const next: CommentThread[] = []
+      threadsMap.forEach((value) => next.push(value as CommentThread))
+      setThreads(next)
+      setComments(commentsArr.toArray() as DocComment[])
+    }
+    threadsMap.observe(sync)
+    commentsArr.observe(sync)
+    sync()
+    return () => {
+      threadsMap.unobserve(sync)
+      commentsArr.unobserve(sync)
+    }
+  }, [ydoc])
+
+  const pushComment = (threadId: string, body: string) => {
+    ydoc.getArray("docComments").push([
+      {
+        id: crypto.randomUUID(),
+        threadId,
+        authorName: me.name,
+        authorColor: me.color,
+        body,
+        createdAt: Date.now(),
+      } satisfies DocComment,
+    ])
+  }
+
+  const addComment = () => {
+    if (!editor || editor.state.selection.empty) return
+    const { from, to } = editor.state.selection
+    setDraft({ threadId: crypto.randomUUID(), range: { from, to } })
+    setCommentsOpen(true)
+  }
+
+  const submitNewComment = (body: string) => {
+    if (!editor || !draft) return
+    const { threadId, range } = draft
+    editor
+      .chain()
+      .focus()
+      .setTextSelection(range)
+      .setMark("comment", { threadId })
+      .setTextSelection(range.to)
+      .run()
+    ydoc
+      .getMap("docThreads")
+      .set(threadId, { id: threadId, resolved: false, createdAt: Date.now() } satisfies CommentThread)
+    pushComment(threadId, body)
+    setDraft(null)
+    setActiveThread(threadId)
+  }
+
+  const resolveThread = (threadId: string) => {
+    ydoc
+      .getMap("docThreads")
+      .set(threadId, { id: threadId, resolved: true, createdAt: Date.now() } satisfies CommentThread)
+    if (editor) {
+      const range = findThreadRange(editor, threadId)
+      if (range) {
+        editor.chain().setTextSelection(range).unsetMark("comment").setTextSelection(range.from).run()
+      }
+    }
+    if (activeThread === threadId) setActiveThread(null)
+  }
+
+  const selectThread = (threadId: string) => {
+    setActiveThread(threadId)
+    if (editor) {
+      const range = findThreadRange(editor, threadId)
+      if (range) editor.chain().setTextSelection(range).scrollIntoView().run()
+    }
+  }
+
+  const openThreadCount = threads.filter((thread) => !thread.resolved).length
 
   const manualSave = async () => {
     dirtyRef.current = true
@@ -265,6 +373,19 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
           </div>
         ) : null}
         <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{status}</span>
+        {hasSelection ? (
+          <Button variant="ghost" size="icon-sm" aria-label="Add comment" title="Add comment" onClick={addComment}>
+            <IconMessagePlus className="size-4" />
+          </Button>
+        ) : null}
+        <Button
+          variant={commentsOpen ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => setCommentsOpen((value) => !value)}
+        >
+          <IconMessage className="size-4" />
+          {openThreadCount > 0 ? openThreadCount : "Comments"}
+        </Button>
         {doc.owner ? (
           <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
             <IconUserPlus className="size-4" />
@@ -295,11 +416,31 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
         </div>
       ) : null}
 
-      <div
-        className="mx-auto w-full max-w-[840px] flex-1 cursor-text"
-        onClick={() => editor?.chain().focus().run()}
-      >
-        <EditorContent editor={editor} />
+      <div className="mx-auto flex w-full max-w-[1180px] flex-1 items-start gap-4">
+        <div
+          className="min-w-0 flex-1 cursor-text"
+          onClick={() => editor?.chain().focus().run()}
+        >
+          <div className="mx-auto w-full max-w-[840px]">
+            <EditorContent editor={editor} />
+          </div>
+        </div>
+        {commentsOpen ? (
+          <div className="sticky top-0 h-[calc(100svh-9rem)] self-start">
+            <CommentsPanel
+              threads={threads}
+              comments={comments}
+              activeThread={activeThread}
+              draft={draft}
+              onClose={() => setCommentsOpen(false)}
+              onSelectThread={selectThread}
+              onSubmitNew={submitNewComment}
+              onReply={pushComment}
+              onResolve={resolveThread}
+              onCancelDraft={() => setDraft(null)}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   )

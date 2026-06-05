@@ -357,3 +357,13 @@
   border-radius: 2px;
   padding-bottom: 1px;
 }
+/* Commented text */
+.doc-editor .doc-comment {
+  background-color: color-mix(in oklab, #f59e0b 28%, transparent);
+  border-bottom: 2px solid #f59e0b;
+  cursor: pointer;
+  border-radius: 2px 2px 0 0;
+}
+.doc-editor .doc-comment:hover {
+  background-color: color-mix(in oklab, #f59e0b 42%, transparent);
+}
