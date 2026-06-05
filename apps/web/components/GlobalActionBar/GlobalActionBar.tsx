@@ -1,11 +1,12 @@
 "use client"
 
-import type { ComponentType } from "react"
+import type { ComponentType, DragEvent } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
 import { Icon } from "@lib/icons"
+import { SPLIT_APP_MIME } from "@lib/splitView"
 import { useTheme } from "next-themes"
 import {
   IconBolt,
@@ -38,12 +39,16 @@ const RailButton = ({
   active,
   disabled,
   onClick,
+  draggable,
+  onDragStart,
   icon: IconComp,
 }: {
   label: string
   active?: boolean
   disabled?: boolean
   onClick?: () => void
+  draggable?: boolean
+  onDragStart?: (event: DragEvent) => void
   icon: IconComponent
 }) => (
   <Tooltip>
@@ -54,10 +59,13 @@ const RailButton = ({
           size="icon"
           aria-label={label}
           onClick={onClick}
+          draggable={draggable}
+          onDragStart={onDragStart}
           className={cn(
             "size-9 rounded-lg",
             active && "bg-accent text-accent-foreground",
             disabled && "opacity-40",
+            draggable && "cursor-grab active:cursor-grabbing",
           )}
         >
           <IconComp className="size-5" />
@@ -101,6 +109,19 @@ const GlobalActionBar = () => {
               active={active}
               disabled={!app.available}
               onClick={() => app.available && router.push(app.route)}
+              draggable={app.available}
+              onDragStart={(event) => {
+                event.dataTransfer.setData(
+                  SPLIT_APP_MIME,
+                  JSON.stringify({
+                    id: app.id,
+                    name: app.name,
+                    route: app.route,
+                    icon: app.icon,
+                  }),
+                )
+                event.dataTransfer.effectAllowed = "copy"
+              }}
             />
           )
         })}
