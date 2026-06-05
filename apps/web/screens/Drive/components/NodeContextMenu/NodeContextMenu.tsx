@@ -2,10 +2,12 @@
 
 import type { ReactNode } from "react"
 import type { DriveNode } from "@lib/drive"
+import { isDocNode } from "@lib/docs"
 import {
   IconArrowsMove,
   IconCopy,
   IconDownload,
+  IconExternalLink,
   IconEye,
   IconHistory,
   IconInfoCircle,
@@ -23,6 +25,7 @@ import {
 } from "@workspace/ui/components/context-menu"
 
 export interface DriveNodeActions {
+  open: (node: DriveNode) => void
   view: (node: DriveNode) => void
   download: (node: DriveNode) => void
   copyLink: (node: DriveNode) => void
@@ -61,6 +64,12 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
           </ContextMenuItem>
         ) : (
           <>
+            {isDocNode(node) ? (
+              <ContextMenuItem onClick={() => actions.open(node)}>
+                <IconExternalLink />
+                Open document
+              </ContextMenuItem>
+            ) : null}
             {isImage ? (
               <ContextMenuItem onClick={() => actions.view(node)}>
                 <IconEye />

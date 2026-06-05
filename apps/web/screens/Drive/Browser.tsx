@@ -20,7 +20,13 @@ import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
 import { useUploadManager } from "@lib/uploadManager"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setDriveDetailsOpen } from "@store/uiSlice"
-import { IconArchive, IconFileExport, IconPencil, IconUserPlus } from "@tabler/icons-react"
+import {
+  IconArchive,
+  IconExternalLink,
+  IconFileExport,
+  IconPencil,
+  IconUserPlus,
+} from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { AnimatePresence } from "motion/react"
@@ -179,6 +185,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   const canExtract = single?.kind === "file" && isArchiveName(single.name)
 
   const actions: DriveNodeActions = {
+    open: (node) => open(node),
     view: (node) => setViewingNode(node),
     download: (node) => downloadIds([node.id]),
     copyLink: (node) => {
@@ -282,6 +289,12 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
       />
 
       <SelectionBar>
+        {single && isDocNode(single) ? (
+          <Button variant="ghost" size="sm" onClick={() => open(single)}>
+            <IconExternalLink className="size-4" />
+            Open
+          </Button>
+        ) : null}
         <Button variant="ghost" size="sm" onClick={() => downloadIds(ids)}>
           <Icon name="download" className="size-4" />
           Download
