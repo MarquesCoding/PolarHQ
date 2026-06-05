@@ -5,6 +5,7 @@ import { formatBytes } from "@lib/format"
 import type { DocMeta } from "@lib/docs"
 import { Icon } from "@lib/icons"
 import { IconCircle, IconCircleCheckFilled } from "@tabler/icons-react"
+import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 
 interface DocCardProps {
@@ -25,15 +26,16 @@ const DocCard = ({ doc, selected, onOpen, onSelect, onToggle }: DocCardProps) =>
       selected ? "bg-sidebar-accent" : "hover:bg-sidebar-accent/40",
     )}
   >
-    <button
-      type="button"
+    <Button
+      variant="ghost"
+      size="icon-xs"
       aria-label={selected ? "Deselect" : "Select"}
       onClick={(event) => {
         event.stopPropagation()
         onToggle(doc)
       }}
       className={cn(
-        "absolute top-3 left-3 z-10 flex size-6 items-center justify-center rounded-full transition",
+        "absolute top-3 left-3 z-10 size-6 rounded-full hover:bg-transparent",
         selected ? "opacity-100" : "opacity-0 group-hover:opacity-100",
       )}
     >
@@ -42,7 +44,7 @@ const DocCard = ({ doc, selected, onOpen, onSelect, onToggle }: DocCardProps) =>
       ) : (
         <IconCircle className="text-muted-foreground bg-background/70 size-5 rounded-full" />
       )}
-    </button>
+    </Button>
 
     <div className="bg-card group-hover:border-primary/40 flex aspect-[4/5] items-center justify-center rounded-xl border transition">
       <Icon name="document" className="size-14 text-sky-500" />
