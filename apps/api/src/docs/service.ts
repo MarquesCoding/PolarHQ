@@ -28,13 +28,37 @@ export const createDoc = async (
   })
 }
 
-/** Fetch a document's node + raw content bytes. Returns null if missing or not a doc. */
-export const getDocContent = async (
-  ownerId: string,
+export type DocRole = "editor" | "viewer"
+
+const nodeById = async (nodeId: string): Promise<DriveNode | null> => {
+  const rows = await db.select().from(schema.nodes).where(eq(schema.nodes.id, nodeId)).limit(1)
+  return rows[0] ?? null
+}
+
+/** Whether a user may open a document (owner or any collaborator). */
+export const canAccessDoc = async (userId: string, nodeId: string): Promise<boolean> => {
+  const owned = await db
+    .select({ id: schema.nodes.id })
+    .from(schema.nodes)
+    .where(and(eq(schema.nodes.id, nodeId), eq(schema.nodes.ownerId, userId)))
+    .limit(1)
+  if (owned[0]) return true
+  const collab = await db
+    .select({ id: schema.collaborators.id })
+    .from(schema.collaborators)
+    .where(and(eq(schema.collaborators.nodeId, nodeId), eq(schema.collaborators.userId, userId)))
+    .limit(1)
+  return Boolean(collab[0])
+}
+
+/** Fetch a doc node + content bytes for any viewer (owner or collaborator), else null. */
+export const getDocForViewer = async (
+  userId: string,
   nodeId: string,
 ): Promise<{ node: DriveNode; bytes: Buffer } | null> => {
-  const node = await getNode(ownerId, nodeId)
-  if (!node || node.kind !== "file" || node.mimeType !== DOC_MIME) return null
+  const node = await nodeById(nodeId)
+  if (!node || node.kind !== "file" || node.mimeType !== DOC_MIME || node.trashedAt) return null
+  if (node.ownerId !== userId && !(await canAccessDoc(userId, nodeId))) return null
   const bytes = node.storageKey
     ? await storage().get(node.storageKey).catch(() => Buffer.alloc(0))
     : Buffer.alloc(0)
@@ -42,23 +66,35 @@ export const getDocContent = async (
 }
 
 /**
- * Persist a document's content (a Yjs snapshot) by overwriting the Drive file body in
- * place. The editor autosaves frequently, so this intentionally does not version on every
- * write — Drive versions remain for explicit file operations.
+ * Persist a document's content (a Yjs snapshot) if the user is the owner or an editor
+ * collaborator. Overwrites the file body in place — the editor autosaves frequently, so
+ * this intentionally does not version on every write.
  */
-export const saveDocContent = async (
-  ownerId: string,
+export const saveDocForEditor = async (
+  userId: string,
   nodeId: string,
   bytes: Buffer,
 ): Promise<DriveNode | null> => {
-  const node = await getNode(ownerId, nodeId)
+  const node = await nodeById(nodeId)
   if (!node || node.kind !== "file" || node.mimeType !== DOC_MIME) return null
-  const key = node.storageKey ?? `users/${ownerId}/drive/${node.id}`
+  if (node.ownerId !== userId) {
+    const collab = (
+      await db
+        .select()
+        .from(schema.collaborators)
+        .where(
+          and(eq(schema.collaborators.nodeId, nodeId), eq(schema.collaborators.userId, userId)),
+        )
+        .limit(1)
+    )[0]
+    if (!collab || collab.role !== "editor") return null
+  }
+  const key = node.storageKey ?? `users/${node.ownerId}/drive/${node.id}`
   await storage().put({ key, body: bytes, contentType: DOC_MIME })
   const updated = await db
     .update(schema.nodes)
     .set({ storageKey: key, sizeBytes: bytes.length, updatedAt: new Date() })
-    .where(and(eq(schema.nodes.ownerId, ownerId), eq(schema.nodes.id, node.id)))
+    .where(eq(schema.nodes.id, node.id))
     .returning()
   return updated[0]!
 }
@@ -76,3 +112,86 @@ export const listDocs = (ownerId: string): Promise<DriveNode[]> =>
       ),
     )
     .orderBy(desc(schema.nodes.updatedAt))
+
+/** Documents shared with the user by other people (newest first). */
+export const listSharedDocs = async (userId: string): Promise<DriveNode[]> => {
+  const rows = await db
+    .select()
+    .from(schema.collaborators)
+    .innerJoin(schema.nodes, eq(schema.nodes.id, schema.collaborators.nodeId))
+    .where(and(eq(schema.collaborators.userId, userId), isNull(schema.nodes.trashedAt)))
+    .orderBy(desc(schema.nodes.updatedAt))
+  return rows.map((row) => row.nodes)
+}
+
+export interface CollaboratorView {
+  userId: string
+  name: string
+  email: string
+  role: DocRole
+}
+
+/** List the collaborators the owner has granted access to (excludes the owner). */
+export const listCollaborators = async (
+  ownerId: string,
+  nodeId: string,
+): Promise<CollaboratorView[]> => {
+  const node = await getNode(ownerId, nodeId)
+  if (!node) return []
+  const rows = await db
+    .select({
+      userId: schema.collaborators.userId,
+      role: schema.collaborators.role,
+      name: schema.user.name,
+      email: schema.user.email,
+    })
+    .from(schema.collaborators)
+    .innerJoin(schema.user, eq(schema.user.id, schema.collaborators.userId))
+    .where(and(eq(schema.collaborators.nodeId, nodeId), eq(schema.collaborators.ownerId, ownerId)))
+  return rows.map((row) => ({ ...row, role: row.role as DocRole }))
+}
+
+/** Grant a user (by email) access to a document. Owner-only. */
+export const addCollaborator = async (
+  ownerId: string,
+  nodeId: string,
+  email: string,
+  role: DocRole,
+): Promise<CollaboratorView> => {
+  const node = await getNode(ownerId, nodeId)
+  if (!node || node.mimeType !== DOC_MIME) throw new Error("not found")
+  const target = (
+    await db
+      .select()
+      .from(schema.user)
+      .where(eq(schema.user.email, email.trim().toLowerCase()))
+      .limit(1)
+  )[0]
+  if (!target) throw new Error("no such user")
+  if (target.id === ownerId) throw new Error("already the owner")
+  await db
+    .insert(schema.collaborators)
+    .values({ nodeId, ownerId, userId: target.id, role })
+    .onConflictDoUpdate({
+      target: [schema.collaborators.nodeId, schema.collaborators.userId],
+      set: { role },
+    })
+  return { userId: target.id, name: target.name, email: target.email, role }
+}
+
+/** Revoke a user's access to a document. Owner-only. */
+export const removeCollaborator = async (
+  ownerId: string,
+  nodeId: string,
+  userId: string,
+): Promise<void> => {
+  await db
+    .delete(schema.collaborators)
+    .where(
+      and(
+        eq(schema.collaborators.ownerId, ownerId),
+        eq(schema.collaborators.nodeId, nodeId),
+        eq(schema.collaborators.userId, userId),
+      ),
+    )
+}

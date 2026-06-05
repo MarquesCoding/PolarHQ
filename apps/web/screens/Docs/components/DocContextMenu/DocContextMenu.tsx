@@ -34,19 +34,25 @@ const DocContextMenu = ({ doc, actions, children }: DocContextMenuProps) => (
         <IconExternalLink />
         Open
       </ContextMenuItem>
-      <ContextMenuItem onClick={() => actions.rename(doc)}>
-        <IconPencil />
-        Rename
-      </ContextMenuItem>
+      {doc.owner ? (
+        <ContextMenuItem onClick={() => actions.rename(doc)}>
+          <IconPencil />
+          Rename
+        </ContextMenuItem>
+      ) : null}
       <ContextMenuItem onClick={() => actions.download(doc)}>
         <IconDownload />
         Download
       </ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem variant="destructive" onClick={() => actions.trash(doc)}>
-        <IconTrash />
-        Move to trash
-      </ContextMenuItem>
+      {doc.owner ? (
+        <>
+          <ContextMenuSeparator />
+          <ContextMenuItem variant="destructive" onClick={() => actions.trash(doc)}>
+            <IconTrash />
+            Move to trash
+          </ContextMenuItem>
+        </>
+      ) : null}
     </ContextMenuContent>
   </ContextMenu>
 )

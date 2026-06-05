@@ -34,7 +34,7 @@ const DocsSidebar = () => {
     queryFn: fetchDocs,
     enabled: !collapsed,
   })
-  const docs = data ?? []
+  const docs = [...(data?.documents ?? []), ...(data?.shared ?? [])]
 
   const homeLink = (
     <Link
