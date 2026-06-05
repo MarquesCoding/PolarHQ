@@ -1,0 +1,318 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+@source "../../../apps/**/*.{ts,tsx}";
+@source "../../../components/**/*.{ts,tsx}";
+@source "../**/*.{ts,tsx}";
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+    --font-sans: var(--font-sans);
+}
+
+:root {
+    --background: #efefef;
+    --foreground: oklch(0.205 0 0);
+    --card: #e8e8e8;
+    --card-foreground: oklch(0.205 0 0);
+    --popover: #e8e8e8;
+    --popover-foreground: oklch(0.205 0 0);
+    --primary: #288dff;
+    --primary-foreground: #ffffff;
+    --secondary: #dedede;
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: #dedede;
+    --muted-foreground: oklch(0.45 0 0);
+    --accent: #dadada;
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0 0 0 / 9%);
+    --input: oklch(0 0 0 / 12%);
+    --ring: oklch(0.6 0 0);
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --radius: 0.75rem;
+    --sidebar: #e8e8e8;
+    --sidebar-foreground: oklch(0.205 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: #dadada;
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0 0 0 / 9%);
+    --sidebar-ring: oklch(0.6 0 0);
+}
+
+.dark {
+    --background: #141416;
+    --foreground: oklch(0.985 0 0);
+    --card: #1c1c1e;
+    --card-foreground: oklch(0.985 0 0);
+    --popover: #1c1c1e;
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: #288dff;
+    --primary-foreground: #ffffff;
+    --secondary: #2a2a2d;
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: #2a2a2d;
+    --muted-foreground: oklch(0.65 0 0);
+    --accent: #2e2e31;
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 8%);
+    --input: oklch(1 0 0 / 12%);
+    --ring: oklch(0.55 0 0);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: #1c1c1e;
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.985 0 0);
+    --sidebar-primary-foreground: oklch(0.205 0 0);
+    --sidebar-accent: #2e2e31;
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 8%);
+    --sidebar-ring: oklch(0.55 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  button:not(:disabled), [role="button"]:not(:disabled) {
+    cursor: pointer;
+    }
+}
+
+/* Card-coloured panel with a 1px top-to-bottom gradient border. */
+@utility btn-primary {
+  background-color: var(--primary);
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklab, white 16%, var(--primary)),
+    var(--primary)
+  );
+  color: var(--primary-foreground);
+  box-shadow:
+    0 1px 2px rgba(14, 18, 27, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 0 1px color-mix(in oklab, var(--primary), black 6%);
+}
+
+@utility scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--muted-foreground) 30%, transparent) transparent;
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    background-color: color-mix(in oklab, var(--muted-foreground) 28%, transparent);
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklab, var(--muted-foreground) 45%, transparent);
+  }
+  &::-webkit-scrollbar-thumb:active {
+    background-color: color-mix(in oklab, var(--muted-foreground) 60%, transparent);
+  }
+}
+
+@utility panel {
+  background-color: var(--card);
+  border: 1px solid transparent;
+  background-image:
+    linear-gradient(var(--card), var(--card)),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--foreground) 16%, transparent),
+      color-mix(in oklab, var(--foreground) 4%, transparent)
+    );
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+/* Orbit Docs — TipTap/ProseMirror editor content styling */
+.doc-editor {
+  outline: none;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--foreground);
+}
+.doc-editor > * + * {
+  margin-top: 0.75em;
+}
+.doc-editor h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-top: 1.2em;
+}
+.doc-editor h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 1em;
+}
+.doc-editor h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 0.9em;
+}
+.doc-editor ul,
+.doc-editor ol {
+  padding-left: 1.5rem;
+}
+.doc-editor ul {
+  list-style: disc;
+}
+.doc-editor ol {
+  list-style: decimal;
+}
+.doc-editor ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0.25rem;
+}
+.doc-editor ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.doc-editor ul[data-type="taskList"] li > label {
+  margin-top: 0.2rem;
+}
+.doc-editor blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  color: var(--muted-foreground);
+}
+.doc-editor a {
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.doc-editor code {
+  background-color: var(--muted);
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.3rem;
+  font-size: 0.875em;
+}
+.doc-editor pre {
+  background-color: var(--muted);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+}
+.doc-editor pre code {
+  background: none;
+  padding: 0;
+}
+.doc-editor img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
+.doc-editor mark {
+  background-color: #fde68a;
+  border-radius: 0.2rem;
+  padding: 0 0.1rem;
+}
+.doc-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  overflow: hidden;
+}
+.doc-editor th,
+.doc-editor td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+  vertical-align: top;
+}
+.doc-editor th {
+  background-color: var(--muted);
+  font-weight: 600;
+}
+.doc-editor .ProseMirror-selectednode {
+  outline: 2px solid var(--primary);
+}
+.doc-editor p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--muted-foreground);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+/* Remote collaborator cursors (Phase 2) */
+.doc-editor .collaboration-cursor__caret {
+  border-left: 1px solid;
+  border-right: 1px solid;
+  margin-left: -1px;
+  margin-right: -1px;
+  position: relative;
+  word-break: normal;
+  pointer-events: none;
+}
+.doc-editor .collaboration-cursor__label {
+  border-radius: 3px 3px 3px 0;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  left: -1px;
+  line-height: normal;
+  padding: 0.1rem 0.3rem;
+  position: absolute;
+  top: -1.4em;
+  user-select: none;
+  white-space: nowrap;
+}
