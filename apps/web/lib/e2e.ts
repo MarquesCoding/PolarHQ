@@ -62,6 +62,13 @@ export const e2eReady = async (): Promise<void> => {
 
 export const isUnlocked = (): boolean => keypair !== null
 
+let unlockPrompted = false
+/** Whether the app should prompt to unlock/set up keys (locked, and not yet prompted this load). */
+export const shouldPromptUnlock = (): boolean => !isUnlocked() && !unlockPrompted
+export const markUnlockPrompted = (): void => {
+  unlockPrompted = true
+}
+
 export const fetchKeyBundle = (): Promise<KeyBundle | null> =>
   apiFetch<{ keys: KeyBundle | null }>("/api/v1/docs/keys/me").then((r) => r.keys)
 
