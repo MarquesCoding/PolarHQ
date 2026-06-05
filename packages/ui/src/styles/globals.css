@@ -303,6 +303,17 @@
   word-break: normal;
   pointer-events: none;
 }
+/* A wider invisible hit area so the thin caret is easy to hover (reveals the name) */
+.doc-editor .doc-caret::before {
+  content: "";
+  position: absolute;
+  top: -0.15em;
+  bottom: -0.15em;
+  left: -4px;
+  width: 9px;
+  pointer-events: auto;
+  cursor: default;
+}
 .doc-editor .doc-caret__label {
   position: absolute;
   top: -1.5em;
