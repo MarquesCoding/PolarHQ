@@ -6,7 +6,7 @@ import { authClient } from "@lib/authClient"
 import { SPLIT_APP_MIME, readSplitApp } from "@lib/splitView"
 import { UploadProvider } from "@lib/uploadManager"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
-import { setSidebarCollapsed, setSplitApp, setSplitRatio, setSplitSide } from "@store/uiSlice"
+import { setSplitApp, setSplitRatio, setSplitSide } from "@store/uiSlice"
 import GlobalActionBar from "@components/GlobalActionBar/GlobalActionBar"
 import Spinner from "@components/Spinner/Spinner"
 import SplitPane from "@components/SplitPane/SplitPane"
@@ -41,16 +41,12 @@ const AppShell = ({ sidebar, titleBar, children }: AppShellProps) => {
   const resizing = useRef(false)
 
   useEffect(() => {
-    let inFrame = false
     try {
-      inFrame = window.self !== window.top
+      setEmbedded(window.self !== window.top)
     } catch {
-      inFrame = true
+      setEmbedded(true)
     }
-    setEmbedded(inFrame)
-    // Inside a split pane, collapse the sidebar so two apps don't show two full sidebars.
-    if (inFrame) dispatch(setSidebarCollapsed(true))
-  }, [dispatch])
+  }, [])
 
   useEffect(() => {
     if (!isPending && !session?.user) router.replace("/sign-in")
@@ -64,32 +60,38 @@ const AppShell = ({ sidebar, titleBar, children }: AppShellProps) => {
     )
   }
 
+  const contentColumn = (
+    <div className="flex min-w-0 flex-1 flex-col gap-2 overflow-hidden">
+      {titleBar}
+      <main className={cn("panel min-w-0 flex-1 rounded-xl", scrollClasses)}>
+        <motion.div
+          key={pathname}
+          className="flex min-h-full flex-col"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        >
+          {children}
+        </motion.div>
+      </main>
+    </div>
+  )
+
   const appPanes = (
     <>
       {sidebar}
-      <div className="flex min-w-0 flex-1 flex-col gap-2 overflow-hidden">
-        {titleBar}
-        <main className={cn("panel min-w-0 flex-1 rounded-xl", scrollClasses)}>
-          <motion.div
-            key={pathname}
-            className="flex min-h-full flex-col"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-          >
-            {children}
-          </motion.div>
-        </main>
-      </div>
+      {contentColumn}
     </>
   )
 
-  // Inside an iframe pane: drop the rail + split machinery and the outer padding so the
-  // pane content lines up edge-to-edge with the primary app.
+  // Inside an iframe pane: drop the rail, sidebar, split machinery and the outer padding —
+  // the split view shows a single sidebar (the primary app's), not one per pane.
   if (embedded) {
     return (
       <UploadProvider>
-        <div className="bg-background flex h-svh gap-2 overflow-hidden select-none">{appPanes}</div>
+        <div className="bg-background flex h-svh gap-2 overflow-hidden select-none">
+          {contentColumn}
+        </div>
         <UploadPanel />
       </UploadProvider>
     )
