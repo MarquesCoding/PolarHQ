@@ -3,6 +3,7 @@
 import { type PointerEvent, type ReactNode, useEffect, useRef, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { authClient } from "@lib/authClient"
+import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@lib/e2e"
 import { SPLIT_APP_MIME, readSplitApp } from "@lib/splitView"
 import { UploadProvider } from "@lib/uploadManager"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
@@ -11,6 +12,7 @@ import GlobalActionBar from "@components/GlobalActionBar/GlobalActionBar"
 import Spinner from "@components/Spinner/Spinner"
 import SplitPane from "@components/SplitPane/SplitPane"
 import UploadPanel from "@components/UploadPanel/UploadPanel"
+import UnlockDialog from "@pages/Docs/components/UnlockDialog/UnlockDialog"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 
@@ -37,6 +39,7 @@ const AppShell = ({ sidebar, titleBar, children }: AppShellProps) => {
 
   const [embedded, setEmbedded] = useState(false)
   const [dragSide, setDragSide] = useState<Side | null>(null)
+  const [unlockOpen, setUnlockOpen] = useState(false)
   const rowRef = useRef<HTMLDivElement>(null)
   const resizing = useRef(false)
 
@@ -51,6 +54,23 @@ const AppShell = ({ sidebar, titleBar, children }: AppShellProps) => {
   useEffect(() => {
     if (!isPending && !session?.user) router.replace("/sign-in")
   }, [isPending, session, router])
+
+  // Logged in but keys not loaded (e.g. an older session): prompt to set up / unlock
+  // encryption once, so documents are actually encrypted by default.
+  useEffect(() => {
+    if (embedded || !session?.user) return
+    let cancelled = false
+    void (async () => {
+      await e2eReady()
+      if (!cancelled && shouldPromptUnlock()) {
+        markUnlockPrompted()
+        setUnlockOpen(true)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [embedded, session?.user])
 
   if (isPending || !session?.user) {
     return (
@@ -206,6 +226,11 @@ const AppShell = ({ sidebar, titleBar, children }: AppShellProps) => {
         </div>
       </div>
       <UploadPanel />
+      <UnlockDialog
+        open={unlockOpen}
+        onOpenChange={setUnlockOpen}
+        onUnlocked={() => setUnlockOpen(false)}
+      />
     </UploadProvider>
   )
 }
