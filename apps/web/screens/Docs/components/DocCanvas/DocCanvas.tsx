@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { authClient } from "@lib/authClient"
 import { renameDriveNode } from "@lib/drive"
 import { type DocMeta, saveDocContent } from "@lib/docs"
+import { imageFilesFrom, insertImageFiles } from "@lib/editorImages"
 import type { RelayProvider } from "@lib/yjsProvider"
 import { Collaboration } from "@tiptap/extension-collaboration"
 import { CollaborationCaret } from "@tiptap/extension-collaboration-caret"
@@ -124,6 +125,21 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
     ],
     editorProps: {
       attributes: { class: "doc-editor min-h-[60vh] max-w-[800px]" },
+      handlePaste: (view, event) => {
+        const files = imageFilesFrom(event.clipboardData)
+        if (files.length === 0) return false
+        void insertImageFiles(view, files)
+        return true
+      },
+      handleDrop: (view, event, _slice, moved) => {
+        if (moved) return false
+        const files = imageFilesFrom(event.dataTransfer)
+        if (files.length === 0) return false
+        event.preventDefault()
+        const pos = view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos
+        void insertImageFiles(view, files, pos)
+        return true
+      },
     },
   })
 
