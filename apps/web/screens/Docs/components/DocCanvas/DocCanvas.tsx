@@ -8,8 +8,10 @@ import {
   type DocComment,
   findThreadRange,
 } from "@lib/commentMark"
+import { secretboxSeal } from "@lib/crypto"
 import { renameDriveNode } from "@lib/drive"
 import { type DocMeta, saveDocContent } from "@lib/docs"
+import { enableDocEncryption, isUnlocked } from "@lib/e2e"
 import { imageFilesFrom, insertImageFiles } from "@lib/editorImages"
 import type { RelayProvider } from "@lib/yjsProvider"
 import { Collaboration } from "@tiptap/extension-collaboration"
@@ -28,14 +30,23 @@ import { TextAlign } from "@tiptap/extension-text-align"
 import { TextStyle } from "@tiptap/extension-text-style"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import { IconDeviceFloppy, IconMessage, IconMessagePlus, IconUserPlus } from "@tabler/icons-react"
+import {
+  IconDeviceFloppy,
+  IconMessage,
+  IconMessagePlus,
+  IconShield,
+  IconShieldLock,
+  IconUserPlus,
+} from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
+import { toast } from "sonner"
 import * as Y from "yjs"
 import CommentsPanel from "@pages/Docs/components/CommentsPanel/CommentsPanel"
 import EditorToolbar from "@pages/Docs/components/EditorToolbar/EditorToolbar"
 import ShareDocDialog from "@pages/Docs/components/ShareDocDialog/ShareDocDialog"
+import UnlockDialog from "@pages/Docs/components/UnlockDialog/UnlockDialog"
 
 type SaveState = "saved" | "saving" | "dirty"
 
@@ -49,6 +60,7 @@ interface DocCanvasProps {
   ydoc: Y.Doc
   doc: DocMeta
   provider: RelayProvider
+  contentKey: Uint8Array | null
 }
 
 const formatTime = (ms: number): string =>
@@ -104,9 +116,10 @@ const buildCaret = (user: Record<string, unknown>): HTMLElement => {
 }
 
 /** The TipTap editing surface for a single document, bound to a (already loaded) Yjs document. */
-const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
+const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) => {
   const queryClient = useQueryClient()
   const { data: session } = authClient.useSession()
+  const [encryptUnlockOpen, setEncryptUnlockOpen] = useState(false)
   const [me] = useState<CollaboratorIdentity>(() => ({
     name: session?.user?.name || "Anonymous",
     color: colorFor(session?.user?.id || session?.user?.email || "anon"),
@@ -135,14 +148,16 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
     dirtyRef.current = false
     setSaveState("saving")
     try {
-      await saveDocContent(nodeId, Y.encodeStateAsUpdate(ydoc))
+      let bytes = Y.encodeStateAsUpdate(ydoc)
+      if (contentKey) bytes = secretboxSeal(bytes, contentKey)
+      await saveDocContent(nodeId, bytes)
       setLastSavedAt(Date.now())
       setSaveState("saved")
     } catch {
       dirtyRef.current = true
       setSaveState("dirty")
     }
-  }, [nodeId, ydoc])
+  }, [nodeId, ydoc, contentKey])
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -324,6 +339,22 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
     void queryClient.invalidateQueries({ queryKey: ["docs"] })
   }
 
+  const enableEncryption = async () => {
+    const selfUserId = session?.user?.id
+    if (!selfUserId) return
+    if (!isUnlocked()) {
+      setEncryptUnlockOpen(true)
+      return
+    }
+    try {
+      const key = await enableDocEncryption(nodeId, selfUserId)
+      await saveDocContent(nodeId, secretboxSeal(Y.encodeStateAsUpdate(ydoc), key))
+      window.location.reload()
+    } catch {
+      toast.error("Could not enable encryption")
+    }
+  }
+
   const commitTitle = () => {
     const next = title.trim()
     if (!next || next === doc.name) {
@@ -373,6 +404,24 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
           </div>
         ) : null}
         <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{status}</span>
+        {contentKey ? (
+          <span
+            title="End-to-end encrypted"
+            className="text-emerald-500 flex shrink-0 items-center"
+          >
+            <IconShieldLock className="size-4" />
+          </span>
+        ) : doc.owner ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            title="Encrypt this document"
+            onClick={() => void enableEncryption()}
+          >
+            <IconShield className="size-4" />
+            Encrypt
+          </Button>
+        ) : null}
         {hasSelection ? (
           <Button variant="ghost" size="icon-sm" aria-label="Add comment" title="Add comment" onClick={addComment}>
             <IconMessagePlus className="size-4" />
@@ -408,6 +457,15 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
         name={doc.name}
         open={shareOpen}
         onOpenChange={setShareOpen}
+      />
+
+      <UnlockDialog
+        open={encryptUnlockOpen}
+        onOpenChange={setEncryptUnlockOpen}
+        onUnlocked={() => {
+          setEncryptUnlockOpen(false)
+          void enableEncryption()
+        }}
       />
 
       {editor ? (
