@@ -2,8 +2,21 @@ import { apiFetch } from "@lib/apiClient"
 import type { DriveNode } from "@lib/drive"
 import { API_URL } from "@lib/env"
 
-/** Mime that marks a Drive node as an Orbit document (its body is a Yjs snapshot). */
+/** Mimes that mark a Drive node as an Orbit collaborative document (body = Yjs snapshot). */
 export const DOC_MIME = "application/vnd.orbit.doc"
+export const SHEET_MIME = "application/vnd.orbit.sheet"
+export const SLIDES_MIME = "application/vnd.orbit.slides"
+
+export type DocType = "doc" | "sheet" | "slides"
+
+/** Map a node mime to its app type (or null if it isn't an Orbit document). */
+export const docTypeOf = (mime: string | null): DocType | null =>
+  mime === DOC_MIME ? "doc" : mime === SHEET_MIME ? "sheet" : mime === SLIDES_MIME ? "slides" : null
+
+export const isSheetNode = (node: Pick<DriveNode, "mimeType">): boolean =>
+  node.mimeType === SHEET_MIME
+export const isSlidesNode = (node: Pick<DriveNode, "mimeType">): boolean =>
+  node.mimeType === SLIDES_MIME
 
 export interface DocMeta {
   id: string
@@ -36,8 +49,8 @@ export interface DocCollaborator {
 export const isDocNode = (node: Pick<DriveNode, "mimeType">): boolean =>
   node.mimeType === DOC_MIME
 
-export const fetchDocs = (): Promise<DocListing> =>
-  apiFetch<DocListing>("/api/v1/docs/documents")
+export const fetchDocs = (type: DocType = "doc"): Promise<DocListing> =>
+  apiFetch<DocListing>(`/api/v1/docs/documents?type=${type}`)
 
 export const fetchDocCollaborators = (id: string): Promise<DocCollaborator[]> =>
   apiFetch<{ collaborators: DocCollaborator[] }>(
@@ -63,10 +76,11 @@ export const fetchDoc = (id: string): Promise<DocMeta> =>
 export const createDoc = (
   parentId?: string | null,
   title?: string,
+  type: DocType = "doc",
 ): Promise<DocMeta> =>
   apiFetch<{ document: DocMeta }>("/api/v1/docs/documents", {
     method: "POST",
-    body: JSON.stringify({ parentId: parentId ?? null, title }),
+    body: JSON.stringify({ parentId: parentId ?? null, title, type }),
   }).then((r) => r.document)
 
 /** Fetch a document's raw content bytes (a Yjs snapshot). */

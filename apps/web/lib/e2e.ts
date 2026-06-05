@@ -1,7 +1,7 @@
 "use client"
 
 import { apiFetch } from "@lib/apiClient"
-import { type DocMeta, createDoc } from "@lib/docs"
+import { type DocMeta, type DocType, createDoc } from "@lib/docs"
 import {
   type Keypair,
   cryptoReady,
@@ -176,8 +176,11 @@ export const enableDocEncryption = async (nodeId: string): Promise<Uint8Array> =
  * and stored wrapped to the owner. Falls back to a plaintext doc only if encryption
  * keys aren't available (e.g. the user never signed in this session).
  */
-export const createEncryptedDoc = async (parentId?: string | null): Promise<DocMeta> => {
-  const doc = await createDoc(parentId)
+export const createEncryptedDoc = async (
+  parentId?: string | null,
+  type: DocType = "doc",
+): Promise<DocMeta> => {
+  const doc = await createDoc(parentId, undefined, type)
   await e2eReady()
   if (isUnlocked()) {
     try {

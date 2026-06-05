@@ -3,27 +3,44 @@ import { storage } from "@workspace/storage"
 import { and, desc, eq, isNull } from "drizzle-orm"
 import { type DriveNode, ensureUserRoots, getNode, ingestDriveFile } from "../drive/service"
 
-/** Mime that marks a Drive node as an Orbit document (a Yjs snapshot stored as the file body). */
+/**
+ * Mimes that mark a Drive node as an Orbit collaborative document — a Yjs snapshot
+ * stored as the file body. All three share the same storage, collaboration relay,
+ * sharing, and E2E machinery; only the editor differs.
+ */
 export const DOC_MIME = "application/vnd.orbit.doc"
+export const SHEET_MIME = "application/vnd.orbit.sheet"
+export const SLIDES_MIME = "application/vnd.orbit.slides"
 
-export const DEFAULT_DOC_TITLE = "Untitled document"
+export const ORBIT_DOC_MIMES = [DOC_MIME, SHEET_MIME, SLIDES_MIME] as const
+export type OrbitDocMime = (typeof ORBIT_DOC_MIMES)[number]
+
+export const isOrbitDoc = (mime: string | null): mime is OrbitDocMime =>
+  mime != null && (ORBIT_DOC_MIMES as readonly string[]).includes(mime)
+
+const DEFAULT_TITLE: Record<OrbitDocMime, string> = {
+  [DOC_MIME]: "Untitled document",
+  [SHEET_MIME]: "Untitled spreadsheet",
+  [SLIDES_MIME]: "Untitled presentation",
+}
 
 /**
- * Create a new document: a Drive file node (mime {@link DOC_MIME}) whose body is the
- * document's serialized content. New docs start empty — the client seeds the editor.
+ * Create a new collaborative document of the given type: a Drive file node whose body
+ * is the serialized Yjs content. New docs start empty — the client seeds the editor.
  */
 export const createDoc = async (
   ownerId: string,
   parentId: string | null,
   title?: string,
+  mimeType: OrbitDocMime = DOC_MIME,
 ): Promise<DriveNode> => {
   const { rootId } = await ensureUserRoots(ownerId)
   const resolvedParentId = parentId && parentId !== "root" ? parentId : rootId
   return ingestDriveFile({
     ownerId,
     parentId: resolvedParentId,
-    filename: title?.trim() || DEFAULT_DOC_TITLE,
-    mimeType: DOC_MIME,
+    filename: title?.trim() || DEFAULT_TITLE[mimeType],
+    mimeType,
     bytes: Buffer.alloc(0),
   })
 }
@@ -57,7 +74,7 @@ export const getDocForViewer = async (
   nodeId: string,
 ): Promise<{ node: DriveNode; bytes: Buffer } | null> => {
   const node = await nodeById(nodeId)
-  if (!node || node.kind !== "file" || node.mimeType !== DOC_MIME || node.trashedAt) return null
+  if (!node || node.kind !== "file" || !isOrbitDoc(node.mimeType) || node.trashedAt) return null
   if (node.ownerId !== userId && !(await canAccessDoc(userId, nodeId))) return null
   const bytes = node.storageKey
     ? await storage().get(node.storageKey).catch(() => Buffer.alloc(0))
@@ -76,7 +93,7 @@ export const saveDocForEditor = async (
   bytes: Buffer,
 ): Promise<DriveNode | null> => {
   const node = await nodeById(nodeId)
-  if (!node || node.kind !== "file" || node.mimeType !== DOC_MIME) return null
+  if (!node || node.kind !== "file" || !isOrbitDoc(node.mimeType)) return null
   if (node.ownerId !== userId) {
     const collab = (
       await db
@@ -99,27 +116,36 @@ export const saveDocForEditor = async (
   return updated[0]!
 }
 
-/** List every (non-trashed) document the owner has, newest first. */
-export const listDocs = (ownerId: string): Promise<DriveNode[]> =>
+/** List every (non-trashed) document of a type the owner has, newest first. */
+export const listDocs = (ownerId: string, mime: OrbitDocMime = DOC_MIME): Promise<DriveNode[]> =>
   db
     .select()
     .from(schema.nodes)
     .where(
       and(
         eq(schema.nodes.ownerId, ownerId),
-        eq(schema.nodes.mimeType, DOC_MIME),
+        eq(schema.nodes.mimeType, mime),
         isNull(schema.nodes.trashedAt),
       ),
     )
     .orderBy(desc(schema.nodes.updatedAt))
 
-/** Documents shared with the user by other people (newest first). */
-export const listSharedDocs = async (userId: string): Promise<DriveNode[]> => {
+/** Documents of a type shared with the user by other people (newest first). */
+export const listSharedDocs = async (
+  userId: string,
+  mime: OrbitDocMime = DOC_MIME,
+): Promise<DriveNode[]> => {
   const rows = await db
     .select()
     .from(schema.collaborators)
     .innerJoin(schema.nodes, eq(schema.nodes.id, schema.collaborators.nodeId))
-    .where(and(eq(schema.collaborators.userId, userId), isNull(schema.nodes.trashedAt)))
+    .where(
+      and(
+        eq(schema.collaborators.userId, userId),
+        eq(schema.nodes.mimeType, mime),
+        isNull(schema.nodes.trashedAt),
+      ),
+    )
     .orderBy(desc(schema.nodes.updatedAt))
   return rows.map((row) => row.nodes)
 }
@@ -159,7 +185,7 @@ export const addCollaborator = async (
   role: DocRole,
 ): Promise<CollaboratorView> => {
   const node = await getNode(ownerId, nodeId)
-  if (!node || node.mimeType !== DOC_MIME) throw new Error("not found")
+  if (!node || !isOrbitDoc(node.mimeType)) throw new Error("not found")
   const target = (
     await db
       .select()
