@@ -1,5 +1,6 @@
 "use client"
 
+import { secretboxOpen, secretboxSeal } from "@lib/crypto"
 import { API_URL } from "@lib/env"
 import * as decoding from "lib0/decoding"
 import * as encoding from "lib0/encoding"
@@ -35,14 +36,16 @@ export class RelayProvider {
   readonly awareness: Awareness
   private readonly doc: Y.Doc
   private readonly url: string
+  private readonly contentKey: Uint8Array | undefined
   private ws: WebSocket | null = null
   private connected = false
   private destroyed = false
   private reconnectTimer: ReturnType<typeof setTimeout> | undefined
 
-  constructor(nodeId: string, doc: Y.Doc) {
+  constructor(nodeId: string, doc: Y.Doc, contentKey?: Uint8Array) {
     this.doc = doc
     this.url = wsUrl(nodeId)
+    this.contentKey = contentKey
     this.awareness = new Awareness(doc)
 
     doc.on("update", this.handleDocUpdate)
@@ -79,7 +82,17 @@ export class RelayProvider {
       }
     }
 
-    ws.onmessage = (event) => this.handleMessage(new Uint8Array(event.data as ArrayBuffer))
+    ws.onmessage = (event) => {
+      let data: Uint8Array = new Uint8Array(event.data as ArrayBuffer)
+      if (this.contentKey) {
+        try {
+          data = secretboxOpen(data, this.contentKey)
+        } catch {
+          return // can't decrypt (mismatched key) — drop the frame
+        }
+      }
+      this.handleMessage(data)
+    }
 
     ws.onclose = () => {
       this.connected = false
@@ -124,7 +137,7 @@ export class RelayProvider {
 
   private transmit(payload: Uint8Array): void {
     if (this.ws && this.connected && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(payload)
+      this.ws.send(this.contentKey ? secretboxSeal(payload, this.contentKey) : payload)
     }
   }
 

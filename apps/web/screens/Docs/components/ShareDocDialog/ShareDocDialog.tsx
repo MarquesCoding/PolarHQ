@@ -7,6 +7,7 @@ import {
   fetchDocCollaborators,
   removeDocCollaborator,
 } from "@lib/docs"
+import { isDocEncrypted, shareDocKey } from "@lib/e2e"
 import { IconTrash } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
@@ -50,11 +51,23 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
     queryClient.invalidateQueries({ queryKey: ["docs", "collaborators", nodeId] })
 
   const add = useMutation({
-    mutationFn: () => addDocCollaborator(nodeId!, email.trim(), role),
-    onSuccess: () => {
+    mutationFn: async () => {
+      const targetEmail = email.trim()
+      await addDocCollaborator(nodeId!, targetEmail, role)
+      // For an encrypted doc, wrap its content key to the new collaborator's public key.
+      if (await isDocEncrypted(nodeId!)) {
+        return { keyShared: await shareDocKey(nodeId!, targetEmail) }
+      }
+      return { keyShared: true }
+    },
+    onSuccess: ({ keyShared }) => {
       setEmail("")
       refresh()
-      toast.success("Access granted")
+      if (keyShared) toast.success("Access granted")
+      else
+        toast.warning(
+          "Added — but they haven’t set up encryption yet. Re-share once they have to grant access.",
+        )
     },
     onError: (error) => toast.error((error as Error).message || "Could not share"),
   })
