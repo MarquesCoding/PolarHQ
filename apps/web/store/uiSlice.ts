@@ -11,6 +11,7 @@ export interface UiState {
   driveDetailsOpen: boolean
   splitApp: SplitApp | null
   splitRatio: number
+  splitSide: "left" | "right"
 }
 
 const initialState: UiState = {
@@ -21,6 +22,7 @@ const initialState: UiState = {
   driveDetailsOpen: false,
   splitApp: null,
   splitRatio: 0.5,
+  splitSide: "right",
 }
 
 const uiSlice = createSlice({
@@ -36,6 +38,9 @@ const uiSlice = createSlice({
     toggleSidebar: (state) => {
       state.sidebarCollapsed = !state.sidebarCollapsed
     },
+    setSidebarCollapsed: (state, action: PayloadAction<boolean>) => {
+      state.sidebarCollapsed = action.payload
+    },
     setViewMode: (state, action: PayloadAction<ViewMode>) => {
       state.viewMode = action.payload
     },
@@ -46,7 +51,10 @@ const uiSlice = createSlice({
       state.splitApp = action.payload
     },
     setSplitRatio: (state, action: PayloadAction<number>) => {
-      state.splitRatio = Math.min(0.8, Math.max(0.2, action.payload))
+      state.splitRatio = Math.min(0.75, Math.max(0.25, action.payload))
+    },
+    setSplitSide: (state, action: PayloadAction<"left" | "right">) => {
+      state.splitSide = action.payload
     },
   },
 })
@@ -55,10 +63,12 @@ export const {
   setActiveApp,
   setSearchQuery,
   toggleSidebar,
+  setSidebarCollapsed,
   setViewMode,
   setDriveDetailsOpen,
   setSplitApp,
   setSplitRatio,
+  setSplitSide,
 } = uiSlice.actions
 
 export default uiSlice.reducer

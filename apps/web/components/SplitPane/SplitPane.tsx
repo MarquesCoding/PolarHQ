@@ -1,6 +1,5 @@
 "use client"
 
-import { Icon } from "@lib/icons"
 import type { SplitApp } from "@lib/splitView"
 import { IconX } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
@@ -12,24 +11,24 @@ interface SplitPaneProps {
   inert?: boolean
 }
 
-/** A secondary app shown beside the current one, loaded as an embedded iframe. */
+/** A secondary app shown beside the current one, loaded seamlessly as an embedded iframe. */
 const SplitPane = ({ app, onClose, inert }: SplitPaneProps) => (
-  <div className="panel flex min-w-0 flex-1 flex-col overflow-hidden rounded-xl">
-    <header className="border-border/60 flex h-9 shrink-0 items-center justify-between border-b px-2.5">
-      <div className="flex min-w-0 items-center gap-2 text-sm font-medium">
-        <Icon name={app.icon} className="size-4 shrink-0" />
-        <span className="truncate">{app.name}</span>
-      </div>
-      <Button variant="ghost" size="icon-xs" aria-label={`Close ${app.name}`} onClick={onClose}>
-        <IconX className="size-4" />
-      </Button>
-    </header>
+  <div className="group relative flex min-w-0 flex-1">
     <iframe
       src={app.route}
       title={app.name}
-      className="min-h-0 w-full flex-1 border-0"
+      className="h-full w-full border-0"
       style={inert ? { pointerEvents: "none" } : undefined}
     />
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      aria-label={`Close ${app.name}`}
+      onClick={onClose}
+      className="bg-background/70 absolute top-3 right-3 z-40 rounded-full opacity-0 shadow-sm backdrop-blur transition group-hover:opacity-100"
+    >
+      <IconX className="size-4" />
+    </Button>
   </div>
 )
 
