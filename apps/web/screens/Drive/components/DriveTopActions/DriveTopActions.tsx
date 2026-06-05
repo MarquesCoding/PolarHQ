@@ -3,7 +3,7 @@
 import { useRef, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { driveFolderIdFromPath, fetchNodes } from "@lib/drive"
-import { createDoc } from "@lib/docs"
+import { createEncryptedDoc } from "@lib/e2e"
 import { useUploadManager } from "@lib/uploadManager"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setDriveDetailsOpen } from "@store/uiSlice"
@@ -54,7 +54,7 @@ const DriveTopActions = () => {
   }
   const newDocument = async () => {
     try {
-      const doc = await createDoc(parentId)
+      const doc = await createEncryptedDoc(parentId)
       void queryClient.invalidateQueries({ queryKey: ["docs"] })
       router.push(`/docs/${doc.id}`)
     } catch {

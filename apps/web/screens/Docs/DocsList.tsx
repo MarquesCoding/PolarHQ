@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { type DocMeta, createDoc, fetchDocs } from "@lib/docs"
+import { type DocMeta, fetchDocs } from "@lib/docs"
 import { trashDriveNode } from "@lib/drive"
+import { createEncryptedDoc } from "@lib/e2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
@@ -56,7 +57,7 @@ const DocsListInner = () => {
   const create = async () => {
     setCreating(true)
     try {
-      const doc = await createDoc()
+      const doc = await createEncryptedDoc()
       invalidate()
       router.push(`/docs/${doc.id}`)
     } catch {

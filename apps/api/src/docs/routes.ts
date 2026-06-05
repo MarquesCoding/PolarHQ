@@ -180,3 +180,16 @@ docsRoutes.post("/documents/:id/keys", async (c) => {
     return c.json({ error: (error as Error).message }, 400)
   }
 })
+
+// Store the content key wrapped to the requesting user (used when creating an encrypted doc).
+docsRoutes.post("/documents/:id/self-key", async (c) => {
+  const parsed = await parse(c, z.object({ wrappedKey: z.string() }))
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  const userId = c.get("userId")
+  try {
+    await setDocKeys(userId, c.req.param("id"), [{ userId, wrappedKey: parsed.data.wrappedKey }])
+    return c.json({ ok: true })
+  } catch (error) {
+    return c.json({ error: (error as Error).message }, 400)
+  }
+})

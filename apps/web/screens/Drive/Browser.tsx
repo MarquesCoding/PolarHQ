@@ -12,7 +12,8 @@ import {
   moveDriveNode,
   trashDriveNode,
 } from "@lib/drive"
-import { createDoc, isDocNode } from "@lib/docs"
+import { isDocNode } from "@lib/docs"
+import { createEncryptedDoc } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
@@ -117,7 +118,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
 
   const newDocument = async () => {
     try {
-      const doc = await createDoc(parentId)
+      const doc = await createEncryptedDoc(parentId)
       invalidate()
       router.push(`/docs/${doc.id}`)
     } catch {

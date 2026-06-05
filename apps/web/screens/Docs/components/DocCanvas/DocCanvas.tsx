@@ -11,7 +11,6 @@ import {
 import { secretboxSeal } from "@lib/crypto"
 import { renameDriveNode } from "@lib/drive"
 import { type DocMeta, saveDocContent } from "@lib/docs"
-import { enableDocEncryption, isUnlocked } from "@lib/e2e"
 import { imageFilesFrom, insertImageFiles } from "@lib/editorImages"
 import type { RelayProvider } from "@lib/yjsProvider"
 import { Collaboration } from "@tiptap/extension-collaboration"
@@ -34,19 +33,16 @@ import {
   IconDeviceFloppy,
   IconMessage,
   IconMessagePlus,
-  IconShield,
   IconShieldLock,
   IconUserPlus,
 } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
-import { toast } from "sonner"
 import * as Y from "yjs"
 import CommentsPanel from "@pages/Docs/components/CommentsPanel/CommentsPanel"
 import EditorToolbar from "@pages/Docs/components/EditorToolbar/EditorToolbar"
 import ShareDocDialog from "@pages/Docs/components/ShareDocDialog/ShareDocDialog"
-import UnlockDialog from "@pages/Docs/components/UnlockDialog/UnlockDialog"
 
 type SaveState = "saved" | "saving" | "dirty"
 
@@ -119,7 +115,6 @@ const buildCaret = (user: Record<string, unknown>): HTMLElement => {
 const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) => {
   const queryClient = useQueryClient()
   const { data: session } = authClient.useSession()
-  const [encryptUnlockOpen, setEncryptUnlockOpen] = useState(false)
   const [me] = useState<CollaboratorIdentity>(() => ({
     name: session?.user?.name || "Anonymous",
     color: colorFor(session?.user?.id || session?.user?.email || "anon"),
@@ -339,22 +334,6 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
     void queryClient.invalidateQueries({ queryKey: ["docs"] })
   }
 
-  const enableEncryption = async () => {
-    const selfUserId = session?.user?.id
-    if (!selfUserId) return
-    if (!isUnlocked()) {
-      setEncryptUnlockOpen(true)
-      return
-    }
-    try {
-      const key = await enableDocEncryption(nodeId, selfUserId)
-      await saveDocContent(nodeId, secretboxSeal(Y.encodeStateAsUpdate(ydoc), key))
-      window.location.reload()
-    } catch {
-      toast.error("Could not enable encryption")
-    }
-  }
-
   const commitTitle = () => {
     const next = title.trim()
     if (!next || next === doc.name) {
@@ -411,16 +390,6 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
           >
             <IconShieldLock className="size-4" />
           </span>
-        ) : doc.owner ? (
-          <Button
-            variant="ghost"
-            size="sm"
-            title="Encrypt this document"
-            onClick={() => void enableEncryption()}
-          >
-            <IconShield className="size-4" />
-            Encrypt
-          </Button>
         ) : null}
         {hasSelection ? (
           <Button variant="ghost" size="icon-sm" aria-label="Add comment" title="Add comment" onClick={addComment}>
@@ -457,15 +426,6 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
         name={doc.name}
         open={shareOpen}
         onOpenChange={setShareOpen}
-      />
-
-      <UnlockDialog
-        open={encryptUnlockOpen}
-        onOpenChange={setEncryptUnlockOpen}
-        onUnlocked={() => {
-          setEncryptUnlockOpen(false)
-          void enableEncryption()
-        }}
       />
 
       {editor ? (
