@@ -31,7 +31,7 @@ const DocsSidebar = () => {
 
   const { data } = useQuery({
     queryKey: ["docs", "list"],
-    queryFn: fetchDocs,
+    queryFn: () => fetchDocs("doc"),
     enabled: !collapsed,
   })
   const docs = [...(data?.documents ?? []), ...(data?.shared ?? [])]

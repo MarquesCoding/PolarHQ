@@ -65,7 +65,7 @@ export const SUITE_APPS: AppManifest[] = [
     icon: "table",
     route: "/sheets",
     category: "productivity",
-    privacy: "server-side",
+    privacy: "e2e",
     status: "coming_soon",
   },
   {
@@ -75,7 +75,7 @@ export const SUITE_APPS: AppManifest[] = [
     icon: "presentation",
     route: "/slides",
     category: "productivity",
-    privacy: "server-side",
+    privacy: "e2e",
     status: "coming_soon",
   },
   {

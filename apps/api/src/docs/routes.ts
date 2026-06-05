@@ -11,6 +11,10 @@ import {
   setUserKeys,
 } from "./keys"
 import {
+  DOC_MIME,
+  type OrbitDocMime,
+  SHEET_MIME,
+  SLIDES_MIME,
   addCollaborator,
   createDoc,
   getDocForViewer,
@@ -51,9 +55,18 @@ const parse = async <T>(c: Context, schema: z.ZodType<T>) => {
   return schema.safeParse(body)
 }
 
+const TYPE_MIME: Record<string, OrbitDocMime> = {
+  doc: DOC_MIME,
+  sheet: SHEET_MIME,
+  slides: SLIDES_MIME,
+}
+const mimeForType = (type?: string | null): OrbitDocMime =>
+  (type && TYPE_MIME[type]) || DOC_MIME
+
 docsRoutes.get("/documents", async (c) => {
   const userId = c.get("userId")
-  const [owned, shared] = await Promise.all([listDocs(userId), listSharedDocs(userId)])
+  const mime = mimeForType(c.req.query("type"))
+  const [owned, shared] = await Promise.all([listDocs(userId, mime), listSharedDocs(userId, mime)])
   return c.json({
     documents: owned.map((node) => serializeDoc(node, userId)),
     shared: shared.map((node) => serializeDoc(node, userId)),
@@ -63,11 +76,20 @@ docsRoutes.get("/documents", async (c) => {
 docsRoutes.post("/documents", async (c) => {
   const parsed = await parse(
     c,
-    z.object({ parentId: z.string().nullish(), title: z.string().optional() }),
+    z.object({
+      parentId: z.string().nullish(),
+      title: z.string().optional(),
+      type: z.enum(["doc", "sheet", "slides"]).optional(),
+    }),
   )
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
   const userId = c.get("userId")
-  const node = await createDoc(userId, parsed.data.parentId ?? null, parsed.data.title)
+  const node = await createDoc(
+    userId,
+    parsed.data.parentId ?? null,
+    parsed.data.title,
+    mimeForType(parsed.data.type),
+  )
   return c.json({ document: serializeDoc(node, userId) }, 201)
 })
 

@@ -40,7 +40,10 @@ const DocsListInner = () => {
   const [creating, setCreating] = useState(false)
   const [renaming, setRenaming] = useState<DocMeta | null>(null)
 
-  const { data, isLoading } = useQuery({ queryKey: ["docs", "list"], queryFn: fetchDocs })
+  const { data, isLoading } = useQuery({
+    queryKey: ["docs", "list"],
+    queryFn: () => fetchDocs("doc"),
+  })
 
   const invalidate = () => {
     void queryClient.invalidateQueries({ queryKey: ["docs"] })
