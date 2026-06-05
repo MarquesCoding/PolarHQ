@@ -37,6 +37,7 @@ import {
   IconUserPlus,
 } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
+import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import * as Y from "yjs"
@@ -384,12 +385,14 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
         ) : null}
         <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{status}</span>
         {contentKey ? (
-          <span
-            title="End-to-end encrypted"
-            className="text-emerald-500 flex shrink-0 items-center"
+          <Badge
+            variant="secondary"
+            title="Only you and people you share with can read this document"
+            className="shrink-0 gap-1 border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
           >
-            <IconShieldLock className="size-4" />
-          </span>
+            <IconShieldLock />
+            Encrypted
+          </Badge>
         ) : null}
         {hasSelection ? (
           <Button variant="ghost" size="icon-sm" aria-label="Add comment" title="Add comment" onClick={addComment}>

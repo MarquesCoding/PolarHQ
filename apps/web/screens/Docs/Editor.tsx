@@ -10,6 +10,7 @@ import { IconShieldLock } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import * as Y from "yjs"
+import DecryptingState from "@pages/Docs/components/DecryptingState/DecryptingState"
 import DocCanvas from "@pages/Docs/components/DocCanvas/DocCanvas"
 import UnlockDialog from "@pages/Docs/components/UnlockDialog/UnlockDialog"
 
@@ -21,6 +22,7 @@ const Editor = ({ nodeId }: { nodeId: string }) => {
   const [provider, setProvider] = useState<RelayProvider | null>(null)
   const [doc, setDoc] = useState<DocMeta | null>(null)
   const [contentKey, setContentKey] = useState<Uint8Array | null>(null)
+  const [encrypted, setEncrypted] = useState(false)
   const [status, setStatus] = useState<Status>("loading")
   const [unlockOpen, setUnlockOpen] = useState(false)
   const [reload, setReload] = useState(0)
@@ -31,12 +33,13 @@ const Editor = ({ nodeId }: { nodeId: string }) => {
     void (async () => {
       try {
         await e2eReady()
-        const [meta, encrypted] = await Promise.all([fetchDoc(nodeId), isDocEncrypted(nodeId)])
+        const [meta, docEncrypted] = await Promise.all([fetchDoc(nodeId), isDocEncrypted(nodeId)])
         if (cancelled) return
         setDoc(meta)
+        setEncrypted(docEncrypted)
 
         let key: Uint8Array | null = null
-        if (encrypted) {
+        if (docEncrypted) {
           if (!isUnlocked()) {
             setStatus("locked")
             setUnlockOpen(true)
@@ -106,7 +109,9 @@ const Editor = ({ nodeId }: { nodeId: string }) => {
     )
   }
 
-  if (status !== "ready" || !doc || !provider) return <PageSpinner />
+  if (status !== "ready" || !doc || !provider) {
+    return encrypted ? <DecryptingState /> : <PageSpinner />
+  }
 
   return (
     <DocCanvas nodeId={nodeId} ydoc={ydoc} doc={doc} provider={provider} contentKey={contentKey} />
