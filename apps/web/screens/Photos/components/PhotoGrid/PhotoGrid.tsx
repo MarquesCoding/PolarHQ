@@ -1,0 +1,463 @@
+"use client"
+
+import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
+import { Icon } from "@lib/icons"
+import type { GridAsset } from "@lib/photos"
+import { useSelection } from "@lib/selection"
+import { usePersistentNumber } from "@lib/persistentSetting"
+import Lightbox from "@pages/Photos/components/Lightbox/Lightbox"
+import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
+import TimelineScrubber, {
+  type TimelineMarker,
+} from "@pages/Photos/components/TimelineScrubber/TimelineScrubber"
+import { IconCircle } from "@tabler/icons-react"
+import { cn } from "@workspace/ui/lib/utils"
+import { AnimatePresence, motion } from "motion/react"
+
+const GAP = 12
+const HEADER_HEIGHT = 32
+const HEADER_GAP = 14
+const SECTION_GAP = 32
+const RESIZE_EASE = "cubic-bezier(0.22, 0.61, 0.36, 1)"
+const TILE_RESIZE_CSS = `top 0.3s ${RESIZE_EASE}, left 0.3s ${RESIZE_EASE}, width 0.3s ${RESIZE_EASE}, height 0.3s ${RESIZE_EASE}`
+const HEADER_RESIZE_CSS = `top 0.3s ${RESIZE_EASE}`
+
+const getScrollParent = (element: HTMLElement | null): HTMLElement | null => {
+  let node = element?.parentElement ?? null
+  while (node) {
+    const overflowY = getComputedStyle(node).overflowY
+    if (overflowY === "auto" || overflowY === "scroll") return node
+    node = node.parentElement
+  }
+  return null
+}
+const BUFFER = 800
+const RANGE_QUANTUM = 300
+
+const dayLabel = (date: Date): string => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const day = new Date(date)
+  day.setHours(0, 0, 0, 0)
+  const diff = Math.round((today.getTime() - day.getTime()) / 86_400_000)
+  if (diff <= 0) return "Today"
+  if (diff === 1) return "Yesterday"
+  if (diff < 7) return date.toLocaleDateString(undefined, { weekday: "long" })
+  return date.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+}
+
+const dateOf = (asset: GridAsset): Date => new Date(asset.takenAt ?? asset.createdAt)
+const dayKey = (asset: GridAsset): string => dateOf(asset).toISOString().slice(0, 10)
+
+const aspectOf = (asset: GridAsset): number => {
+  const raw = asset.width && asset.height ? asset.width / asset.height : 1
+  return Math.min(Math.max(raw, 0.4), 3)
+}
+
+interface Cell {
+  asset: GridAsset
+  x: number
+  width: number
+  height: number
+}
+
+type Row =
+  | {
+      type: "header"
+      key: string
+      y: number
+      height: number
+      label: string
+      date: Date
+      assetIds: string[]
+    }
+  | { type: "images"; key: string; y: number; height: number; cells: Cell[] }
+
+interface Layout {
+  rows: Row[]
+  totalHeight: number
+}
+
+const buildLayout = (assets: GridAsset[], width: number, rowHeight: number): Layout => {
+  if (width <= 0 || assets.length === 0) return { rows: [], totalHeight: 0 }
+  const rows: Row[] = []
+  let y = 0
+  let i = 0
+
+  while (i < assets.length) {
+    const key = dayKey(assets[i]!)
+    const group: GridAsset[] = []
+    while (i < assets.length && dayKey(assets[i]!) === key) {
+      group.push(assets[i]!)
+      i += 1
+    }
+
+    rows.push({
+      type: "header",
+      key: `h-${key}`,
+      y,
+      height: HEADER_HEIGHT,
+      label: dayLabel(dateOf(group[0]!)),
+      date: dateOf(group[0]!),
+      assetIds: group.map((asset) => asset.id),
+    })
+    y += HEADER_HEIGHT + HEADER_GAP
+
+    let current: { asset: GridAsset; aspect: number }[] = []
+    let aspectSum = 0
+
+    const flush = (stretch: boolean) => {
+      if (current.length === 0) return
+      const gaps = (current.length - 1) * GAP
+      const height = stretch ? (width - gaps) / aspectSum : rowHeight
+      let x = 0
+      const cells = current.map((item) => {
+        const cellWidth = height * item.aspect
+        const cell: Cell = { asset: item.asset, x, width: cellWidth, height }
+        x += cellWidth + GAP
+        return cell
+      })
+      rows.push({ type: "images", key: `r-${current[0]!.asset.id}`, y, height, cells })
+      y += height + GAP
+      current = []
+      aspectSum = 0
+    }
+
+    for (const asset of group) {
+      const aspect = aspectOf(asset)
+      current.push({ asset, aspect })
+      aspectSum += aspect
+      if (aspectSum * rowHeight + (current.length - 1) * GAP >= width) flush(true)
+    }
+    flush(false)
+    y += SECTION_GAP
+  }
+
+  return { rows, totalHeight: y }
+}
+
+interface PhotoGridProps {
+  assets: GridAsset[]
+  onReachEnd?: () => void
+}
+
+const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
+  const selection = useSelection()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const reachEndRef = useRef(onReachEnd)
+  reachEndRef.current = onReachEnd
+  const seenRef = useRef<Set<string>>(new Set())
+  const [width, setWidth] = useState(0)
+  const [range, setRange] = useState({ start: 0, end: 0 })
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [preview, setPreview] = useState<GridAsset | null>(null)
+  const [marquee, setMarquee] = useState<{
+    x0: number
+    y0: number
+    x1: number
+    y1: number
+  } | null>(null)
+  const marqueePointer = useRef<number | null>(null)
+  const marqueeStart = useRef<{ x: number; y: number } | null>(null)
+  const marqueeBase = useRef<Set<string>>(new Set())
+  const draggedRef = useRef(false)
+  const scrubberRef = useRef<HTMLDivElement>(null)
+  const [rowHeight] = usePersistentNumber("photos.rowHeight", 180)
+
+  useEffect(() => {
+    const element = containerRef.current
+    if (!element) return
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (entry) setWidth(entry.contentRect.width)
+    })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+
+  const sortedGridAssets = useMemo(
+    () => [...assets].sort((a, b) => dateOf(b).getTime() - dateOf(a).getTime()),
+    [assets],
+  )
+  const layout = useMemo(
+    () => buildLayout(sortedGridAssets, width, rowHeight),
+    [sortedGridAssets, width, rowHeight],
+  )
+
+  useEffect(() => {
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const element = containerRef.current
+      if (!element) return
+      const top = element.getBoundingClientRect().top
+      const start = Math.floor((-top - BUFFER) / RANGE_QUANTUM) * RANGE_QUANTUM
+      const end = Math.ceil((-top + window.innerHeight + BUFFER) / RANGE_QUANTUM) * RANGE_QUANTUM
+      setRange((prev) => (prev.start === start && prev.end === end ? prev : { start, end }))
+      const scrollerRect = getScrollParent(element)?.getBoundingClientRect()
+      if (scrubberRef.current) {
+        scrubberRef.current.style.top = `${(scrollerRect?.top ?? 0) - top}px`
+        scrubberRef.current.style.height = `${scrollerRect?.height ?? window.innerHeight}px`
+      }
+      if (layout.totalHeight > 0 && end >= layout.totalHeight - 400) reachEndRef.current?.()
+    }
+    const onScroll = () => {
+      if (frame === 0) frame = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true })
+    window.addEventListener("resize", onScroll)
+    return () => {
+      if (frame) cancelAnimationFrame(frame)
+      window.removeEventListener("scroll", onScroll, { capture: true })
+      window.removeEventListener("resize", onScroll)
+    }
+  }, [layout.totalHeight])
+
+  const ordered = useMemo(() => sortedGridAssets.map((asset) => asset.id), [sortedGridAssets])
+
+  const onToggle = (id: string, shiftKey: boolean) => {
+    if (draggedRef.current) return
+    if (shiftKey) selection.rangeTo(id, ordered)
+    else selection.toggle(id, ordered)
+  }
+  const onOpen = (id: string) => {
+    if (draggedRef.current) return
+    const position = sortedGridAssets.findIndex((asset) => asset.id === id)
+    if (position >= 0) setOpenIndex(position)
+  }
+
+  const pointFromEvent = (event: ReactPointerEvent): { x: number; y: number } => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    return { x: event.clientX - (rect?.left ?? 0), y: event.clientY - (rect?.top ?? 0) }
+  }
+
+  const onMarqueeDown = (event: ReactPointerEvent) => {
+    if (event.pointerType !== "mouse" || event.button !== 0) return
+    marqueePointer.current = event.pointerId
+    marqueeStart.current = pointFromEvent(event)
+    marqueeBase.current = event.shiftKey ? new Set(selection.selected) : new Set()
+    draggedRef.current = false
+  }
+
+  const onMarqueeMove = (event: ReactPointerEvent) => {
+    if (marqueePointer.current !== event.pointerId || !marqueeStart.current) return
+    const start = marqueeStart.current
+    const point = pointFromEvent(event)
+    if (!draggedRef.current) {
+      if (Math.abs(point.x - start.x) < 14 && Math.abs(point.y - start.y) < 14) return
+      draggedRef.current = true
+      containerRef.current?.setPointerCapture(event.pointerId)
+    }
+    const rect = {
+      x0: Math.min(start.x, point.x),
+      y0: Math.min(start.y, point.y),
+      x1: Math.max(start.x, point.x),
+      y1: Math.max(start.y, point.y),
+    }
+    setMarquee(rect)
+    const hits = new Set(marqueeBase.current)
+    for (const row of layout.rows) {
+      if (row.type !== "images") continue
+      for (const cell of row.cells) {
+        const overlap = !(
+          cell.x > rect.x1 ||
+          cell.x + cell.width < rect.x0 ||
+          row.y > rect.y1 ||
+          row.y + cell.height < rect.y0
+        )
+        if (overlap) hits.add(cell.asset.id)
+      }
+    }
+    selection.selectAll([...hits])
+  }
+
+  const onMarqueeUp = (event: ReactPointerEvent) => {
+    if (marqueePointer.current !== event.pointerId) return
+    if (draggedRef.current) {
+      containerRef.current?.releasePointerCapture(event.pointerId)
+      setMarquee(null)
+      window.setTimeout(() => {
+        draggedRef.current = false
+      }, 0)
+    }
+    marqueePointer.current = null
+    marqueeStart.current = null
+  }
+
+  useEffect(() => {
+    if (openIndex === null) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpenIndex(null)
+      else if (event.key === "ArrowLeft") setOpenIndex((i) => (i !== null && i > 0 ? i - 1 : i))
+      else if (event.key === "ArrowRight")
+        setOpenIndex((i) => (i !== null && i < sortedGridAssets.length - 1 ? i + 1 : i))
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [openIndex, sortedGridAssets.length])
+
+  const visibleRows = useMemo(
+    () => layout.rows.filter((row) => row.y + row.height >= range.start && row.y <= range.end),
+    [layout.rows, range.start, range.end],
+  )
+  const selectionActive = selection.count > 0
+
+  const markers = useMemo<TimelineMarker[]>(() => {
+    const out: TimelineMarker[] = []
+    for (const row of layout.rows) {
+      if (row.type !== "header") continue
+      out.push({
+        y: row.y,
+        label: row.date.toLocaleDateString(undefined, {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+      })
+    }
+    return out
+  }, [layout])
+
+  const scrollToY = (y: number) => {
+    const element = containerRef.current
+    if (!element) return
+    const scroller = getScrollParent(element)
+    const gridTop = element.getBoundingClientRect().top
+    const delta = gridTop + y - (scroller?.getBoundingClientRect().top ?? 0)
+    ;(scroller ?? window).scrollBy({ top: delta, behavior: "smooth" })
+  }
+
+  const seen = seenRef.current
+  useEffect(() => {
+    for (const row of visibleRows) {
+      if (row.type === "images") for (const cell of row.cells) seen.add(cell.asset.id)
+    }
+  })
+
+  let newCount = 0
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full"
+      style={{ height: layout.totalHeight }}
+      onPointerDown={onMarqueeDown}
+      onPointerMove={onMarqueeMove}
+      onPointerUp={onMarqueeUp}
+      onPointerCancel={onMarqueeUp}
+    >
+      {marquee ? (
+        <div
+          className="border-primary bg-primary/15 pointer-events-none absolute z-30 rounded-sm border"
+          style={{
+            left: marquee.x0,
+            top: marquee.y0,
+            width: marquee.x1 - marquee.x0,
+            height: marquee.y1 - marquee.y0,
+          }}
+        />
+      ) : null}
+
+      <TimelineScrubber
+        rootRef={scrubberRef}
+        markers={markers}
+        totalHeight={layout.totalHeight}
+        onScrubTo={scrollToY}
+      />
+      {visibleRows.map((row) =>
+        row.type === "header" ? (
+          <div
+            key={row.key}
+            className="group absolute left-0 flex items-center"
+            style={{ top: row.y, transition: HEADER_RESIZE_CSS }}
+          >
+            <button
+              type="button"
+              onClick={() => selection.toggleMany(row.assetIds)}
+              className="flex items-center gap-2 py-0.5 text-sm font-medium"
+            >
+              {row.assetIds.every((id) => selection.isSelected(id)) ? (
+                <Icon name="circle-check" className="text-primary size-5 shrink-0" />
+              ) : (
+                <IconCircle
+                  className={cn(
+                    "text-muted-foreground/50 size-5 shrink-0 opacity-0 transition group-hover:opacity-100",
+                  )}
+                />
+              )}
+              <span>{row.label}</span>
+            </button>
+          </div>
+        ) : (
+          row.cells.map((cell) => {
+            const fresh = !seen.has(cell.asset.id)
+            const delay = fresh ? Math.min(newCount++ * 0.03, 0.35) : 0
+            return (
+              <div
+                key={cell.asset.id}
+                className="absolute"
+                style={{
+                  top: row.y,
+                  left: cell.x,
+                  width: cell.width,
+                  height: cell.height,
+                  transition: TILE_RESIZE_CSS,
+                }}
+              >
+                <PhotoTile
+                  asset={cell.asset}
+                  selected={selection.isSelected(cell.asset.id)}
+                  selectionActive={selectionActive}
+                  animateIn={fresh}
+                  delay={delay}
+                  onOpen={() => onOpen(cell.asset.id)}
+                  onToggle={(shiftKey) => onToggle(cell.asset.id, shiftKey)}
+                  onPreviewStart={() => setPreview(cell.asset)}
+                  onPreviewEnd={() => setPreview(null)}
+                />
+              </div>
+            )
+          })
+        ),
+      )}
+
+      <AnimatePresence>
+        {openIndex !== null ? (
+          <Lightbox
+            key="lightbox"
+            assets={sortedGridAssets}
+            index={openIndex}
+            onIndexChange={setOpenIndex}
+            onClose={() => setOpenIndex(null)}
+          />
+        ) : null}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {preview ? (
+          <motion.div
+            key="quick-preview"
+            className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-10 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            <motion.img
+              src={preview.previewUrl ?? preview.thumbnailUrl ?? ""}
+              alt={preview.originalFilename}
+              className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
+            />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+export default PhotoGrid

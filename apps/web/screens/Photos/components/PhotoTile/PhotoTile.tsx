@@ -1,0 +1,188 @@
+"use client"
+
+import { type PointerEvent as ReactPointerEvent, useLayoutEffect, useRef, useState } from "react"
+import { Icon } from "@lib/icons"
+import type { GridAsset } from "@lib/photos"
+import { IconCircle, IconHeartFilled, IconPhoto } from "@tabler/icons-react"
+import { cn } from "@workspace/ui/lib/utils"
+import { motion } from "motion/react"
+
+/**
+ * Thumbnails that have decoded at least once this session. Virtualization
+ * unmounts off-screen tiles; tracking this lets a remounted tile show its
+ * (browser-cached) image immediately instead of flashing the gray placeholder.
+ */
+const loadedThumbnails = new Set<string>()
+
+const formatDuration = (ms: number): string => {
+  const total = Math.round(ms / 1000)
+  const minutes = Math.floor(total / 60)
+  const seconds = total % 60
+  return `${minutes}:${String(seconds).padStart(2, "0")}`
+}
+
+interface PhotoTileProps {
+  asset: GridAsset
+  selected: boolean
+  selectionActive: boolean
+  animateIn?: boolean
+  delay?: number
+  onOpen: () => void
+  onToggle: (shiftKey: boolean) => void
+  onPreviewStart?: () => void
+  onPreviewEnd?: () => void
+}
+
+const PhotoTile = ({
+  asset,
+  selected,
+  selectionActive,
+  animateIn = false,
+  delay = 0,
+  onOpen,
+  onToggle,
+  onPreviewStart,
+  onPreviewEnd,
+}: PhotoTileProps) => {
+  const [loaded, setLoaded] = useState(() => loadedThumbnails.has(asset.id))
+  const imgRef = useRef<HTMLImageElement | null>(null)
+  const holdTimer = useRef<number | null>(null)
+  const longPressed = useRef(false)
+  const holdStart = useRef<{ x: number; y: number } | null>(null)
+  const markLoaded = () => {
+    loadedThumbnails.add(asset.id)
+    setLoaded(true)
+  }
+  useLayoutEffect(() => {
+    if (imgRef.current?.complete) markLoaded()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  const activate = (shiftKey: boolean) => {
+    if (selectionActive || shiftKey) onToggle(shiftKey)
+    else onOpen()
+  }
+
+  const cancelHold = () => {
+    if (holdTimer.current) {
+      clearTimeout(holdTimer.current)
+      holdTimer.current = null
+    }
+  }
+  const startHold = (event: ReactPointerEvent) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return
+    longPressed.current = false
+    holdStart.current = { x: event.clientX, y: event.clientY }
+    holdTimer.current = window.setTimeout(() => {
+      longPressed.current = true
+      onPreviewStart?.()
+    }, 450)
+  }
+  const moveHold = (event: ReactPointerEvent) => {
+    if (longPressed.current || !holdStart.current) return
+    const moved = Math.hypot(event.clientX - holdStart.current.x, event.clientY - holdStart.current.y)
+    if (moved > 10) cancelHold()
+  }
+  const endHold = () => {
+    cancelHold()
+    if (longPressed.current) onPreviewEnd?.()
+  }
+
+  return (
+    <motion.div
+      role="button"
+      tabIndex={0}
+      aria-label={asset.originalFilename}
+      initial={animateIn ? { opacity: 0, scale: 0.9, y: 10 } : false}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.35, delay, ease: [0.22, 0.61, 0.36, 1] }}
+      onPointerDown={startHold}
+      onPointerUp={endHold}
+      onPointerLeave={endHold}
+      onPointerCancel={endHold}
+      onPointerMove={moveHold}
+      onContextMenu={(event) => event.preventDefault()}
+      onClick={(event) => {
+        if (longPressed.current) {
+          longPressed.current = false
+          return
+        }
+        activate(event.shiftKey)
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault()
+          activate(event.shiftKey)
+        }
+      }}
+      className={cn(
+        "bg-muted border-foreground/10 group relative h-full w-full cursor-pointer overflow-hidden rounded-lg border transition",
+        selected && "ring-primary ring-offset-background ring-2 ring-offset-2",
+      )}
+    >
+      {asset.thumbnailUrl ? (
+        <motion.img
+          ref={imgRef}
+          layoutId={`photo-${asset.id}`}
+          src={asset.thumbnailUrl}
+          alt={asset.originalFilename}
+          loading="lazy"
+          onLoad={markLoaded}
+          transition={{ duration: 0 }}
+          className={cn(
+            "h-full w-full object-cover transition duration-500 group-hover:brightness-95",
+            loaded ? "opacity-100" : "opacity-0",
+          )}
+        />
+      ) : asset.type === "audio" ? (
+        <div className="text-muted-foreground flex h-full w-full items-center justify-center">
+          <Icon name="music" className="size-8" />
+        </div>
+      ) : (
+        <div className="text-muted-foreground flex h-full w-full flex-col items-center justify-center gap-1">
+          <IconPhoto className="size-5" />
+          <span className="text-[10px]">
+            {asset.status === "failed" ? "Failed" : "Processing…"}
+          </span>
+        </div>
+      )}
+
+      {asset.type === "video" ? (
+        <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <Icon name="play" className="size-9 text-white/90 drop-shadow-md" />
+        </span>
+      ) : null}
+
+      {asset.durationMs ? (
+        <span className="absolute right-1.5 bottom-1.5 rounded bg-black/55 px-1 py-0.5 text-[10px] font-medium text-white tabular-nums">
+          {formatDuration(asset.durationMs)}
+        </span>
+      ) : null}
+
+      <span
+        role="button"
+        tabIndex={-1}
+        aria-label={selected ? "Deselect" : "Select"}
+        onClick={(event) => {
+          event.stopPropagation()
+          onToggle(event.shiftKey)
+        }}
+        className={cn(
+          "absolute left-1.5 top-1.5 text-white drop-shadow transition",
+          selected ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+        )}
+      >
+        {selected ? (
+          <Icon name="circle-check" className="text-primary size-5" />
+        ) : (
+          <IconCircle className="size-5" />
+        )}
+      </span>
+
+      {asset.isFavorite ? (
+        <IconHeartFilled className="absolute bottom-1.5 left-1.5 size-4 text-white drop-shadow" />
+      ) : null}
+    </motion.div>
+  )
+}
+
+export default PhotoTile
