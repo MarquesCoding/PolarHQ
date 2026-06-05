@@ -72,6 +72,29 @@ const initials = (name: string): string =>
     .slice(0, 2)
     .toUpperCase() || "?"
 
+const withAlpha = (hex: string, alpha: number): string => {
+  const value = hex.replace("#", "")
+  const r = parseInt(value.slice(0, 2), 16)
+  const g = parseInt(value.slice(2, 4), 16)
+  const b = parseInt(value.slice(4, 6), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+/** A thin colored caret with a floating name badge above it (Google-Docs style). */
+const buildCaret = (user: Record<string, unknown>): HTMLElement => {
+  const color = typeof user.color === "string" ? user.color : "#3b82f6"
+  const name = typeof user.name === "string" ? user.name : "Anonymous"
+  const caret = document.createElement("span")
+  caret.className = "doc-caret"
+  caret.style.borderColor = color
+  const label = document.createElement("span")
+  label.className = "doc-caret__label"
+  label.style.backgroundColor = color
+  label.textContent = name
+  caret.appendChild(label)
+  return caret
+}
+
 /** The TipTap editing surface for a single document, bound to a (already loaded) Yjs document. */
 const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
   const queryClient = useQueryClient()
@@ -121,7 +144,19 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
       TableHeader,
       TableCell,
       Collaboration.configure({ document: ydoc }),
-      CollaborationCaret.configure({ provider, user: me }),
+      CollaborationCaret.configure({
+        provider,
+        user: me,
+        render: buildCaret,
+        selectionRender: (user: Record<string, unknown>) => ({
+          nodeName: "span",
+          class: "doc-caret__selection",
+          style: `background-color: ${withAlpha(
+            typeof user.color === "string" ? user.color : "#3b82f6",
+            0.28,
+          )}`,
+        }),
+      }),
     ],
     editorProps: {
       attributes: { class: "doc-editor min-h-[60vh] max-w-[800px]" },
