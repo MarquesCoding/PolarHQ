@@ -1,9 +1,10 @@
 import { Readable } from "node:stream"
+import { randomUUID } from "node:crypto"
 import { createNodeWebSocket } from "@hono/node-ws"
 import { trpcServer } from "@hono/trpc-server"
 import { auth } from "@workspace/auth"
 import { config } from "@workspace/config"
-import { subscribeUserEvents } from "@workspace/jobs"
+import { publishDocSync, subscribeDocRoom, subscribeUserEvents } from "@workspace/jobs"
 import { storage } from "@workspace/storage"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
@@ -14,9 +15,11 @@ import { registerAppsModule } from "./apps/registry"
 import { getSessionUser } from "./context"
 import { registerDocsModule } from "./docs/module"
 import { docsRoutes } from "./docs/routes"
+import { DOC_MIME } from "./docs/service"
 import { registerDriveModule } from "./drive/module"
 import { driveRoutes } from "./drive/routes"
 import {
+  getNode,
   getShareView,
   recordShareDownload,
   shareDownloadable,
@@ -107,6 +110,52 @@ app.get(
         unsubscribe = subscribeUserEvents(user.id, (event) => {
           ws.send(JSON.stringify(event))
         })
+      },
+      onClose: () => {
+        void unsubscribe?.()
+      },
+    }
+  }),
+)
+
+/**
+ * Per-document collaboration relay. Clients exchange opaque Yjs sync/awareness
+ * blobs; the server only fans them out to the room (sender excluded) over Redis —
+ * no server-side Yjs. The `data` payload is never inspected, so Phase 3 can make
+ * it ciphertext without touching this gateway.
+ */
+app.get(
+  "/ws/doc",
+  upgradeWebSocket((c) => {
+    const nodeId = c.req.query("doc")
+    const connId = randomUUID()
+    let unsubscribe: (() => Promise<void>) | undefined
+    return {
+      onOpen: async (_event, ws) => {
+        if (!nodeId) {
+          ws.close(1008, "missing doc")
+          return
+        }
+        const user = await getSessionUser(c.req.raw.headers)
+        if (!user) {
+          ws.close(1008, "unauthorized")
+          return
+        }
+        const node = await getNode(user.id, nodeId)
+        if (!node || node.mimeType !== DOC_MIME) {
+          ws.close(1008, "forbidden")
+          return
+        }
+        unsubscribe = subscribeDocRoom(nodeId, (message) => {
+          if (message.origin === connId) return
+          ws.send(new Uint8Array(Buffer.from(message.data, "base64")))
+        })
+      },
+      onMessage: (event) => {
+        if (!nodeId) return
+        const raw = event.data
+        const buffer = typeof raw === "string" ? Buffer.from(raw) : Buffer.from(raw as ArrayBuffer)
+        void publishDocSync(nodeId, { origin: connId, data: buffer.toString("base64") })
       },
       onClose: () => {
         void unsubscribe?.()
