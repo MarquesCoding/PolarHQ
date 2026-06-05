@@ -70,6 +70,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   const invalidate = () => {
     void queryClient.invalidateQueries({ queryKey: ["drive"] })
     void queryClient.invalidateQueries({ queryKey: ["photos"] })
+    void queryClient.invalidateQueries({ queryKey: ["docs"] })
   }
 
   const parentId = data?.parent.id ?? null
@@ -111,6 +112,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   const newDocument = async () => {
     try {
       const doc = await createDoc(parentId)
+      invalidate()
       router.push(`/docs/${doc.id}`)
     } catch {
       toast.error("Could not create document")
