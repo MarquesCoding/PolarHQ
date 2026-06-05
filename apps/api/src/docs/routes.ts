@@ -4,6 +4,13 @@ import { z } from "zod"
 import { getSessionUser } from "../context"
 import type { DriveNode } from "../drive/service"
 import {
+  getDocKey,
+  getPublicKeyByEmail,
+  getUserKeys,
+  setDocKeys,
+  setUserKeys,
+} from "./keys"
+import {
   addCollaborator,
   createDoc,
   getDocForViewer,
@@ -117,4 +124,59 @@ docsRoutes.post("/documents/:id/collaborators", async (c) => {
 docsRoutes.delete("/documents/:id/collaborators/:userId", async (c) => {
   await removeCollaborator(c.get("userId"), c.req.param("id"), c.req.param("userId"))
   return c.json({ ok: true })
+})
+
+// --- E2E key storage (server only ever stores ciphertext / public keys) ---
+
+docsRoutes.get("/keys/me", async (c) => {
+  const bundle = await getUserKeys(c.get("userId"))
+  return c.json({ keys: bundle })
+})
+
+docsRoutes.post("/keys", async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({
+      publicKey: z.string(),
+      wrappedPrivateKey: z.string(),
+      kdfSalt: z.string(),
+      recoveryWrapped: z.string().nullish(),
+    }),
+  )
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  await setUserKeys(c.get("userId"), {
+    publicKey: parsed.data.publicKey,
+    wrappedPrivateKey: parsed.data.wrappedPrivateKey,
+    kdfSalt: parsed.data.kdfSalt,
+    recoveryWrapped: parsed.data.recoveryWrapped ?? null,
+  })
+  const bundle = await getUserKeys(c.get("userId"))
+  return c.json({ keys: bundle }, 201)
+})
+
+docsRoutes.get("/keys/public", async (c) => {
+  const email = c.req.query("email")
+  if (!email) return c.json({ error: "email required" }, 400)
+  const result = await getPublicKeyByEmail(email)
+  if (!result) return c.json({ error: "no public key" }, 404)
+  return c.json(result)
+})
+
+docsRoutes.get("/documents/:id/key", async (c) => {
+  const wrappedKey = await getDocKey(c.get("userId"), c.req.param("id"))
+  return c.json({ wrappedKey })
+})
+
+docsRoutes.post("/documents/:id/keys", async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({ keys: z.array(z.object({ userId: z.string(), wrappedKey: z.string() })) }),
+  )
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  try {
+    await setDocKeys(c.get("userId"), c.req.param("id"), parsed.data.keys)
+    return c.json({ ok: true })
+  } catch (error) {
+    return c.json({ error: (error as Error).message }, 400)
+  }
 })
