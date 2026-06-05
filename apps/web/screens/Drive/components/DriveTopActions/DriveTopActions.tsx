@@ -1,20 +1,32 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { driveFolderIdFromPath, fetchNodes } from "@lib/drive"
 import { createDoc } from "@lib/docs"
-import { Icon } from "@lib/icons"
 import { useUploadManager } from "@lib/uploadManager"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setDriveDetailsOpen } from "@store/uiSlice"
-import { IconFilePlus, IconInfoCircle } from "@tabler/icons-react"
+import {
+  IconDots,
+  IconFilePlus,
+  IconFolderPlus,
+  IconInfoCircle,
+  IconUpload,
+} from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
 import { toast } from "sonner"
 import NewFolderDialog from "@pages/Drive/components/NewFolderDialog/NewFolderDialog"
 
-/** Drive title-bar actions: details toggle, new folder, upload. Resolves the folder from the URL. */
+/** Drive title-bar actions: details toggle and a create/upload menu. Resolves the folder from the URL. */
 const DriveTopActions = () => {
   const pathname = usePathname()
   const router = useRouter()
@@ -23,6 +35,7 @@ const DriveTopActions = () => {
   const queryClient = useQueryClient()
   const upload = useUploadManager()
   const fileInput = useRef<HTMLInputElement>(null)
+  const [newFolderOpen, setNewFolderOpen] = useState(false)
 
   const folderId = driveFolderIdFromPath(pathname)
   const enabled = folderId !== null
@@ -59,20 +72,40 @@ const DriveTopActions = () => {
       >
         <IconInfoCircle className="size-4" />
       </Button>
-      {parentId ? <NewFolderDialog parentId={parentId} onDone={invalidate} /> : null}
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label="New document"
-        disabled={!parentId}
-        onClick={() => void newDocument()}
-      >
-        <IconFilePlus className="size-4" />
-      </Button>
-      <Button size="sm" disabled={!parentId} onClick={() => fileInput.current?.click()}>
-        <Icon name="download" className="size-4 rotate-180" />
-        Upload
-      </Button>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button variant="ghost" size="icon-sm" aria-label="New" disabled={!parentId}>
+              <IconDots className="size-4" />
+            </Button>
+          }
+        />
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => fileInput.current?.click()}>
+            <IconUpload className="size-4" />
+            Upload files
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setNewFolderOpen(true)}>
+            <IconFolderPlus className="size-4" />
+            New folder
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => void newDocument()}>
+            <IconFilePlus className="size-4" />
+            New document
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {parentId ? (
+        <NewFolderDialog
+          parentId={parentId}
+          open={newFolderOpen}
+          onOpenChange={setNewFolderOpen}
+          onDone={invalidate}
+        />
+      ) : null}
       <input
         ref={fileInput}
         type="file"

@@ -1,6 +1,6 @@
 "use client"
 
-import type { ReactNode } from "react"
+import { type ReactNode, useRef } from "react"
 import { type Editor, useEditorState } from "@tiptap/react"
 import {
   IconAlignCenter,
@@ -68,6 +68,7 @@ const BLOCKS = [
 
 /** Persistent Google-Docs-style formatting toolbar bound to a TipTap editor. */
 const EditorToolbar = ({ editor }: { editor: Editor }) => {
+  const colorInput = useRef<HTMLInputElement>(null)
   const state = useEditorState({
     editor,
     selector: ({ editor: e }) => ({
@@ -178,21 +179,28 @@ const EditorToolbar = ({ editor }: { editor: Editor }) => {
         <IconCode className="size-4" />
       </ToolbarButton>
 
-      <label
-        className="hover:bg-accent flex size-8 cursor-pointer items-center justify-center rounded-md"
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
         aria-label="Text color"
         title="Text color"
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={() => colorInput.current?.click()}
       >
         <span className="text-sm font-semibold" style={{ color }}>
           A
         </span>
         <input
+          ref={colorInput}
           type="color"
           value={color}
           onChange={(event) => editor.chain().focus().setColor(event.target.value).run()}
           className="sr-only"
+          tabIndex={-1}
+          aria-hidden
         />
-      </label>
+      </Button>
       <ToolbarButton
         label="Highlight"
         active={state.highlight}
