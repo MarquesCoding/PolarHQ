@@ -47,7 +47,7 @@ const DocCard = ({ doc, selected, onOpen, onSelect, onToggle }: DocCardProps) =>
     </Button>
 
     <div className="bg-card group-hover:border-primary/40 flex aspect-[4/5] items-center justify-center rounded-xl border transition">
-      <Icon name="document" className="size-14 text-sky-500" />
+      <Icon name="document" className="text-muted-foreground size-14" />
     </div>
 
     <div className="flex flex-col">

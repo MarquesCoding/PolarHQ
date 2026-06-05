@@ -83,7 +83,7 @@ const DocsSidebar = () => {
                     : "text-muted-foreground hover:bg-sidebar-accent/40",
                 )}
               >
-                <Icon name="document" className="size-3.5 shrink-0 text-sky-500" />
+                <Icon name="document" className="text-muted-foreground size-3.5 shrink-0" />
                 <span className="truncate">{doc.name}</span>
               </Link>
             )

@@ -31,7 +31,8 @@ const TEXTUAL = /\.(txt|md|json|js|ts|tsx|jsx|css|html|ya?ml|csv|sh)$/i
 const typeIcon = (node: DriveNode): { name: string; color: string } => {
   const name = node.name.toLowerCase()
   const mime = node.mimeType ?? ""
-  if (mime === "application/vnd.orbit.doc") return { name: "document", color: "text-sky-500" }
+  if (mime === "application/vnd.orbit.doc")
+    return { name: "document", color: "text-muted-foreground" }
   if (mime.startsWith("audio/")) return { name: "music", color: "text-emerald-400" }
   if (mime.startsWith("video/")) return { name: "video", color: "text-rose-400" }
   if (mime === "application/pdf" || name.endsWith(".pdf"))
