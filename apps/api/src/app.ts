@@ -15,11 +15,10 @@ import { registerAppsModule } from "./apps/registry"
 import { getSessionUser } from "./context"
 import { registerDocsModule } from "./docs/module"
 import { docsRoutes } from "./docs/routes"
-import { DOC_MIME } from "./docs/service"
+import { canAccessDoc } from "./docs/service"
 import { registerDriveModule } from "./drive/module"
 import { driveRoutes } from "./drive/routes"
 import {
-  getNode,
   getShareView,
   recordShareDownload,
   shareDownloadable,
@@ -141,8 +140,7 @@ app.get(
           ws.close(1008, "unauthorized")
           return
         }
-        const node = await getNode(user.id, nodeId)
-        if (!node || node.mimeType !== DOC_MIME) {
+        if (!(await canAccessDoc(user.id, nodeId))) {
           ws.close(1008, "forbidden")
           return
         }

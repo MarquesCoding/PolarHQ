@@ -22,12 +22,13 @@ import { TextAlign } from "@tiptap/extension-text-align"
 import { TextStyle } from "@tiptap/extension-text-style"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import { IconDeviceFloppy } from "@tabler/icons-react"
+import { IconDeviceFloppy, IconUserPlus } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import * as Y from "yjs"
 import EditorToolbar from "@pages/Docs/components/EditorToolbar/EditorToolbar"
+import ShareDocDialog from "@pages/Docs/components/ShareDocDialog/ShareDocDialog"
 
 type SaveState = "saved" | "saving" | "dirty"
 
@@ -104,6 +105,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
     color: colorFor(session?.user?.id || session?.user?.email || "anon"),
   }))
   const [peers, setPeers] = useState<CollaboratorIdentity[]>([])
+  const [shareOpen, setShareOpen] = useState(false)
   const [title, setTitle] = useState(doc.name)
   const [saveState, setSaveState] = useState<SaveState>("saved")
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(() =>
@@ -263,6 +265,12 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
           </div>
         ) : null}
         <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{status}</span>
+        {doc.owner ? (
+          <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
+            <IconUserPlus className="size-4" />
+            Share
+          </Button>
+        ) : null}
         <Button
           variant="outline"
           size="sm"
@@ -273,6 +281,13 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider }: DocCanvasProps) => {
           Save
         </Button>
       </div>
+
+      <ShareDocDialog
+        nodeId={nodeId}
+        name={doc.name}
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+      />
 
       {editor ? (
         <div className="mx-auto w-full max-w-[840px]">

@@ -13,15 +13,49 @@ export interface DocMeta {
   sizeBytes: number | null
   createdAt: string
   updatedAt: string
+  /** Whether the requesting user owns this document (vs. it being shared with them). */
+  owner: boolean
   downloadUrl: string
+}
+
+export interface DocListing {
+  documents: DocMeta[]
+  shared: DocMeta[]
+}
+
+export type DocRole = "editor" | "viewer"
+
+export interface DocCollaborator {
+  userId: string
+  name: string
+  email: string
+  role: DocRole
 }
 
 /** Whether a Drive node is an Orbit document. */
 export const isDocNode = (node: Pick<DriveNode, "mimeType">): boolean =>
   node.mimeType === DOC_MIME
 
-export const fetchDocs = (): Promise<DocMeta[]> =>
-  apiFetch<{ documents: DocMeta[] }>("/api/v1/docs/documents").then((r) => r.documents)
+export const fetchDocs = (): Promise<DocListing> =>
+  apiFetch<DocListing>("/api/v1/docs/documents")
+
+export const fetchDocCollaborators = (id: string): Promise<DocCollaborator[]> =>
+  apiFetch<{ collaborators: DocCollaborator[] }>(
+    `/api/v1/docs/documents/${id}/collaborators`,
+  ).then((r) => r.collaborators)
+
+export const addDocCollaborator = (
+  id: string,
+  email: string,
+  role: DocRole,
+): Promise<DocCollaborator> =>
+  apiFetch<{ collaborator: DocCollaborator }>(`/api/v1/docs/documents/${id}/collaborators`, {
+    method: "POST",
+    body: JSON.stringify({ email, role }),
+  }).then((r) => r.collaborator)
+
+export const removeDocCollaborator = (id: string, userId: string): Promise<{ ok: true }> =>
+  apiFetch(`/api/v1/docs/documents/${id}/collaborators/${userId}`, { method: "DELETE" })
 
 export const fetchDoc = (id: string): Promise<DocMeta> =>
   apiFetch<{ document: DocMeta }>(`/api/v1/docs/documents/${id}`).then((r) => r.document)

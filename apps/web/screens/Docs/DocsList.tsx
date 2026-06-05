@@ -46,10 +46,12 @@ const DocsListInner = () => {
     void queryClient.invalidateQueries({ queryKey: ["drive"] })
   }
 
-  const docs = data ?? []
-  const visible = search ? docs.filter((doc) => doc.name.toLowerCase().includes(search)) : docs
-  const ordered = visible.map((doc) => doc.id)
-  const byId = new Map(visible.map((doc) => [doc.id, doc]))
+  const matches = (doc: DocMeta) => !search || doc.name.toLowerCase().includes(search)
+  const owned = (data?.documents ?? []).filter(matches)
+  const shared = (data?.shared ?? []).filter(matches)
+  const all = [...owned, ...shared]
+  const ordered = all.map((doc) => doc.id)
+  const byId = new Map(all.map((doc) => [doc.id, doc]))
 
   const create = async () => {
     setCreating(true)
@@ -70,9 +72,11 @@ const DocsListInner = () => {
   }
 
   const trash = async (ids: string[]) => {
-    if (ids.length === 0) return
+    // Only the owner can trash a document; shared ones are skipped.
+    const toTrash = ids.filter((id) => byId.get(id)?.owner)
+    if (toTrash.length === 0) return
     try {
-      await Promise.all(ids.map((id) => trashDriveNode(id)))
+      await Promise.all(toTrash.map((id) => trashDriveNode(id)))
       toast.success("Moved to trash")
       selection.clear()
       invalidate()
@@ -94,15 +98,34 @@ const DocsListInner = () => {
   const trashConfirm = useArmedConfirm(() => void trash(ids))
   useSelectionHotkeys({ active: selection.count > 0, onClear: selection.clear, confirm: trashConfirm })
 
+  const grid = (items: DocMeta[]) => (
+    <div
+      className="grid justify-start gap-2"
+      style={{ gridTemplateColumns: `repeat(auto-fill, ${tileSize}px)` }}
+    >
+      {items.map((doc) => (
+        <DocContextMenu key={doc.id} doc={doc} actions={actions}>
+          <DocCard
+            doc={doc}
+            selected={selection.isSelected(doc.id)}
+            onOpen={(value) => router.push(`/docs/${value.id}`)}
+            onSelect={select}
+            onToggle={(value) => selection.toggle(value.id, ordered)}
+          />
+        </DocContextMenu>
+      ))}
+    </div>
+  )
+
   return (
-    <div className="flex flex-1 flex-col gap-5 p-6">
+    <div className="flex flex-1 flex-col gap-6 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold">Documents</h1>
       </div>
 
       {isLoading ? (
         <PageSpinner />
-      ) : visible.length === 0 ? (
+      ) : all.length === 0 ? (
         <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 text-center">
           <IconFileText className="size-8" />
           <p className="text-sm">
@@ -116,30 +139,27 @@ const DocsListInner = () => {
           ) : null}
         </div>
       ) : (
-        <div
-          className="grid justify-start gap-2"
-          style={{ gridTemplateColumns: `repeat(auto-fill, ${tileSize}px)` }}
-        >
-          {visible.map((doc) => (
-            <DocContextMenu key={doc.id} doc={doc} actions={actions}>
-              <DocCard
-                doc={doc}
-                selected={selection.isSelected(doc.id)}
-                onOpen={(value) => router.push(`/docs/${value.id}`)}
-                onSelect={select}
-                onToggle={(value) => selection.toggle(value.id, ordered)}
-              />
-            </DocContextMenu>
-          ))}
+        <div className="flex flex-col gap-6">
+          {owned.length > 0 ? grid(owned) : null}
+          {shared.length > 0 ? (
+            <div className="flex flex-col gap-3">
+              <h2 className="text-muted-foreground text-sm font-medium">Shared with me</h2>
+              {grid(shared)}
+            </div>
+          ) : null}
         </div>
       )}
 
       <SelectionBar>
-        <Button variant="ghost" size="sm" onClick={() => ids.forEach((id) => byId.get(id) && downloadDoc(byId.get(id)!))}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => ids.forEach((id) => byId.get(id) && downloadDoc(byId.get(id)!))}
+        >
           <Icon name="download" className="size-4" />
           Download
         </Button>
-        {single ? (
+        {single?.owner ? (
           <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
             <IconPencil className="size-4" />
             Rename
