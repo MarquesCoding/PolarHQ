@@ -1,0 +1,37 @@
+{
+  "name": "next-monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "turbo format",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "infra:up": "docker-compose -f docker/docker-compose.dev.yml up -d",
+    "infra:down": "docker-compose -f docker/docker-compose.dev.yml down",
+    "infra:logs": "docker-compose -f docker/docker-compose.dev.yml logs -f",
+    "db:generate": "pnpm --filter @workspace/db db:generate",
+    "db:migrate": "pnpm --filter @workspace/db db:migrate",
+    "db:studio": "pnpm --filter @workspace/db db:studio"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "turbo": "^2.9.15",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@10.33.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "overrides": {
+      "ioredis": "5.11.1"
+    }
+  }
+}
