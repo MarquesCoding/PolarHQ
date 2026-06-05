@@ -113,8 +113,8 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
           <div className="flex flex-col gap-3">
             <p className="text-muted-foreground text-sm">
               {enrolled
-                ? "Enter your password to decrypt your documents on this device."
-                : "Choose a password to protect your documents. Only you can decrypt them — not even the server can read them."}
+                ? "Enter your account password to decrypt your documents on this device."
+                : "Enter your account password to protect your documents — then it unlocks automatically when you sign in. Only you can decrypt them, not even the server."}
             </p>
             {mode === "recovery" ? (
               <Input

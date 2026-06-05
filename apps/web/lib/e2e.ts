@@ -26,15 +26,17 @@ interface KeyBundle {
   recoveryWrapped: string | null
 }
 
-const SESSION_KEY = "orbit.e2e.kp"
+// Persisted (localStorage) so the keypair stays unlocked across refreshes, tabs, and
+// split-view iframes once you sign in — cleared only on sign-out (see lockKeys).
+const STORE_KEY = "orbit.e2e.kp"
 
 let keypair: Keypair | null = null
 const contentKeyCache = new Map<string, Uint8Array>()
 
 const restore = () => {
-  if (keypair || typeof sessionStorage === "undefined") return
+  if (keypair || typeof localStorage === "undefined") return
   try {
-    const raw = sessionStorage.getItem(SESSION_KEY)
+    const raw = localStorage.getItem(STORE_KEY)
     if (!raw) return
     const { pk, sk } = JSON.parse(raw) as { pk: string; sk: string }
     keypair = { publicKey: fromB64(pk), privateKey: fromB64(sk) }
@@ -44,14 +46,14 @@ const restore = () => {
 }
 
 const persist = () => {
-  if (!keypair || typeof sessionStorage === "undefined") return
-  sessionStorage.setItem(
-    SESSION_KEY,
+  if (!keypair || typeof localStorage === "undefined") return
+  localStorage.setItem(
+    STORE_KEY,
     JSON.stringify({ pk: toB64(keypair.publicKey), sk: toB64(keypair.privateKey) }),
   )
 }
 
-/** Initialize libsodium and restore an unlocked keypair from this session, if any. */
+/** Initialize libsodium and restore the unlocked keypair, if the user has unlocked before. */
 export const e2eReady = async (): Promise<void> => {
   await cryptoReady()
   restore()
@@ -121,7 +123,7 @@ export const unlockWithRecovery = async (code: string): Promise<boolean> => {
 export const lockKeys = (): void => {
   keypair = null
   contentKeyCache.clear()
-  if (typeof sessionStorage !== "undefined") sessionStorage.removeItem(SESSION_KEY)
+  if (typeof localStorage !== "undefined") localStorage.removeItem(STORE_KEY)
 }
 
 /** The wrapped content key the server holds for this user/doc (null if plaintext or no access). */

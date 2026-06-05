@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
+import { lockKeys } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import { SPLIT_APP_MIME } from "@lib/splitView"
 import { useTheme } from "next-themes"
@@ -84,6 +85,7 @@ const GlobalActionBar = () => {
   const { resolvedTheme, setTheme } = useTheme()
 
   const signOut = async () => {
+    lockKeys()
     await authClient.signOut()
     router.replace("/sign-in")
   }
