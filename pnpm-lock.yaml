@@ -77,6 +77,9 @@ importers:
       hono:
         specifier: ^4.12.23
         version: 4.12.23
+      libsodium-wrappers:
+        specifier: ^0.8.4
+        version: 0.8.4
       node-unrar-js:
         specifier: ^2.0.2
         version: 2.0.2
@@ -4296,6 +4299,12 @@ packages:
 
   libsodium-wrappers-sumo@0.8.4:
     resolution: {integrity: sha512-ql7hcgulKZ3ekfa2DGAogcCKsWU0diA/0nArz1CFzh93WQdb46/Kj18ka/Hifq6uA3Ush34Pc6vU/6HXeRwUkg==}
+
+  libsodium-wrappers@0.8.4:
+    resolution: {integrity: sha512-mu8aAWucZjTB5O/BtGXtW4e1agy7uHxNYG7zPthmmD1jU43LCDmSWZLN4JhflbdPXj3yDO4lxM1O9hLDgIOXDw==}
+
+  libsodium@0.8.4:
+    resolution: {integrity: sha512-lMcYaRi0zcs7tarATsQUYC7rstliIXZuoq0c6zXSgNtSNtdvBgkSegjWhpMJAXzKX3SUSwIp7+zEsob+j3LuRw==}
 
   lightningcss-android-arm64@1.32.0:
     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}
@@ -9433,6 +9442,12 @@ snapshots:
   libsodium-wrappers-sumo@0.8.4:
     dependencies:
       libsodium-sumo: 0.8.4
+
+  libsodium-wrappers@0.8.4:
+    dependencies:
+      libsodium: 0.8.4
+
+  libsodium@0.8.4: {}
 
   lightningcss-android-arm64@1.32.0:
     optional: true
