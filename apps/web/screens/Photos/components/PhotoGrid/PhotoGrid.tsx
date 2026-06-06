@@ -133,7 +133,7 @@ const buildLayout = (assets: GridAsset[], width: number, rowHeight: number): Lay
     y += SECTION_GAP
   }
 
-  return { rows, totalHeight: y }
+  return { rows, totalHeight: y - SECTION_GAP }
 }
 
 interface PhotoGridProps {

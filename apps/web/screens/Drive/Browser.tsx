@@ -89,9 +89,14 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
 
   const parentId = data?.parent.id ?? null
   const children = data?.children ?? []
-  const visible = search
-    ? children.filter((node) => node.name.toLowerCase().includes(search))
-    : children
+  const visible = (
+    search ? children.filter((node) => node.name.toLowerCase().includes(search)) : children
+  )
+    .slice()
+    .sort((a, b) => {
+      if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
+      return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
+    })
   const byId = new Map(children.map((node) => [node.id, node]))
 
   const trail = data?.breadcrumb ?? []
