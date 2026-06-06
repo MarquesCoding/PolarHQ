@@ -51,36 +51,78 @@ let keypair: Keypair | null = null
 let metaKey: Uint8Array | null = null
 const contentKeyCache = new Map<string, Uint8Array>()
 
-const restore = async () => {
-  if (keypair) return
-  // Remove any legacy plaintext key from the old localStorage scheme.
-  if (typeof localStorage !== "undefined") localStorage.removeItem(LEGACY_KEY)
-  const blob = await secureStoreGet()
-  if (!blob) return
+// The old scheme stored the keypair as plaintext JSON in web storage. Read it (from either
+// session- or localStorage) so we can migrate it into secure storage, then purge it.
+const readLegacy = (): string | null => {
   try {
-    const { pk, sk, mk } = JSON.parse(decoder.decode(blob)) as {
-      pk: string
-      sk: string
-      mk?: string
-    }
-    keypair = { publicKey: fromB64(pk), privateKey: fromB64(sk) }
-    if (mk) metaKey = fromB64(mk)
+    return (
+      (typeof localStorage !== "undefined" && localStorage.getItem(LEGACY_KEY)) ||
+      (typeof sessionStorage !== "undefined" && sessionStorage.getItem(LEGACY_KEY)) ||
+      null
+    )
+  } catch {
+    return null
+  }
+}
+
+const clearLegacy = () => {
+  try {
+    localStorage?.removeItem(LEGACY_KEY)
+    sessionStorage?.removeItem(LEGACY_KEY)
   } catch {
     /* ignore */
   }
 }
 
+const restore = async () => {
+  if (keypair) return
+  const blob = await secureStoreGet()
+  if (blob) {
+    try {
+      const { pk, sk, mk } = JSON.parse(decoder.decode(blob)) as {
+        pk: string
+        sk: string
+        mk?: string
+      }
+      keypair = { publicKey: fromB64(pk), privateKey: fromB64(sk) }
+      if (mk) metaKey = fromB64(mk)
+    } catch {
+      /* ignore */
+    }
+  }
+  // One-time migration: recover the keypair from the old plaintext storage into secureStore.
+  if (!keypair) {
+    const legacy = readLegacy()
+    if (legacy) {
+      try {
+        const { pk, sk } = JSON.parse(legacy) as { pk: string; sk: string }
+        keypair = { publicKey: fromB64(pk), privateKey: fromB64(sk) }
+        await persist()
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+  clearLegacy()
+}
+
+// Best-effort: the in-memory keypair is the source of truth, so a storage failure must
+// never flip an otherwise-successful unlock into a re-prompt loop.
 const persist = async () => {
   if (!keypair) return
-  await secureStoreSet(
-    encoder.encode(
-      JSON.stringify({
-        pk: toB64(keypair.publicKey),
-        sk: toB64(keypair.privateKey),
-        mk: metaKey ? toB64(metaKey) : undefined,
-      }),
-    ),
-  )
+  try {
+    await secureStoreSet(
+      encoder.encode(
+        JSON.stringify({
+          pk: toB64(keypair.publicKey),
+          sk: toB64(keypair.privateKey),
+          mk: metaKey ? toB64(metaKey) : undefined,
+        }),
+      ),
+    )
+  } catch {
+    /* ignore — unlocked for this session even if it couldn't be cached */
+  }
 }
 
 /**
