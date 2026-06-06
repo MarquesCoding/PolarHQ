@@ -5,7 +5,7 @@ import { createId } from "@paralleldrive/cuid2"
 import { db, schema } from "@workspace/db"
 import { storage } from "@workspace/storage"
 import AdmZip from "adm-zip"
-import { and, asc, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm"
+import { and, asc, desc, eq, inArray, isNotNull, isNull, lt, sql } from "drizzle-orm"
 import { extract as tarExtract } from "tar-stream"
 
 export type DriveNode = typeof schema.nodes.$inferSelect
@@ -313,6 +313,36 @@ export const restoreNodeTree = async (
 }
 
 /** List trashed nodes, collapsed to the root of each trashed subtree (newest first). */
+export const TRASH_RETENTION_DAYS = 30
+
+/** Permanently delete trashed nodes older than the retention window. Returns linked asset ids. */
+export const purgeExpiredTrash = async (
+  ownerId: string,
+): Promise<{ removedAssetIds: string[] }> => {
+  const cutoff = new Date(Date.now() - TRASH_RETENTION_DAYS * 86_400_000)
+  const expired = await db
+    .select()
+    .from(schema.nodes)
+    .where(
+      and(
+        eq(schema.nodes.ownerId, ownerId),
+        isNotNull(schema.nodes.trashedAt),
+        lt(schema.nodes.trashedAt, cutoff),
+      ),
+    )
+  if (expired.length === 0) return { removedAssetIds: [] }
+  const driver = storage()
+  for (const node of expired) {
+    if (node.kind === "file" && node.storageKey && !node.photoAssetId) {
+      await driver.delete(node.storageKey).catch(() => undefined)
+    }
+  }
+  const ids = expired.map((node) => node.id)
+  await purgeNodeArtifacts(ownerId, ids)
+  await db.delete(schema.nodes).where(inArray(schema.nodes.id, ids))
+  return { removedAssetIds: linkedAssetIds(expired) }
+}
+
 export const listTrash = async (ownerId: string): Promise<DriveNode[]> => {
   const trashed = await db
     .select()
