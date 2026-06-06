@@ -291,7 +291,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
             />
           ) : source ? (
             <motion.div
-              className="flex max-h-full max-w-full items-center justify-center"
+              className="flex h-full w-full items-center justify-center"
               animate={{ scale, x: offset.x, y: offset.y }}
               transition={{ duration: 0.1, ease: "easeOut" }}
             >
