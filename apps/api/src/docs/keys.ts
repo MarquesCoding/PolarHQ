@@ -7,6 +7,7 @@ export interface UserKeyBundle {
   publicKey: string
   wrappedPrivateKey: string
   kdfSalt: string
+  kdfParams: string | null
   recoveryWrapped: string | null
 }
 
@@ -20,6 +21,7 @@ export const getUserKeys = async (userId: string): Promise<UserKeyBundle | null>
     publicKey: row.publicKey,
     wrappedPrivateKey: row.wrappedPrivateKey,
     kdfSalt: row.kdfSalt,
+    kdfParams: row.kdfParams,
     recoveryWrapped: row.recoveryWrapped,
   }
 }
@@ -33,6 +35,7 @@ export const setUserKeys = async (userId: string, bundle: UserKeyBundle): Promis
       publicKey: bundle.publicKey,
       wrappedPrivateKey: bundle.wrappedPrivateKey,
       kdfSalt: bundle.kdfSalt,
+      kdfParams: bundle.kdfParams,
       recoveryWrapped: bundle.recoveryWrapped,
     })
     .onConflictDoNothing()

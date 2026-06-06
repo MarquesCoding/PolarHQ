@@ -4,8 +4,10 @@ import { apiFetch } from "@lib/apiClient"
 import { type DocMeta, type DocType, createDoc } from "@lib/docs"
 import { secureStoreClear, secureStoreGet, secureStoreSet } from "@lib/secureStore"
 import {
+  type KdfParams,
   type Keypair,
   cryptoReady,
+  defaultKdfParams,
   deriveKey,
   fromB64,
   generateKeypair,
@@ -25,6 +27,7 @@ interface KeyBundle {
   publicKey: string
   wrappedPrivateKey: string
   kdfSalt: string
+  kdfParams: string | null
   recoveryWrapped: string | null
 }
 
@@ -84,13 +87,15 @@ export const setupKeys = async (password: string): Promise<{ recoveryCode: strin
   await cryptoReady()
   const pair = generateKeypair()
   const salt = newSalt()
+  const params = defaultKdfParams()
   const recoveryKey = newRecoveryKey()
   await apiFetch("/api/v1/docs/keys", {
     method: "POST",
     body: JSON.stringify({
       publicKey: toB64(pair.publicKey),
-      wrappedPrivateKey: toB64(secretboxSeal(pair.privateKey, deriveKey(password, salt))),
+      wrappedPrivateKey: toB64(secretboxSeal(pair.privateKey, deriveKey(password, salt, params))),
       kdfSalt: toB64(salt),
+      kdfParams: JSON.stringify(params),
       recoveryWrapped: toB64(secretboxSeal(pair.privateKey, recoveryKey)),
     }),
   })
@@ -105,9 +110,10 @@ export const unlockKeys = async (password: string): Promise<boolean> => {
   const bundle = await fetchKeyBundle()
   if (!bundle) return false
   try {
+    const params = bundle.kdfParams ? (JSON.parse(bundle.kdfParams) as KdfParams) : undefined
     const privateKey = secretboxOpen(
       fromB64(bundle.wrappedPrivateKey),
-      deriveKey(password, fromB64(bundle.kdfSalt)),
+      deriveKey(password, fromB64(bundle.kdfSalt), params),
     )
     keypair = { publicKey: fromB64(bundle.publicKey), privateKey }
     await persist()

@@ -162,6 +162,7 @@ docsRoutes.post("/keys", async (c) => {
       publicKey: z.string(),
       wrappedPrivateKey: z.string(),
       kdfSalt: z.string(),
+      kdfParams: z.string().nullish(),
       recoveryWrapped: z.string().nullish(),
     }),
   )
@@ -170,6 +171,7 @@ docsRoutes.post("/keys", async (c) => {
     publicKey: parsed.data.publicKey,
     wrappedPrivateKey: parsed.data.wrappedPrivateKey,
     kdfSalt: parsed.data.kdfSalt,
+    kdfParams: parsed.data.kdfParams ?? null,
     recoveryWrapped: parsed.data.recoveryWrapped ?? null,
   })
   const bundle = await getUserKeys(c.get("userId"))
