@@ -7,7 +7,8 @@ import {
   fetchDocCollaborators,
   removeDocCollaborator,
 } from "@lib/docs"
-import { type ShareKeyResult, isDocEncrypted, shareDocKey } from "@lib/e2e"
+import { authClient } from "@lib/authClient"
+import { type ShareKeyResult, isDocEncrypted, rekeyDoc, shareDocKey } from "@lib/e2e"
 import { IconTrash } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
@@ -38,6 +39,7 @@ interface ShareDocDialogProps {
 /** Grant or revoke other users' access to a document (owner only). */
 const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProps) => {
   const queryClient = useQueryClient()
+  const { data: session } = authClient.useSession()
   const [email, setEmail] = useState("")
   const [role, setRole] = useState<DocRole>("editor")
 
@@ -75,8 +77,16 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
   })
 
   const remove = useMutation({
-    mutationFn: (userId: string) => removeDocCollaborator(nodeId!, userId),
-    onSuccess: refresh,
+    mutationFn: async (userId: string) => {
+      await removeDocCollaborator(nodeId!, userId)
+      // Rotate the content key so the removed collaborator can no longer decrypt the doc.
+      const selfId = session?.user.id
+      if (selfId && (await isDocEncrypted(nodeId!))) await rekeyDoc(nodeId!, selfId)
+    },
+    onSuccess: () => {
+      refresh()
+      toast.success("Access revoked")
+    },
     onError: () => toast.error("Could not remove"),
   })
 

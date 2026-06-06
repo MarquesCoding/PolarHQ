@@ -7,6 +7,7 @@ import {
   getDocKey,
   getPublicKeyByEmail,
   getUserKeys,
+  replaceDocKeys,
   setDocKeys,
   setUserKeys,
 } from "./keys"
@@ -199,6 +200,22 @@ docsRoutes.post("/documents/:id/keys", async (c) => {
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
   try {
     await setDocKeys(c.get("userId"), c.req.param("id"), parsed.data.keys)
+    return c.json({ ok: true })
+  } catch (error) {
+    return c.json({ error: (error as Error).message }, 400)
+  }
+})
+
+// Rotate the content key: replace every wrapped key with a fresh set, destroying any
+// stale key held by a revoked collaborator. Owner-only (replaceDocKeys checks ownership).
+docsRoutes.post("/documents/:id/keys/rotate", async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({ keys: z.array(z.object({ userId: z.string(), wrappedKey: z.string() })) }),
+  )
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  try {
+    await replaceDocKeys(c.get("userId"), c.req.param("id"), parsed.data.keys)
     return c.json({ ok: true })
   } catch (error) {
     return c.json({ error: (error as Error).message }, 400)
