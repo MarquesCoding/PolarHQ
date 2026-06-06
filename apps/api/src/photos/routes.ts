@@ -145,7 +145,8 @@ photosRoutes.get("/embeddings", async (c) => {
 
 photosRoutes.get("/embeddings/missing", async (c) => {
   const kind = c.req.query("kind") ?? "clip"
-  return c.json({ assetIds: await assetsMissingEmbedding(c.get("userId"), kind) })
+  const modelVersion = c.req.query("modelVersion") || undefined
+  return c.json({ assetIds: await assetsMissingEmbedding(c.get("userId"), kind, modelVersion) })
 })
 
 photosRoutes.get("/assets/processing", async (c) => {
