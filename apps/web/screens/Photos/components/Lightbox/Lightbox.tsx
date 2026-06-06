@@ -153,7 +153,8 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
 
   const displayName =
     (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
-  const download = () => upload.download(displayName, [asset.id])
+  const download = () =>
+    upload.download(displayName, [{ id: asset.id, name: displayName, encrypted: asset.encrypted }])
 
   // Encrypted images: decrypt the full original to an object URL for the viewer.
   const [decryptedSrc, setDecryptedSrc] = useState<string | null>(null)

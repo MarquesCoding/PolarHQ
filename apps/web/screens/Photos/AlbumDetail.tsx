@@ -9,6 +9,7 @@ import {
   removeFromAlbum,
   trashAssets,
 } from "@lib/photos"
+import { downloadItemFor } from "@lib/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
@@ -49,6 +50,8 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
   const assets = data?.assets ?? []
   const ids = [...selection.selected]
   const one = ids.length === 1 ? assets.find((asset) => asset.id === ids[0]) : undefined
+  const selectedSet = new Set(ids)
+  const downloadItems = assets.filter((asset) => selectedSet.has(asset.id)).map(downloadItemFor)
   const afterAction = () => {
     invalidate()
     selection.clear()
@@ -114,7 +117,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
       )}
 
       <SelectionBar
-        downloadAssetIds={ids}
+        downloadItems={downloadItems}
         shareAssetId={one?.id}
         shareName={one?.originalFilename}
       >
