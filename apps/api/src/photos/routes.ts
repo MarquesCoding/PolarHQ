@@ -68,6 +68,7 @@ const assetIdsSchema = z.object({ assetIds: z.array(z.string()).min(1) })
 
 photosRoutes.post("/assets", async (c) => {
   const form = await readUploadForm(c, c.get("userId"))
+  if (form instanceof Response) return form
   const file = form.get("file")
   if (!(file instanceof File)) return c.json({ error: "file field is required" }, 400)
 
