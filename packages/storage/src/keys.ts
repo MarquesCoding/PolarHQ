@@ -3,6 +3,7 @@ export interface AssetObjectKeys {
   thumbnail: string
   preview: string
   video: string
+  motion: string
 }
 
 /** Deterministic object keys for a photo asset's original + derivatives. */
@@ -18,5 +19,6 @@ export const assetObjectKeys = (
     thumbnail: `${base}/thumb.webp`,
     preview: `${base}/preview.webp`,
     video: `${base}/playback.mp4`,
+    motion: `${base}/motion.bin`,
   }
 }

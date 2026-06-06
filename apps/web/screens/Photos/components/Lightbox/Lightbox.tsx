@@ -4,7 +4,8 @@ import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } f
 import { Icon } from "@lib/icons"
 import { decryptName } from "@lib/e2e"
 import { type GridAsset, assetOriginalUrl, favoriteAssets, trashAssets } from "@lib/photos"
-import { fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
+import { fetchDecryptedMotionVideo, fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
+import { IconLivePhoto } from "@tabler/icons-react"
 import { useUploadManager } from "@lib/uploadManager"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
@@ -183,6 +184,28 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
     : (asset.previewUrl ?? asset.thumbnailUrl ?? undefined)
   const taken = asset.takenAt ? new Date(asset.takenAt).toLocaleDateString() : undefined
 
+  const [motionSrc, setMotionSrc] = useState<string | null>(null)
+  const [playMotion, setPlayMotion] = useState(false)
+  useEffect(() => {
+    setPlayMotion(false)
+    setMotionSrc(null)
+    if (!asset.motion) return
+    let active = true
+    let url: string | null = null
+    void fetchDecryptedMotionVideo(asset.id).then((result) => {
+      if (!active) {
+        if (result) URL.revokeObjectURL(result)
+        return
+      }
+      url = result
+      setMotionSrc(result)
+    })
+    return () => {
+      active = false
+      if (url) URL.revokeObjectURL(url)
+    }
+  }, [asset.id, asset.motion])
+
   return (
     <motion.div
       className="bg-background/80 fixed inset-0 z-50 flex backdrop-blur-2xl"
@@ -211,6 +234,17 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
         </div>
 
         <div className="panel flex items-center gap-0.5 rounded-full p-1 shadow-lg">
+          {asset.motion && asset.type === "image" && motionSrc ? (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Play motion"
+              onClick={() => setPlayMotion((value) => !value)}
+              className={cn("rounded-full", playMotion && "bg-muted")}
+            >
+              <IconLivePhoto className="size-5" />
+            </Button>
+          ) : null}
           <Button
             variant="ghost"
             size="icon-sm"
@@ -316,6 +350,19 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
           ) : (
             <p className="text-muted-foreground text-sm">Still processing…</p>
           )}
+
+          {asset.type === "image" && playMotion && motionSrc ? (
+            <video
+              key={`motion-${asset.id}`}
+              src={motionSrc}
+              autoPlay
+              muted
+              loop
+              playsInline
+              onEnded={() => setPlayMotion(false)}
+              className="absolute inset-0 z-10 m-auto max-h-full max-w-full rounded-2xl object-contain p-6 sm:p-10"
+            />
+          ) : null}
 
           {asset.type === "image" && source ? (
             <div

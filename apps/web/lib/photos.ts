@@ -53,6 +53,7 @@ export interface Asset {
   thumbnailUrl: string | null
   previewUrl: string | null
   videoUrl: string | null
+  motion: boolean
 }
 
 /** Lightweight asset for the grid/timeline (the heavy detail fields live on the full Asset). */
@@ -73,6 +74,7 @@ export interface GridAsset {
   thumbnailUrl: string | null
   previewUrl: string | null
   videoUrl: string | null
+  motion: boolean
 }
 
 export interface TimelinePage {

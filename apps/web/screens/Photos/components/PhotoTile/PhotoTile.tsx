@@ -10,8 +10,8 @@ import {
 import { decryptName } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import type { GridAsset } from "@lib/photos"
-import { fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
-import { IconCircle, IconHeartFilled, IconPhoto } from "@tabler/icons-react"
+import { fetchDecryptedMotionVideo, fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
+import { IconCircle, IconHeartFilled, IconLivePhoto, IconPhoto } from "@tabler/icons-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 
@@ -23,6 +23,8 @@ import { motion } from "motion/react"
 const loadedThumbnails = new Set<string>()
 
 const decryptedThumbnails = new Map<string, string>()
+
+const motionVideos = new Map<string, string>()
 
 const formatDuration = (ms: number): string => {
   const total = Math.round(ms / 1000)
@@ -72,6 +74,33 @@ const PhotoTile = ({
       active = false
     }
   }, [asset.id, asset.encrypted])
+
+  const [motionUrl, setMotionUrl] = useState<string | null>(() => motionVideos.get(asset.id) ?? null)
+  const [motionActive, setMotionActive] = useState(false)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+
+  const startMotion = (event: ReactPointerEvent) => {
+    if (!asset.motion || event.pointerType !== "mouse") return
+    setMotionActive(true)
+    if (motionUrl || motionVideos.has(asset.id)) return
+    void fetchDecryptedMotionVideo(asset.id).then((url) => {
+      if (!url) return
+      motionVideos.set(asset.id, url)
+      setMotionUrl(url)
+    })
+  }
+  const stopMotion = () => setMotionActive(false)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    if (motionActive) {
+      video.currentTime = 0
+      void video.play().catch(() => undefined)
+    } else {
+      video.pause()
+    }
+  }, [motionActive, motionUrl])
 
   const thumbSrc = asset.encrypted ? decryptedThumb : asset.thumbnailUrl
   const displayName = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
@@ -127,7 +156,11 @@ const PhotoTile = ({
       transition={{ duration: 0.35, delay, ease: [0.22, 0.61, 0.36, 1] }}
       onPointerDown={startHold}
       onPointerUp={endHold}
-      onPointerLeave={endHold}
+      onPointerEnter={startMotion}
+      onPointerLeave={() => {
+        endHold()
+        stopMotion()
+      }}
       onPointerCancel={endHold}
       onPointerMove={moveHold}
       onContextMenu={(event) => event.preventDefault()}
@@ -178,6 +211,31 @@ const PhotoTile = ({
           ) : null}
         </div>
       )}
+
+      {asset.motion && motionUrl ? (
+        <video
+          ref={videoRef}
+          src={motionUrl}
+          muted
+          loop
+          playsInline
+          className={cn(
+            "pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-300",
+            motionActive ? "opacity-100" : "opacity-0",
+          )}
+        />
+      ) : null}
+
+      {asset.motion ? (
+        <span
+          className={cn(
+            "pointer-events-none absolute right-1.5 top-1.5 text-white drop-shadow transition-opacity",
+            motionActive ? "opacity-0" : "opacity-100",
+          )}
+        >
+          <IconLivePhoto className="size-4" />
+        </span>
+      ) : null}
 
       {asset.type === "video" ? (
         <span className="pointer-events-none absolute inset-0 flex items-center justify-center">

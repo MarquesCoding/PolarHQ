@@ -5,6 +5,7 @@ export interface AssetDto extends Asset {
   thumbnailUrl: string | null
   previewUrl: string | null
   videoUrl: string | null
+  motion: boolean
 }
 
 const base = `${config.api.url}/api/v1/photos/assets`
@@ -20,6 +21,7 @@ export const serializeAsset = async (asset: Asset): Promise<AssetDto> => ({
   thumbnailUrl: asset.thumbnailKey ? `${base}/${asset.id}/thumbnail` : null,
   previewUrl: asset.previewKey ? `${base}/${asset.id}/preview` : null,
   videoUrl: asset.type === "video" ? `${base}/${asset.id}/video` : null,
+  motion: Boolean(asset.motionKey),
 })
 
 export const serializeAssets = (assets: Asset[]): Promise<AssetDto[]> =>
@@ -48,6 +50,7 @@ export interface GridAssetDto {
   thumbnailUrl: string | null
   previewUrl: string | null
   videoUrl: string | null
+  motion: boolean
 }
 
 export const serializeGridAsset = (asset: Asset): GridAssetDto => ({
@@ -67,6 +70,7 @@ export const serializeGridAsset = (asset: Asset): GridAssetDto => ({
   thumbnailUrl: asset.thumbnailKey ? `${base}/${asset.id}/thumbnail` : null,
   previewUrl: asset.previewKey ? `${base}/${asset.id}/preview` : null,
   videoUrl: asset.type === "video" ? `${base}/${asset.id}/video` : null,
+  motion: Boolean(asset.motionKey),
 })
 
 export const serializeGridAssets = (assets: Asset[]): GridAssetDto[] =>

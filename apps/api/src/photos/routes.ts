@@ -33,6 +33,7 @@ import {
   setEmbedding,
   setEncryptedLocation,
   setEncryptedThumbnail,
+  setMotionVideo,
   setFavorite,
   trashAsset,
   trashAssets,
@@ -336,6 +337,19 @@ photosRoutes.get("/assets/:id/thumbnail", async (c) => {
 photosRoutes.put("/assets/:id/thumbnail", async (c) => {
   const bytes = Buffer.from(await c.req.arrayBuffer())
   const ok = await setEncryptedThumbnail(c.get("userId"), c.req.param("id"), bytes)
+  if (!ok) return c.json({ error: "not found" }, 404)
+  return c.json({ ok: true })
+})
+
+photosRoutes.get("/assets/:id/motion", async (c) => {
+  const asset = await getAsset(c.get("userId"), c.req.param("id"))
+  if (!asset?.motionKey) return c.json({ error: "not found" }, 404)
+  return streamObject(asset.motionKey, "application/octet-stream")
+})
+
+photosRoutes.put("/assets/:id/motion", async (c) => {
+  const bytes = Buffer.from(await c.req.arrayBuffer())
+  const ok = await setMotionVideo(c.get("userId"), c.req.param("id"), bytes)
   if (!ok) return c.json({ error: "not found" }, 404)
   return c.json({ ok: true })
 })

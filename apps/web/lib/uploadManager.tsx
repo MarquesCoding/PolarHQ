@@ -13,6 +13,7 @@ import { API_URL } from "@lib/env"
 import { archiveDriveNodes } from "@lib/drive"
 import { uploadEncryptedDriveFile } from "@lib/driveE2e"
 import { isUnlocked } from "@lib/e2e"
+import { pairLivePhotos } from "@lib/motionPhoto"
 import { downloadDecryptedPhoto, uploadEncryptedMedia } from "@lib/photosE2e"
 import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@lib/download"
 import { deleteAssets, fetchProcessing } from "@lib/photos"
@@ -231,7 +232,15 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
 
   const upload = useCallback(
     (files: FileList | File[], target: UploadTarget = { kind: "photos" }) => {
-      for (const file of Array.from(files)) {
+      const all = Array.from(files)
+      const motionByImage = new Map<File, File>()
+      let queue = all
+      if (target.kind === "photos" && isUnlocked()) {
+        const { uploads } = pairLivePhotos(all)
+        queue = uploads.map((entry) => entry.file)
+        for (const entry of uploads) if (entry.motion) motionByImage.set(entry.file, entry.motion)
+      }
+      for (const file of queue) {
         const id = nextId()
         if (target.kind === "photos" && !isSupportedMedia(file)) {
           setItems((previous) => [
@@ -269,7 +278,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
                 (node) => ({ node }) as UploadResponse,
               )
             : target.kind === "photos" && isUnlocked() && isMediaFile(file)
-              ? uploadEncryptedMedia(file).then(
+              ? uploadEncryptedMedia(file, motionByImage.get(file)).then(
                   (asset) => ({ asset, deduped: false }) as UploadResponse,
                 )
               : xhrUpload(
