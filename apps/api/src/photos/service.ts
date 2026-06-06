@@ -97,6 +97,8 @@ export interface EncryptedIngestInput {
   /** Filename encrypted with the account metadata key (the plaintext column gets a placeholder). */
   encryptedName?: string | null
   encryptedLocation?: string | null
+  /** Camera/EXIF metadata JSON, encrypted with the account metadata key. */
+  encryptedExif?: string | null
   placeholderName: string
 }
 
@@ -129,6 +131,7 @@ export const ingestEncryptedAsset = async (
       originalFilename: input.placeholderName,
       encryptedName: input.encryptedName ?? null,
       encryptedLocation: input.encryptedLocation ?? null,
+      encryptedExif: input.encryptedExif ?? null,
       encrypted: true,
       mimeType: input.mimeType,
       type: input.type ?? "image",

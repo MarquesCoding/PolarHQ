@@ -1,10 +1,29 @@
 "use client"
 
-import { decryptName } from "@lib/e2e"
+import dynamic from "next/dynamic"
+import { decryptName, decryptWithMetaKey } from "@lib/e2e"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
-import { fetchAsset } from "@lib/photos"
+import { type AssetExif, fetchAsset } from "@lib/photos"
 import { useQuery } from "@tanstack/react-query"
+
+const PhotoLocationMap = dynamic(
+  () => import("@pages/Photos/components/PhotoLocationMap/PhotoLocationMap"),
+  { ssr: false },
+)
+
+const decoder = new TextDecoder()
+
+const decryptJson = <T,>(value: string | null | undefined): T | null => {
+  if (!value) return null
+  const bytes = decryptWithMetaKey(value)
+  if (!bytes) return null
+  try {
+    return JSON.parse(decoder.decode(bytes)) as T
+  } catch {
+    return null
+  }
+}
 
 const formatShutter = (seconds?: number): string | undefined => {
   if (seconds === undefined) return undefined
@@ -63,7 +82,13 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
     )
   }
 
-  const exif = asset.exif
+  const exif = asset.exif ?? (asset.encrypted ? decryptJson<AssetExif>(asset.encryptedExif) : null)
+  const decryptedLocation = asset.encrypted
+    ? decryptJson<{ lat?: number; lng?: number }>(asset.encryptedLocation)
+    : null
+  const latitude = asset.latitude ?? (typeof decryptedLocation?.lat === "number" ? decryptedLocation.lat : null)
+  const longitude =
+    asset.longitude ?? (typeof decryptedLocation?.lng === "number" ? decryptedLocation.lng : null)
   const camera = [asset.cameraMake ?? exif?.make, asset.cameraModel ?? exif?.model]
     .filter(Boolean)
     .join(" ")
@@ -95,7 +120,7 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
       exif?.focalLength ||
       exif?.lens,
   )
-  const hasLocation = asset.latitude != null && asset.longitude != null
+  const hasLocation = latitude != null && longitude != null
 
   return (
     <div className="scrollbar-slim flex h-full w-full flex-col gap-5 overflow-y-auto p-5">
@@ -136,12 +161,12 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
 
       {hasLocation ? (
         <Section icon="map-pin" title="Location">
-          <Row
-            label="Coordinates"
-            value={`${asset.latitude!.toFixed(5)}, ${asset.longitude!.toFixed(5)}`}
-          />
+          <div className="pt-1.5">
+            <PhotoLocationMap lat={latitude} lng={longitude} />
+          </div>
+          <Row label="Coordinates" value={`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`} />
           <a
-            href={`https://www.openstreetmap.org/?mlat=${asset.latitude}&mlon=${asset.longitude}#map=15/${asset.latitude}/${asset.longitude}`}
+            href={`https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=15/${latitude}/${longitude}`}
             target="_blank"
             rel="noreferrer"
             className="text-primary py-1.5 text-sm underline-offset-2 hover:underline"
