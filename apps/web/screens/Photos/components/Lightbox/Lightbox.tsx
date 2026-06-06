@@ -192,7 +192,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
       transition={{ duration: 0.18 }}
       onPointerDown={(event) => event.stopPropagation()}
     >
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="flex items-center justify-between gap-2 p-3">
         <div className="panel flex min-w-0 items-center gap-1.5 rounded-full p-1 pr-3 shadow-lg">
           <Button
@@ -254,7 +254,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
         <div
           ref={stageRef}
           className={cn(
-            "relative flex flex-1 items-center justify-center overflow-hidden p-6 sm:p-10",
+            "relative flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden p-6 sm:p-10",
             asset.type === "image" && "touch-none",
             asset.type === "image" && scale > 1 && "cursor-grab active:cursor-grabbing",
           )}
