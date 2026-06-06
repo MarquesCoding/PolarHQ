@@ -21,20 +21,57 @@ export const throttleStream = (bytesPerSec: number): TransformStream<Uint8Array,
     },
   })
 
+const MULTIPART_OVERHEAD = 1024 * 1024
+
+const numericLimit = (value: unknown): number | null =>
+  typeof value === "number" && value > 0 ? value : null
+
+const formatBytes = (bytes: number): string => {
+  const units = ["B", "KB", "MB", "GB", "TB"]
+  const exponent = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1)
+  const value = bytes / 1024 ** exponent
+  return `${value.toFixed(value >= 10 || exponent === 0 ? 0 : 1)} ${units[exponent]}`
+}
+
 /**
- * Parse a multipart upload, throttled to the user's resolved `upload.rateBytesPerSec` limit when
- * one is set (user override > group > instance default). With no limit the body is parsed at full
- * speed. Reading the body slowly is what enforces the cap — it back-pressures the connection.
+ * Parse a multipart upload while enforcing the user's resolved limits (user > group > instance):
+ * `upload.rateBytesPerSec` paces the inbound body so the client's upload speed is capped, and
+ * `upload.maxFileBytes` rejects oversized files — coarsely up front via Content-Length (so a huge
+ * body is never buffered) and precisely after parse via the file's real size. Returns a `413`
+ * `Response` when too large; otherwise the parsed `FormData`.
  */
-export const readUploadForm = async (c: Context, userId: string): Promise<FormData> => {
-  const rate = await resolveLimit(userId, "upload.rateBytesPerSec")
+export const readUploadForm = async (c: Context, userId: string): Promise<FormData | Response> => {
+  const [rateValue, maxValue] = await Promise.all([
+    resolveLimit(userId, "upload.rateBytesPerSec"),
+    resolveLimit(userId, "upload.maxFileBytes"),
+  ])
+  const rate = numericLimit(rateValue)
+  const maxBytes = numericLimit(maxValue)
+
+  if (maxBytes !== null) {
+    const contentLength = Number(c.req.header("content-length") ?? "")
+    if (Number.isFinite(contentLength) && contentLength > maxBytes + MULTIPART_OVERHEAD) {
+      return c.json({ error: `File exceeds the ${formatBytes(maxBytes)} upload limit` }, 413)
+    }
+  }
+
   const body = c.req.raw.body
-  if (!body || typeof rate !== "number" || rate <= 0) return c.req.raw.formData()
-  const request = new Request(c.req.raw.url, {
-    method: "POST",
-    headers: c.req.raw.headers,
-    body: body.pipeThrough(throttleStream(rate)),
-    duplex: "half",
-  } as RequestInit & { duplex: "half" })
-  return request.formData()
+  const form =
+    body && rate !== null
+      ? await new Request(c.req.raw.url, {
+          method: "POST",
+          headers: c.req.raw.headers,
+          body: body.pipeThrough(throttleStream(rate)),
+          duplex: "half",
+        } as RequestInit & { duplex: "half" }).formData()
+      : await c.req.raw.formData()
+
+  if (maxBytes !== null) {
+    const file = form.get("file")
+    if (file instanceof File && file.size > maxBytes) {
+      return c.json({ error: `File exceeds the ${formatBytes(maxBytes)} upload limit` }, 413)
+    }
+  }
+
+  return form
 }

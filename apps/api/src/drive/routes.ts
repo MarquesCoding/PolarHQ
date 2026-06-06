@@ -143,6 +143,7 @@ driveRoutes.post("/nodes/folder", async (c) => {
 driveRoutes.post("/nodes/upload", async (c) => {
   const userId = c.get("userId")
   const form = await readUploadForm(c, userId)
+  if (form instanceof Response) return form
   const file = form.get("file")
   if (!(file instanceof File)) return c.json({ error: "file field is required" }, 400)
 
