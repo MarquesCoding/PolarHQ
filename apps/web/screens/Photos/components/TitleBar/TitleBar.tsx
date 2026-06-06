@@ -8,6 +8,7 @@ const TitleBar = () => {
   const [rowHeight, setRowHeight] = usePersistentNumber("photos.rowHeight", 180)
   const [gap, setGap] = usePersistentNumber("photos.gap", 12)
   const [rounded, setRounded] = usePersistentNumber("photos.rounded", 1)
+  const [square, setSquare] = usePersistentNumber("photos.square", 0)
   return (
     <SuiteTitleBar
       searchPlaceholder="Search your photos"
@@ -19,6 +20,8 @@ const TitleBar = () => {
           onGapChange={setGap}
           rounded={rounded === 1}
           onRoundedChange={(value) => setRounded(value ? 1 : 0)}
+          square={square === 1}
+          onSquareChange={(value) => setSquare(value ? 1 : 0)}
         />
       }
     />
