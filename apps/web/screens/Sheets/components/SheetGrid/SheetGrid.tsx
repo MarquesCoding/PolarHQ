@@ -1,10 +1,42 @@
 "use client"
 
-import { type KeyboardEvent, Fragment, useEffect, useRef, useState } from "react"
+import { type CSSProperties, type KeyboardEvent, Fragment, useEffect, useRef, useState } from "react"
 import { HyperFormula } from "hyperformula"
+import {
+  IconAlignCenter,
+  IconAlignLeft,
+  IconAlignRight,
+  IconBold,
+  IconItalic,
+} from "@tabler/icons-react"
+import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select"
+import { Separator } from "@workspace/ui/components/separator"
 import { cn } from "@workspace/ui/lib/utils"
 import type * as Y from "yjs"
+
+interface CellFormat {
+  b?: boolean
+  i?: boolean
+  color?: string
+  bg?: string
+  align?: "left" | "center" | "right"
+  fmt?: "number" | "currency" | "percent"
+}
+
+const formatNumber = (n: number, fmt: CellFormat["fmt"]): string => {
+  if (fmt === "currency") return n.toLocaleString(undefined, { style: "currency", currency: "USD" })
+  if (fmt === "percent") return n.toLocaleString(undefined, { style: "percent", maximumFractionDigits: 2 })
+  if (fmt === "number") return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return String(n)
+}
 
 const COLS = 26
 const ROWS = 100
@@ -67,9 +99,49 @@ const bounds = (a: Pos, b: Pos): Box => ({
 const inBox = (r: number, c: number, b: Box): boolean =>
   r >= b.r0 && r <= b.r1 && c >= b.c0 && c <= b.c1
 
+const ColorButton = ({
+  kind,
+  value,
+  onChange,
+}: {
+  kind: "text" | "fill"
+  value: string
+  onChange: (value: string) => void
+}) => {
+  const ref = useRef<HTMLInputElement>(null)
+  return (
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      aria-label={kind === "text" ? "Text color" : "Fill color"}
+      title={kind === "text" ? "Text color" : "Fill color"}
+      onMouseDown={(event) => event.preventDefault()}
+      onClick={() => ref.current?.click()}
+    >
+      {kind === "text" ? (
+        <span className="text-sm font-semibold" style={{ color: value }}>
+          A
+        </span>
+      ) : (
+        <span className="size-3.5 rounded-sm border" style={{ backgroundColor: value }} />
+      )}
+      <input
+        ref={ref}
+        type="color"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden
+      />
+    </Button>
+  )
+}
+
 /** A collaborative spreadsheet grid: Yjs-backed cells, HyperFormula evaluation, range + fill drag. */
 const SheetGrid = ({ ydoc }: { ydoc: Y.Doc }) => {
   const cells = ydoc.getMap<string>("cells")
+  const formats = ydoc.getMap<CellFormat>("formats")
   const [, force] = useState(0)
   const [sel, setSel] = useState<{ anchor: Pos; focus: Pos }>({
     anchor: { r: 0, c: 0 },
@@ -98,13 +170,16 @@ const SheetGrid = ({ ydoc }: { ydoc: Y.Doc }) => {
       })
       force((value) => value + 1)
     }
+    const fmtObserver = () => force((value) => value + 1)
     cells.observe(observer)
+    formats.observe(fmtObserver)
     return () => {
       cells.unobserve(observer)
+      formats.unobserve(fmtObserver)
       hf.destroy()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cells])
+  }, [cells, formats])
 
   useEffect(() => {
     const onUp = () => {
@@ -117,12 +192,40 @@ const SheetGrid = ({ ydoc }: { ydoc: Y.Doc }) => {
   })
 
   const rawAt = (r: number, c: number): string => cells.get(cellKey(r, c)) ?? ""
-  const display = (r: number, c: number): string =>
-    formatValue(hf.getCellValue({ sheet, row: r, col: c }))
+  const fmtAt = (r: number, c: number): CellFormat => formats.get(cellKey(r, c)) ?? {}
+  const display = (r: number, c: number): string => {
+    const value = hf.getCellValue({ sheet, row: r, col: c })
+    const fmt = fmtAt(r, c).fmt
+    if (typeof value === "number" && fmt) return formatNumber(value, fmt)
+    return formatValue(value)
+  }
+  const cellStyle = (r: number, c: number): CSSProperties => {
+    const f = fmtAt(r, c)
+    return {
+      fontWeight: f.b ? 700 : undefined,
+      fontStyle: f.i ? "italic" : undefined,
+      color: f.color,
+      backgroundColor: f.bg,
+      textAlign: f.align,
+    }
+  }
   const setRaw = (r: number, c: number, value: string) => {
     if (value) cells.set(cellKey(r, c), value)
     else cells.delete(cellKey(r, c))
   }
+  const applyFormat = (patch: CellFormat) => {
+    const b = bounds(sel.anchor, sel.focus)
+    ydoc.transact(() => {
+      for (let r = b.r0; r <= b.r1; r += 1) {
+        for (let c = b.c0; c <= b.c1; c += 1) {
+          const next = { ...fmtAt(r, c), ...patch }
+          if (Object.values(next).every((v) => v === undefined)) formats.delete(cellKey(r, c))
+          else formats.set(cellKey(r, c), next)
+        }
+      }
+    })
+  }
+  const toggle = (key: "b" | "i") => applyFormat({ [key]: !fmtAt(sel.focus.r, sel.focus.c)[key] })
 
   const focusGrid = () => gridRef.current?.focus()
   const selectOnly = (pos: Pos) => setSel({ anchor: pos, focus: pos })
@@ -199,14 +302,73 @@ const SheetGrid = ({ ydoc }: { ydoc: Y.Doc }) => {
     height: (b.r1 - b.r0 + 1) * ROW_H,
   })
   const o = outline(selBox)
+  const focusFmt = fmtAt(sel.focus.r, sel.focus.c)
 
   return (
-    <div
-      ref={gridRef}
-      tabIndex={0}
-      onKeyDown={onGridKey}
-      className="scrollbar-slim min-h-0 flex-1 overflow-auto outline-none"
-    >
+    <div className="flex min-h-0 flex-1 flex-col gap-2">
+      <div className="bg-card/80 flex flex-wrap items-center gap-0.5 rounded-xl border px-2 py-1.5">
+        <Button
+          variant={focusFmt.b ? "secondary" : "ghost"}
+          size="icon-sm"
+          aria-label="Bold"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => toggle("b")}
+        >
+          <IconBold className="size-4" />
+        </Button>
+        <Button
+          variant={focusFmt.i ? "secondary" : "ghost"}
+          size="icon-sm"
+          aria-label="Italic"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => toggle("i")}
+        >
+          <IconItalic className="size-4" />
+        </Button>
+        <ColorButton kind="text" value={focusFmt.color ?? "#000000"} onChange={(v) => applyFormat({ color: v })} />
+        <ColorButton kind="fill" value={focusFmt.bg ?? "#ffffff"} onChange={(v) => applyFormat({ bg: v })} />
+        <Separator orientation="vertical" className="mx-1 h-5" />
+        {(["left", "center", "right"] as const).map((align) => {
+          const Icon =
+            align === "left" ? IconAlignLeft : align === "center" ? IconAlignCenter : IconAlignRight
+          return (
+            <Button
+              key={align}
+              variant={focusFmt.align === align ? "secondary" : "ghost"}
+              size="icon-sm"
+              aria-label={`Align ${align}`}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => applyFormat({ align })}
+            >
+              <Icon className="size-4" />
+            </Button>
+          )
+        })}
+        <Separator orientation="vertical" className="mx-1 h-5" />
+        <Select
+          value={focusFmt.fmt ?? "general"}
+          onValueChange={(value) =>
+            applyFormat({ fmt: value === "general" ? undefined : (value as CellFormat["fmt"]) })
+          }
+        >
+          <SelectTrigger className="h-8 w-28" onMouseDown={(event) => event.preventDefault()}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="general">General</SelectItem>
+            <SelectItem value="number">Number</SelectItem>
+            <SelectItem value="currency">Currency</SelectItem>
+            <SelectItem value="percent">Percent</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div
+        ref={gridRef}
+        tabIndex={0}
+        onKeyDown={onGridKey}
+        className="scrollbar-slim border-border/60 min-h-0 flex-1 overflow-auto rounded-lg border outline-none"
+      >
       <div
         className="relative inline-grid text-sm"
         style={{ gridTemplateColumns: `${HEAD_W}px repeat(${COLS}, ${COL_W}px)` }}
@@ -250,6 +412,7 @@ const SheetGrid = ({ ydoc }: { ydoc: Y.Doc }) => {
                     else if (dragRef.current === "fill") setFillTo({ r, c })
                   }}
                   onDoubleClick={() => startEdit({ r, c })}
+                  style={cellStyle(r, c)}
                   className={cn(
                     "border-border/40 h-7 cursor-cell truncate border-r border-b px-1.5 leading-7",
                     selected && !editing && "bg-primary/5",
@@ -295,6 +458,7 @@ const SheetGrid = ({ ydoc }: { ydoc: Y.Doc }) => {
           className="border-background bg-primary absolute z-40 size-2 cursor-crosshair border"
           style={{ left: o.left + o.width - 4, top: o.top + o.height - 4 }}
         />
+      </div>
       </div>
     </div>
   )
