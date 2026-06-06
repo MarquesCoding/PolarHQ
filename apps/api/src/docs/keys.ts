@@ -1,7 +1,11 @@
 import { db, schema } from "@workspace/db"
 import { and, eq, inArray } from "drizzle-orm"
 import { getNode } from "../drive/service"
-import { canAccessDoc } from "./service"
+import { canAccessDoc, userOwnsAsset } from "./service"
+
+/** The owner controls a content-key target if it's their drive node or their Photos asset. */
+const ownsKeyTarget = async (ownerId: string, id: string): Promise<boolean> =>
+  Boolean(await getNode(ownerId, id)) || userOwnsAsset(ownerId, id)
 
 export interface UserKeyBundle {
   publicKey: string
@@ -123,8 +127,7 @@ export const replaceDocKeys = async (
   nodeId: string,
   entries: { userId: string; wrappedKey: string }[],
 ): Promise<void> => {
-  const node = await getNode(ownerId, nodeId)
-  if (!node) throw new Error("not found")
+  if (!(await ownsKeyTarget(ownerId, nodeId))) throw new Error("not found")
   await db.delete(schema.docKeys).where(eq(schema.docKeys.nodeId, nodeId))
   await setDocKeys(ownerId, nodeId, entries)
 }
@@ -135,8 +138,7 @@ export const setDocKeys = async (
   nodeId: string,
   entries: { userId: string; wrappedKey: string }[],
 ): Promise<void> => {
-  const node = await getNode(ownerId, nodeId)
-  if (!node) throw new Error("not found")
+  if (!(await ownsKeyTarget(ownerId, nodeId))) throw new Error("not found")
   for (const entry of entries) {
     if (entry.userId !== ownerId) {
       const collab = (
