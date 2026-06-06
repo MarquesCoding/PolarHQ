@@ -15,7 +15,7 @@ import {
   fetchDecryptedPhotoOriginal,
   fetchDecryptedPhotoThumbnail,
 } from "@lib/photosE2e"
-import { IconCircle, IconHeartFilled, IconLivePhoto, IconPhoto } from "@tabler/icons-react"
+import { IconCircle, IconHeartFilled, IconLivePhoto, IconPhoto, IconStack2 } from "@tabler/icons-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 
@@ -282,6 +282,13 @@ const PhotoTile = ({
       {asset.durationMs ? (
         <span className="absolute right-1.5 bottom-1.5 rounded bg-black/55 px-1 py-0.5 text-[10px] font-medium text-white tabular-nums">
           {formatDuration(asset.durationMs)}
+        </span>
+      ) : null}
+
+      {asset.stackCount > 1 && !asset.motion ? (
+        <span className="pointer-events-none absolute right-1.5 top-1.5 flex items-center gap-0.5 rounded-full bg-black/55 px-1.5 py-0.5 text-[10px] font-semibold text-white tabular-nums drop-shadow">
+          <IconStack2 className="size-3" />
+          {asset.stackCount}
         </span>
       ) : null}
 

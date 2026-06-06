@@ -51,9 +51,11 @@ export interface GridAssetDto {
   previewUrl: string | null
   videoUrl: string | null
   motion: boolean
+  stackId: string | null
+  stackCount: number
 }
 
-export const serializeGridAsset = (asset: Asset): GridAssetDto => ({
+export const serializeGridAsset = (asset: Asset, stackCount = 0): GridAssetDto => ({
   id: asset.id,
   originalFilename: asset.originalFilename,
   encrypted: asset.encrypted,
@@ -71,7 +73,14 @@ export const serializeGridAsset = (asset: Asset): GridAssetDto => ({
   previewUrl: asset.previewKey ? `${base}/${asset.id}/preview` : null,
   videoUrl: asset.type === "video" ? `${base}/${asset.id}/video` : null,
   motion: Boolean(asset.motionKey),
+  stackId: asset.stackId,
+  stackCount,
 })
 
-export const serializeGridAssets = (assets: Asset[]): GridAssetDto[] =>
-  assets.map(serializeGridAsset)
+export const serializeGridAssets = (
+  assets: Asset[],
+  stackCounts?: Map<string, number>,
+): GridAssetDto[] =>
+  assets.map((asset) =>
+    serializeGridAsset(asset, asset.stackId ? (stackCounts?.get(asset.stackId) ?? 0) : 0),
+  )

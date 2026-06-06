@@ -370,6 +370,12 @@ export const listAssets = async (
     conditions.push(eq(schema.assets.isTrashed, false))
     if (view === "favourites") conditions.push(eq(schema.assets.isFavorite, true))
   }
+  if (view !== "trash" && !options.albumId && !options.tagId) {
+    conditions.push(
+      or(isNull(schema.assets.stackId), eq(schema.assets.stackPrimary, true)) ??
+        isNull(schema.assets.stackId),
+    )
+  }
   if (options.cursor) {
     const [createdAtPart, idPart] = options.cursor.split("|")
     const cursorDate = new Date(createdAtPart ?? options.cursor)
@@ -480,6 +486,116 @@ export const purgeAssets = async (ownerId: string, assetIds: string[]) => {
     ownerId,
     rows.map((row) => row.id),
   ).catch(() => undefined)
+}
+
+export interface StackResult {
+  stackId: string
+  primaryId: string
+  count: number
+}
+
+/**
+ * Group assets into a single stack (merging any stacks the selection already belongs to). The
+ * first asset becomes the stack's cover (primary); the rest are hidden from the timeline and
+ * surfaced only when the stack is expanded.
+ */
+export const stackAssets = async (
+  ownerId: string,
+  assetIds: string[],
+): Promise<StackResult | null> => {
+  if (assetIds.length < 2) return null
+  const selected = await db
+    .select({ id: schema.assets.id, stackId: schema.assets.stackId })
+    .from(schema.assets)
+    .where(ownerScoped(ownerId, assetIds))
+  if (selected.length < 2) return null
+
+  const existingStackIds = [
+    ...new Set(selected.map((row) => row.stackId).filter((value): value is string => Boolean(value))),
+  ]
+  let memberIds = assetIds.filter((id) => selected.some((row) => row.id === id))
+  if (existingStackIds.length > 0) {
+    const siblings = await db
+      .select({ id: schema.assets.id })
+      .from(schema.assets)
+      .where(
+        and(eq(schema.assets.ownerId, ownerId), inArray(schema.assets.stackId, existingStackIds)),
+      )
+    memberIds = [...new Set([...memberIds, ...siblings.map((row) => row.id)])]
+  }
+
+  const stackId = createId()
+  const primaryId = memberIds[0]!
+  await db
+    .update(schema.assets)
+    .set({ stackId, stackPrimary: false, updatedAt: new Date() })
+    .where(ownerScoped(ownerId, memberIds))
+  await db
+    .update(schema.assets)
+    .set({ stackPrimary: true, updatedAt: new Date() })
+    .where(ownerScoped(ownerId, [primaryId]))
+  return { stackId, primaryId, count: memberIds.length }
+}
+
+/** Dissolve a stack, returning every member to the timeline as a standalone asset. */
+export const unstackAssets = async (ownerId: string, stackId: string): Promise<void> => {
+  await db
+    .update(schema.assets)
+    .set({ stackId: null, stackPrimary: false, updatedAt: new Date() })
+    .where(and(eq(schema.assets.ownerId, ownerId), eq(schema.assets.stackId, stackId)))
+}
+
+/** Promote an asset to be its stack's cover (primary). */
+export const setStackCover = async (ownerId: string, assetId: string): Promise<void> => {
+  const rows = await db
+    .select({ stackId: schema.assets.stackId })
+    .from(schema.assets)
+    .where(and(eq(schema.assets.id, assetId), eq(schema.assets.ownerId, ownerId)))
+    .limit(1)
+  const stackId = rows[0]?.stackId
+  if (!stackId) return
+  await db
+    .update(schema.assets)
+    .set({ stackPrimary: false, updatedAt: new Date() })
+    .where(and(eq(schema.assets.ownerId, ownerId), eq(schema.assets.stackId, stackId)))
+  await db
+    .update(schema.assets)
+    .set({ stackPrimary: true, updatedAt: new Date() })
+    .where(ownerScoped(ownerId, [assetId]))
+}
+
+/** Every asset in a stack, oldest first (original → edits), for the stack viewer. */
+export const getStackMembers = async (ownerId: string, stackId: string): Promise<Asset[]> =>
+  db
+    .select()
+    .from(schema.assets)
+    .where(
+      and(
+        eq(schema.assets.ownerId, ownerId),
+        eq(schema.assets.stackId, stackId),
+        eq(schema.assets.isTrashed, false),
+      ),
+    )
+    .orderBy(schema.assets.createdAt, schema.assets.id)
+
+/** Member counts for a set of stacks (keyed by stackId), for the grid count badge. */
+export const getStackCounts = async (
+  ownerId: string,
+  stackIds: string[],
+): Promise<Map<string, number>> => {
+  if (stackIds.length === 0) return new Map()
+  const rows = await db
+    .select({ stackId: schema.assets.stackId, count: sql<number>`count(*)::int` })
+    .from(schema.assets)
+    .where(
+      and(
+        eq(schema.assets.ownerId, ownerId),
+        inArray(schema.assets.stackId, stackIds),
+        eq(schema.assets.isTrashed, false),
+      ),
+    )
+    .groupBy(schema.assets.stackId)
+  return new Map(rows.filter((row) => row.stackId).map((row) => [row.stackId as string, row.count]))
 }
 
 /** Assets still being processed/transcoded — used to restore the upload panel after a reload. */

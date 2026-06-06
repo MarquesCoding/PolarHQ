@@ -23,6 +23,8 @@ import {
   emptyTrash,
   getUsage,
   assetsMissingLocation,
+  getStackCounts,
+  getStackMembers,
   ingestEncryptedAsset,
   ingestUpload,
   listAssets,
@@ -36,8 +38,11 @@ import {
   setEncryptedThumbnail,
   setMotionVideo,
   setFavorite,
+  setStackCover,
+  stackAssets,
   trashAsset,
   trashAssets,
+  unstackAssets,
 } from "./service"
 import * as tags from "./tags"
 
@@ -128,7 +133,14 @@ photosRoutes.get("/assets", async (c) => {
     albumId: c.req.query("album"),
     tagId: c.req.query("tag"),
   })
-  return c.json({ assets: serializeGridAssets(page.assets), nextCursor: page.nextCursor })
+  const stackIds = page.assets
+    .filter((asset) => asset.stackId && asset.stackPrimary)
+    .map((asset) => asset.stackId as string)
+  const stackCounts = await getStackCounts(c.get("userId"), stackIds)
+  return c.json({
+    assets: serializeGridAssets(page.assets, stackCounts),
+    nextCursor: page.nextCursor,
+  })
 })
 
 photosRoutes.get("/usage", async (c) => {
@@ -213,6 +225,36 @@ photosRoutes.post("/assets/actions/empty-trash", async (c) => {
   await emptyTrash(c.get("userId"))
   await notify(c.get("userId"))
   return c.json({ ok: true })
+})
+
+photosRoutes.post("/assets/actions/stack", async (c) => {
+  const parsed = await parse(c, z.object({ assetIds: z.array(z.string()).min(2) }))
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  const result = await stackAssets(c.get("userId"), parsed.data.assetIds)
+  if (!result) return c.json({ error: "need at least two owned assets" }, 400)
+  await notify(c.get("userId"))
+  return c.json(result)
+})
+
+photosRoutes.post("/assets/actions/unstack", async (c) => {
+  const parsed = await parse(c, z.object({ stackId: z.string().min(1) }))
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  await unstackAssets(c.get("userId"), parsed.data.stackId)
+  await notify(c.get("userId"))
+  return c.json({ ok: true })
+})
+
+photosRoutes.post("/assets/actions/stack-cover", async (c) => {
+  const parsed = await parse(c, z.object({ assetId: z.string().min(1) }))
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  await setStackCover(c.get("userId"), parsed.data.assetId)
+  await notify(c.get("userId"))
+  return c.json({ ok: true })
+})
+
+photosRoutes.get("/stacks/:stackId", async (c) => {
+  const members = await getStackMembers(c.get("userId"), c.req.param("stackId"))
+  return c.json({ assets: serializeGridAssets(members) })
 })
 
 photosRoutes.post("/assets/:id/share", async (c) => {

@@ -4,7 +4,14 @@ import { useEffect, useState } from "react"
 import { decryptName } from "@lib/e2e"
 import { installPhotoDebug } from "@lib/photoDebug"
 import { ensureIndexing } from "@lib/photoIndex"
-import { type GridAsset, favoriteAssets, fetchAssets, trashAssets } from "@lib/photos"
+import {
+  type GridAsset,
+  favoriteAssets,
+  fetchAssets,
+  stackAssets,
+  trashAssets,
+  unstackAssets,
+} from "@lib/photos"
 import { downloadItemFor } from "@lib/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
@@ -21,7 +28,7 @@ import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import PhotoGrid from "@pages/Photos/components/PhotoGrid/PhotoGrid"
 import TagDialog from "@pages/Photos/components/TagDialog/TagDialog"
 import { Icon } from "@lib/icons"
-import { IconPhoto } from "@tabler/icons-react"
+import { IconPhoto, IconStack2, IconStackPop } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { Kbd } from "@workspace/ui/components/kbd"
 import { toast } from "sonner"
@@ -96,6 +103,13 @@ const LibraryInner = () => {
   const [tagOpen, setTagOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
 
+  const stackedOne = one?.stackId && one.stackCount > 1 ? one : undefined
+  const stack = () => run(() => stackAssets(ids), "Stacked")
+  const unstack = () =>
+    stackedOne?.stackId
+      ? run(() => unstackAssets(stackedOne.stackId as string), "Unstacked")
+      : undefined
+
   const favourite = () => run(() => favoriteAssets(ids, true), "Added to favourites")
   const download = () => {
     if (downloadItems.length === 0) return
@@ -153,6 +167,18 @@ const LibraryInner = () => {
           Favourite
           <Kbd>⇧F</Kbd>
         </Button>
+        {ids.length >= 2 ? (
+          <Button variant="ghost" size="sm" onClick={stack}>
+            <IconStack2 className="size-4" />
+            Stack
+          </Button>
+        ) : null}
+        {stackedOne ? (
+          <Button variant="ghost" size="sm" onClick={unstack}>
+            <IconStackPop className="size-4" />
+            Unstack
+          </Button>
+        ) : null}
         <AddToAlbumDialog
           assetIds={ids}
           onDone={afterAction}

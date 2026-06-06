@@ -1,6 +1,6 @@
 "use client"
 
-import type { Asset } from "@lib/photos"
+import type { GridAsset } from "@lib/photos"
 import { useElementWidth } from "@lib/useElementWidth"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
 
@@ -8,20 +8,20 @@ const TARGET_ROW_HEIGHT = 180
 const GAP = 4
 
 interface LaidOutAsset {
-  asset: Asset
+  asset: GridAsset
   width: number
   height: number
 }
 
-const aspectOf = (asset: Asset): number => {
+const aspectOf = (asset: GridAsset): number => {
   const raw = asset.width && asset.height ? asset.width / asset.height : 1
   return Math.min(Math.max(raw, 0.4), 3)
 }
 
-const buildRows = (assets: Asset[], containerWidth: number): LaidOutAsset[][] => {
+const buildRows = (assets: GridAsset[], containerWidth: number): LaidOutAsset[][] => {
   if (containerWidth <= 0) return []
   const rows: LaidOutAsset[][] = []
-  let current: { asset: Asset; aspect: number }[] = []
+  let current: { asset: GridAsset; aspect: number }[] = []
   let aspectSum = 0
 
   const flush = (stretch: boolean) => {
@@ -45,7 +45,7 @@ const buildRows = (assets: Asset[], containerWidth: number): LaidOutAsset[][] =>
 }
 
 interface JustifiedGridProps {
-  assets: Asset[]
+  assets: GridAsset[]
   isSelected: (id: string) => boolean
   selectionActive: boolean
   onOpen: (assetId: string) => void
