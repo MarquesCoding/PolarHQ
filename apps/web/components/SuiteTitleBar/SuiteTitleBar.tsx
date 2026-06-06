@@ -26,6 +26,7 @@ const SuiteTitleBar = ({ searchPlaceholder, extra }: SuiteTitleBarProps) => {
   const query = useAppSelector((state) => state.ui.searchQuery)
   const collapsed = useAppSelector((state) => state.ui.sidebarCollapsed)
   const [hovered, setHovered] = useState(false)
+  const [searchReadOnly, setSearchReadOnly] = useState(true)
   const [canBack, setCanBack] = useState(false)
   const [canForward, setCanForward] = useState(false)
   const lastAction = useRef<"back" | "forward" | null>(null)
@@ -79,6 +80,9 @@ const SuiteTitleBar = ({ searchPlaceholder, extra }: SuiteTitleBarProps) => {
           name="orbit-search"
           autoComplete="off"
           spellCheck={false}
+          readOnly={searchReadOnly}
+          onFocus={() => setSearchReadOnly(false)}
+          onBlur={() => setSearchReadOnly(true)}
           value={query}
           onChange={(event) => dispatch(setSearchQuery(event.target.value))}
           placeholder={searchPlaceholder}
