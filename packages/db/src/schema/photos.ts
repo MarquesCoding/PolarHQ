@@ -74,6 +74,26 @@ export const assets = photos.table(
   ],
 )
 
+/**
+ * On-device ML embeddings (CLIP image vectors, later face descriptors). Computed in the
+ * browser and stored **encrypted** under the owner's account metadata key — the server
+ * never sees the vectors, and semantic search runs entirely client-side. `vector` is the
+ * base64 ciphertext of the Float32 embedding.
+ */
+export const embeddings = photos.table(
+  "embeddings",
+  {
+    assetId: text("asset_id")
+      .notNull()
+      .references(() => assets.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull(),
+    modelVersion: text("model_version").notNull(),
+    vector: text("vector").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.assetId, t.kind] })],
+)
+
 export const albums = photos.table("albums", {
   id: id(),
   ownerId: text("owner_id")
