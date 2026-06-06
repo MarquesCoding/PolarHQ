@@ -19,6 +19,7 @@ const NAV = [
   { href: "/admin/apps", label: "Apps", icon: "apps" },
   { href: "/admin/limits", label: "Limits", icon: "sliders" },
   { href: "/admin/branding", label: "Branding", icon: "palette" },
+  { href: "/admin/backup", label: "Backup", icon: "database" },
   { href: "/admin/settings", label: "Settings", icon: "settings" },
   { href: "/admin/audit", label: "Audit log", icon: "list" },
 ]

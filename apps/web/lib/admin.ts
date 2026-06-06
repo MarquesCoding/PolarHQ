@@ -265,6 +265,46 @@ export const updateAdminSettings = (patch: Partial<AdminSettings>): Promise<unkn
 export const fetchAdminAudit = (): Promise<AdminAuditEntry[]> =>
   apiFetch<{ entries: AdminAuditEntry[] }>("/api/v1/admin/audit").then((r) => r.entries)
 
+export interface AdminBackupSettings {
+  enabled: boolean
+  endpoint: string | null
+  region: string | null
+  bucket: string | null
+  prefix: string | null
+  accessKeyId: string | null
+  forcePathStyle: boolean
+  frequencyHours: number
+  lastRunAt: string | null
+  hasSecretKey: boolean
+}
+
+export interface AdminBackupRun {
+  id: string
+  status: "running" | "completed" | "failed"
+  trigger: string
+  objectCount: number
+  bytes: number
+  error: string | null
+  startedAt: string
+  finishedAt: string | null
+}
+
+export const fetchBackupSettings = (): Promise<AdminBackupSettings> =>
+  apiFetch<{ settings: AdminBackupSettings }>("/api/v1/admin/backup/settings").then(
+    (r) => r.settings,
+  )
+
+export const updateBackupSettings = (
+  patch: Partial<AdminBackupSettings> & { secretAccessKey?: string },
+): Promise<unknown> =>
+  apiFetch("/api/v1/admin/backup/settings", { method: "PATCH", body: JSON.stringify(patch) })
+
+export const fetchBackupRuns = (): Promise<AdminBackupRun[]> =>
+  apiFetch<{ runs: AdminBackupRun[] }>("/api/v1/admin/backup/runs").then((r) => r.runs)
+
+export const triggerBackup = (): Promise<unknown> =>
+  apiFetch("/api/v1/admin/backup/run", { method: "POST" })
+
 const UNITS = ["B", "KB", "MB", "GB", "TB"]
 
 /** Human-readable byte size (e.g. 1.5 GB). */
