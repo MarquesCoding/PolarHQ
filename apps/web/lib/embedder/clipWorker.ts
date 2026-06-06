@@ -41,6 +41,8 @@ const pickDevice = async (): Promise<"webgpu" | "wasm"> => {
 
 const load = async (): Promise<Loaded> => {
   const device = await pickDevice()
+  const started = performance.now()
+  console.log(`[orbit:ml:worker] loading ${MODEL} on ${device}…`)
   const opts = { device, dtype: "q8" as const }
   const [tokenizer, processor, textModel, visionModel] = await Promise.all([
     AutoTokenizer.from_pretrained(MODEL),
@@ -48,6 +50,7 @@ const load = async (): Promise<Loaded> => {
     CLIPTextModelWithProjection.from_pretrained(MODEL, opts),
     CLIPVisionModelWithProjection.from_pretrained(MODEL, opts),
   ])
+  console.log(`[orbit:ml:worker] model ready on ${device} in ${Math.round(performance.now() - started)}ms`)
   return { tokenizer, processor, textModel, visionModel }
 }
 
@@ -82,6 +85,7 @@ interface Req {
   type: "embed-image" | "embed-text" | "warmup"
   blob?: Blob
   text?: string
+  debug?: boolean
 }
 
 const ctx = self as unknown as {
@@ -91,6 +95,7 @@ const ctx = self as unknown as {
 
 ctx.addEventListener("message", (event) => {
   const req = event.data
+  const started = performance.now()
   const run =
     req.type === "embed-image"
       ? embedImage(req.blob!)
@@ -98,7 +103,13 @@ ctx.addEventListener("message", (event) => {
         ? embedText(req.text!)
         : ready().then(() => [])
   run
-    .then((vector) => ctx.postMessage({ id: req.id, ok: true, vector }))
+    .then((vector) => {
+      if (req.debug && req.type !== "warmup")
+        console.log(
+          `[orbit:ml:worker] ${req.type} (${vector.length}-d) in ${Math.round(performance.now() - started)}ms`,
+        )
+      ctx.postMessage({ id: req.id, ok: true, vector })
+    })
     .catch((error: unknown) =>
       ctx.postMessage({ id: req.id, ok: false, error: (error as Error)?.message ?? "embed failed" }),
     )

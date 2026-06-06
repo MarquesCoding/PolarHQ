@@ -1,6 +1,7 @@
 "use client"
 
 import { apiFetch } from "@lib/apiClient"
+import { dbg } from "@lib/debug"
 import { MODEL_VERSION, embedImage, embedderSupported } from "@lib/embedder"
 import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@lib/e2e"
 import { fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
@@ -33,6 +34,7 @@ export const storeEmbedding = async (assetId: string, vector: Float32Array): Pro
 export const embedAndStore = async (assetId: string, blob: Blob): Promise<Float32Array> => {
   const vector = await embedImage(blob)
   await storeEmbedding(assetId, vector)
+  dbg("index", "embedded + stored", assetId)
   return vector
 }
 
@@ -47,6 +49,7 @@ export const fetchIndex = async (): Promise<Map<string, Float32Array>> => {
     const bytes = decryptWithMetaKey(row.vector)
     if (bytes) index.set(row.assetId, bytesToF32(bytes))
   }
+  dbg("index", `fetched index: ${index.size} vector(s) (${embeddings.length} rows)`)
   return index
 }
 
@@ -66,6 +69,7 @@ export const runBackfill = async (
 ): Promise<void> => {
   if (!isUnlocked() || !embedderSupported()) return
   const ids = await fetchMissing()
+  dbg("index", `backfill: ${ids.length} photo(s) to index`)
   for (let i = 0; i < ids.length; i += 1) {
     if (shouldStop?.()) return
     const url = await fetchDecryptedPhotoOriginal(ids[i]!, "image/jpeg")
@@ -79,7 +83,10 @@ export const runBackfill = async (
       URL.revokeObjectURL(url)
     }
     onProgress?.(i + 1, ids.length)
+    if ((i + 1) % 25 === 0 || i + 1 === ids.length)
+      dbg("index", `backfill ${i + 1}/${ids.length}`)
   }
+  dbg("index", "backfill done")
 }
 
 let indexing = false

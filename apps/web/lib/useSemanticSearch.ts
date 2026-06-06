@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { dbg } from "@lib/debug"
 import { cosine, embedText, embedderSupported } from "@lib/embedder"
 import { isUnlocked } from "@lib/e2e"
 import { fetchIndex } from "@lib/photoIndex"
@@ -55,6 +56,11 @@ export const useSemanticSearch = (query: string): SemanticSearch => {
         const floor = Math.max(FLOOR, best - MARGIN)
         let ids = scored.filter(([, score]) => score >= floor).map(([id]) => id)
         if (ids.length < MIN_RESULTS) ids = scored.slice(0, MIN_RESULTS).map(([id]) => id)
+        dbg(
+          "search",
+          `"${q}" → ${ids.length} result(s), top score ${best.toFixed(3)}`,
+          scored.slice(0, 5).map(([id, s]) => `${id}:${s.toFixed(3)}`),
+        )
         setRankedIds(ids)
       })
       .catch(() => setRankedIds(null))
