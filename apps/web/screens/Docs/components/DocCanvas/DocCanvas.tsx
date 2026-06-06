@@ -233,7 +233,6 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
     return () => {
       ydoc.off("update", onUpdate)
       clearTimeout(saveTimer.current)
-      // flush any pending edits and refresh list ordering when leaving the editor
       void flush().finally(() => queryClient.invalidateQueries({ queryKey: ["docs"] }))
     }
   }, [ydoc, flush, queryClient])

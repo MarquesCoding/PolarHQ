@@ -22,11 +22,7 @@ export const nodes = drive.table(
     parentId: text("parent_id"),
     kind: driveNodeKind("kind").notNull(),
     name: text("name").notNull(),
-    // The node name encrypted with the owner's account metadata key (E2E). When set,
-    // `name` holds only a non-revealing placeholder; clients decrypt this for display.
     encryptedName: text("encrypted_name"),
-    // For shared documents: the name encrypted with the doc's content key, so
-    // collaborators (who hold the content key, not the owner's metadata key) can read it.
     sharedName: text("shared_name"),
     mimeType: text("mime_type"),
     sizeBytes: bigint("size_bytes", { mode: "number" }),

@@ -40,8 +40,6 @@ const nameFields = (
 ): { name: string; encryptedName?: string; sharedName?: string | null } => {
   const encryptedName = encryptName(name)
   if (!encryptedName) return { name }
-  // Only include sharedName when explicitly provided, so a plaintext-dialog rename
-  // (which can't reach the content key) doesn't clobber a doc's existing sharedName.
   return sharedName === undefined
     ? { name: encryptedPlaceholder(), encryptedName }
     : { name: encryptedPlaceholder(), encryptedName, sharedName }

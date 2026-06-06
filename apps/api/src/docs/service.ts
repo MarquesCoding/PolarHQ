@@ -60,7 +60,6 @@ export const canAccessDoc = async (userId: string, nodeId: string): Promise<bool
     .where(and(eq(schema.nodes.id, nodeId), eq(schema.nodes.ownerId, userId)))
     .limit(1)
   if (owned[0]) return true
-  // E2E Photos reuse the doc_keys table keyed by the *asset* id (not a drive node).
   if (await userOwnsAsset(userId, nodeId)) return true
   const collab = await db
     .select({ id: schema.collaborators.id })

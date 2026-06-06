@@ -15,8 +15,26 @@ import { fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
 
 const KIND = "clip"
 
-// Notify listeners (the search hook) when the index gains vectors, so a just-embedded photo
-// becomes searchable without a reload instead of waiting on a stale cache.
+export const searchPrompt = (query: string): string => `a photo of ${query.trim()}`
+
+const THRESHOLD_KEY = "orbit.ml.threshold"
+const DEFAULT_THRESHOLD = 0.22
+export const getSearchThreshold = (): number => {
+  try {
+    const v = Number(localStorage.getItem(THRESHOLD_KEY))
+    return Number.isFinite(v) && v > 0 ? v : DEFAULT_THRESHOLD
+  } catch {
+    return DEFAULT_THRESHOLD
+  }
+}
+export const setSearchThreshold = (value: number): void => {
+  try {
+    localStorage.setItem(THRESHOLD_KEY, String(value))
+  } catch {
+    /* ignore */
+  }
+}
+
 const indexListeners = new Set<() => void>()
 export const onIndexChanged = (fn: () => void): (() => void) => {
   indexListeners.add(fn)
@@ -53,7 +71,6 @@ const photoBlobForEmbedding = async (assetId: string): Promise<Blob | null> => {
       URL.revokeObjectURL(decrypted)
     }
   }
-  // Plaintext asset (e.g. uploaded while locked) — the original endpoint serves it directly.
   const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/original`, {
     credentials: "include",
   })

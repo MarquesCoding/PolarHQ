@@ -153,7 +153,6 @@ docsRoutes.delete("/documents/:id/collaborators/:userId", async (c) => {
   return c.json({ ok: true })
 })
 
-// --- E2E key storage (server only ever stores ciphertext / public keys) ---
 
 docsRoutes.get("/keys/me", async (c) => {
   const bundle = await getUserKeys(c.get("userId"))
@@ -185,7 +184,6 @@ docsRoutes.post("/keys", async (c) => {
   return c.json({ keys: bundle }, 201)
 })
 
-// Back-fill the account metadata key for an account enrolled before metadata encryption.
 docsRoutes.put("/keys/meta", async (c) => {
   const parsed = await parse(c, z.object({ wrappedMetaKey: z.string() }))
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
@@ -193,7 +191,6 @@ docsRoutes.put("/keys/meta", async (c) => {
   return c.json({ ok: true })
 })
 
-// Migrate a legacy account to stronger KDF params (the client re-wraps its own private key).
 docsRoutes.put("/keys/kdf", async (c) => {
   const parsed = await parse(
     c,
@@ -231,8 +228,6 @@ docsRoutes.post("/documents/:id/keys", async (c) => {
   }
 })
 
-// Rotate the content key: replace every wrapped key with a fresh set, destroying any
-// stale key held by a revoked collaborator. Owner-only (replaceDocKeys checks ownership).
 docsRoutes.post("/documents/:id/keys/rotate", async (c) => {
   const parsed = await parse(
     c,
@@ -247,7 +242,6 @@ docsRoutes.post("/documents/:id/keys/rotate", async (c) => {
   }
 })
 
-// Store the content key wrapped to the requesting user (used when creating an encrypted doc).
 docsRoutes.post("/documents/:id/self-key", async (c) => {
   const parsed = await parse(c, z.object({ wrappedKey: z.string() }))
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)

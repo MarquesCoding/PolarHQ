@@ -3,18 +3,18 @@
 import { setDebug } from "@lib/debug"
 import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "@lib/embedder"
 import { isUnlocked } from "@lib/e2e"
-import { embedAsset, ensureIndexing, fetchIndex, fetchMissing } from "@lib/photoIndex"
+import {
+  embedAsset,
+  ensureIndexing,
+  fetchIndex,
+  fetchMissing,
+  getSearchThreshold,
+  searchPrompt,
+  setSearchThreshold,
+} from "@lib/photoIndex"
 import { labelAsset } from "@lib/photoLabels"
 
-/**
- * Console debugging for the on-device ML pipeline. Attaches `window.orbit.ml` with helpers
- * to inspect and drive the semantic index from the browser console:
- *
- *   await orbit.ml.status()        // indexed / missing counts, embedder support
- *   await orbit.ml.search("dog")   // top matches with scores (console.table)
- *   orbit.ml.enableLogs()          // verbose pipeline logs (reload after)
- *   orbit.ml.reindex()             // (re)run the background backfill
- */
+/** Attach `window.orbit.ml` console helpers to inspect and drive the semantic index. */
 export const installPhotoDebug = (): void => {
   if (typeof window === "undefined") return
   const w = window as unknown as { orbit?: Record<string, unknown> }
@@ -29,6 +29,10 @@ export const installPhotoDebug = (): void => {
     disableLogs: () => setDebug(false),
     warmup: () => warmupEmbedder(),
     reindex: () => ensureIndexing(),
+    setThreshold: (value: number) => {
+      setSearchThreshold(value)
+      console.log(`[orbit:ml] search threshold set to ${value}`)
+    },
     embed: async (assetId: string) => {
       const vector = await embedAsset(assetId)
       console.log(`[orbit:ml] embedded ${assetId}:`, vector ? `${vector.length}-d` : "unavailable")
@@ -41,6 +45,7 @@ export const installPhotoDebug = (): void => {
         embedderSupported: embedderSupported(),
         webgpu: typeof navigator !== "undefined" && "gpu" in navigator,
         modelVersion: MODEL_VERSION,
+        threshold: getSearchThreshold(),
         indexed: index.size,
         missing: missing.length,
       }
@@ -48,7 +53,7 @@ export const installPhotoDebug = (): void => {
       return status
     },
     search: async (query: string, topN = 20) => {
-      const [index, queryVector] = await Promise.all([fetchIndex(), embedText(query)])
+      const [index, queryVector] = await Promise.all([fetchIndex(), embedText(searchPrompt(query))])
       const results = [...index]
         .map(([assetId, vector]) => ({ assetId, score: Number(cosine(queryVector, vector).toFixed(4)) }))
         .sort((a, b) => b.score - a.score)
@@ -56,8 +61,6 @@ export const installPhotoDebug = (): void => {
       console.table(results)
       return results
     },
-    // Zero-shot "tags": the closest labels to a photo's vector. Defaults to the first
-    // indexed photo so you can just call `orbit.ml.labels()`.
     labels: async (assetId?: string, topK = 10) => {
       const index = await fetchIndex()
       const id = assetId ?? [...index.keys()][0]

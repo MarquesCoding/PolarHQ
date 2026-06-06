@@ -220,8 +220,6 @@ export const renameNode = async (
   encryptedName?: string | null,
   sharedName?: string | null,
 ): Promise<void> => {
-  // Only touch the encrypted-name columns when the caller actually supplied them, so a
-  // plaintext rename (e.g. from a dialog without the content key) doesn't wipe them.
   const set: Partial<typeof schema.nodes.$inferInsert> = { name, updatedAt: new Date() }
   if (encryptedName !== undefined) set.encryptedName = encryptedName
   if (sharedName !== undefined) set.sharedName = sharedName

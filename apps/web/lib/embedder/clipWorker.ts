@@ -1,8 +1,4 @@
 /// <reference lib="webworker" />
-//
-// CLIP runs entirely in the browser so an E2E server never sees the pixels. This worker
-// loads a quantized CLIP (WebGPU when available, else WASM) and returns L2-normalised
-// image/text embeddings in the same space, so cosine similarity = relevance.
 
 import {
   AutoProcessor,
@@ -17,7 +13,6 @@ import {
 } from "@huggingface/transformers"
 import { MODEL } from "./model"
 
-// Pull models from the CDN (we ship no local weights).
 env.allowLocalModels = false
 
 interface Loaded {

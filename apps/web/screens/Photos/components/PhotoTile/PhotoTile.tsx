@@ -53,7 +53,6 @@ const PhotoTile = ({
   onPreviewEnd,
 }: PhotoTileProps) => {
   const [loaded, setLoaded] = useState(() => loadedThumbnails.has(asset.id))
-  // Encrypted thumbnails are ciphertext at their URL — fetch + decrypt to an object URL.
   const [decryptedThumb, setDecryptedThumb] = useState<string | null>(null)
   useEffect(() => {
     if (!asset.encrypted) return

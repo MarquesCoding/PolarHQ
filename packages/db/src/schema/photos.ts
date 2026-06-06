@@ -54,9 +54,6 @@ export const assets = photos.table(
     cameraMake: text("camera_make"),
     cameraModel: text("camera_model"),
     exif: jsonb("exif"),
-    // E2E: when true the stored bytes/thumbnail are client-encrypted (the server runs no
-    // media processing). `encryptedName` holds the filename encrypted with the owner's
-    // account metadata key; `originalFilename` is then only a placeholder.
     encrypted: boolean("encrypted").notNull().default(false),
     encryptedName: text("encrypted_name"),
     status: assetStatus("status").notNull().default("uploading"),

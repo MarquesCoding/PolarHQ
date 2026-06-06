@@ -56,7 +56,6 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
     mutationFn: async (): Promise<ShareKeyResult> => {
       const targetEmail = email.trim()
       await addDocCollaborator(nodeId!, targetEmail, role)
-      // For an encrypted doc, wrap its content key to the new collaborator's public key.
       if (await isDocEncrypted(nodeId!)) return shareDocKey(nodeId!, targetEmail)
       return { status: "ok", fingerprint: "" }
     },
@@ -79,7 +78,6 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
   const remove = useMutation({
     mutationFn: async (userId: string) => {
       await removeDocCollaborator(nodeId!, userId)
-      // Rotate the content key so the removed collaborator can no longer decrypt the doc.
       const selfId = session?.user.id
       if (selfId && (await isDocEncrypted(nodeId!))) await rekeyDoc(nodeId!, selfId)
     },

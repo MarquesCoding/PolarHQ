@@ -41,19 +41,14 @@ interface KeyBundle {
   wrappedMetaKey: string | null
 }
 
-// The unlocked keypair is persisted encrypted at rest (see secureStore) so it survives
-// refreshes/tabs once signed in, while a storage dump stays useless. Cleared on sign-out.
 const LEGACY_KEY = "orbit.e2e.kp"
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 
 let keypair: Keypair | null = null
-// The account metadata key — decrypts node names (see encryptName/decryptName).
 let metaKey: Uint8Array | null = null
 const contentKeyCache = new Map<string, Uint8Array>()
 
-// The old scheme stored the keypair as plaintext JSON in web storage. Read it (from either
-// session- or localStorage) so we can migrate it into secure storage, then purge it.
 const readLegacy = (): string | null => {
   try {
     return (
@@ -91,7 +86,6 @@ const restore = async () => {
       /* ignore */
     }
   }
-  // One-time migration: recover the keypair from the old plaintext storage into secureStore.
   if (!keypair) {
     const legacy = readLegacy()
     if (legacy) {
@@ -107,8 +101,6 @@ const restore = async () => {
   clearLegacy()
 }
 
-// Best-effort: the in-memory keypair is the source of truth, so a storage failure must
-// never flip an otherwise-successful unlock into a re-prompt loop.
 const persist = async () => {
   if (!keypair) return
   try {
@@ -152,7 +144,6 @@ const ensureMetaKey = async (bundle: KeyBundle): Promise<void> => {
 export const e2eReady = async (): Promise<void> => {
   await cryptoReady()
   await restore()
-  // Restored the keypair from a pre-metadata session but never loaded the metadata key.
   if (keypair && !metaKey) {
     const bundle = await fetchKeyBundle().catch(() => null)
     if (bundle) {
@@ -208,8 +199,6 @@ export const unlockKeys = async (password: string): Promise<boolean> => {
   const bundle = await fetchKeyBundle()
   if (!bundle) return false
   try {
-    // Accounts enrolled before KDF params were versioned have none stored — their key was
-    // wrapped with the legacy INTERACTIVE params, so derive with those (not the new default).
     const params = bundle.kdfParams
       ? (JSON.parse(bundle.kdfParams) as KdfParams)
       : legacyKdfParams()
@@ -220,7 +209,6 @@ export const unlockKeys = async (password: string): Promise<boolean> => {
     keypair = { publicKey: fromB64(bundle.publicKey), privateKey }
     await ensureMetaKey(bundle)
     await persist()
-    // Upgrade a legacy account to the stronger KDF now that we hold the password + key.
     if (!bundle.kdfParams) void upgradeKdf(password, privateKey)
     return true
   } catch {
@@ -435,24 +423,22 @@ export const shareDocKey = async (nodeId: string, email: string): Promise<ShareK
 export const rekeyDoc = async (nodeId: string, selfUserId: string): Promise<void> => {
   if (!keypair) throw new Error("locked")
   const oldKey = await getDocContentKey(nodeId)
-  if (!oldKey) return // plaintext doc — nothing to rotate
+  if (!oldKey) return
   const newKey = newContentKey()
 
-  // Re-encrypt the stored snapshot under the new key.
   const content = new Uint8Array(await fetchDocContent(nodeId))
   if (content.byteLength) {
     const plain = secretboxOpen(content, oldKey)
     await saveDocContent(nodeId, secretboxSeal(plain, newKey))
   }
 
-  // Wrap the new key to the owner + every remaining collaborator (revoked users excluded).
   const entries = [{ userId: selfUserId, wrappedKey: toB64(sealTo(newKey, keypair.publicKey)) }]
   for (const collab of await fetchDocCollaborators(nodeId)) {
     const target = await apiFetch<{ userId: string; publicKey: string }>(
       `/api/v1/docs/keys/public?email=${encodeURIComponent(collab.email)}`,
     ).catch(() => null)
     if (!target) continue
-    if (verifyAndPin(target.userId, target.publicKey).changed) continue // suspicious key change
+    if (verifyAndPin(target.userId, target.publicKey).changed) continue
     entries.push({
       userId: target.userId,
       wrappedKey: toB64(sealTo(newKey, fromB64(target.publicKey))),

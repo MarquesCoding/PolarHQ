@@ -69,8 +69,6 @@ const serializeNode = (node: DriveNode, encryptedIds?: Set<string>) => {
     createdAt: node.createdAt,
     updatedAt: node.updatedAt,
     downloadUrl: node.kind === "file" ? `${driveBase}/${node.id}/download` : null,
-    // Encrypted photo mirrors serve their thumbnail (ciphertext) from the Drive endpoint,
-    // which the client decrypts; the plaintext Photos thumbnail URL would not decode.
     thumbnailUrl:
       node.photoAssetId && !encrypted
         ? `${photosBase}/${node.photoAssetId}/thumbnail?u=${node.updatedAt.getTime()}`
@@ -153,8 +151,6 @@ driveRoutes.post("/nodes/upload", async (c) => {
   const mtime = typeof mtimeRaw === "string" ? Number(mtimeRaw) : NaN
   const clientModifiedAt = Number.isFinite(mtime) && mtime > 0 ? new Date(mtime) : undefined
 
-  // E2E upload: the body is ciphertext. Store it as-is with the original mime (sent
-  // separately) and never run server-side media processing — the client owns the thumbnail.
   if (body["encrypted"] === "true") {
     const originalMime = typeof body["mimeType"] === "string" ? body["mimeType"] : mimeType
     const encryptedName = typeof body["encryptedName"] === "string" ? body["encryptedName"] : null
@@ -207,7 +203,6 @@ driveRoutes.post("/nodes/upload", async (c) => {
   return c.json({ node: serializeNode(node) }, 201)
 })
 
-// Encrypted thumbnail blobs (client-generated, stored opaque under the user's .thumbnails).
 driveRoutes.put("/nodes/:id/thumbnail", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
@@ -292,7 +287,6 @@ driveRoutes.post("/nodes/:id/share", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
   if (!node) return c.json({ error: "not found" }, 404)
-  // A public link would expose ciphertext with no way to decrypt — block it for now.
   if ((await nodesWithKeys(userId, [node.id])).has(node.id)) {
     return c.json({ error: "Encrypted files can’t be shared with a public link" }, 400)
   }

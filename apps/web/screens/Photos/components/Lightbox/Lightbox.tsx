@@ -156,7 +156,6 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
   const download = () =>
     upload.download(displayName, [{ id: asset.id, name: displayName, encrypted: asset.encrypted }])
 
-  // Encrypted media: decrypt the full original to an object URL for the viewer/player.
   const [decryptedSrc, setDecryptedSrc] = useState<string | null>(null)
   useEffect(() => {
     if (!asset.encrypted) {
