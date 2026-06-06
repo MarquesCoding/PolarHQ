@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import NumberFlow from "@number-flow/react"
 import { Icon } from "@lib/icons"
 import { IconMinus, IconPlus } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
@@ -140,7 +141,7 @@ const SizeControl = ({
                     >
                       <IconMinus className="size-4" />
                     </Button>
-                    <span className="w-5 text-center text-sm tabular-nums">{gap}</span>
+                    <NumberFlow value={gap} className="w-5 text-center text-sm" />
                     <Button
                       variant="ghost"
                       size="icon-sm"
