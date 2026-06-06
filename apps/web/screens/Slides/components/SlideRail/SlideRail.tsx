@@ -5,12 +5,18 @@ import { IconPlus, IconTrash } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import type * as Y from "yjs"
-import { slideFragmentName } from "@pages/Slides/components/SlideEditor/SlideEditor"
+import { textFragmentName } from "@pages/Slides/components/SlideCanvas/SlideTextBox"
 
 const snippet = (ydoc: Y.Doc, id: string): string =>
   ydoc
-    .getXmlFragment(slideFragmentName(id))
-    .toString()
+    .getArray<string>(`slide:${id}:els`)
+    .toArray()
+    .map((elId) =>
+      ydoc.getMap(`el:${elId}`).get("type") === "text"
+        ? ydoc.getXmlFragment(textFragmentName(elId)).toString()
+        : "",
+    )
+    .join(" ")
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim()

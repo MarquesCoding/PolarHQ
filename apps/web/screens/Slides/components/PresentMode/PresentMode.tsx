@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { IconX } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import type * as Y from "yjs"
-import SlideEditor from "@pages/Slides/components/SlideEditor/SlideEditor"
+import SlideCanvas from "@pages/Slides/components/SlideCanvas/SlideCanvas"
 
 interface PresentModeProps {
   ydoc: Y.Doc
@@ -50,15 +50,7 @@ const PresentMode = ({ ydoc, slideIds, startIndex, onExit }: PresentModeProps) =
       </Button>
 
       <div className="w-full max-w-6xl" onClick={(event) => event.stopPropagation()}>
-        {id ? (
-          <SlideEditor
-            key={id}
-            ydoc={ydoc}
-            slideId={id}
-            editable={false}
-            className="border-none bg-white text-black"
-          />
-        ) : null}
+        {id ? <SlideCanvas key={id} ydoc={ydoc} slideId={id} editable={false} /> : null}
       </div>
 
       <div className="absolute bottom-4 text-sm text-white/60 tabular-nums">
