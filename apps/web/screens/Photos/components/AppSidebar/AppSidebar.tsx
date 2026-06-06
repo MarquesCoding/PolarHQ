@@ -19,6 +19,7 @@ import { cn } from "@workspace/ui/lib/utils"
 const NAV = [
   { href: "/photos", label: "Photos", icon: "images-3" },
   { href: "/photos/albums", label: "Albums", icon: "album-3" },
+  { href: "/photos/map", label: "Map", icon: "map-pin" },
   { href: "/photos/favourites", label: "Favourites", icon: "favourites" },
   { href: "/photos/trash", label: "Trash", icon: "trash" },
 ]

@@ -56,6 +56,7 @@ export const assets = photos.table(
     exif: jsonb("exif"),
     encrypted: boolean("encrypted").notNull().default(false),
     encryptedName: text("encrypted_name"),
+    encryptedLocation: text("encrypted_location"),
     status: assetStatus("status").notNull().default("uploading"),
     inLibrary: boolean("in_library").notNull().default(true),
     isFavorite: boolean("is_favorite").notNull().default(false),

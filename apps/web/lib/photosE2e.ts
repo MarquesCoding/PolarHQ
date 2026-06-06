@@ -5,6 +5,7 @@ import {
   createContentKey,
   decryptName,
   encryptName,
+  encryptWithMetaKey,
   encryptedPlaceholder,
   getDocContentKey,
   storeContentKey,
@@ -12,6 +13,20 @@ import {
 import { API_URL } from "@lib/env"
 import type { Asset, GridAsset } from "@lib/photos"
 import { analyzeAudio, analyzeImage, analyzeVideo } from "@lib/thumbnails"
+import exifr from "exifr"
+
+const encoder = new TextEncoder()
+
+/** Extract GPS from an image and encrypt it under the account metadata key (null if none). */
+export const encryptedGpsFor = async (file: File): Promise<string | null> => {
+  try {
+    const gps = await exifr.gps(file)
+    if (!gps || typeof gps.latitude !== "number" || typeof gps.longitude !== "number") return null
+    return encryptWithMetaKey(encoder.encode(JSON.stringify({ lat: gps.latitude, lng: gps.longitude })))
+  } catch {
+    return null
+  }
+}
 
 /** Map an asset to a download item, resolving the encrypted filename for the saved file. */
 export const downloadItemFor = (
@@ -44,6 +59,7 @@ export const uploadEncryptedMedia = async (file: File): Promise<Asset> => {
   let width: number | undefined
   let height: number | undefined
   let durationMs: number | undefined
+  let encryptedLocation: string | null = null
   if (file.type.startsWith("video/")) {
     const v = await analyzeVideo(file).catch(() => null)
     if (v) ({ poster: thumbnail, width, height, durationMs } = v)
@@ -54,6 +70,7 @@ export const uploadEncryptedMedia = async (file: File): Promise<Asset> => {
     thumbnail = i.thumbnail
     width = i.width
     height = i.height
+    encryptedLocation = await encryptedGpsFor(file)
   }
 
   const encryptedName = encryptName(file.name)
@@ -70,6 +87,7 @@ export const uploadEncryptedMedia = async (file: File): Promise<Asset> => {
   if (height !== undefined) form.set("height", String(height))
   if (durationMs !== undefined) form.set("durationMs", String(durationMs))
   if (encryptedName) form.set("encryptedName", encryptedName)
+  if (encryptedLocation) form.set("encryptedLocation", encryptedLocation)
   if (file.lastModified) form.set("mtime", String(file.lastModified))
 
   const response = await fetch(`${API_URL}/api/v1/photos/assets`, {
