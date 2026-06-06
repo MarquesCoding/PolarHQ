@@ -542,7 +542,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
             transition={{ duration: 0.15 }}
           >
             <motion.img
-              src={previewSrc ?? ""}
+              src={previewSrc ?? undefined}
               alt={preview.originalFilename}
               className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
               initial={{ scale: 0.85, opacity: 0 }}
