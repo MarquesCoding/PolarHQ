@@ -10,6 +10,7 @@ export const ADMIN_PERMISSIONS: PermissionDef[] = [
   { key: "admin.roles.manage", description: "Manage roles and permissions", resource: "roles", action: "manage" },
   { key: "admin.limits.manage", description: "Manage quotas and limits", resource: "limits", action: "manage" },
   { key: "admin.apps.manage", description: "Enable or disable apps", resource: "apps", action: "manage" },
+  { key: "admin.backup.manage", description: "Manage backups", resource: "backup", action: "manage" },
   { key: "admin.audit.read", description: "View the audit log", resource: "audit", action: "read" },
 ]
 

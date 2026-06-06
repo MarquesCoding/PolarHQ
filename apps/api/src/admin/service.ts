@@ -1,5 +1,6 @@
 import { db, schema } from "@workspace/db"
 import { getPermissionCatalog, resolveLimit } from "@workspace/auth"
+import { enqueueBackupRun } from "@workspace/jobs"
 import { and, count, desc, eq, isNull, sql } from "drizzle-orm"
 import { getAppsForUser } from "../apps/service"
 import { getInstanceSettings, updateInstanceSettings } from "../instance"
@@ -445,6 +446,79 @@ export const clearLimit = async (
 /** Recent audit-log entries, newest first. */
 export const listAudit = async (limit = 100) =>
   db.select().from(schema.auditLog).orderBy(desc(schema.auditLog.createdAt)).limit(limit)
+
+const BACKUP_SINGLETON = "singleton"
+
+const ensureBackupSettings = async () => {
+  const rows = await db
+    .select()
+    .from(schema.backupSettings)
+    .where(eq(schema.backupSettings.id, BACKUP_SINGLETON))
+    .limit(1)
+  if (rows[0]) return rows[0]
+  await db.insert(schema.backupSettings).values({ id: BACKUP_SINGLETON }).onConflictDoNothing()
+  const created = await db
+    .select()
+    .from(schema.backupSettings)
+    .where(eq(schema.backupSettings.id, BACKUP_SINGLETON))
+    .limit(1)
+  if (!created[0]) throw new Error("Failed to initialize backup settings")
+  return created[0]
+}
+
+/** Backup destination config with the secret key replaced by a `hasSecretKey` flag. */
+export const getBackupSettings = async () => {
+  const { secretAccessKey, ...rest } = await ensureBackupSettings()
+  return { ...rest, hasSecretKey: Boolean(secretAccessKey) }
+}
+
+export interface BackupSettingsPatch {
+  enabled?: boolean
+  endpoint?: string | null
+  region?: string | null
+  bucket?: string | null
+  prefix?: string | null
+  accessKeyId?: string | null
+  secretAccessKey?: string | null
+  forcePathStyle?: boolean
+  frequencyHours?: number
+}
+
+/** Update backup settings; a blank/omitted `secretAccessKey` leaves the stored secret unchanged. */
+export const updateBackupSettings = async (patch: BackupSettingsPatch) => {
+  await ensureBackupSettings()
+  const set: Partial<typeof schema.backupSettings.$inferInsert> = { updatedAt: new Date() }
+  if (patch.enabled !== undefined) set.enabled = patch.enabled
+  if (patch.endpoint !== undefined) set.endpoint = patch.endpoint
+  if (patch.region !== undefined) set.region = patch.region
+  if (patch.bucket !== undefined) set.bucket = patch.bucket
+  if (patch.prefix !== undefined) set.prefix = patch.prefix
+  if (patch.accessKeyId !== undefined) set.accessKeyId = patch.accessKeyId
+  if (patch.forcePathStyle !== undefined) set.forcePathStyle = patch.forcePathStyle
+  if (patch.frequencyHours !== undefined) set.frequencyHours = patch.frequencyHours
+  if (patch.secretAccessKey) set.secretAccessKey = patch.secretAccessKey
+  await db
+    .update(schema.backupSettings)
+    .set(set)
+    .where(eq(schema.backupSettings.id, BACKUP_SINGLETON))
+  return getBackupSettings()
+}
+
+/** Recent backup runs, newest first. */
+export const listBackupRuns = async (limit = 20) =>
+  db.select().from(schema.backupRuns).orderBy(desc(schema.backupRuns.startedAt)).limit(limit)
+
+/** Create a manual backup run and enqueue it for the worker to execute. */
+export const triggerBackup = async () => {
+  const inserted = await db
+    .insert(schema.backupRuns)
+    .values({ trigger: "manual", status: "running" })
+    .returning()
+  const run = inserted[0]
+  if (!run) throw new Error("Failed to start backup run")
+  await enqueueBackupRun(run.id)
+  return run
+}
 
 /** Append an audit-log entry. */
 export const recordAudit = async (entry: {
