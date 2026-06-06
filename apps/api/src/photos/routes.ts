@@ -85,6 +85,7 @@ photosRoutes.post("/assets", async (c) => {
     const type = mime.startsWith("video/") ? "video" : mime.startsWith("audio/") ? "audio" : "image"
     const encryptedNameRaw = form.get("encryptedName")
     const encryptedLocationRaw = form.get("encryptedLocation")
+    const encryptedExifRaw = form.get("encryptedExif")
     const { asset, mirrorNodeId } = await ingestEncryptedAsset({
       ownerId: c.get("userId"),
       bytes,
@@ -96,6 +97,7 @@ photosRoutes.post("/assets", async (c) => {
       takenAt: clientModifiedAt,
       encryptedName: typeof encryptedNameRaw === "string" ? encryptedNameRaw : null,
       encryptedLocation: typeof encryptedLocationRaw === "string" ? encryptedLocationRaw : null,
+      encryptedExif: typeof encryptedExifRaw === "string" ? encryptedExifRaw : null,
       placeholderName: file.name || "encrypted",
     })
     return c.json({ asset: await serializeAsset(asset), mirrorNodeId, deduped: false }, 201)

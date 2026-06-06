@@ -29,6 +29,60 @@ export const encryptedGpsFor = async (file: File): Promise<string | null> => {
   }
 }
 
+export interface ExtractedMetadata {
+  encryptedLocation: string | null
+  encryptedExif: string | null
+  takenAtMs: number | null
+}
+
+const EMPTY_METADATA: ExtractedMetadata = {
+  encryptedLocation: null,
+  encryptedExif: null,
+  takenAtMs: null,
+}
+
+/**
+ * Parse an image's EXIF once and return its location + camera metadata encrypted under the
+ * account metadata key, plus the real capture date (DateTimeOriginal) so the timeline uses it
+ * instead of the file's mtime. Everything is extracted client-side because E2E uploads bypass
+ * the server's media pipeline.
+ */
+export const extractEncryptedMetadata = async (file: File): Promise<ExtractedMetadata> => {
+  try {
+    const data = await exifr.parse(file, { tiff: true, exif: true, gps: true }).catch(() => null)
+    if (!data) return EMPTY_METADATA
+
+    const encryptedLocation =
+      typeof data.latitude === "number" && typeof data.longitude === "number"
+        ? encryptWithMetaKey(encoder.encode(JSON.stringify({ lat: data.latitude, lng: data.longitude })))
+        : null
+
+    const exif = {
+      make: data.Make,
+      model: data.Model,
+      lens: data.LensModel,
+      iso: data.ISO,
+      fNumber: data.FNumber,
+      exposureTime: data.ExposureTime,
+      focalLength: data.FocalLength,
+      focalLengthIn35mm: data.FocalLengthIn35mmFormat,
+      exposureCompensation: data.ExposureCompensationValue ?? data.ExposureCompensation,
+      software: data.Software,
+    }
+    const hasExif = Object.values(exif).some((value) => value !== undefined && value !== null)
+    const encryptedExif = hasExif
+      ? encryptWithMetaKey(encoder.encode(JSON.stringify(exif)))
+      : null
+
+    const taken = data.DateTimeOriginal ?? data.CreateDate
+    const takenAtMs = taken instanceof Date && !Number.isNaN(taken.getTime()) ? taken.getTime() : null
+
+    return { encryptedLocation, encryptedExif, takenAtMs }
+  } catch {
+    return EMPTY_METADATA
+  }
+}
+
 /** Map an asset to a download item, resolving the encrypted filename for the saved file. */
 export const downloadItemFor = (
   asset: Pick<GridAsset, "id" | "encrypted" | "encryptedName" | "originalFilename">,
@@ -60,7 +114,7 @@ export const uploadEncryptedMedia = async (file: File, motionFile?: File): Promi
   let width: number | undefined
   let height: number | undefined
   let durationMs: number | undefined
-  let encryptedLocation: string | null = null
+  let metadata: ExtractedMetadata = EMPTY_METADATA
   if (file.type.startsWith("video/")) {
     const v = await analyzeVideo(file).catch(() => null)
     if (v) ({ poster: thumbnail, width, height, durationMs } = v)
@@ -71,7 +125,7 @@ export const uploadEncryptedMedia = async (file: File, motionFile?: File): Promi
     thumbnail = i.thumbnail
     width = i.width
     height = i.height
-    encryptedLocation = await encryptedGpsFor(file)
+    metadata = await extractEncryptedMetadata(file)
   }
 
   const encryptedName = encryptName(file.name)
@@ -88,8 +142,10 @@ export const uploadEncryptedMedia = async (file: File, motionFile?: File): Promi
   if (height !== undefined) form.set("height", String(height))
   if (durationMs !== undefined) form.set("durationMs", String(durationMs))
   if (encryptedName) form.set("encryptedName", encryptedName)
-  if (encryptedLocation) form.set("encryptedLocation", encryptedLocation)
-  if (file.lastModified) form.set("mtime", String(file.lastModified))
+  if (metadata.encryptedLocation) form.set("encryptedLocation", metadata.encryptedLocation)
+  if (metadata.encryptedExif) form.set("encryptedExif", metadata.encryptedExif)
+  const takenAtMs = metadata.takenAtMs ?? (file.lastModified || undefined)
+  if (takenAtMs) form.set("mtime", String(takenAtMs))
 
   const response = await fetch(`${API_URL}/api/v1/photos/assets`, {
     method: "POST",

@@ -35,6 +35,8 @@ export interface Asset {
   originalFilename: string
   encrypted: boolean
   encryptedName: string | null
+  encryptedLocation: string | null
+  encryptedExif: string | null
   mimeType: string
   type: "image" | "video" | "audio"
   width: number | null
