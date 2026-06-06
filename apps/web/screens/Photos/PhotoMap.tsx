@@ -40,17 +40,22 @@ const PhotoMap = () => {
   }, [])
 
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return
-    mapRef.current = new maplibregl.Map({
-      container: containerRef.current,
+    const container = containerRef.current
+    if (!container || mapRef.current) return
+    const map = new maplibregl.Map({
+      container,
       style: DARK_STYLE,
       center: [0, 20],
       zoom: 1.4,
       attributionControl: { compact: true },
     })
-    mapRef.current.addControl(new maplibregl.NavigationControl(), "top-left")
+    map.addControl(new maplibregl.NavigationControl(), "top-left")
+    mapRef.current = map
+    const observer = new ResizeObserver(() => map.resize())
+    observer.observe(container)
     return () => {
-      mapRef.current?.remove()
+      observer.disconnect()
+      map.remove()
       mapRef.current = null
     }
   }, [])
@@ -126,7 +131,7 @@ const PhotoMap = () => {
   }, [points])
 
   return (
-    <div className="relative flex-1">
+    <div className="relative min-h-0 flex-1">
       {isLoading ? (
         <PageSpinner />
       ) : points && points.length === 0 ? (

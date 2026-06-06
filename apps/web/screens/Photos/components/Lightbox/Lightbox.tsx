@@ -242,7 +242,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
             variant="ghost"
             size="icon-sm"
             aria-label="Info"
-            onClick={() => setInfo((value) => !value)}
+            onClick={toggleInfo}
             className={cn("rounded-full", info && "bg-muted")}
           >
             <Icon name="info" className="size-5" />
