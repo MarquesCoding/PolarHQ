@@ -33,9 +33,18 @@ const formatDuration = (ms: number): string => {
   return `${minutes}:${String(seconds).padStart(2, "0")}`
 }
 
+interface TileCorners {
+  tl: boolean
+  tr: boolean
+  bl: boolean
+  br: boolean
+}
+
 interface PhotoTileProps {
   asset: GridAsset
   rounded?: boolean
+  /** Per-corner rounding (square grid) — rounds only the outer corners of the grid block. */
+  corners?: TileCorners
   selected: boolean
   selectionActive: boolean
   animateIn?: boolean
@@ -49,6 +58,7 @@ interface PhotoTileProps {
 const PhotoTile = ({
   asset,
   rounded = true,
+  corners,
   selected,
   selectionActive,
   animateIn = false,
@@ -179,7 +189,14 @@ const PhotoTile = ({
       }}
       className={cn(
         "bg-muted border-foreground/10 group relative h-full w-full cursor-pointer overflow-hidden border transition",
-        rounded && "rounded-lg",
+        corners
+          ? cn(
+              corners.tl && "rounded-tl-lg",
+              corners.tr && "rounded-tr-lg",
+              corners.bl && "rounded-bl-lg",
+              corners.br && "rounded-br-lg",
+            )
+          : rounded && "rounded-lg",
         selected && "ring-primary ring-offset-background ring-2 ring-offset-2",
       )}
     >
@@ -263,7 +280,7 @@ const PhotoTile = ({
         )}
       >
         {selected ? (
-          <Icon name="circle-check" className="text-primary size-5" />
+          <Icon name="circle-check" className="size-5 text-white" />
         ) : (
           <IconCircle className="size-5" />
         )}
