@@ -14,7 +14,7 @@ import { IconCircle } from "@tabler/icons-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 
-const GAP = 12
+const DEFAULT_GAP = 12
 const HEADER_HEIGHT = 32
 const HEADER_GAP = 14
 const SECTION_GAP = 32
@@ -78,7 +78,12 @@ interface Layout {
   totalHeight: number
 }
 
-const buildLayout = (assets: GridAsset[], width: number, rowHeight: number): Layout => {
+const buildLayout = (
+  assets: GridAsset[],
+  width: number,
+  rowHeight: number,
+  gap: number,
+): Layout => {
   if (width <= 0 || assets.length === 0) return { rows: [], totalHeight: 0 }
   const rows: Row[] = []
   let y = 0
@@ -108,17 +113,17 @@ const buildLayout = (assets: GridAsset[], width: number, rowHeight: number): Lay
 
     const flush = (stretch: boolean) => {
       if (current.length === 0) return
-      const gaps = (current.length - 1) * GAP
+      const gaps = (current.length - 1) * gap
       const height = stretch ? (width - gaps) / aspectSum : rowHeight
       let x = 0
       const cells = current.map((item) => {
         const cellWidth = height * item.aspect
         const cell: Cell = { asset: item.asset, x, width: cellWidth, height }
-        x += cellWidth + GAP
+        x += cellWidth + gap
         return cell
       })
       rows.push({ type: "images", key: `r-${current[0]!.asset.id}`, y, height, cells })
-      y += height + GAP
+      y += height + gap
       current = []
       aspectSum = 0
     }
@@ -127,7 +132,7 @@ const buildLayout = (assets: GridAsset[], width: number, rowHeight: number): Lay
       const aspect = aspectOf(asset)
       current.push({ asset, aspect })
       aspectSum += aspect
-      if (aspectSum * rowHeight + (current.length - 1) * GAP >= width) flush(true)
+      if (aspectSum * rowHeight + (current.length - 1) * gap >= width) flush(true)
     }
     flush(false)
     y += SECTION_GAP
@@ -163,6 +168,8 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   const draggedRef = useRef(false)
   const scrubberRef = useRef<HTMLDivElement>(null)
   const [rowHeight] = usePersistentNumber("photos.rowHeight", 180)
+  const [gap] = usePersistentNumber("photos.gap", DEFAULT_GAP)
+  const [rounded] = usePersistentNumber("photos.rounded", 1)
 
   useEffect(() => {
     const element = containerRef.current
@@ -180,8 +187,8 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     [assets],
   )
   const layout = useMemo(
-    () => buildLayout(sortedGridAssets, width, rowHeight),
-    [sortedGridAssets, width, rowHeight],
+    () => buildLayout(sortedGridAssets, width, rowHeight, gap),
+    [sortedGridAssets, width, rowHeight, gap],
   )
 
   useEffect(() => {
@@ -407,6 +414,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
               >
                 <PhotoTile
                   asset={cell.asset}
+                  rounded={rounded === 1}
                   selected={selection.isSelected(cell.asset.id)}
                   selectionActive={selectionActive}
                   animateIn={fresh}

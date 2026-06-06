@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useRouter } from "next/navigation"
-import type { DriveNode } from "@lib/drive"
+import { type DriveNode, isArchiveName } from "@lib/drive"
 import { docTypeOf } from "@lib/docs"
 import {
   IconArrowsMove,
@@ -10,6 +10,7 @@ import {
   IconDownload,
   IconExternalLink,
   IconEye,
+  IconFileExport,
   IconHistory,
   IconInfoCircle,
   IconLink,
@@ -34,6 +35,7 @@ export interface DriveNodeActions {
   share: (node: DriveNode) => void
   move: (node: DriveNode) => void
   copy: (node: DriveNode) => void
+  extract: (node: DriveNode) => void
   rename: (node: DriveNode) => void
   details: (node: DriveNode) => void
   versions: (node: DriveNode) => void
@@ -112,6 +114,12 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
               <IconCopy />
               Make a copy
             </ContextMenuItem>
+            {isFile && !node.encrypted && isArchiveName(node.name) ? (
+              <ContextMenuItem onClick={() => actions.extract(node)}>
+                <IconFileExport />
+                Extract here
+              </ContextMenuItem>
+            ) : null}
             <ContextMenuItem onClick={() => actions.rename(node)}>
               <IconPencil />
               Rename

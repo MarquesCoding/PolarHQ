@@ -33,6 +33,7 @@ const formatDuration = (ms: number): string => {
 
 interface PhotoTileProps {
   asset: GridAsset
+  rounded?: boolean
   selected: boolean
   selectionActive: boolean
   animateIn?: boolean
@@ -45,6 +46,7 @@ interface PhotoTileProps {
 
 const PhotoTile = ({
   asset,
+  rounded = true,
   selected,
   selectionActive,
   animateIn = false,
@@ -143,7 +145,8 @@ const PhotoTile = ({
         }
       }}
       className={cn(
-        "bg-muted border-foreground/10 group relative h-full w-full cursor-pointer overflow-hidden rounded-lg border transition",
+        "bg-muted border-foreground/10 group relative h-full w-full cursor-pointer overflow-hidden border transition",
+        rounded && "rounded-lg",
         selected && "ring-primary ring-offset-background ring-2 ring-offset-2",
       )}
     >
