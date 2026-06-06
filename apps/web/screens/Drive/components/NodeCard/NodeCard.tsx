@@ -201,7 +201,7 @@ const NodeCard = ({
           <div className="flex h-full w-full items-center justify-center">
             {isFolder ? (
               <Icon
-                name={node.special ? "folder-lock" : "folder"}
+                name={node.special ? "folder-shield" : node.locked ? "folder-key" : "folder"}
                 className="size-16 text-blue-400"
               />
             ) : (

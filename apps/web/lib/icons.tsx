@@ -68,6 +68,8 @@ const nucleoCandidates: Record<string, string[]> = {
   folder: ["IconFolderFillDuo18", "IconFolderFill24"],
   "folder-open": ["IconFolderOpenFillDuo18", "IconFolderOpenFill24"],
   "folder-lock": ["IconFolderLockFillDuo18", "IconFolderLockFill24"],
+  "folder-key": ["IconFolderKeyFillDuo18"],
+  "folder-shield": ["IconFolderShieldFillDuo18"],
   "file-text": ["IconFileFillDuo18", "IconFileFill24", "IconTextFill24"],
   document: ["IconFileContentFillDuo18", "IconFileFillDuo18"],
   "file-zip": ["IconFileZip2FillDuo18", "IconFileZipFillDuo18"],

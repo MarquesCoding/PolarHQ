@@ -110,6 +110,8 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     .slice()
     .sort((a, b) => {
       if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
+      const rank = (node: DriveNode) => (node.special ? 0 : node.locked ? 1 : 2)
+      if (rank(a) !== rank(b)) return rank(a) - rank(b)
       return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
     })
   const byId = new Map(children.map((node) => [node.id, node]))
