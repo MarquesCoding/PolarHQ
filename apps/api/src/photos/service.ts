@@ -5,7 +5,7 @@ import { resolveLimit } from "@workspace/auth"
 import { db, schema } from "@workspace/db"
 import { enqueueProcessAsset } from "@workspace/jobs"
 import { assetObjectKeys, storage } from "@workspace/storage"
-import { and, desc, eq, inArray, lt, sql } from "drizzle-orm"
+import { and, desc, eq, inArray, isNull, lt, sql } from "drizzle-orm"
 import {
   ensurePhotosDriveNode,
   removeNodesForAssets,
@@ -145,6 +145,68 @@ export const ingestEncryptedAsset = async (
 
   const mirror = await ensurePhotosDriveNode(input.ownerId, asset).catch(() => null)
   return { asset, mirrorNodeId: mirror?.id ?? null }
+}
+
+/** Store an encrypted ML embedding for an owned asset (upsert by asset+kind). */
+export const setEmbedding = async (
+  ownerId: string,
+  assetId: string,
+  input: { kind: string; modelVersion: string; vector: string },
+): Promise<boolean> => {
+  const asset = await getAsset(ownerId, assetId)
+  if (!asset) return false
+  await db
+    .insert(schema.embeddings)
+    .values({ assetId, kind: input.kind, modelVersion: input.modelVersion, vector: input.vector })
+    .onConflictDoUpdate({
+      target: [schema.embeddings.assetId, schema.embeddings.kind],
+      set: { modelVersion: input.modelVersion, vector: input.vector },
+    })
+  return true
+}
+
+export interface EmbeddingRow {
+  assetId: string
+  modelVersion: string
+  vector: string
+}
+
+/** All of a user's encrypted embeddings of a kind — the client decrypts + searches them. */
+export const listEmbeddings = async (
+  ownerId: string,
+  kind: string,
+): Promise<EmbeddingRow[]> =>
+  db
+    .select({
+      assetId: schema.embeddings.assetId,
+      modelVersion: schema.embeddings.modelVersion,
+      vector: schema.embeddings.vector,
+    })
+    .from(schema.embeddings)
+    .innerJoin(schema.assets, eq(schema.assets.id, schema.embeddings.assetId))
+    .where(and(eq(schema.assets.ownerId, ownerId), eq(schema.embeddings.kind, kind)))
+
+/** Asset ids (this owner) that have no embedding of the given kind yet — the backfill worklist. */
+export const assetsMissingEmbedding = async (
+  ownerId: string,
+  kind: string,
+): Promise<string[]> => {
+  const rows = await db
+    .select({ id: schema.assets.id })
+    .from(schema.assets)
+    .leftJoin(
+      schema.embeddings,
+      and(eq(schema.embeddings.assetId, schema.assets.id), eq(schema.embeddings.kind, kind)),
+    )
+    .where(
+      and(
+        eq(schema.assets.ownerId, ownerId),
+        eq(schema.assets.type, "image"),
+        eq(schema.assets.isTrashed, false),
+        isNull(schema.embeddings.assetId),
+      ),
+    )
+  return rows.map((r) => r.id)
 }
 
 /** Store a client-encrypted thumbnail for an asset and mark it displayable. */

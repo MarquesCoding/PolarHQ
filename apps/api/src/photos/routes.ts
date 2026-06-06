@@ -17,15 +17,18 @@ import * as albums from "./albums"
 import { serializeAsset, serializeGridAssets } from "./serialize"
 import {
   type AssetView,
+  assetsMissingEmbedding,
   getAsset,
   emptyTrash,
   getUsage,
   ingestEncryptedAsset,
   ingestUpload,
   listAssets,
+  listEmbeddings,
   listProcessing,
   purgeAssets,
   restoreAssets,
+  setEmbedding,
   setEncryptedThumbnail,
   setFavorite,
   trashAsset,
@@ -120,6 +123,29 @@ photosRoutes.get("/assets", async (c) => {
 
 photosRoutes.get("/usage", async (c) => {
   return c.json(await getUsage(c.get("userId")))
+})
+
+// On-device ML embeddings (encrypted client-side). The server only stores/relays ciphertext;
+// semantic search runs entirely in the browser over the decrypted index.
+photosRoutes.put("/assets/:id/embedding", async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({ kind: z.string(), modelVersion: z.string(), vector: z.string() }),
+  )
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  const ok = await setEmbedding(c.get("userId"), c.req.param("id"), parsed.data)
+  if (!ok) return c.json({ error: "not found" }, 404)
+  return c.json({ ok: true })
+})
+
+photosRoutes.get("/embeddings", async (c) => {
+  const kind = c.req.query("kind") ?? "clip"
+  return c.json({ embeddings: await listEmbeddings(c.get("userId"), kind) })
+})
+
+photosRoutes.get("/embeddings/missing", async (c) => {
+  const kind = c.req.query("kind") ?? "clip"
+  return c.json({ assetIds: await assetsMissingEmbedding(c.get("userId"), kind) })
 })
 
 photosRoutes.get("/assets/processing", async (c) => {
