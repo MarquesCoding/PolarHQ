@@ -1,3 +1,4 @@
+import { decryptSecret } from "@workspace/config"
 import { db, schema } from "@workspace/db"
 import { S3Driver, storage } from "@workspace/storage"
 import { eq } from "drizzle-orm"
@@ -58,7 +59,7 @@ export const runBackup = async (runId: string): Promise<void> => {
     region: settings.region,
     endpoint: settings.endpoint ?? undefined,
     accessKeyId: settings.accessKeyId,
-    secretAccessKey: settings.secretAccessKey,
+    secretAccessKey: decryptSecret(settings.secretAccessKey),
     forcePathStyle: settings.forcePathStyle,
   })
   const source = storage()
@@ -69,8 +70,12 @@ export const runBackup = async (runId: string): Promise<void> => {
     let objectCount = 0
     let bytes = 0
     for (const object of objects) {
-      const body = await source.get(object.key)
-      await destination.put({ key: `${prefix}${object.key}`, body })
+      const body = await source.getStream(object.key)
+      await destination.putStream({
+        key: `${prefix}${object.key}`,
+        body,
+        contentLength: object.size,
+      })
       objectCount += 1
       bytes += object.size
     }

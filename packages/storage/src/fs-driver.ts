@@ -1,8 +1,9 @@
-import { createReadStream } from "node:fs"
+import { createReadStream, createWriteStream } from "node:fs"
 import { access, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises"
 import { dirname, join, relative, resolve, sep } from "node:path"
 import type { Readable } from "node:stream"
-import type { ObjectInfo, PutObjectInput, StorageDriver } from "./driver"
+import { pipeline } from "node:stream/promises"
+import type { ObjectInfo, PutObjectInput, PutStreamInput, StorageDriver } from "./driver"
 
 /** Local filesystem storage driver. Keys map to paths under a single root. */
 export class FsDriver implements StorageDriver {
@@ -27,6 +28,12 @@ export class FsDriver implements StorageDriver {
     const path = this.resolveKey(input.key)
     await mkdir(dirname(path), { recursive: true })
     await writeFile(path, input.body)
+  }
+
+  async putStream(input: PutStreamInput): Promise<void> {
+    const path = this.resolveKey(input.key)
+    await mkdir(dirname(path), { recursive: true })
+    await pipeline(input.body, createWriteStream(path))
   }
 
   async get(key: string): Promise<Buffer> {

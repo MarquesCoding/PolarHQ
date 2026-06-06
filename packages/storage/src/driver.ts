@@ -6,6 +6,14 @@ export interface PutObjectInput {
   contentType?: string
 }
 
+export interface PutStreamInput {
+  key: string
+  body: Readable
+  /** Required for S3 to stream without buffering the whole object in memory. */
+  contentLength?: number
+  contentType?: string
+}
+
 export interface ObjectInfo {
   key: string
   size: number
@@ -21,6 +29,7 @@ export interface StorageDriver {
   readonly supportsPresign: boolean
 
   put(input: PutObjectInput): Promise<void>
+  putStream(input: PutStreamInput): Promise<void>
   get(key: string): Promise<Buffer>
   getStream(key: string): Promise<Readable>
   delete(key: string): Promise<void>
