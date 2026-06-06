@@ -1,10 +1,11 @@
 "use client"
 
-import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
 import { decryptName } from "@lib/e2e"
 import { type GridAsset, assetOriginalUrl, favoriteAssets, trashAssets } from "@lib/photos"
 import { fetchDecryptedMotionVideo, fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
+import { useZoomPan } from "@lib/useZoomPan"
 import { IconLivePhoto } from "@tabler/icons-react"
 import { useUploadManager } from "@lib/uploadManager"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
@@ -26,14 +27,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
   const queryClient = useQueryClient()
   const upload = useUploadManager()
   const [info, setInfo] = useState(false)
-  const [scale, setScale] = useState(1)
-  const [offset, setOffset] = useState({ x: 0, y: 0 })
-  const stageRef = useRef<HTMLDivElement>(null)
-  const pointers = useRef<Map<number, { x: number; y: number }>>(new Map())
-  const pinch = useRef<{ dist: number; scale: number } | null>(null)
-  const pan = useRef<{ id: number; x: number; y: number; ox: number; oy: number } | null>(null)
   const deleteArmed = useRef(false)
   const asset = assets[index]
+  const zoom = useZoomPan(asset?.id)
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -66,77 +62,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
     return () => window.removeEventListener("keydown", onKey)
   }, [])
 
-  useEffect(() => {
-    setScale(1)
-    setOffset({ x: 0, y: 0 })
-  }, [index])
-
-  useEffect(() => {
-    if (scale === 1) setOffset({ x: 0, y: 0 })
-  }, [scale])
-
-  useEffect(() => {
-    const element = stageRef.current
-    if (!element) return
-    const onWheel = (event: WheelEvent) => {
-      if (!event.ctrlKey) return
-      event.preventDefault()
-      setScale((value) => Math.max(0.25, Math.min(3, value - event.deltaY * 0.01)))
-    }
-    element.addEventListener("wheel", onWheel, { passive: false })
-    return () => element.removeEventListener("wheel", onWheel)
-  }, [])
-
   if (!asset) return null
-
-  const pinchDistance = (): number => {
-    const points = [...pointers.current.values()]
-    return points.length < 2 ? 0 : Math.hypot(points[0]!.x - points[1]!.x, points[0]!.y - points[1]!.y)
-  }
-  const clampOffset = (next: { x: number; y: number }, atScale: number) => {
-    const rect = stageRef.current?.getBoundingClientRect()
-    if (!rect) return next
-    const maxX = (rect.width * (atScale - 1)) / 2
-    const maxY = (rect.height * (atScale - 1)) / 2
-    return {
-      x: Math.max(-maxX, Math.min(maxX, next.x)),
-      y: Math.max(-maxY, Math.min(maxY, next.y)),
-    }
-  }
-  const onStagePointerDown = (event: ReactPointerEvent) => {
-    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
-    if (pointers.current.size === 2) {
-      pinch.current = { dist: pinchDistance(), scale }
-      pan.current = null
-    } else if (scale > 1) {
-      pan.current = { id: event.pointerId, x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }
-      stageRef.current?.setPointerCapture(event.pointerId)
-    }
-  }
-  const onStagePointerMove = (event: ReactPointerEvent) => {
-    if (pointers.current.has(event.pointerId)) {
-      pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
-    }
-    const startPinch = pinch.current
-    if (pointers.current.size === 2 && startPinch && startPinch.dist > 0) {
-      setScale(Math.max(0.25, Math.min(3, startPinch.scale * (pinchDistance() / startPinch.dist))))
-      return
-    }
-    const startPan = pan.current
-    if (startPan && startPan.id === event.pointerId) {
-      setOffset(
-        clampOffset(
-          { x: startPan.ox + (event.clientX - startPan.x), y: startPan.oy + (event.clientY - startPan.y) },
-          scale,
-        ),
-      )
-    }
-  }
-  const onStagePointerUp = (event: ReactPointerEvent) => {
-    pointers.current.delete(event.pointerId)
-    if (pointers.current.size < 2) pinch.current = null
-    if (pan.current?.id === event.pointerId) pan.current = null
-  }
 
   const refresh = () => void queryClient.invalidateQueries({ queryKey: ["photos"] })
 
@@ -233,6 +159,42 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
           </div>
         </div>
 
+        <div className="flex items-center gap-2">
+        {asset.type === "image" && source ? (
+          <div className="panel flex items-center gap-0.5 rounded-full p-1 shadow-lg">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Zoom out"
+              onClick={zoom.zoomOut}
+              className="rounded-full"
+            >
+              <Icon name="minus" className="size-4" />
+            </Button>
+            <span className="w-11 text-center text-xs font-semibold tabular-nums">
+              {Math.round(zoom.scale * 100)}%
+            </span>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Zoom in"
+              onClick={zoom.zoomIn}
+              className="rounded-full"
+            >
+              <Icon name="plus" className="size-4" />
+            </Button>
+            <span className="bg-border mx-0.5 h-5 w-px" />
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Reset zoom"
+              onClick={zoom.reset}
+              className="rounded-full"
+            >
+              <Icon name="zoom-reset" className="size-4" />
+            </Button>
+          </div>
+        ) : null}
         <div className="panel flex items-center gap-0.5 rounded-full p-1 shadow-lg">
           {asset.motion && asset.type === "image" && motionSrc ? (
             <Button
@@ -283,30 +245,32 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
             <Icon name="info" className="size-5" />
           </Button>
         </div>
+        </div>
       </div>
 
         <div
-          ref={stageRef}
+          ref={zoom.stageRef}
           className={cn(
             "relative flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden p-6 sm:p-10",
             asset.type === "image" && "touch-none",
-            asset.type === "image" && scale > 1 && "cursor-grab active:cursor-grabbing",
+            asset.type === "image" && zoom.canPan && "cursor-grab active:cursor-grabbing",
           )}
-          onPointerDown={asset.type === "image" ? onStagePointerDown : undefined}
-          onPointerMove={asset.type === "image" ? onStagePointerMove : undefined}
-          onPointerUp={asset.type === "image" ? onStagePointerUp : undefined}
-          onPointerCancel={asset.type === "image" ? onStagePointerUp : undefined}
+          onPointerDown={asset.type === "image" ? zoom.stageHandlers.onPointerDown : undefined}
+          onPointerMove={asset.type === "image" ? zoom.stageHandlers.onPointerMove : undefined}
+          onPointerUp={asset.type === "image" ? zoom.stageHandlers.onPointerUp : undefined}
+          onPointerCancel={asset.type === "image" ? zoom.stageHandlers.onPointerCancel : undefined}
         >
           {index > 0 ? (
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="icon"
               aria-label="Previous"
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => onIndexChange(index - 1)}
-              className="panel hover:bg-muted absolute left-4 z-10 flex size-10 items-center justify-center rounded-full shadow-lg transition"
+              className="panel hover:bg-muted absolute left-4 z-10 size-10 rounded-full shadow-lg"
             >
               <Icon name="nav-back" className="size-5" />
-            </button>
+            </Button>
           ) : null}
 
           {asset.type === "video" ? (
@@ -326,7 +290,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
           ) : source ? (
             <motion.div
               className="flex h-full w-full items-center justify-center"
-              animate={{ scale, x: offset.x, y: offset.y }}
+              animate={{ scale: zoom.scale, x: zoom.offset.x, y: zoom.offset.y }}
               transition={{ duration: 0.1, ease: "easeOut" }}
             >
               <motion.img
@@ -364,58 +328,17 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
             />
           ) : null}
 
-          {asset.type === "image" && source ? (
-            <div
-              className="panel absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-0.5 rounded-full p-1 shadow-lg"
-              onPointerDown={(event) => event.stopPropagation()}
-            >
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label="Zoom out"
-                onClick={() => setScale((value) => Math.max(0.25, Number((value - 0.25).toFixed(2))))}
-                className="rounded-full"
-              >
-                <Icon name="minus" className="size-4" />
-              </Button>
-              <span className="w-11 text-center text-xs font-semibold tabular-nums">
-                {Math.round(scale * 100)}%
-              </span>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label="Zoom in"
-                onClick={() => setScale((value) => Math.min(3, Number((value + 0.25).toFixed(2))))}
-                className="rounded-full"
-              >
-                <Icon name="plus" className="size-4" />
-              </Button>
-              <span className="bg-border mx-0.5 h-5 w-px" />
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label="Reset zoom"
-                onClick={() => {
-                  setScale(1)
-                  setOffset({ x: 0, y: 0 })
-                }}
-                className="rounded-full"
-              >
-                <Icon name="zoom-reset" className="size-4" />
-              </Button>
-            </div>
-          ) : null}
-
           {index < assets.length - 1 ? (
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="icon"
               aria-label="Next"
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => onIndexChange(index + 1)}
-              className="panel hover:bg-muted absolute right-4 z-10 flex size-10 items-center justify-center rounded-full shadow-lg transition"
+              className="panel hover:bg-muted absolute right-4 z-10 size-10 rounded-full shadow-lg"
             >
               <Icon name="nav-forward" className="size-5" />
-            </button>
+            </Button>
           ) : null}
         </div>
       </div>

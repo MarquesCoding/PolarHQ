@@ -4,7 +4,9 @@ import { useEffect, useState } from "react"
 import type { DriveNode } from "@lib/drive"
 import { fetchDecryptedFile } from "@lib/driveE2e"
 import { Icon } from "@lib/icons"
+import { useZoomPan } from "@lib/useZoomPan"
 import { Button } from "@workspace/ui/components/button"
+import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 
 interface ImageViewerProps {
@@ -12,9 +14,9 @@ interface ImageViewerProps {
   onClose: () => void
 }
 
-/** Full-screen image viewer (zoom/pan-lite) styled like the Photos lightbox, for Drive images. */
+/** Full-screen image viewer with pinch / wheel / button zoom and drag-to-pan, for Drive images. */
 const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
-  const [scale, setScale] = useState(1)
+  const zoom = useZoomPan(node.id)
   const [decrypted, setDecrypted] = useState<string | null>(null)
   const src = node.encrypted ? (decrypted ?? undefined) : (node.downloadUrl ?? node.thumbnailUrl ?? undefined)
 
@@ -82,19 +84,19 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
             variant="ghost"
             size="icon-sm"
             aria-label="Zoom out"
-            onClick={() => setScale((value) => Math.max(0.25, Number((value - 0.25).toFixed(2))))}
+            onClick={zoom.zoomOut}
             className="rounded-full"
           >
             <Icon name="minus" className="size-4" />
           </Button>
           <span className="w-11 text-center text-xs font-semibold tabular-nums">
-            {Math.round(scale * 100)}%
+            {Math.round(zoom.scale * 100)}%
           </span>
           <Button
             variant="ghost"
             size="icon-sm"
             aria-label="Zoom in"
-            onClick={() => setScale((value) => Math.min(3, Number((value + 0.25).toFixed(2))))}
+            onClick={zoom.zoomIn}
             className="rounded-full"
           >
             <Icon name="plus" className="size-4" />
@@ -104,7 +106,7 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
             variant="ghost"
             size="icon-sm"
             aria-label="Reset zoom"
-            onClick={() => setScale(1)}
+            onClick={zoom.reset}
             className="rounded-full"
           >
             <Icon name="zoom-reset" className="size-4" />
@@ -121,13 +123,24 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
         </div>
       </div>
 
-      <div className="flex flex-1 items-center justify-center overflow-hidden p-6 sm:p-10" onClick={onClose}>
+      <div
+        ref={zoom.stageRef}
+        className={cn(
+          "flex flex-1 items-center justify-center overflow-hidden p-6 touch-none sm:p-10",
+          zoom.canPan && "cursor-grab active:cursor-grabbing",
+        )}
+        onClick={onClose}
+        onPointerDown={zoom.stageHandlers.onPointerDown}
+        onPointerMove={zoom.stageHandlers.onPointerMove}
+        onPointerUp={zoom.stageHandlers.onPointerUp}
+        onPointerCancel={zoom.stageHandlers.onPointerCancel}
+      >
         {src ? (
           <motion.img
             src={src}
             alt={node.name}
             draggable={false}
-            animate={{ scale }}
+            animate={{ scale: zoom.scale, x: zoom.offset.x, y: zoom.offset.y }}
             transition={{ duration: 0.1, ease: "easeOut" }}
             onClick={(event) => event.stopPropagation()}
             className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
