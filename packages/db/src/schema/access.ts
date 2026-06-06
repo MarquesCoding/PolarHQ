@@ -19,7 +19,13 @@ export const core = pgSchema("core")
 
 export const effect = core.enum("effect", ["allow", "deny"])
 export const scopeType = core.enum("scope_type", ["global", "app", "resource"])
-export const subjectType = core.enum("subject_type", ["user", "group", "token", "instance"])
+export const subjectType = core.enum("subject_type", [
+  "user",
+  "group",
+  "token",
+  "instance",
+  "workgroup",
+])
 export const registrationMode = core.enum("registration_mode", ["invite_only", "open", "closed"])
 
 const id = () =>
@@ -46,6 +52,32 @@ export const groupMembers = core.table(
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.groupId, t.userId] })],
+)
+
+/**
+ * Workgroups — an organisational tier above groups (e.g. a department containing several
+ * teams). A workgroup owns a set of groups; roles and limits targeting a workgroup apply to
+ * every member of its groups, resolved with lower precedence than a direct group grant.
+ */
+export const workgroups = core.table("workgroups", {
+  id: id(),
+  name: text("name").notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+})
+
+export const workgroupGroups = core.table(
+  "workgroup_groups",
+  {
+    workgroupId: text("workgroup_id")
+      .notNull()
+      .references(() => workgroups.id, { onDelete: "cascade" }),
+    groupId: text("group_id")
+      .notNull()
+      .references(() => groups.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.workgroupId, t.groupId] })],
 )
 
 export const roles = core.table("roles", {

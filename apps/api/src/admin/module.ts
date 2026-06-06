@@ -6,6 +6,7 @@ export const ADMIN_PERMISSIONS: PermissionDef[] = [
   { key: "admin.registration.manage", description: "Manage registration mode", resource: "registration", action: "manage" },
   { key: "admin.users.manage", description: "Manage users", resource: "users", action: "manage" },
   { key: "admin.groups.manage", description: "Manage groups", resource: "groups", action: "manage" },
+  { key: "admin.workgroups.manage", description: "Manage workgroups", resource: "workgroups", action: "manage" },
   { key: "admin.roles.manage", description: "Manage roles and permissions", resource: "roles", action: "manage" },
   { key: "admin.limits.manage", description: "Manage quotas and limits", resource: "limits", action: "manage" },
   { key: "admin.apps.manage", description: "Enable or disable apps", resource: "apps", action: "manage" },
