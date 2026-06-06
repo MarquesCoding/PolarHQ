@@ -16,7 +16,7 @@ import UnlockDialog from "@pages/Docs/components/UnlockDialog/UnlockDialog"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 
-const scrollClasses = "overflow-y-auto scrollbar-slim"
+const scrollClasses = "overflow-y-auto overscroll-none scrollbar-slim"
 const PREVIEW_PRIMARY = 0.6
 
 type Side = "left" | "right"

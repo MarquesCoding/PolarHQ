@@ -54,11 +54,19 @@ const aspectOf = (asset: GridAsset): number => {
   return Math.min(Math.max(raw, 0.4), 3)
 }
 
+export interface TileCorners {
+  tl: boolean
+  tr: boolean
+  bl: boolean
+  br: boolean
+}
+
 interface Cell {
   asset: GridAsset
   x: number
   width: number
   height: number
+  corners?: TileCorners
 }
 
 type Row =
@@ -112,13 +120,21 @@ const buildLayout = (
     if (square) {
       const cols = Math.max(1, Math.round((width + gap) / (rowHeight + gap)))
       const tile = (width - (cols - 1) * gap) / cols
-      for (let start = 0; start < group.length; start += cols) {
+      const totalRows = Math.ceil(group.length / cols)
+      for (let start = 0, rowIndex = 0; start < group.length; start += cols, rowIndex += 1) {
         const slice = group.slice(start, start + cols)
+        const lastRow = rowIndex === totalRows - 1
         const cells = slice.map((asset, column) => ({
           asset,
           x: column * (tile + gap),
           width: tile,
           height: tile,
+          corners: {
+            tl: rowIndex === 0 && column === 0,
+            tr: rowIndex === 0 && column === slice.length - 1,
+            bl: lastRow && column === 0,
+            br: lastRow && column === cols - 1,
+          },
         }))
         rows.push({ type: "images", key: `r-${slice[0]!.id}`, y, height: tile, cells })
         y += tile + gap
@@ -435,6 +451,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
                 <PhotoTile
                   asset={cell.asset}
                   rounded={rounded === 1}
+                  corners={square === 1 && rounded === 1 ? cell.corners : undefined}
                   selected={selection.isSelected(cell.asset.id)}
                   selectionActive={selectionActive}
                   animateIn={fresh}
