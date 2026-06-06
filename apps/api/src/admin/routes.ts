@@ -125,7 +125,32 @@ adminRoutes.post("/role-assignments", guard("admin.roles.manage"), async (c) => 
     }),
   )
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
-  return c.json({ assignment: await adminService.assignRole(parsed.data) }, 201)
+  const assignment = await adminService.assignRole(parsed.data)
+  await adminService.recordAudit({
+    actorId: c.get("userId"),
+    action: "role.assign",
+    targetType: "user",
+    targetId: parsed.data.userId,
+    metadata: { roleId: parsed.data.roleId },
+  })
+  return c.json({ assignment }, 201)
+})
+
+adminRoutes.delete("/role-assignments", guard("admin.roles.manage"), async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({ userId: z.string().min(1), roleId: z.string().min(1) }),
+  )
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  await adminService.unassignRole(parsed.data.userId, parsed.data.roleId)
+  await adminService.recordAudit({
+    actorId: c.get("userId"),
+    action: "role.unassign",
+    targetType: "user",
+    targetId: parsed.data.userId,
+    metadata: { roleId: parsed.data.roleId },
+  })
+  return c.json({ ok: true })
 })
 
 adminRoutes.get("/groups", guard("admin.groups.manage"), async (c) => {
@@ -173,6 +198,27 @@ adminRoutes.put("/limits", guard("admin.limits.manage"), async (c) => {
     metadata: { key: parsed.data.key, value: parsed.data.value },
   })
   return c.json({ limit })
+})
+
+adminRoutes.delete("/limits", guard("admin.limits.manage"), async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({
+      subjectType: z.enum(["user", "group", "instance"]),
+      subjectId: z.string().min(1),
+      key: z.string().min(1),
+    }),
+  )
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  await adminService.clearLimit(parsed.data.subjectType, parsed.data.subjectId, parsed.data.key)
+  await adminService.recordAudit({
+    actorId: c.get("userId"),
+    action: "limit.clear",
+    targetType: parsed.data.subjectType,
+    targetId: parsed.data.subjectId,
+    metadata: { key: parsed.data.key },
+  })
+  return c.json({ ok: true })
 })
 
 adminRoutes.put("/apps/:appId", guard("admin.apps.manage"), async (c) => {

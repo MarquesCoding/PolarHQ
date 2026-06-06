@@ -274,14 +274,54 @@ export const getUserDetail = async (userId: string) => {
     .innerJoin(schema.groups, eq(schema.groups.id, schema.groupMembers.groupId))
     .where(eq(schema.groupMembers.userId, userId))
 
+  const overrideRows = await db
+    .select({ key: schema.limits.key, value: schema.limits.value })
+    .from(schema.limits)
+    .where(
+      and(eq(schema.limits.subjectType, "user"), eq(schema.limits.subjectId, userId)),
+    )
+  const overrides = new Map(overrideRows.map((row) => [row.key, row.value]))
+
   const limits = await Promise.all(
     LIMIT_CATALOG.map(async (def) => ({
       key: def.key,
       label: def.label,
       value: (await resolveLimit(userId, def.key)) as number | string | boolean | null,
+      hasOverride: overrides.has(def.key),
+      override: (overrides.get(def.key) ?? null) as number | string | boolean | null,
     })),
   )
   return { ...profile, roles: roleRows, groups: groupRows, limits }
+}
+
+/** Assign one of the catalog roles to a user via the RBAC subject_roles table. */
+export const unassignRole = async (userId: string, roleId: string) => {
+  await db
+    .delete(schema.subjectRoles)
+    .where(
+      and(
+        eq(schema.subjectRoles.subjectType, "user"),
+        eq(schema.subjectRoles.subjectId, userId),
+        eq(schema.subjectRoles.roleId, roleId),
+      ),
+    )
+}
+
+/** Remove a limit override so the subject falls back to the inherited/instance value. */
+export const clearLimit = async (
+  subjectType: "user" | "group" | "instance",
+  subjectId: string,
+  key: string,
+) => {
+  await db
+    .delete(schema.limits)
+    .where(
+      and(
+        eq(schema.limits.subjectType, subjectType),
+        eq(schema.limits.subjectId, subjectId),
+        eq(schema.limits.key, key),
+      ),
+    )
 }
 
 /** Recent audit-log entries, newest first. */
