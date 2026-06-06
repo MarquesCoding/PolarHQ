@@ -161,8 +161,20 @@ export const addGroupMember = (groupId: string, userId: string): Promise<unknown
 export const removeGroupMember = (groupId: string, userId: string): Promise<unknown> =>
   apiFetch(`/api/v1/admin/groups/${groupId}/members/${userId}`, { method: "DELETE" })
 
+export interface AdminPermission {
+  key: string
+  description: string
+  resource: string
+  action: string
+}
+
 export const fetchAdminRoles = (): Promise<AdminRole[]> =>
   apiFetch<{ roles: AdminRole[] }>("/api/v1/admin/roles").then((r) => r.roles)
+
+export const fetchAdminPermissions = (): Promise<AdminPermission[]> =>
+  apiFetch<{ permissions: AdminPermission[] }>("/api/v1/admin/permissions").then(
+    (r) => r.permissions,
+  )
 
 export const createAdminRole = (
   name: string,
