@@ -5,7 +5,6 @@ import { Icon } from "@lib/icons"
 import { sharePhoto } from "@lib/photos"
 import { useSelection } from "@lib/selection"
 import { type DownloadItem, useUploadManager } from "@lib/uploadManager"
-import { IconUserPlus } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { Separator } from "@workspace/ui/components/separator"
 import { AnimatePresence, motion } from "motion/react"
@@ -71,7 +70,7 @@ const SelectionBar = ({
               ) : null}
               {shareAssetId ? (
                 <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
-                  <IconUserPlus className="size-4" />
+                  <Icon name="share" className="size-4" />
                   Share
                 </Button>
               ) : null}
