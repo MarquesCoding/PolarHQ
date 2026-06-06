@@ -13,6 +13,7 @@ import {
   trashDriveNode,
 } from "@lib/drive"
 import { type DocType, docTypeOf } from "@lib/docs"
+import { downloadDriveFile } from "@lib/driveE2e"
 import { createEncryptedDoc } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import { SelectionProvider, useSelection } from "@lib/selection"
@@ -104,14 +105,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   const downloadIds = (ids: string[]) => {
     for (const id of ids) {
       const node = byId.get(id)
-      if (node?.kind === "file" && node.downloadUrl) {
-        const anchor = document.createElement("a")
-        anchor.href = node.downloadUrl
-        anchor.download = node.name
-        document.body.appendChild(anchor)
-        anchor.click()
-        anchor.remove()
-      }
+      if (node) void downloadDriveFile(node)
     }
   }
 
@@ -319,7 +313,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
             Rename
           </Button>
         ) : null}
-        {single?.kind === "file" ? (
+        {single?.kind === "file" && !single.encrypted ? (
           <Button variant="ghost" size="sm" onClick={() => setShareNode(single)}>
             <IconUserPlus className="size-4" />
             Share

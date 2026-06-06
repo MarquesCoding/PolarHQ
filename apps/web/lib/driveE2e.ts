@@ -71,6 +71,26 @@ export const fetchDecryptedThumbnail = async (nodeId: string): Promise<string | 
   }
 }
 
+/** Download a Drive file, transparently decrypting it first if it's encrypted. */
+export const downloadDriveFile = async (node: DriveNode): Promise<void> => {
+  if (node.kind !== "file" || !node.downloadUrl) return
+  let href = node.downloadUrl
+  let revoke = false
+  if (node.encrypted) {
+    const url = await fetchDecryptedFile(node.id, node.downloadUrl, node.mimeType)
+    if (!url) return
+    href = url
+    revoke = true
+  }
+  const anchor = document.createElement("a")
+  anchor.href = href
+  anchor.download = node.name
+  document.body.appendChild(anchor)
+  anchor.click()
+  anchor.remove()
+  if (revoke) setTimeout(() => URL.revokeObjectURL(href), 2000)
+}
+
 /** Fetch + decrypt an encrypted node's full content into an object URL (or null). */
 export const fetchDecryptedFile = async (
   nodeId: string,
