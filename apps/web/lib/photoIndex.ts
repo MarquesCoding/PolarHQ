@@ -81,3 +81,15 @@ export const runBackfill = async (
     onProgress?.(i + 1, ids.length)
   }
 }
+
+let indexing = false
+/** Kick off a one-shot background backfill of the semantic index (idempotent per session). */
+export const ensureIndexing = (): void => {
+  if (indexing || !isUnlocked() || !embedderSupported()) return
+  indexing = true
+  void runBackfill()
+    .catch(() => undefined)
+    .finally(() => {
+      indexing = false
+    })
+}

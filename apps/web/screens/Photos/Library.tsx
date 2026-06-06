@@ -1,11 +1,15 @@
 "use client"
 
-import { favoriteAssets, fetchAssets, trashAssets } from "@lib/photos"
+import { useEffect } from "react"
+import { decryptName } from "@lib/e2e"
+import { ensureIndexing } from "@lib/photoIndex"
+import { type GridAsset, favoriteAssets, fetchAssets, trashAssets } from "@lib/photos"
 import { downloadItemFor } from "@lib/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useAssetFeed } from "@lib/useAssetFeed"
 import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
+import { useSemanticSearch } from "@lib/useSemanticSearch"
 import { useUploadManager } from "@lib/uploadManager"
 import { useAppSelector } from "@store/hooks"
 import DropZone from "@components/DropZone/DropZone"
@@ -28,9 +32,31 @@ const LibraryInner = () => {
   const { query, assets, invalidate } = useAssetFeed(["photos", "timeline"], (cursor) =>
     fetchAssets({ view: "library", cursor }),
   )
-  const visible = search
-    ? assets.filter((asset) => asset.originalFilename.toLowerCase().includes(search))
-    : assets
+
+  // Kick off the on-device semantic indexer once (idempotent), and search via CLIP.
+  useEffect(() => ensureIndexing(), [])
+  const semantic = useSemanticSearch(search)
+
+  // While searching, eagerly load the whole library so semantic results aren't capped to
+  // the first page (the grid's lazy paging is off during search).
+  useEffect(() => {
+    if (search && query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
+  }, [search, query.hasNextPage, query.isFetchingNextPage, query])
+
+  const nameOf = (asset: GridAsset): string =>
+    (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
+  const visible = !search
+    ? assets
+    : semantic.rankedIds
+      ? // Ranked by CLIP relevance, intersected with the loaded feed.
+        (() => {
+          const byId = new Map(assets.map((asset) => [asset.id, asset]))
+          return semantic.rankedIds
+            .map((id) => byId.get(id))
+            .filter((asset): asset is GridAsset => Boolean(asset))
+        })()
+      : // No index yet — fall back to a (decrypted) filename match.
+        assets.filter((asset) => nameOf(asset).toLowerCase().includes(search))
 
   const ids = [...selection.selected]
   const one = ids.length === 1 ? visible.find((asset) => asset.id === ids[0]) : undefined
