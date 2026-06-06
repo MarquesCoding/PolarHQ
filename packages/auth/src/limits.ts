@@ -38,8 +38,17 @@ const getGroupIds = async (userId: string): Promise<string[]> => {
   return rows.map((row) => row.groupId)
 }
 
+const getWorkgroupIds = async (groupIds: string[]): Promise<string[]> => {
+  if (groupIds.length === 0) return []
+  const rows = await db
+    .select({ workgroupId: schema.workgroupGroups.workgroupId })
+    .from(schema.workgroupGroups)
+    .where(inArray(schema.workgroupGroups.groupId, groupIds))
+  return [...new Set(rows.map((row) => row.workgroupId))]
+}
+
 const fetchLimits = async (
-  subjectType: "user" | "group" | "instance",
+  subjectType: "user" | "group" | "workgroup" | "instance",
   subjectIds: string[],
   key: string,
 ): Promise<LimitValue[]> => {
@@ -58,8 +67,8 @@ const fetchLimits = async (
 }
 
 /**
- * Resolve a limit for a user with precedence: user override > group > instance
- * (global) default > system default. The highest layer with a value wins
+ * Resolve a limit for a user with precedence: user override > group > workgroup >
+ * instance (global) default > system default. The highest layer with a value wins
  * outright; only peer values at the same layer combine via the limit strategy.
  */
 export const resolveLimit = async (userId: string, key: string): Promise<LimitValue> => {
@@ -72,6 +81,10 @@ export const resolveLimit = async (userId: string, key: string): Promise<LimitVa
   const groupIds = await getGroupIds(userId)
   const groupValues = await fetchLimits("group", groupIds, key)
   if (groupValues.length > 0) return aggregate(groupValues, strategy)
+
+  const workgroupIds = await getWorkgroupIds(groupIds)
+  const workgroupValues = await fetchLimits("workgroup", workgroupIds, key)
+  if (workgroupValues.length > 0) return aggregate(workgroupValues, strategy)
 
   const instanceValues = await fetchLimits("instance", ["instance"], key)
   if (instanceValues.length > 0) return instanceValues[0] ?? null
