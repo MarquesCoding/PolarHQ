@@ -33,7 +33,8 @@ interface NodeTableProps {
 }
 
 const iconFor = (node: DriveNode): string => {
-  if (node.kind === "folder") return node.special ? "folder-lock" : "folder"
+  if (node.kind === "folder")
+    return node.special ? "folder-shield" : node.locked ? "folder-key" : "folder"
   const name = node.name.toLowerCase()
   const mime = node.mimeType ?? ""
   if (mime === "application/vnd.orbit.doc") return "document"
