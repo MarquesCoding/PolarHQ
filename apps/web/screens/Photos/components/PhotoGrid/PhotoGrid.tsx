@@ -15,8 +15,8 @@ import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 
 const DEFAULT_GAP = 12
-const HEADER_HEIGHT = 32
-const HEADER_GAP = 14
+const HEADER_HEIGHT = 30
+const HEADER_GAP = 6
 const SECTION_GAP = 32
 const RESIZE_EASE = "cubic-bezier(0.22, 0.61, 0.36, 1)"
 const TILE_RESIZE_CSS = `top 0.3s ${RESIZE_EASE}, left 0.3s ${RESIZE_EASE}, width 0.3s ${RESIZE_EASE}, height 0.3s ${RESIZE_EASE}`
@@ -74,13 +74,14 @@ type Row =
   | {
       type: "header"
       key: string
+      day: string
       y: number
       height: number
       label: string
       date: Date
       assetIds: string[]
     }
-  | { type: "images"; key: string; y: number; height: number; cells: Cell[] }
+  | { type: "images"; key: string; day: string; y: number; height: number; cells: Cell[] }
 
 interface Layout {
   rows: Row[]
@@ -110,6 +111,7 @@ const buildLayout = (
     rows.push({
       type: "header",
       key: `h-${key}`,
+      day: key,
       y,
       height: HEADER_HEIGHT,
       label: dayLabel(dateOf(group[0]!)),
@@ -137,7 +139,7 @@ const buildLayout = (
             br: lastRow && column === cols - 1,
           },
         }))
-        rows.push({ type: "images", key: `r-${slice[0]!.id}`, y, height: tile, cells })
+        rows.push({ type: "images", key: `r-${slice[0]!.id}`, day: key, y, height: tile, cells })
         y += tile + gap
       }
       y += SECTION_GAP
@@ -158,7 +160,7 @@ const buildLayout = (
         x += cellWidth + gap
         return cell
       })
-      rows.push({ type: "images", key: `r-${current[0]!.asset.id}`, y, height, cells })
+      rows.push({ type: "images", key: `r-${current[0]!.asset.id}`, day: key, y, height, cells })
       y += height + gap
       current = []
       aspectSum = 0
@@ -193,6 +195,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   const [range, setRange] = useState({ start: 0, end: 0 })
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [preview, setPreview] = useState<GridAsset | null>(null)
+  const [hoveredDay, setHoveredDay] = useState<string | null>(null)
   const [marquee, setMarquee] = useState<{
     x0: number
     y0: number
@@ -241,8 +244,11 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
       setRange((prev) => (prev.start === start && prev.end === end ? prev : { start, end }))
       const scrollerRect = getScrollParent(element)?.getBoundingClientRect()
       if (scrubberRef.current) {
-        scrubberRef.current.style.top = `${(scrollerRect?.top ?? 0) - top}px`
-        scrubberRef.current.style.height = `${scrollerRect?.height ?? window.innerHeight}px`
+        const height = Math.min(scrollerRect?.height ?? window.innerHeight, layout.totalHeight)
+        const desiredTop = (scrollerRect?.top ?? 0) - top
+        const maxTop = Math.max(0, layout.totalHeight - height)
+        scrubberRef.current.style.top = `${Math.min(Math.max(desiredTop, 0), maxTop)}px`
+        scrubberRef.current.style.height = `${height}px`
       }
       if (layout.totalHeight > 0 && end >= layout.totalHeight - 400) reachEndRef.current?.()
     }
@@ -397,6 +403,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
       onPointerMove={onMarqueeMove}
       onPointerUp={onMarqueeUp}
       onPointerCancel={onMarqueeUp}
+      onPointerLeave={() => setHoveredDay(null)}
     >
       {marquee ? (
         <div
@@ -426,17 +433,22 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
             <button
               type="button"
               onClick={() => selection.toggleMany(row.assetIds)}
-              className="flex items-center gap-2 py-0.5 text-sm font-medium"
+              className="flex items-center py-0.5 text-sm font-medium"
             >
-              {row.assetIds.every((id) => selection.isSelected(id)) ? (
-                <Icon name="circle-check" className="text-primary size-5 shrink-0" />
-              ) : (
-                <IconCircle
-                  className={cn(
-                    "text-muted-foreground/50 size-5 shrink-0 opacity-0 transition group-hover:opacity-100",
-                  )}
-                />
-              )}
+              <span
+                className={cn(
+                  "flex shrink-0 items-center overflow-hidden transition-[width,opacity] duration-150",
+                  row.assetIds.every((id) => selection.isSelected(id)) || hoveredDay === row.day
+                    ? "w-7 opacity-100"
+                    : "w-0 opacity-0 group-hover:w-7 group-hover:opacity-100",
+                )}
+              >
+                {row.assetIds.every((id) => selection.isSelected(id)) ? (
+                  <Icon name="circle-check" className="size-5 shrink-0 text-white drop-shadow" />
+                ) : (
+                  <IconCircle className="text-muted-foreground/60 size-5 shrink-0" />
+                )}
+              </span>
               <span>{row.label}</span>
             </button>
           </div>
@@ -448,6 +460,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
               <div
                 key={cell.asset.id}
                 className="absolute"
+                onPointerEnter={() => setHoveredDay(row.day)}
                 style={{
                   top: row.y,
                   left: cell.x,
