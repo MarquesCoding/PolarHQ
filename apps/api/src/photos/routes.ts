@@ -20,11 +20,13 @@ import {
   getAsset,
   emptyTrash,
   getUsage,
+  ingestEncryptedAsset,
   ingestUpload,
   listAssets,
   listProcessing,
   purgeAssets,
   restoreAssets,
+  setEncryptedThumbnail,
   setFavorite,
   trashAsset,
   trashAssets,
@@ -65,6 +67,24 @@ photosRoutes.post("/assets", async (c) => {
   const mtimeRaw = body["mtime"]
   const mtime = typeof mtimeRaw === "string" ? Number(mtimeRaw) : NaN
   const clientModifiedAt = Number.isFinite(mtime) && mtime > 0 ? new Date(mtime) : undefined
+
+  // E2E upload: bytes are ciphertext. Store as-is, no media processing — the client
+  // supplies the original mime, dimensions, takenAt and (separately) the thumbnail.
+  if (body["encrypted"] === "true") {
+    const num = (v: unknown) =>
+      typeof v === "string" && v.trim() && Number.isFinite(Number(v)) ? Number(v) : undefined
+    const asset = await ingestEncryptedAsset({
+      ownerId: c.get("userId"),
+      bytes,
+      mimeType: typeof body["mimeType"] === "string" ? body["mimeType"] : "image/jpeg",
+      width: num(body["width"]),
+      height: num(body["height"]),
+      takenAt: clientModifiedAt,
+      encryptedName: typeof body["encryptedName"] === "string" ? body["encryptedName"] : null,
+      placeholderName: file.name || "encrypted",
+    })
+    return c.json({ asset: await serializeAsset(asset), deduped: false }, 201)
+  }
 
   const result = await ingestUpload({
     ownerId: c.get("userId"),
@@ -263,6 +283,14 @@ photosRoutes.get("/assets/:id/thumbnail", async (c) => {
   const asset = await getAsset(c.get("userId"), c.req.param("id"))
   if (!asset?.thumbnailKey) return c.json({ error: "not found" }, 404)
   return streamObject(asset.thumbnailKey, "image/webp")
+})
+
+// Store a client-encrypted thumbnail for an E2E asset (opaque ciphertext).
+photosRoutes.put("/assets/:id/thumbnail", async (c) => {
+  const bytes = Buffer.from(await c.req.arrayBuffer())
+  const ok = await setEncryptedThumbnail(c.get("userId"), c.req.param("id"), bytes)
+  if (!ok) return c.json({ error: "not found" }, 404)
+  return c.json({ ok: true })
 })
 
 photosRoutes.get("/assets/:id/preview", async (c) => {

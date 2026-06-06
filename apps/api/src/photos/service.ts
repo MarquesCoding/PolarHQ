@@ -84,6 +84,77 @@ export const ingestUpload = async (input: IngestInput): Promise<IngestResult> =>
   return { asset, deduped: false }
 }
 
+export interface EncryptedIngestInput {
+  ownerId: string
+  /** Ciphertext of the original image. */
+  bytes: Buffer
+  mimeType: string
+  width?: number
+  height?: number
+  takenAt?: Date
+  /** Filename encrypted with the account metadata key (the plaintext column gets a placeholder). */
+  encryptedName?: string | null
+  placeholderName: string
+}
+
+/**
+ * Ingest an end-to-end-encrypted image: the bytes are already ciphertext, so we store them
+ * as-is and run NO media processing — the client owns the content key, thumbnail, and the
+ * dimensions/takenAt the grid needs. The asset is `ready` immediately. No Drive mirror yet
+ * (the encrypted-photo↔Drive key coupling is a separate piece of work).
+ */
+export const ingestEncryptedAsset = async (input: EncryptedIngestInput): Promise<Asset> => {
+  const checksum = sha256(input.bytes)
+  const assetId = createId()
+  const keys = assetObjectKeys(input.ownerId, assetId, ".bin")
+  await storage().put({
+    key: keys.original,
+    body: input.bytes,
+    contentType: "application/octet-stream",
+  })
+
+  const inserted = await db
+    .insert(schema.assets)
+    .values({
+      id: assetId,
+      ownerId: input.ownerId,
+      checksum,
+      originalFilename: input.placeholderName,
+      encryptedName: input.encryptedName ?? null,
+      encrypted: true,
+      mimeType: input.mimeType,
+      type: "image",
+      sizeBytes: input.bytes.length,
+      width: input.width ?? null,
+      height: input.height ?? null,
+      storageKey: keys.original,
+      status: "ready",
+      takenAt: input.takenAt ?? null,
+    })
+    .returning()
+
+  const asset = inserted[0]
+  if (!asset) throw new Error("Failed to insert asset")
+  return asset
+}
+
+/** Store a client-encrypted thumbnail for an asset and mark it displayable. */
+export const setEncryptedThumbnail = async (
+  ownerId: string,
+  assetId: string,
+  bytes: Buffer,
+): Promise<boolean> => {
+  const asset = await getAsset(ownerId, assetId)
+  if (!asset) return false
+  const key = assetObjectKeys(ownerId, assetId, ".bin").thumbnail
+  await storage().put({ key, body: bytes, contentType: "application/octet-stream" })
+  await db
+    .update(schema.assets)
+    .set({ thumbnailKey: key, updatedAt: new Date() })
+    .where(eq(schema.assets.id, assetId))
+  return true
+}
+
 export interface TimelinePage {
   assets: Asset[]
   nextCursor: string | null

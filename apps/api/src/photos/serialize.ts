@@ -34,6 +34,8 @@ export const serializeAssets = (assets: Asset[]): Promise<AssetDto[]> =>
 export interface GridAssetDto {
   id: string
   originalFilename: string
+  encrypted: boolean
+  encryptedName: string | null
   type: Asset["type"]
   status: Asset["status"]
   width: number | null
@@ -50,6 +52,8 @@ export interface GridAssetDto {
 export const serializeGridAsset = (asset: Asset): GridAssetDto => ({
   id: asset.id,
   originalFilename: asset.originalFilename,
+  encrypted: asset.encrypted,
+  encryptedName: asset.encryptedName,
   type: asset.type,
   status: asset.status,
   width: asset.width,
