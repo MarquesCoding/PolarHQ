@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react"
 import type { TimelinePage } from "@lib/photos"
+import { downloadItemFor } from "@lib/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useAssetFeed } from "@lib/useAssetFeed"
 import { type ArmedConfirm, useArmedConfirm } from "@lib/useArmedConfirm"
@@ -40,6 +41,8 @@ const CollectionInner = ({
     : assets
   const ids = [...selection.selected]
   const one = ids.length === 1 ? visible.find((asset) => asset.id === ids[0]) : undefined
+  const selectedSet = new Set(ids)
+  const downloadItems = assets.filter((asset) => selectedSet.has(asset.id)).map(downloadItemFor)
   const afterAction = () => {
     invalidate()
     selection.clear()
@@ -86,7 +89,7 @@ const CollectionInner = ({
       )}
 
       <SelectionBar
-        downloadAssetIds={ids}
+        downloadItems={downloadItems}
         shareAssetId={one?.id}
         shareName={one?.originalFilename}
       >

@@ -13,7 +13,7 @@ import { API_URL } from "@lib/env"
 import { archiveDriveNodes } from "@lib/drive"
 import { uploadEncryptedDriveFile } from "@lib/driveE2e"
 import { isUnlocked } from "@lib/e2e"
-import { uploadEncryptedPhoto } from "@lib/photosE2e"
+import { downloadDecryptedPhoto, uploadEncryptedPhoto } from "@lib/photosE2e"
 import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@lib/download"
 import { deleteAssets, fetchProcessing } from "@lib/photos"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
@@ -57,10 +57,17 @@ const isSupportedMedia = (file: File): boolean =>
 /** Where an upload goes: the Photos library, or a specific Drive folder. */
 export type UploadTarget = { kind: "photos" } | { kind: "drive"; parentId: string }
 
+/** A photo to download — encrypted ones are decrypted client-side before saving. */
+export interface DownloadItem {
+  id: string
+  name: string
+  encrypted: boolean
+}
+
 interface UploadManagerApi {
   items: UploadItem[]
   upload: (files: FileList | File[], target?: UploadTarget) => void
-  download: (name: string, assetIds: string[]) => void
+  download: (name: string, items: DownloadItem[]) => void
   archive: (name: string, nodeIds: string[], parentId: string) => void
   remove: (id: string) => void
   clearFinished: () => void
@@ -310,20 +317,26 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
   )
 
   const download = useCallback(
-    (name: string, assetIds: string[]) => {
-      if (assetIds.length === 0) return
+    (name: string, downloads: DownloadItem[]) => {
+      if (downloads.length === 0) return
       const id = nextId()
-      const single = assetIds.length === 1
       setItems((previous) => [
         { id, kind: "download", name, size: 0, loaded: 0, speed: 0, status: "uploading" },
         ...previous,
       ])
       const onProgress = ({ received, total }: DownloadProgress) =>
         update(id, { loaded: received, size: total || 0 })
-      const task = single
-        ? downloadAsset(assetIds[0]!, name, onProgress)
-        : downloadAssetsZip(assetIds, onProgress)
-      void task
+
+      // Encrypted photos are decrypted client-side; plaintext ones use the server
+      // download/zip path. A mixed selection does both.
+      const encrypted = downloads.filter((d) => d.encrypted)
+      const plain = downloads.filter((d) => !d.encrypted)
+      const run = async () => {
+        for (const item of encrypted) await downloadDecryptedPhoto(item.id, item.name)
+        if (plain.length === 1) await downloadAsset(plain[0]!.id, plain[0]!.name, onProgress)
+        else if (plain.length > 1) await downloadAssetsZip(plain.map((p) => p.id), onProgress)
+      }
+      void run()
         .then(() => update(id, { status: "done" }))
         .catch(() => update(id, { status: "error", error: "Download failed" }))
     },

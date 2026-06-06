@@ -4,7 +4,7 @@ import { type ReactNode, useState } from "react"
 import { Icon } from "@lib/icons"
 import { sharePhoto } from "@lib/photos"
 import { useSelection } from "@lib/selection"
-import { useUploadManager } from "@lib/uploadManager"
+import { type DownloadItem, useUploadManager } from "@lib/uploadManager"
 import { IconUserPlus } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { Separator } from "@workspace/ui/components/separator"
@@ -13,23 +13,23 @@ import ShareDialog from "@components/ShareDialog/ShareDialog"
 
 interface SelectionBarProps {
   children: ReactNode
-  /** When provided, renders a Download action that zips these Photos asset ids. */
-  downloadAssetIds?: string[]
+  /** When provided, renders a Download action for these Photos (encrypted ones decrypt client-side). */
+  downloadItems?: DownloadItem[]
   /** When provided (single selection), renders a Share action for this photo. */
   shareAssetId?: string
   shareName?: string
 }
 
 /** Shared floating selection action bar: count, clear, optional download/share, and app actions. */
-const SelectionBar = ({ children, downloadAssetIds, shareAssetId, shareName }: SelectionBarProps) => {
+const SelectionBar = ({ children, downloadItems, shareAssetId, shareName }: SelectionBarProps) => {
   const selection = useSelection()
   const upload = useUploadManager()
   const [shareOpen, setShareOpen] = useState(false)
 
   const download = () => {
-    if (!downloadAssetIds || downloadAssetIds.length === 0) return
-    const name = downloadAssetIds.length === 1 ? "Photo" : `${downloadAssetIds.length} photos.zip`
-    upload.download(name, downloadAssetIds)
+    if (!downloadItems || downloadItems.length === 0) return
+    const name = downloadItems.length === 1 ? "Photo" : `${downloadItems.length} photos.zip`
+    upload.download(name, downloadItems)
   }
 
   return (
@@ -56,7 +56,7 @@ const SelectionBar = ({ children, downloadAssetIds, shareAssetId, shareName }: S
               </Button>
               <span className="text-sm font-semibold tabular-nums">{selection.count}</span>
               <Separator orientation="vertical" className="mx-1 h-5" />
-              {downloadAssetIds ? (
+              {downloadItems ? (
                 <Button variant="ghost" size="sm" onClick={download}>
                   <Icon name="download" className="size-4" />
                   Download
