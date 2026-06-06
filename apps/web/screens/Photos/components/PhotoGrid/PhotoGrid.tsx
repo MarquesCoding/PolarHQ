@@ -18,7 +18,6 @@ import { AnimatePresence, motion } from "motion/react"
 const DEFAULT_GAP = 12
 const HEADER_HEIGHT = 30
 const HEADER_GAP = 6
-const SECTION_GAP = 32
 /** Visual margin around the grid, baked into the layout so the surrounding space is still
  * part of the (selectable) grid container rather than dead outer padding. */
 const INSET = 24
@@ -68,30 +67,49 @@ export interface TileCorners {
 
 interface Cell {
   asset: GridAsset
+  day: string
   x: number
   width: number
   height: number
   corners?: TileCorners
 }
 
-type Row =
-  | {
-      type: "header"
-      key: string
-      day: string
-      y: number
-      height: number
-      label: string
-      date: Date
-      assetIds: string[]
-    }
-  | { type: "images"; key: string; day: string; y: number; height: number; cells: Cell[] }
+interface Row {
+  key: string
+  y: number
+  height: number
+  cells: Cell[]
+}
+
+interface DayLabel {
+  key: string
+  day: string
+  label: string
+  date: Date
+  assetIds: string[]
+  x: number
+  y: number
+}
 
 interface Layout {
   rows: Row[]
+  labels: DayLabel[]
   totalHeight: number
 }
 
+interface FlowItem {
+  asset: GridAsset
+  day: string
+  dayStart: boolean
+  aspect: number
+}
+
+/**
+ * Continuous justified (or square) flow across all photos. Days are NOT given their own
+ * full-width band; instead photos flow edge-to-edge and each day's first photo gets a floating
+ * date label above its row, so sparse days (a single photo) sit side-by-side. A row that
+ * introduces a new day reserves header space above it for the label(s).
+ */
 const buildLayout = (
   assets: GridAsset[],
   width: number,
@@ -99,42 +117,57 @@ const buildLayout = (
   gap: number,
   square: boolean,
 ): Layout => {
-  if (width <= 0 || assets.length === 0) return { rows: [], totalHeight: 0 }
+  if (width <= 0 || assets.length === 0) return { rows: [], labels: [], totalHeight: 0 }
   const innerWidth = Math.max(width - INSET * 2, 1)
   const rows: Row[] = []
-  let y = INSET
-  let i = 0
+  const labels: DayLabel[] = []
 
-  while (i < assets.length) {
-    const key = dayKey(assets[i]!)
-    const group: GridAsset[] = []
-    while (i < assets.length && dayKey(assets[i]!) === key) {
-      group.push(assets[i]!)
-      i += 1
-    }
+  const dayAssetIds = new Map<string, string[]>()
+  for (const asset of assets) {
+    const k = dayKey(asset)
+    const existing = dayAssetIds.get(k)
+    if (existing) existing.push(asset.id)
+    else dayAssetIds.set(k, [asset.id])
+  }
 
-    rows.push({
-      type: "header",
-      key: `h-${key}`,
-      day: key,
-      y,
-      height: HEADER_HEIGHT,
-      label: dayLabel(dateOf(group[0]!)),
-      date: dateOf(group[0]!),
-      assetIds: group.map((asset) => asset.id),
+  let prevDay: string | null = null
+  const items: FlowItem[] = assets.map((asset) => {
+    const day = dayKey(asset)
+    const dayStart = day !== prevDay
+    prevDay = day
+    return { asset, day, dayStart, aspect: aspectOf(asset) }
+  })
+
+  const addLabel = (item: FlowItem, x: number, labelY: number) => {
+    labels.push({
+      key: `l-${item.day}`,
+      day: item.day,
+      label: dayLabel(dateOf(item.asset)),
+      date: dateOf(item.asset),
+      assetIds: dayAssetIds.get(item.day) ?? [],
+      x,
+      y: labelY,
     })
-    y += HEADER_HEIGHT + HEADER_GAP
+  }
 
-    if (square) {
-      const cols = Math.max(1, Math.round((innerWidth + gap) / (rowHeight + gap)))
-      const tile = (innerWidth - (cols - 1) * gap) / cols
-      const totalRows = Math.ceil(group.length / cols)
-      for (let start = 0, rowIndex = 0; start < group.length; start += cols, rowIndex += 1) {
-        const slice = group.slice(start, start + cols)
-        const lastRow = rowIndex === totalRows - 1
-        const cells = slice.map((asset, column) => ({
-          asset,
-          x: INSET + column * (tile + gap),
+  let y = INSET
+
+  if (square) {
+    const cols = Math.max(1, Math.round((innerWidth + gap) / (rowHeight + gap)))
+    const tile = (innerWidth - (cols - 1) * gap) / cols
+    const totalRows = Math.ceil(items.length / cols)
+    for (let start = 0, rowIndex = 0; start < items.length; start += cols, rowIndex += 1) {
+      const slice = items.slice(start, start + cols)
+      const lastRow = rowIndex === totalRows - 1
+      const labelY = y
+      if (slice.some((item) => item.dayStart)) y += HEADER_HEIGHT + HEADER_GAP
+      const cells = slice.map((item, column) => {
+        const x = INSET + column * (tile + gap)
+        if (item.dayStart) addLabel(item, x, labelY)
+        return {
+          asset: item.asset,
+          day: item.day,
+          x,
           width: tile,
           height: tile,
           corners: {
@@ -143,46 +176,46 @@ const buildLayout = (
             bl: lastRow && column === 0,
             br: lastRow && column === cols - 1,
           },
-        }))
-        rows.push({ type: "images", key: `r-${slice[0]!.id}`, day: key, y, height: tile, cells })
-        y += tile + gap
-      }
-      y += SECTION_GAP
-      continue
+        }
+      })
+      rows.push({ key: `r-${slice[0]!.asset.id}`, y, height: tile, cells })
+      y += tile + gap
     }
-
-    let current: { asset: GridAsset; aspect: number }[] = []
+  } else {
+    let current: FlowItem[] = []
     let aspectSum = 0
 
     const flush = (stretch: boolean) => {
       if (current.length === 0) return
+      const labelY = y
+      if (current.some((item) => item.dayStart)) y += HEADER_HEIGHT + HEADER_GAP
+      const rowY = y
       const gaps = (current.length - 1) * gap
       const height = stretch ? (innerWidth - gaps) / aspectSum : rowHeight
       let x = INSET
       const cells = current.map((item) => {
         const cellWidth = height * item.aspect
-        const cell: Cell = { asset: item.asset, x, width: cellWidth, height }
+        if (item.dayStart) addLabel(item, x, labelY)
+        const cell: Cell = { asset: item.asset, day: item.day, x, width: cellWidth, height }
         x += cellWidth + gap
         return cell
       })
-      rows.push({ type: "images", key: `r-${current[0]!.asset.id}`, day: key, y, height, cells })
-      y += height + gap
+      rows.push({ key: `r-${current[0]!.asset.id}`, y: rowY, height, cells })
+      y = rowY + height + gap
       current = []
       aspectSum = 0
     }
 
-    for (const asset of group) {
-      const aspect = aspectOf(asset)
-      current.push({ asset, aspect })
-      aspectSum += aspect
+    for (const item of items) {
+      current.push(item)
+      aspectSum += item.aspect
       if (aspectSum * rowHeight + (current.length - 1) * gap >= innerWidth) flush(true)
     }
     flush(false)
-    y += SECTION_GAP
   }
 
   const contentBottom = rows.reduce((max, row) => Math.max(max, row.y + row.height), 0)
-  return { rows, totalHeight: contentBottom + INSET }
+  return { rows, labels, totalHeight: contentBottom + INSET }
 }
 
 interface PhotoGridProps {
@@ -323,7 +356,6 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     setMarquee(rect)
     const hits = new Set(marqueeBase.current)
     for (const row of layout.rows) {
-      if (row.type !== "images") continue
       for (const cell of row.cells) {
         const overlap = !(
           cell.x > rect.x1 ||
@@ -373,21 +405,18 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   )
   const selectionActive = selection.count > 0
 
-  const markers = useMemo<TimelineMarker[]>(() => {
-    const out: TimelineMarker[] = []
-    for (const row of layout.rows) {
-      if (row.type !== "header") continue
-      out.push({
-        y: row.y,
-        label: row.date.toLocaleDateString(undefined, {
+  const markers = useMemo<TimelineMarker[]>(
+    () =>
+      layout.labels.map((label) => ({
+        y: label.y,
+        label: label.date.toLocaleDateString(undefined, {
           day: "numeric",
           month: "short",
           year: "numeric",
         }),
-      })
-    }
-    return out
-  }, [layout])
+      })),
+    [layout],
+  )
 
   const scrollToY = (y: number) => {
     const element = containerRef.current
@@ -429,9 +458,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
 
   const seen = seenRef.current
   useEffect(() => {
-    for (const row of visibleRows) {
-      if (row.type === "images") for (const cell of row.cells) seen.add(cell.asset.id)
-    }
+    for (const row of visibleRows) for (const cell of row.cells) seen.add(cell.asset.id)
   })
 
   let newCount = 0
@@ -465,69 +492,68 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
         totalHeight={layout.totalHeight}
         onScrubTo={scrollToY}
       />
-      {visibleRows.map((row) =>
-        row.type === "header" ? (
-          <div
-            key={row.key}
-            className="group absolute flex items-center"
-            style={{ top: row.y, left: INSET, transition: HEADER_RESIZE_CSS }}
+      {layout.labels.map((label) => (
+        <div
+          key={label.key}
+          className="group absolute flex items-center"
+          style={{ top: label.y, left: label.x, transition: HEADER_RESIZE_CSS }}
+        >
+          <button
+            type="button"
+            onClick={() => selection.toggleMany(label.assetIds)}
+            className="flex items-center py-0.5 text-sm font-medium"
           >
-            <button
-              type="button"
-              onClick={() => selection.toggleMany(row.assetIds)}
-              className="flex items-center py-0.5 text-sm font-medium"
+            <span
+              className={cn(
+                "flex shrink-0 items-center overflow-hidden transition-[width,opacity] duration-150",
+                label.assetIds.every((id) => selection.isSelected(id)) || hoveredDay === label.day
+                  ? "w-7 opacity-100"
+                  : "w-0 opacity-0 group-hover:w-7 group-hover:opacity-100",
+              )}
             >
-              <span
-                className={cn(
-                  "flex shrink-0 items-center overflow-hidden transition-[width,opacity] duration-150",
-                  row.assetIds.every((id) => selection.isSelected(id)) || hoveredDay === row.day
-                    ? "w-7 opacity-100"
-                    : "w-0 opacity-0 group-hover:w-7 group-hover:opacity-100",
-                )}
-              >
-                {row.assetIds.every((id) => selection.isSelected(id)) ? (
-                  <Icon name="circle-check" className="size-5 shrink-0 text-white drop-shadow" />
-                ) : (
-                  <IconCircle className="text-muted-foreground/60 size-5 shrink-0" />
-                )}
-              </span>
-              <span>{row.label}</span>
-            </button>
-          </div>
-        ) : (
-          row.cells.map((cell) => {
-            const fresh = !seen.has(cell.asset.id)
-            const delay = fresh ? Math.min(newCount++ * 0.03, 0.35) : 0
-            return (
-              <div
-                key={cell.asset.id}
-                className="absolute"
-                onPointerEnter={() => setHoveredDay(row.day)}
-                style={{
-                  top: row.y,
-                  left: cell.x,
-                  width: cell.width,
-                  height: cell.height,
-                  transition: TILE_RESIZE_CSS,
-                }}
-              >
-                <PhotoTile
-                  asset={cell.asset}
-                  rounded={rounded === 1}
-                  corners={square === 1 && rounded === 1 ? cell.corners : undefined}
-                  selected={selection.isSelected(cell.asset.id)}
-                  selectionActive={selectionActive}
-                  animateIn={fresh}
-                  delay={delay}
-                  onOpen={() => onOpen(cell.asset.id)}
-                  onToggle={(shiftKey) => onToggle(cell.asset.id, shiftKey)}
-                  onPreviewStart={() => setPreview(cell.asset)}
-                  onPreviewEnd={() => setPreview(null)}
-                />
-              </div>
-            )
-          })
-        ),
+              {label.assetIds.every((id) => selection.isSelected(id)) ? (
+                <Icon name="circle-check" className="size-5 shrink-0 text-white drop-shadow" />
+              ) : (
+                <IconCircle className="text-muted-foreground/60 size-5 shrink-0" />
+              )}
+            </span>
+            <span>{label.label}</span>
+          </button>
+        </div>
+      ))}
+      {visibleRows.map((row) =>
+        row.cells.map((cell) => {
+          const fresh = !seen.has(cell.asset.id)
+          const delay = fresh ? Math.min(newCount++ * 0.03, 0.35) : 0
+          return (
+            <div
+              key={cell.asset.id}
+              className="absolute"
+              onPointerEnter={() => setHoveredDay(cell.day)}
+              style={{
+                top: row.y,
+                left: cell.x,
+                width: cell.width,
+                height: cell.height,
+                transition: TILE_RESIZE_CSS,
+              }}
+            >
+              <PhotoTile
+                asset={cell.asset}
+                rounded={rounded === 1}
+                corners={square === 1 && rounded === 1 ? cell.corners : undefined}
+                selected={selection.isSelected(cell.asset.id)}
+                selectionActive={selectionActive}
+                animateIn={fresh}
+                delay={delay}
+                onOpen={() => onOpen(cell.asset.id)}
+                onToggle={(shiftKey) => onToggle(cell.asset.id, shiftKey)}
+                onPreviewStart={() => setPreview(cell.asset)}
+                onPreviewEnd={() => setPreview(null)}
+              />
+            </div>
+          )
+        }),
       )}
 
       <AnimatePresence>
