@@ -52,7 +52,7 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
     <div
       ref={rootRef}
       className="absolute z-40 w-5 touch-none"
-      style={{ left: -20 }}
+      style={{ left: 2 }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => {
         if (!scrubbing) setOpen(false)
