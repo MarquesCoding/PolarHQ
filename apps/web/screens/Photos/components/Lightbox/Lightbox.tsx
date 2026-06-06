@@ -5,6 +5,7 @@ import { Icon } from "@lib/icons"
 import { decryptName } from "@lib/e2e"
 import { type GridAsset, assetOriginalUrl, favoriteAssets, trashAssets } from "@lib/photos"
 import { fetchDecryptedMotionVideo, fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
+import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
 import { IconLivePhoto } from "@tabler/icons-react"
 import { useUploadManager } from "@lib/uploadManager"
@@ -26,7 +27,9 @@ interface LightboxProps {
 const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
   const queryClient = useQueryClient()
   const upload = useUploadManager()
-  const [info, setInfo] = useState(false)
+  const [infoPref, setInfoPref] = usePersistentNumber("photos.lightboxDetails", 0)
+  const info = infoPref === 1
+  const toggleInfo = () => setInfoPref(info ? 0 : 1)
   const deleteArmed = useRef(false)
   const asset = assets[index]
   const zoom = useZoomPan(asset?.id)
@@ -56,7 +59,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() === "i") setInfo((value) => !value)
+      if (event.key.toLowerCase() === "i") toggleInfo()
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
