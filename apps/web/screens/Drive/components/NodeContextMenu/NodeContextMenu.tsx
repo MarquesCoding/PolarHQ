@@ -1,6 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { useRouter } from "next/navigation"
 import type { DriveNode } from "@lib/drive"
 import { docTypeOf } from "@lib/docs"
 import {
@@ -13,6 +14,7 @@ import {
   IconInfoCircle,
   IconLink,
   IconPencil,
+  IconPhoto,
   IconTrash,
   IconUserPlus,
 } from "@tabler/icons-react"
@@ -45,6 +47,7 @@ interface NodeContextMenuProps {
 }
 
 const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
+  const router = useRouter()
   const isFile = node.kind === "file"
   const isImage = isFile && Boolean(node.mimeType?.startsWith("image/"))
 
@@ -58,10 +61,18 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
       </ContextMenuTrigger>
       <ContextMenuContent>
         {node.special ? (
-          <ContextMenuItem onClick={() => actions.details(node)}>
-            <IconInfoCircle />
-            Details
-          </ContextMenuItem>
+          <>
+            {node.special === "photos" ? (
+              <ContextMenuItem onClick={() => router.push("/photos")}>
+                <IconPhoto />
+                Open in Photos
+              </ContextMenuItem>
+            ) : null}
+            <ContextMenuItem onClick={() => actions.details(node)}>
+              <IconInfoCircle />
+              Details
+            </ContextMenuItem>
+          </>
         ) : (
           <>
             {docTypeOf(node.mimeType) ? (

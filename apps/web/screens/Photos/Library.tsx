@@ -73,7 +73,23 @@ const LibraryInner = () => {
     }
   }
 
-  const trashConfirm = useArmedConfirm(() => void run(() => trashAssets(ids), "Moved to trash"))
+  const trashSelected = () => {
+    const target = [...ids]
+    if (target.length === 0) return
+    selection.clear()
+    upload.task(
+      `Deleting ${target.length} photo${target.length === 1 ? "" : "s"}`,
+      target.length,
+      async (onProgress) => {
+        const CHUNK = 25
+        for (let i = 0; i < target.length; i += CHUNK) {
+          await trashAssets(target.slice(i, i + CHUNK))
+          onProgress(Math.min(i + CHUNK, target.length))
+        }
+      },
+    )
+  }
+  const trashConfirm = useArmedConfirm(trashSelected)
   useSelectionHotkeys({
     active: selection.count > 0,
     onClear: selection.clear,

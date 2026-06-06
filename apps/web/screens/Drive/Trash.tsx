@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  type DriveNode,
-  deleteDriveNode,
-  emptyDriveTrash,
-  fetchDriveTrash,
-  restoreDriveNode,
-} from "@lib/drive"
+import { type DriveNode, deleteDriveNode, fetchDriveTrash, restoreDriveNode } from "@lib/drive"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
@@ -63,17 +57,11 @@ const TrashInner = () => {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-6">
-      <div className="flex items-center gap-2">
+      <div className="flex items-baseline gap-2">
         <h1 className="text-foreground text-sm font-medium">Trash</h1>
-        <div className="ml-auto">
-          <ConfirmButton
-            icon={<IconTrashX className="size-4" />}
-            confirmLabel="Empty trash?"
-            onConfirm={() => void run(emptyDriveTrash, "Trash emptied")}
-          >
-            Empty trash
-          </ConfirmButton>
-        </div>
+        <p className="text-muted-foreground text-xs">
+          Items here are permanently deleted 30 days after being trashed.
+        </p>
       </div>
 
       {isLoading ? (

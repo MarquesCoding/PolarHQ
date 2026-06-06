@@ -194,6 +194,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
 
   const ids = [...selection.selected]
   const selectedDeletable = ids.filter((id) => !byId.get(id)?.special)
+  const hasSpecial = ids.some((id) => byId.get(id)?.special)
   const single = ids.length === 1 ? byId.get(ids[0]!) : undefined
   const canExtract = single?.kind === "file" && isArchiveName(single.name)
 
@@ -312,7 +313,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
           <Icon name="download" className="size-4" />
           Download
         </Button>
-        {single ? (
+        {single && !single.special ? (
           <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
             <IconPencil className="size-4" />
             Rename
@@ -324,10 +325,12 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
             Share
           </Button>
         ) : null}
-        <Button variant="ghost" size="sm" onClick={() => setMoving(ids)}>
-          <Icon name="folder" className="size-4" />
-          Move
-        </Button>
+        {hasSpecial ? null : (
+          <Button variant="ghost" size="sm" onClick={() => setMoving(ids)}>
+            <Icon name="folder" className="size-4" />
+            Move
+          </Button>
+        )}
         {canExtract ? (
           <Button variant="ghost" size="sm" onClick={() => void extract(single!.id)}>
             <IconFileExport className="size-4" />
@@ -338,13 +341,15 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
           <IconArchive className="size-4" />
           Archive
         </Button>
-        <ConfirmButton
-          icon={<Icon name="trash" className="size-4" />}
-          armed={trashConfirm.armed}
-          onTrigger={trashConfirm.trigger}
-        >
-          Trash
-        </ConfirmButton>
+        {hasSpecial ? null : (
+          <ConfirmButton
+            icon={<Icon name="trash" className="size-4" />}
+            armed={trashConfirm.armed}
+            onTrigger={trashConfirm.trigger}
+          >
+            Trash
+          </ConfirmButton>
+        )}
       </SelectionBar>
 
       {parentId ? (
