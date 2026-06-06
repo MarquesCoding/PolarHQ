@@ -33,6 +33,7 @@ const getScrollParent = (element: HTMLElement | null): HTMLElement | null => {
 }
 const BUFFER = 800
 const RANGE_QUANTUM = 300
+const VIRTUALIZE_THRESHOLD = 80
 
 const dayLabel = (date: Date): string => {
   const today = new Date()
@@ -173,7 +174,8 @@ const buildLayout = (
     y += SECTION_GAP
   }
 
-  return { rows, totalHeight: y - SECTION_GAP }
+  const contentBottom = rows.reduce((max, row) => Math.max(max, row.y + row.height), 0)
+  return { rows, totalHeight: contentBottom }
 }
 
 interface PhotoGridProps {
@@ -247,13 +249,16 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     const onScroll = () => {
       if (frame === 0) frame = requestAnimationFrame(update)
     }
+    const scroller = getScrollParent(containerRef.current)
     update()
     window.addEventListener("scroll", onScroll, { passive: true, capture: true })
     window.addEventListener("resize", onScroll)
+    scroller?.addEventListener("scroll", onScroll, { passive: true })
     return () => {
       if (frame) cancelAnimationFrame(frame)
       window.removeEventListener("scroll", onScroll, { capture: true })
       window.removeEventListener("resize", onScroll)
+      scroller?.removeEventListener("scroll", onScroll)
     }
   }, [layout.totalHeight])
 
@@ -341,7 +346,10 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   }, [openIndex, sortedGridAssets.length])
 
   const visibleRows = useMemo(
-    () => layout.rows.filter((row) => row.y + row.height >= range.start && row.y <= range.end),
+    () =>
+      layout.rows.length <= VIRTUALIZE_THRESHOLD
+        ? layout.rows
+        : layout.rows.filter((row) => row.y + row.height >= range.start && row.y <= range.end),
     [layout.rows, range.start, range.end],
   )
   const selectionActive = selection.count > 0
