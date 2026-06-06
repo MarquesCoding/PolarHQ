@@ -135,6 +135,9 @@ export const instanceSettings = core.table("instance_settings", {
   registrationMode: registrationMode("registration_mode").notNull().default("invite_only"),
   allowedEmailDomains: jsonb("allowed_email_domains"),
   setupCompleted: boolean("setup_completed").notNull().default(false),
+  instanceName: text("instance_name"),
+  logoUrl: text("logo_url"),
+  accentColor: text("accent_color"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })

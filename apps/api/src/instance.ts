@@ -28,6 +28,9 @@ export interface InstanceSettingsPatch {
   registrationMode?: InstanceSettings["registrationMode"]
   allowedEmailDomains?: string[] | null
   setupCompleted?: boolean
+  instanceName?: string | null
+  logoUrl?: string | null
+  accentColor?: string | null
 }
 
 export const updateInstanceSettings = async (

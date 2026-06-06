@@ -37,10 +37,64 @@ adminRoutes.patch("/settings", guard("admin.registration.manage"), async (c) => 
     z.object({
       registrationMode: z.enum(["invite_only", "open", "closed"]).optional(),
       allowedEmailDomains: z.array(z.string()).nullable().optional(),
+      instanceName: z.string().nullable().optional(),
+      logoUrl: z.string().nullable().optional(),
+      accentColor: z.string().nullable().optional(),
     }),
   )
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
-  return c.json({ settings: await adminService.updateSettings(parsed.data) })
+  const settings = await adminService.updateSettings(parsed.data)
+  await adminService.recordAudit({ actorId: c.get("userId"), action: "settings.update" })
+  return c.json({ settings })
+})
+
+adminRoutes.get("/overview", guard("admin.instance.manage"), async (c) => {
+  return c.json({ overview: await adminService.getOverview() })
+})
+
+adminRoutes.get("/apps", guard("admin.apps.manage"), async (c) => {
+  return c.json({ apps: await adminService.listAppEnablement() })
+})
+
+adminRoutes.get("/limits", guard("admin.limits.manage"), async (c) => {
+  return c.json({ limits: await adminService.listLimits() })
+})
+
+adminRoutes.get("/audit", guard("admin.audit.read"), async (c) => {
+  return c.json({ entries: await adminService.listAudit() })
+})
+
+adminRoutes.get("/users/:id", guard("admin.users.manage"), async (c) => {
+  const detail = await adminService.getUserDetail(c.req.param("id"))
+  if (!detail) return c.json({ error: "not found" }, 404)
+  return c.json({ user: detail })
+})
+
+adminRoutes.post("/users/:id/ban", guard("admin.users.manage"), async (c) => {
+  const parsed = await parse(c, z.object({ banned: z.boolean(), reason: z.string().optional() }))
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  await adminService.setUserBanned(c.req.param("id"), parsed.data.banned, parsed.data.reason)
+  await adminService.recordAudit({
+    actorId: c.get("userId"),
+    action: parsed.data.banned ? "user.ban" : "user.unban",
+    targetType: "user",
+    targetId: c.req.param("id"),
+  })
+  return c.json({ ok: true })
+})
+
+adminRoutes.post("/users/:id/role", guard("admin.users.manage"), async (c) => {
+  const parsed = await parse(c, z.object({ role: z.string().nullable() }))
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  await adminService.setUserRole(c.req.param("id"), parsed.data.role)
+  await adminService.recordAudit({
+    actorId: c.get("userId"),
+    action: "user.role",
+    targetType: "user",
+    targetId: c.req.param("id"),
+    metadata: { role: parsed.data.role },
+  })
+  return c.json({ ok: true })
 })
 
 adminRoutes.get("/roles", guard("admin.roles.manage"), async (c) => {
@@ -110,7 +164,15 @@ adminRoutes.put("/limits", guard("admin.limits.manage"), async (c) => {
     }),
   )
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
-  return c.json({ limit: await adminService.setLimit(parsed.data) })
+  const limit = await adminService.setLimit(parsed.data)
+  await adminService.recordAudit({
+    actorId: c.get("userId"),
+    action: "limit.set",
+    targetType: parsed.data.subjectType,
+    targetId: parsed.data.subjectId,
+    metadata: { key: parsed.data.key, value: parsed.data.value },
+  })
+  return c.json({ limit })
 })
 
 adminRoutes.put("/apps/:appId", guard("admin.apps.manage"), async (c) => {
@@ -123,7 +185,15 @@ adminRoutes.put("/apps/:appId", guard("admin.apps.manage"), async (c) => {
     }),
   )
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
-  return c.json({
-    enablement: await adminService.setAppEnablement({ appId: c.req.param("appId"), ...parsed.data }),
+  const enablement = await adminService.setAppEnablement({
+    appId: c.req.param("appId"),
+    ...parsed.data,
   })
+  await adminService.recordAudit({
+    actorId: c.get("userId"),
+    action: parsed.data.enabled ? "app.enable" : "app.disable",
+    targetType: "app",
+    targetId: c.req.param("appId"),
+  })
+  return c.json({ enablement })
 })
