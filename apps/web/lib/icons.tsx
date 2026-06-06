@@ -1,6 +1,16 @@
 import type { ComponentType } from "react"
 import {
+  IconAdjustments,
   IconApps,
+  IconBan,
+  IconGauge,
+  IconLayoutGrid,
+  IconList,
+  IconPalette,
+  IconSettings,
+  IconShield,
+  IconUsers,
+  IconUsersGroup,
   IconBolt,
   IconSearch,
   IconCalendar,
@@ -114,6 +124,16 @@ const nucleoCandidates: Record<string, string[]> = {
   volume: ["IconVolumeFillDuo18"],
   "volume-mute": ["IconVolumeXmarkFillDuo18"],
   fullscreen: ["IconFullScreenFillDuo18"],
+  gauge: ["IconGaugeFillDuo18", "IconDashboardFillDuo18"],
+  users: ["IconUsersFillDuo18", "IconUsers2FillDuo18"],
+  "users-group": ["IconUsersGroupFillDuo18", "IconUsers3FillDuo18"],
+  "user-shield": ["IconUserShieldFillDuo18", "IconShieldCheckFillDuo18"],
+  sliders: ["IconSlidersFillDuo18", "IconAdjustmentsFillDuo18"],
+  settings: ["IconGearFillDuo18", "IconSettingsFillDuo18"],
+  apps: ["IconGrid2FillDuo18", "IconAppsFillDuo18"],
+  palette: ["IconPaletteFillDuo18", "IconSwatchFillDuo18"],
+  list: ["IconListFillDuo18", "IconList2FillDuo18"],
+  ban: ["IconBanFillDuo18", "IconCircleXmarkFillDuo18"],
 }
 
 /** Tabler fallbacks, used when no Nucleo icon resolves for the key. */
@@ -168,6 +188,16 @@ const tablerIcons: Record<string, IconComponent> = {
   volume: IconVolume,
   "volume-mute": IconVolumeOff,
   fullscreen: IconMaximize,
+  gauge: IconGauge,
+  users: IconUsers,
+  "users-group": IconUsersGroup,
+  "user-shield": IconShield,
+  sliders: IconAdjustments,
+  settings: IconSettings,
+  apps: IconLayoutGrid,
+  palette: IconPalette,
+  list: IconList,
+  ban: IconBan,
 }
 
 const resolveNucleo = (name: string): IconComponent | undefined => {
