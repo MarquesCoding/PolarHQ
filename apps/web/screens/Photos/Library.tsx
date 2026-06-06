@@ -111,6 +111,7 @@ const LibraryInner = () => {
         downloadItems={downloadItems}
         shareAssetId={one?.id}
         shareName={one ? nameOf(one) : undefined}
+        shareEncrypted={one?.encrypted}
       >
         <Button
           variant="ghost"

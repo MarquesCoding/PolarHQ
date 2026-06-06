@@ -313,7 +313,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
             Rename
           </Button>
         ) : null}
-        {single?.kind === "file" && !single.encrypted ? (
+        {single?.kind === "file" ? (
           <Button variant="ghost" size="sm" onClick={() => setShareNode(single)}>
             <IconUserPlus className="size-4" />
             Share
@@ -375,6 +375,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
         open={Boolean(shareNode)}
         onOpenChange={(value) => !value && setShareNode(null)}
         createLink={(options) => createShareLink(shareNode!.id, options)}
+        encryptKeyId={shareNode?.encrypted ? shareNode.id : undefined}
       />
     </DropZone>
     <DetailsPanel

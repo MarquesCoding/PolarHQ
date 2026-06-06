@@ -72,6 +72,8 @@ export const renderSharePage = (view: ShareView, directUrl: string): string => {
     ? `<script>(function(){var el=document.getElementById('countdown');if(!el)return;var exp=new Date(el.dataset.expires).getTime();function pad(n){return String(n).padStart(2,'0')}function tick(){var d=exp-Date.now();if(d<=0){el.textContent='This link has expired.';el.className='status warn';var b=document.querySelector('.btn');if(b){b.setAttribute('aria-disabled','true')}return}var h=Math.floor(d/3.6e6),m=Math.floor(d%3.6e6/6e4),s=Math.floor(d%6e4/1e3);el.textContent='Expires in '+(h>0?h+'h ':'')+pad(m)+'m '+pad(s)+'s';setTimeout(tick,1000)}tick()})();</script>`
     : ""
 
+  const e2eScript = `<script>(function(){var p=new URLSearchParams(location.hash.slice(1));var k=p.get('k');if(!k)return;var n=p.get('n');if(n){var ne=document.querySelector('.name');if(ne)ne.textContent=decodeURIComponent(n);document.title=decodeURIComponent(n)+' \\u00b7 shared'}var btn=document.querySelector('.btn[href]');if(!btn)return;var url=btn.getAttribute('href');btn.removeAttribute('href');btn.style.cursor='pointer';btn.textContent='Decrypt & download';var sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.15/dist/browsers/sodium.js';document.head.appendChild(sc);async function ready(){for(var i=0;i<300&&!window.sodium;i++){await new Promise(function(r){setTimeout(r,50)})}if(!window.sodium)throw 0;await window.sodium.ready;return window.sodium}btn.addEventListener('click',function(e){e.preventDefault();btn.setAttribute('aria-disabled','true');btn.textContent='Decrypting\\u2026';(async function(){try{var s=await ready();var key=s.from_base64(decodeURIComponent(k),s.base64_variants.ORIGINAL);var resp=await fetch(url);if(!resp.ok)throw 0;var buf=new Uint8Array(await resp.arrayBuffer());var nb=s.crypto_secretbox_NONCEBYTES;var plain=s.crypto_secretbox_open_easy(buf.slice(nb),buf.slice(0,nb),key);var u=URL.createObjectURL(new Blob([plain]));var a=document.createElement('a');a.href=u;a.download=n?decodeURIComponent(n):'download';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},2000);btn.textContent='Downloaded';btn.removeAttribute('aria-disabled')}catch(err){btn.textContent='Decryption failed';btn.removeAttribute('aria-disabled')}})()})})();</script>`
+
   return page(
     `${node.name} · shared`,
     `<div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg></div>
@@ -81,7 +83,8 @@ export const renderSharePage = (view: ShareView, directUrl: string): string => {
      ${limitLine}
      <p class="by">Shared by ${escapeHtml(ownerName)}</p>
      ${button}
-     ${countdownScript}`,
+     ${countdownScript}
+     ${e2eScript}`,
   )
 }
 

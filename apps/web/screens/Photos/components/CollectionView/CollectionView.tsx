@@ -92,6 +92,7 @@ const CollectionInner = ({
         downloadItems={downloadItems}
         shareAssetId={one?.id}
         shareName={one ? downloadItemFor(one).name : undefined}
+        shareEncrypted={one?.encrypted}
       >
         {actions(ids, afterAction, deleteConfirm)}
       </SelectionBar>

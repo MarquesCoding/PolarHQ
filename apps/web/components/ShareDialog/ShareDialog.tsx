@@ -1,7 +1,9 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
+import { toB64 } from "@lib/crypto"
 import type { ShareLink, ShareOptions } from "@lib/drive"
+import { getDocContentKey } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import { useMutation } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
@@ -29,6 +31,7 @@ interface ShareDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   createLink: (options: ShareOptions) => Promise<ShareLink>
+  encryptKeyId?: string
 }
 
 const EXPIRY_OPTIONS = [
@@ -49,13 +52,20 @@ const Row = ({ label, hint, control }: { label: string; hint?: string; control: 
 )
 
 /** Shared share-link dialog: direct/expiry/limit switches; works for any shareable resource. */
-const ShareDialog = ({ name, open, onOpenChange, createLink }: ShareDialogProps) => {
+const ShareDialog = ({
+  name,
+  open,
+  onOpenChange,
+  createLink,
+  encryptKeyId,
+}: ShareDialogProps) => {
   const [direct, setDirect] = useState(false)
   const [permanent, setPermanent] = useState(true)
   const [expiryHours, setExpiryHours] = useState("24")
   const [limitEnabled, setLimitEnabled] = useState(false)
   const [maxDownloads, setMaxDownloads] = useState(1)
   const [link, setLink] = useState<ShareLink | null>(null)
+  const [keyFragment, setKeyFragment] = useState<string | null>(null)
 
   const save = useMutation({
     mutationFn: () =>
@@ -72,7 +82,28 @@ const ShareDialog = ({ name, open, onOpenChange, createLink }: ShareDialogProps)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, name, permanent, expiryHours, limitEnabled, maxDownloads])
 
-  const fullUrl = link ? `${link.url}${direct ? "?direct=true" : ""}` : ""
+  useEffect(() => {
+    if (!open || !encryptKeyId) {
+      setKeyFragment(null)
+      return
+    }
+    let active = true
+    void getDocContentKey(encryptKeyId).then((key) => {
+      if (!active) return
+      const namePart = name ? `&n=${encodeURIComponent(name)}` : ""
+      setKeyFragment(key ? `#k=${encodeURIComponent(toB64(key))}${namePart}` : null)
+    })
+    return () => {
+      active = false
+    }
+  }, [open, encryptKeyId, name])
+
+  const encrypted = Boolean(keyFragment)
+  const fullUrl = link
+    ? encrypted
+      ? `${link.url}${keyFragment}`
+      : `${link.url}${direct ? "?direct=true" : ""}`
+    : ""
   const copy = () => {
     if (!link) return
     void navigator.clipboard.writeText(fullUrl)
@@ -84,7 +115,11 @@ const ShareDialog = ({ name, open, onOpenChange, createLink }: ShareDialogProps)
       <DialogContent showCloseButton={false}>
         <DialogHeader className="min-w-0">
           <DialogTitle className="min-w-0 truncate pe-2">Share “{name}”</DialogTitle>
-          <DialogDescription>Anyone with this link can download the file.</DialogDescription>
+          <DialogDescription>
+            {encrypted
+              ? "End-to-end encrypted: the key lives in the link and never reaches the server, so only people with the link can decrypt it."
+              : "Anyone with this link can download the file."}
+          </DialogDescription>
         </DialogHeader>
 
         <Input
@@ -94,11 +129,13 @@ const ShareDialog = ({ name, open, onOpenChange, createLink }: ShareDialogProps)
         />
 
         <div className="flex flex-col gap-3">
-          <Row
-            label="Direct download"
-            hint="Skip the landing page and download immediately"
-            control={<Switch checked={direct} onCheckedChange={setDirect} />}
-          />
+          {encrypted ? null : (
+            <Row
+              label="Direct download"
+              hint="Skip the landing page and download immediately"
+              control={<Switch checked={direct} onCheckedChange={setDirect} />}
+            />
+          )}
           <Row
             label="Permanent link"
             hint="Keep this link active until you delete it"

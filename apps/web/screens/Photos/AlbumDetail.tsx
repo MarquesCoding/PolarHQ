@@ -120,6 +120,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
         downloadItems={downloadItems}
         shareAssetId={one?.id}
         shareName={one ? downloadItemFor(one).name : undefined}
+        shareEncrypted={one?.encrypted}
       >
         <Button
           variant="ghost"

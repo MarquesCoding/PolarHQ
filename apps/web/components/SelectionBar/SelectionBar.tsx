@@ -18,10 +18,17 @@ interface SelectionBarProps {
   /** When provided (single selection), renders a Share action for this photo. */
   shareAssetId?: string
   shareName?: string
+  shareEncrypted?: boolean
 }
 
 /** Shared floating selection action bar: count, clear, optional download/share, and app actions. */
-const SelectionBar = ({ children, downloadItems, shareAssetId, shareName }: SelectionBarProps) => {
+const SelectionBar = ({
+  children,
+  downloadItems,
+  shareAssetId,
+  shareName,
+  shareEncrypted,
+}: SelectionBarProps) => {
   const selection = useSelection()
   const upload = useUploadManager()
   const [shareOpen, setShareOpen] = useState(false)
@@ -80,6 +87,7 @@ const SelectionBar = ({ children, downloadItems, shareAssetId, shareName }: Sele
           open={shareOpen}
           onOpenChange={setShareOpen}
           createLink={(options) => sharePhoto(shareAssetId, options)}
+          encryptKeyId={shareEncrypted ? shareAssetId : undefined}
         />
       ) : null}
     </>
