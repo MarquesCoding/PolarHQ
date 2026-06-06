@@ -280,6 +280,27 @@ export const assetsMissingLocation = async (ownerId: string): Promise<string[]> 
   return rows.map((r) => r.id)
 }
 
+/**
+ * Store a client-encrypted motion-photo video for an asset (the short clip paired with a
+ * still, à la Google/Apple Live Photos). The bytes are already ciphertext under the asset's
+ * content key — the server stores them opaquely and only flags that a motion clip exists.
+ */
+export const setMotionVideo = async (
+  ownerId: string,
+  assetId: string,
+  bytes: Buffer,
+): Promise<boolean> => {
+  const asset = await getAsset(ownerId, assetId)
+  if (!asset) return false
+  const key = assetObjectKeys(ownerId, assetId, ".bin").motion
+  await storage().put({ key, body: bytes, contentType: "application/octet-stream" })
+  await db
+    .update(schema.assets)
+    .set({ motionKey: key, updatedAt: new Date() })
+    .where(eq(schema.assets.id, assetId))
+  return true
+}
+
 /** Store a client-encrypted thumbnail for an asset and mark it displayable. */
 export const setEncryptedThumbnail = async (
   ownerId: string,

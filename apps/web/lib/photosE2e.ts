@@ -11,6 +11,7 @@ import {
   storeContentKey,
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
+import { extractMotionVideo } from "@lib/motionPhoto"
 import type { Asset, GridAsset } from "@lib/photos"
 import { analyzeAudio, analyzeImage, analyzeVideo } from "@lib/thumbnails"
 import exifr from "exifr"
@@ -51,7 +52,7 @@ const putThumbnail = (url: string, body: Uint8Array): Promise<Response> =>
  * and send the dimensions/duration/takenAt/filename the grid needs (the server can't read
  * the ciphertext). The server stores only opaque bytes and runs no media processing.
  */
-export const uploadEncryptedMedia = async (file: File): Promise<Asset> => {
+export const uploadEncryptedMedia = async (file: File, motionFile?: File): Promise<Asset> => {
   const key = createContentKey()
   const original = new Uint8Array(await file.arrayBuffer())
 
@@ -112,12 +113,37 @@ export const uploadEncryptedMedia = async (file: File): Promise<Asset> => {
   }
 
   if (file.type.startsWith("image/")) {
+    const motionBytes = motionFile
+      ? new Uint8Array(await motionFile.arrayBuffer())
+      : await extractMotionVideo(file).catch(() => null)
+    if (motionBytes) {
+      await putThumbnail(
+        `${API_URL}/api/v1/photos/assets/${asset.id}/motion`,
+        secretboxSeal(motionBytes, key),
+      ).catch(() => undefined)
+    }
     void import("@lib/photoIndex")
       .then((index) => index.embedAndStore(asset.id, file))
       .catch(() => undefined)
   }
 
   return asset
+}
+
+/** Fetch + decrypt an asset's motion-photo clip into an object URL (or null if it has none). */
+export const fetchDecryptedMotionVideo = async (assetId: string): Promise<string | null> => {
+  const key = await getDocContentKey(assetId)
+  if (!key) return null
+  const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/motion`, {
+    credentials: "include",
+  })
+  if (!response.ok) return null
+  try {
+    const plain = secretboxOpen(new Uint8Array(await response.arrayBuffer()), key)
+    return URL.createObjectURL(new Blob([plain as BlobPart], { type: "video/mp4" }))
+  } catch {
+    return null
+  }
 }
 
 /** @deprecated use uploadEncryptedMedia */
