@@ -8,7 +8,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import type { ObjectInfo, PutObjectInput, StorageDriver } from "./driver"
+import type { ObjectInfo, PutObjectInput, PutStreamInput, StorageDriver } from "./driver"
 
 export interface S3DriverOptions {
   bucket: string
@@ -45,6 +45,18 @@ export class S3Driver implements StorageDriver {
         Bucket: this.bucket,
         Key: input.key,
         Body: input.body,
+        ContentType: input.contentType,
+      }),
+    )
+  }
+
+  async putStream(input: PutStreamInput): Promise<void> {
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: input.key,
+        Body: input.body,
+        ContentLength: input.contentLength,
         ContentType: input.contentType,
       }),
     )

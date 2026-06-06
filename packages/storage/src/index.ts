@@ -3,7 +3,7 @@ import type { StorageDriver } from "./driver"
 import { FsDriver } from "./fs-driver"
 import { S3Driver } from "./s3-driver"
 
-export type { ObjectInfo, PutObjectInput, StorageDriver } from "./driver"
+export type { ObjectInfo, PutObjectInput, PutStreamInput, StorageDriver } from "./driver"
 export { FsDriver } from "./fs-driver"
 export { S3Driver, type S3DriverOptions } from "./s3-driver"
 export { assetObjectKeys, type AssetObjectKeys } from "./keys"

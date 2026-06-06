@@ -1,5 +1,6 @@
 import { db, schema } from "@workspace/db"
 import { getPermissionCatalog, resolveLimit } from "@workspace/auth"
+import { encryptSecret } from "@workspace/config"
 import { enqueueBackupRun } from "@workspace/jobs"
 import { and, count, desc, eq, isNull, sql } from "drizzle-orm"
 import { getAppsForUser } from "../apps/service"
@@ -496,7 +497,7 @@ export const updateBackupSettings = async (patch: BackupSettingsPatch) => {
   if (patch.accessKeyId !== undefined) set.accessKeyId = patch.accessKeyId
   if (patch.forcePathStyle !== undefined) set.forcePathStyle = patch.forcePathStyle
   if (patch.frequencyHours !== undefined) set.frequencyHours = patch.frequencyHours
-  if (patch.secretAccessKey) set.secretAccessKey = patch.secretAccessKey
+  if (patch.secretAccessKey) set.secretAccessKey = encryptSecret(patch.secretAccessKey)
   await db
     .update(schema.backupSettings)
     .set(set)
