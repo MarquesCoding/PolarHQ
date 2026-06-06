@@ -3,6 +3,7 @@ import {
   IconAdjustments,
   IconApps,
   IconBan,
+  IconBuildingCommunity,
   IconGauge,
   IconLayoutGrid,
   IconList,
@@ -134,6 +135,7 @@ const nucleoCandidates: Record<string, string[]> = {
   palette: ["IconPaletteFillDuo18", "IconSwatchFillDuo18"],
   list: ["IconListFillDuo18", "IconList2FillDuo18"],
   ban: ["IconBanFillDuo18", "IconCircleXmarkFillDuo18"],
+  buildings: ["IconBuildingsFillDuo18", "IconBuilding2FillDuo18"],
 }
 
 /** Tabler fallbacks, used when no Nucleo icon resolves for the key. */
@@ -198,6 +200,7 @@ const tablerIcons: Record<string, IconComponent> = {
   palette: IconPalette,
   list: IconList,
   ban: IconBan,
+  buildings: IconBuildingCommunity,
 }
 
 const resolveNucleo = (name: string): IconComponent | undefined => {
