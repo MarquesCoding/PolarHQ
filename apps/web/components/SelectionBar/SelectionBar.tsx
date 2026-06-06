@@ -5,6 +5,7 @@ import { Icon } from "@lib/icons"
 import { sharePhoto } from "@lib/photos"
 import { useSelection } from "@lib/selection"
 import { type DownloadItem, useUploadManager } from "@lib/uploadManager"
+import NumberFlow from "@number-flow/react"
 import { Button } from "@workspace/ui/components/button"
 import { Kbd } from "@workspace/ui/components/kbd"
 import { Separator } from "@workspace/ui/components/separator"
@@ -68,7 +69,7 @@ const SelectionBar = ({
               >
                 <Icon name="xmark" className="size-4" />
               </Button>
-              <span className="text-sm font-semibold tabular-nums">{selection.count}</span>
+              <NumberFlow value={selection.count} className="text-sm font-semibold tabular-nums" />
               <Separator orientation="vertical" className="mx-1 h-5" />
               {downloadItems ? (
                 <Button variant="ghost" size="sm" onClick={download}>
