@@ -84,6 +84,11 @@ export const sealTo = (message: Uint8Array, recipientPublicKey: Uint8Array): Uin
 export const openSealed = (sealed: Uint8Array, keypair: Keypair): Uint8Array =>
   sodium.crypto_box_seal_open(sealed, keypair.publicKey, keypair.privateKey)
 
+/** A short, human-comparable fingerprint of a public key (for out-of-band verification). */
+export const fingerprint = (publicKey: Uint8Array): string =>
+  (sodium.to_hex(sodium.crypto_generichash(8, publicKey, null)).toUpperCase().match(/.{4}/g) ?? [])
+    .join("-")
+
 /** A fresh random symmetric content key for a document. */
 export const newContentKey = (): Uint8Array => sodium.crypto_secretbox_keygen()
 

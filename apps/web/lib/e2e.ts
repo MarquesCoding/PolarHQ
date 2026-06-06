@@ -2,6 +2,7 @@
 
 import { apiFetch } from "@lib/apiClient"
 import { type DocMeta, type DocType, createDoc } from "@lib/docs"
+import { fingerprintOf, verifyAndPin } from "@lib/keyVerification"
 import { secureStoreClear, secureStoreGet, secureStoreSet } from "@lib/secureStore"
 import {
   type KdfParams,
@@ -216,19 +217,33 @@ export const storeContentKey = async (nodeId: string, key: Uint8Array): Promise<
   contentKeyCache.set(nodeId, key)
 }
 
-/** Wrap a doc's content key to a collaborator (by email). False if they have no keys yet. */
-export const shareDocKey = async (nodeId: string, email: string): Promise<boolean> => {
+export type ShareKeyResult =
+  | { status: "ok"; fingerprint: string }
+  | { status: "no-recipient" }
+  | { status: "no-key" }
+  | { status: "key-changed"; fingerprint: string }
+
+/**
+ * Wrap a doc's content key to a collaborator (by email). Verifies the recipient's
+ * public key against the local pin (TOFU) — refuses if it changed, so a malicious
+ * server can't substitute its own key.
+ */
+export const shareDocKey = async (nodeId: string, email: string): Promise<ShareKeyResult> => {
   const key = await getDocContentKey(nodeId)
-  if (!key) return false
+  if (!key) return { status: "no-key" }
   const target = await apiFetch<{ userId: string; publicKey: string }>(
     `/api/v1/docs/keys/public?email=${encodeURIComponent(email)}`,
   ).catch(() => null)
-  if (!target) return false
+  if (!target) return { status: "no-recipient" }
+
+  const verdict = verifyAndPin(target.userId, target.publicKey)
+  if (verdict.changed) return { status: "key-changed", fingerprint: fingerprintOf(target.publicKey) }
+
   await apiFetch(`/api/v1/docs/documents/${nodeId}/keys`, {
     method: "POST",
     body: JSON.stringify({
       keys: [{ userId: target.userId, wrappedKey: toB64(sealTo(key, fromB64(target.publicKey))) }],
     }),
   })
-  return true
+  return { status: "ok", fingerprint: fingerprintOf(target.publicKey) }
 }
