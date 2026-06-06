@@ -7,7 +7,7 @@ import { type GridAsset, assetOriginalUrl, favoriteAssets, trashAssets } from "@
 import { fetchDecryptedMotionVideo, fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
-import { IconLivePhoto } from "@tabler/icons-react"
+import { IconCopy, IconLivePhoto } from "@tabler/icons-react"
 import { useUploadManager } from "@lib/uploadManager"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
@@ -85,6 +85,38 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
     (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
   const download = () =>
     upload.download(displayName, [{ id: asset.id, name: displayName, encrypted: asset.encrypted }])
+
+  const copyImage = async () => {
+    if (asset.type !== "image") return
+    const toPng = async (): Promise<Blob> => {
+      const url = asset.encrypted
+        ? (decryptedSrc ?? (await fetchDecryptedPhotoOriginal(asset.id, asset.mimeType)))
+        : assetOriginalUrl(asset.id)
+      if (!url) throw new Error("no source")
+      const blob = await fetch(url, { credentials: "include" }).then((response) => response.blob())
+      if (blob.type === "image/png") return blob
+      const bitmap = await createImageBitmap(blob)
+      const canvas = document.createElement("canvas")
+      canvas.width = bitmap.width
+      canvas.height = bitmap.height
+      const context = canvas.getContext("2d")
+      if (!context) throw new Error("no canvas context")
+      context.drawImage(bitmap, 0, 0)
+      bitmap.close()
+      return new Promise<Blob>((resolve, reject) =>
+        canvas.toBlob(
+          (result) => (result ? resolve(result) : reject(new Error("encode failed"))),
+          "image/png",
+        ),
+      )
+    }
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": toPng() })])
+      toast.success("Image copied to clipboard")
+    } catch {
+      toast.error("Couldn't copy image")
+    }
+  }
 
   const [decryptedSrc, setDecryptedSrc] = useState<string | null>(null)
   useEffect(() => {
@@ -219,6 +251,17 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
           >
             <Icon name="favourites" className={cn("size-5", asset.isFavorite && "text-primary")} />
           </Button>
+          {asset.type === "image" ? (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Copy image"
+              onClick={copyImage}
+              className="rounded-full"
+            >
+              <IconCopy className="size-5" />
+            </Button>
+          ) : null}
           <Button
             variant="ghost"
             size="icon-sm"
