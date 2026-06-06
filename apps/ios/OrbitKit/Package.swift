@@ -6,6 +6,7 @@ let package = Package(
     platforms: [.iOS(.v17), .macOS(.v13)],
     products: [
         .library(name: "OrbitCrypto", targets: ["OrbitCrypto"]),
+        .executable(name: "OrbitCryptoVerify", targets: ["OrbitCryptoVerify"]),
     ],
     dependencies: [
         .package(url: "https://github.com/jedisct1/swift-sodium.git", from: "0.9.1"),
@@ -14,6 +15,10 @@ let package = Package(
         .target(
             name: "OrbitCrypto",
             dependencies: [.product(name: "Sodium", package: "swift-sodium")]
+        ),
+        .executableTarget(
+            name: "OrbitCryptoVerify",
+            dependencies: ["OrbitCrypto"]
         ),
         .testTarget(
             name: "OrbitCryptoTests",
