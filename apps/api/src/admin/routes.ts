@@ -157,6 +157,12 @@ adminRoutes.get("/groups", guard("admin.groups.manage"), async (c) => {
   return c.json({ groups: await adminService.listGroups() })
 })
 
+adminRoutes.get("/groups/:id", guard("admin.groups.manage"), async (c) => {
+  const detail = await adminService.getGroupDetail(c.req.param("id"))
+  if (!detail) return c.json({ error: "not found" }, 404)
+  return c.json({ group: detail })
+})
+
 adminRoutes.post("/groups", guard("admin.groups.manage"), async (c) => {
   const parsed = await parse(
     c,

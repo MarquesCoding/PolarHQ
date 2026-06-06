@@ -69,32 +69,25 @@ const Users = () => {
   const row = (user: AdminUser) => (
     <div
       key={user.id}
-      role="button"
-      tabIndex={0}
-      onClick={() => setSelected(user.id)}
-      onKeyDown={(event) => {
-        if (event.key === "Enter") setSelected(user.id)
-      }}
-      className="border-border/60 hover:bg-muted/40 flex cursor-pointer items-center gap-3 border-b px-3 py-2.5 transition last:border-b-0"
+      className="border-border/60 flex items-center gap-3 border-b px-3 py-2.5 last:border-b-0"
     >
       <Avatar size="sm">
         <AvatarFallback>{initials(user.name)}</AvatarFallback>
       </Avatar>
-      <div className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate text-sm font-medium">{user.name}</span>
-        <span className="text-muted-foreground truncate text-xs">{user.email}</span>
-      </div>
+      <Button
+        variant="ghost"
+        onClick={() => setSelected(user.id)}
+        className="-mx-1 h-auto min-w-0 flex-1 flex-col items-start gap-0 px-1 py-1 font-normal"
+      >
+        <span className="w-full truncate text-sm font-medium">{user.name}</span>
+        <span className="text-muted-foreground w-full truncate text-xs">{user.email}</span>
+      </Button>
       {isAdmin(user.role) ? <Badge variant="secondary">Admin</Badge> : null}
       {user.banned ? <Badge variant="destructive">Banned</Badge> : null}
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="User actions"
-              onClick={(event) => event.stopPropagation()}
-            >
+            <Button variant="ghost" size="icon-sm" aria-label="User actions">
               <IconDotsVertical className="size-4" />
             </Button>
           }
