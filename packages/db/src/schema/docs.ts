@@ -46,6 +46,7 @@ export const userKeys = docs.table("user_keys", {
   publicKey: text("public_key").notNull(),
   wrappedPrivateKey: text("wrapped_private_key").notNull(),
   kdfSalt: text("kdf_salt").notNull(),
+  kdfParams: text("kdf_params"),
   recoveryWrapped: text("recovery_wrapped"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 })

@@ -30,14 +30,34 @@ export const generateKeypair = (): Keypair => {
 
 export const newSalt = (): Uint8Array => sodium.randombytes_buf(sodium.crypto_pwhash_SALTBYTES)
 
+export interface KdfParams {
+  ops: number
+  mem: number
+}
+
+/**
+ * Default Argon2id work factors: MODERATE iterations with 128 MiB memory — stronger
+ * than the INTERACTIVE preset against offline brute-force, while staying within
+ * what a browser tab (incl. mobile) can allocate. Stored with the key bundle so the
+ * cost can be raised later without breaking existing accounts.
+ */
+export const defaultKdfParams = (): KdfParams => ({
+  ops: sodium.crypto_pwhash_OPSLIMIT_MODERATE,
+  mem: 128 * 1024 * 1024,
+})
+
 /** Derive a 32-byte key-encryption-key from a password + salt (Argon2id). */
-export const deriveKey = (password: string, salt: Uint8Array): Uint8Array =>
+export const deriveKey = (
+  password: string,
+  salt: Uint8Array,
+  params: KdfParams = defaultKdfParams(),
+): Uint8Array =>
   sodium.crypto_pwhash(
     32,
     password,
     salt,
-    sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
-    sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+    params.ops,
+    params.mem,
     sodium.crypto_pwhash_ALG_ARGON2ID13,
   )
 
