@@ -186,18 +186,25 @@ export const listEmbeddings = async (
     .innerJoin(schema.assets, eq(schema.assets.id, schema.embeddings.assetId))
     .where(and(eq(schema.assets.ownerId, ownerId), eq(schema.embeddings.kind, kind)))
 
-/** Asset ids (this owner) that have no embedding of the given kind yet — the backfill worklist. */
+/**
+ * Asset ids (this owner) that still need an embedding — the backfill worklist. When a
+ * modelVersion is given, assets whose only embedding is a *different* version are included
+ * too, so upgrading the model re-indexes the library instead of leaving stale vectors.
+ */
 export const assetsMissingEmbedding = async (
   ownerId: string,
   kind: string,
+  modelVersion?: string,
 ): Promise<string[]> => {
+  const joinOn = and(
+    eq(schema.embeddings.assetId, schema.assets.id),
+    eq(schema.embeddings.kind, kind),
+    modelVersion ? eq(schema.embeddings.modelVersion, modelVersion) : undefined,
+  )
   const rows = await db
     .select({ id: schema.assets.id })
     .from(schema.assets)
-    .leftJoin(
-      schema.embeddings,
-      and(eq(schema.embeddings.assetId, schema.assets.id), eq(schema.embeddings.kind, kind)),
-    )
+    .leftJoin(schema.embeddings, joinOn)
     .where(
       and(
         eq(schema.assets.ownerId, ownerId),

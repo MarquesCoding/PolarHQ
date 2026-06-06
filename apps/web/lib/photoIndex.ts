@@ -53,11 +53,11 @@ export const fetchIndex = async (): Promise<Map<string, Float32Array>> => {
   return index
 }
 
-/** Asset ids that still need a CLIP embedding (the backfill worklist). */
+/** Asset ids that still need a current-version CLIP embedding (the backfill worklist). */
 export const fetchMissing = (): Promise<string[]> =>
-  apiFetch<{ assetIds: string[] }>(`/api/v1/photos/embeddings/missing?kind=${KIND}`).then(
-    (r) => r.assetIds,
-  )
+  apiFetch<{ assetIds: string[] }>(
+    `/api/v1/photos/embeddings/missing?kind=${KIND}&modelVersion=${encodeURIComponent(MODEL_VERSION)}`,
+  ).then((r) => r.assetIds)
 
 /**
  * Index existing photos in the background: decrypt each original client-side, embed it, store
