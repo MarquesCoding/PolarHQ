@@ -1,5 +1,6 @@
 "use client"
 
+import { isDebug } from "@lib/debug"
 import { MODEL_VERSION } from "./model"
 
 export { MODEL_VERSION }
@@ -46,7 +47,7 @@ const request = (message: { type: string; blob?: Blob; text?: string }): Promise
   const id = nextId++
   return new Promise<Float32Array>((resolve, reject) => {
     pending.set(id, { resolve, reject })
-    getWorker().postMessage({ id, ...message })
+    getWorker().postMessage({ id, debug: isDebug(), ...message })
   })
 }
 

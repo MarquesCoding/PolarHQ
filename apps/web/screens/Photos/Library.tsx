@@ -2,6 +2,7 @@
 
 import { useEffect } from "react"
 import { decryptName } from "@lib/e2e"
+import { installPhotoDebug } from "@lib/photoDebug"
 import { ensureIndexing } from "@lib/photoIndex"
 import { type GridAsset, favoriteAssets, fetchAssets, trashAssets } from "@lib/photos"
 import { downloadItemFor } from "@lib/photosE2e"
@@ -33,8 +34,11 @@ const LibraryInner = () => {
     fetchAssets({ view: "library", cursor }),
   )
 
-  // Kick off the on-device semantic indexer once (idempotent), and search via CLIP.
-  useEffect(() => ensureIndexing(), [])
+  // Install the console debug handle + kick off the on-device semantic indexer once.
+  useEffect(() => {
+    installPhotoDebug()
+    ensureIndexing()
+  }, [])
   const semantic = useSemanticSearch(search)
 
   // While searching, eagerly load the whole library so semantic results aren't capped to
