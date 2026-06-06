@@ -36,6 +36,7 @@ actor APIClient {
         var request = URLRequest(url: full)
         request.httpMethod = method
         request.timeoutInterval = 30
+        request.setValue("Orbit-iOS/0.1.0", forHTTPHeaderField: "User-Agent")
         if let body {
             request.httpBody = body
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")

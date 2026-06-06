@@ -1,6 +1,6 @@
 "use client"
 
-import type { ComponentType, DragEvent } from "react"
+import { type ComponentType, type DragEvent, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { fetchApps } from "@lib/apps"
@@ -11,6 +11,7 @@ import { SPLIT_APP_MIME } from "@lib/splitView"
 import { useTheme } from "next-themes"
 import {
   IconBolt,
+  IconDeviceLaptop,
   IconHelp,
   IconLogout,
   IconMoon,
@@ -32,6 +33,7 @@ import {
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
 import { cn } from "@workspace/ui/lib/utils"
+import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 
 type IconComponent = ComponentType<{ className?: string }>
 
@@ -83,6 +85,7 @@ const GlobalActionBar = () => {
   const { data: apps } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
   const { data: session } = authClient.useSession()
   const { resolvedTheme, setTheme } = useTheme()
+  const [devicesOpen, setDevicesOpen] = useState(false)
 
   const signOut = async () => {
     lockKeys()
@@ -160,12 +163,17 @@ const GlobalActionBar = () => {
               <p className="text-muted-foreground truncate text-xs">{session?.user?.email}</p>
             </div>
             <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setDevicesOpen(true)}>
+              <IconDeviceLaptop className="size-4" />
+              Devices
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={signOut}>
               <IconLogout className="size-4" />
               Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <DevicesDialog open={devicesOpen} onOpenChange={setDevicesOpen} />
       </div>
     </aside>
   )
