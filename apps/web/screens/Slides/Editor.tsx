@@ -7,7 +7,7 @@ import { Button } from "@workspace/ui/components/button"
 import CollabHeader from "@components/CollabHeader/CollabHeader"
 import CollabBoundary from "@pages/Collab/CollabBoundary"
 import PresentMode from "@pages/Slides/components/PresentMode/PresentMode"
-import SlideEditor from "@pages/Slides/components/SlideEditor/SlideEditor"
+import SlideCanvas from "@pages/Slides/components/SlideCanvas/SlideCanvas"
 import SlideRail from "@pages/Slides/components/SlideRail/SlideRail"
 
 const SlidesWorkspace = ({ nodeId, collab }: { nodeId: string; collab: CollabDocument }) => {
@@ -81,8 +81,8 @@ const SlidesWorkspace = ({ nodeId, collab }: { nodeId: string; collab: CollabDoc
           onAdd={addSlide}
           onDelete={deleteSlide}
         />
-        <div className="scrollbar-slim min-w-0 flex-1 overflow-auto">
-          {activeId ? <SlideEditor key={activeId} ydoc={ydoc} slideId={activeId} /> : null}
+        <div className="scrollbar-slim min-w-0 flex-1 overflow-auto py-2">
+          {activeId ? <SlideCanvas key={activeId} ydoc={ydoc} slideId={activeId} editable /> : null}
         </div>
       </div>
     </div>
