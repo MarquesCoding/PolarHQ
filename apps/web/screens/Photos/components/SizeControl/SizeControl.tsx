@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
+import { IconMinus, IconPlus } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
+import { Separator } from "@workspace/ui/components/separator"
+import { Switch } from "@workspace/ui/components/switch"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 
@@ -20,9 +23,20 @@ const toValue = (index: number): number => MIN + index * STEP
 interface SizeControlProps {
   value: number
   onChange: (value: number) => void
+  gap?: number
+  onGapChange?: (value: number) => void
+  rounded?: boolean
+  onRoundedChange?: (value: boolean) => void
 }
 
-const SizeControl = ({ value, onChange }: SizeControlProps) => {
+const SizeControl = ({
+  value,
+  onChange,
+  gap = 12,
+  onGapChange,
+  rounded = true,
+  onRoundedChange,
+}: SizeControlProps) => {
   const [open, setOpen] = useState(false)
   const [scrubbing, setScrubbing] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -73,12 +87,13 @@ const SizeControl = ({ value, onChange }: SizeControlProps) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.96 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="panel absolute top-full right-0 z-50 mt-2 flex items-center gap-3.5 rounded-2xl px-4 py-3 shadow-xl"
+            className="panel absolute top-full right-0 z-50 mt-2 flex w-60 flex-col gap-3 rounded-2xl px-4 py-3 shadow-xl"
           >
+            <div className="flex items-center gap-3.5">
             <Icon name="image-upscale" className="text-muted-foreground size-4 shrink-0" />
             <div
               ref={barsRef}
-              className="flex h-6 touch-none items-center gap-2"
+              className="flex h-6 flex-1 touch-none items-center gap-2"
               onPointerDown={(event) => {
                 event.preventDefault()
                 setScrubbing(true)
@@ -109,6 +124,42 @@ const SizeControl = ({ value, onChange }: SizeControlProps) => {
               })}
             </div>
             <Icon name="image-scale" className="text-muted-foreground size-5 shrink-0" />
+            </div>
+
+            {onGapChange ? (
+              <>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Spacing</span>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label="Less spacing"
+                      onClick={() => onGapChange(Math.max(0, gap - 2))}
+                    >
+                      <IconMinus className="size-4" />
+                    </Button>
+                    <span className="w-5 text-center text-sm tabular-nums">{gap}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label="More spacing"
+                      onClick={() => onGapChange(Math.min(16, gap + 2))}
+                    >
+                      <IconPlus className="size-4" />
+                    </Button>
+                  </div>
+                </div>
+              </>
+            ) : null}
+
+            {onRoundedChange ? (
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Rounded corners</span>
+                <Switch checked={rounded} onCheckedChange={onRoundedChange} />
+              </div>
+            ) : null}
           </motion.div>
         ) : null}
       </AnimatePresence>

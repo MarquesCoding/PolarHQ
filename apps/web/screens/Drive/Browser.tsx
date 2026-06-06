@@ -218,6 +218,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     share: (node) => setShareNode(node),
     move: (node) => setMoving([node.id]),
     copy: (node) => void copy(node.id),
+    extract: (node) => void extract(node.id),
     rename: (node) => setRenaming(node),
     details: (node) => {
       if (!selection.isSelected(node.id)) selection.selectOnly(node.id)

@@ -6,7 +6,9 @@ import { usePathname } from "next/navigation"
 import { Icon } from "@lib/icons"
 import { fetchAlbums, fetchTags } from "@lib/photos"
 import { useAppSelector } from "@store/hooks"
+import { IconChevronRight } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
+import { Button } from "@workspace/ui/components/button"
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
 import { AnimatePresence, motion } from "motion/react"
 import StorageMeter from "@components/StorageMeter/StorageMeter"
@@ -42,7 +44,7 @@ const AppSidebar = () => {
 
   const { data: tags } = useQuery({ queryKey: ["photos", "tags"], queryFn: fetchTags })
   const { data: albums } = useQuery({ queryKey: ["photos", "albums"], queryFn: fetchAlbums })
-  const [albumsOpen, setAlbumsOpen] = useState(false)
+  const [albumsOpen, setAlbumsOpen] = useState(true)
 
   return (
     <aside
@@ -75,12 +77,31 @@ const AppSidebar = () => {
 
           if (item.icon === "album-3" && !collapsed && albums && albums.length > 0) {
             return (
-              <div
-                key={item.href}
-                onMouseEnter={() => setAlbumsOpen(true)}
-                onMouseLeave={() => setAlbumsOpen(false)}
-              >
-                {link}
+              <div key={item.href}>
+                <div
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm transition",
+                    active
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                      : "hover:bg-sidebar-accent/60",
+                  )}
+                >
+                  <Icon name={item.icon} className="size-4 shrink-0" />
+                  <Link href={item.href} className="min-w-0 flex-1 truncate">
+                    {item.label}
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={albumsOpen ? "Collapse albums" : "Expand albums"}
+                    className="-mr-1 size-6 shrink-0"
+                    onClick={() => setAlbumsOpen((value) => !value)}
+                  >
+                    <IconChevronRight
+                      className={cn("size-4 transition-transform", albumsOpen && "rotate-90")}
+                    />
+                  </Button>
+                </div>
                 <AnimatePresence initial={false}>
                   {albumsOpen ? (
                     <motion.ul
