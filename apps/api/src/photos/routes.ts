@@ -12,6 +12,7 @@ const createArchive = createRequire(import.meta.url)("archiver") as (
   options?: ArchiverOptions,
 ) => Archiver
 import { getSessionUser } from "../context"
+import { readUploadForm } from "../uploads"
 import { createShareForAsset } from "../drive/service"
 import * as albums from "./albums"
 import { serializeAsset, serializeGridAssets } from "./serialize"
@@ -66,32 +67,34 @@ const parse = async <T>(c: Context, schema: z.ZodType<T>) => {
 const assetIdsSchema = z.object({ assetIds: z.array(z.string()).min(1) })
 
 photosRoutes.post("/assets", async (c) => {
-  const body = await c.req.parseBody()
-  const file = body["file"]
+  const form = await readUploadForm(c, c.get("userId"))
+  const file = form.get("file")
   if (!(file instanceof File)) return c.json({ error: "file field is required" }, 400)
 
   const bytes = Buffer.from(await file.arrayBuffer())
-  const mtimeRaw = body["mtime"]
+  const mtimeRaw = form.get("mtime")
   const mtime = typeof mtimeRaw === "string" ? Number(mtimeRaw) : NaN
   const clientModifiedAt = Number.isFinite(mtime) && mtime > 0 ? new Date(mtime) : undefined
 
-  if (body["encrypted"] === "true") {
+  if (form.get("encrypted") === "true") {
     const num = (v: unknown) =>
       typeof v === "string" && v.trim() && Number.isFinite(Number(v)) ? Number(v) : undefined
-    const mime = typeof body["mimeType"] === "string" ? body["mimeType"] : "image/jpeg"
+    const mimeRaw = form.get("mimeType")
+    const mime = typeof mimeRaw === "string" ? mimeRaw : "image/jpeg"
     const type = mime.startsWith("video/") ? "video" : mime.startsWith("audio/") ? "audio" : "image"
+    const encryptedNameRaw = form.get("encryptedName")
+    const encryptedLocationRaw = form.get("encryptedLocation")
     const { asset, mirrorNodeId } = await ingestEncryptedAsset({
       ownerId: c.get("userId"),
       bytes,
       mimeType: mime,
       type,
-      width: num(body["width"]),
-      height: num(body["height"]),
-      durationMs: num(body["durationMs"]),
+      width: num(form.get("width")),
+      height: num(form.get("height")),
+      durationMs: num(form.get("durationMs")),
       takenAt: clientModifiedAt,
-      encryptedName: typeof body["encryptedName"] === "string" ? body["encryptedName"] : null,
-      encryptedLocation:
-        typeof body["encryptedLocation"] === "string" ? body["encryptedLocation"] : null,
+      encryptedName: typeof encryptedNameRaw === "string" ? encryptedNameRaw : null,
+      encryptedLocation: typeof encryptedLocationRaw === "string" ? encryptedLocationRaw : null,
       placeholderName: file.name || "encrypted",
     })
     return c.json({ asset: await serializeAsset(asset), mirrorNodeId, deduped: false }, 201)
