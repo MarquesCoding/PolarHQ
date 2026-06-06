@@ -1,5 +1,5 @@
 import { db, schema } from "@workspace/db"
-import { and, eq } from "drizzle-orm"
+import { and, eq, inArray } from "drizzle-orm"
 import { getNode } from "../drive/service"
 import { canAccessDoc } from "./service"
 
@@ -59,6 +59,16 @@ export const getPublicKeyByEmail = async (
   )[0]
   if (!row) return null
   return { userId: target.id, publicKey: row.publicKey }
+}
+
+/** Of the given node ids, which the user holds an E2E content key for (i.e. are encrypted). */
+export const nodesWithKeys = async (userId: string, nodeIds: string[]): Promise<Set<string>> => {
+  if (nodeIds.length === 0) return new Set()
+  const rows = await db
+    .select({ nodeId: schema.docKeys.nodeId })
+    .from(schema.docKeys)
+    .where(and(eq(schema.docKeys.userId, userId), inArray(schema.docKeys.nodeId, nodeIds)))
+  return new Set(rows.map((row) => row.nodeId))
 }
 
 /** The document's content key wrapped to this user, if they have access and a key exists. */

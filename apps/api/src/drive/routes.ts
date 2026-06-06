@@ -5,6 +5,7 @@ import { storage } from "@workspace/storage"
 import { type Context, Hono } from "hono"
 import { z } from "zod"
 import { getSessionUser } from "../context"
+import { nodesWithKeys } from "../docs/keys"
 import { ingestUpload, purgeAssets, restoreAssets, trashAssets } from "../photos/service"
 import {
   type DriveNode,
@@ -50,7 +51,7 @@ driveRoutes.use("*", async (c, next) => {
 const driveBase = `${config.api.url}/api/v1/drive/nodes`
 const photosBase = `${config.api.url}/api/v1/photos/assets`
 
-const serializeNode = (node: DriveNode) => ({
+const serializeNode = (node: DriveNode, encryptedIds?: Set<string>) => ({
   id: node.id,
   parentId: node.parentId,
   kind: node.kind,
@@ -59,6 +60,7 @@ const serializeNode = (node: DriveNode) => ({
   sizeBytes: node.sizeBytes,
   special: node.special,
   photoAssetId: node.photoAssetId,
+  encrypted: encryptedIds?.has(node.id) ?? false,
   trashedAt: node.trashedAt,
   createdAt: node.createdAt,
   updatedAt: node.updatedAt,
@@ -99,10 +101,11 @@ driveRoutes.get("/nodes", async (c) => {
   const userId = c.get("userId")
   const { parent, children } = await listChildren(userId, c.req.query("parent") ?? null)
   const trail = await breadcrumb(userId, parent.id)
+  const encrypted = await nodesWithKeys(userId, children.map((n) => n.id))
   return c.json({
     parent: serializeNode(parent),
-    breadcrumb: trail.map(serializeNode),
-    children: children.map(serializeNode),
+    breadcrumb: trail.map((n) => serializeNode(n)),
+    children: children.map((n) => serializeNode(n, encrypted)),
   })
 })
 
@@ -132,6 +135,14 @@ driveRoutes.post("/nodes/upload", async (c) => {
   const mtimeRaw = body["mtime"]
   const mtime = typeof mtimeRaw === "string" ? Number(mtimeRaw) : NaN
   const clientModifiedAt = Number.isFinite(mtime) && mtime > 0 ? new Date(mtime) : undefined
+
+  // E2E upload: the body is ciphertext. Store it as-is with the original mime (sent
+  // separately) and never run server-side media processing — the client owns the thumbnail.
+  if (body["encrypted"] === "true") {
+    const originalMime = typeof body["mimeType"] === "string" ? body["mimeType"] : mimeType
+    const node = await upsertDriveFile({ ownerId: userId, parentId, filename, mimeType: originalMime, bytes })
+    return c.json({ node: serializeNode(node) }, 201)
+  }
 
   if (parentId === photosId) {
     if (!isMediaMime(mimeType)) {
@@ -169,6 +180,33 @@ driveRoutes.post("/nodes/upload", async (c) => {
 
   const node = await upsertDriveFile({ ownerId: userId, parentId, filename, mimeType, bytes })
   return c.json({ node: serializeNode(node) }, 201)
+})
+
+// Encrypted thumbnail blobs (client-generated, stored opaque under the user's .thumbnails).
+driveRoutes.put("/nodes/:id/thumbnail", async (c) => {
+  const userId = c.get("userId")
+  const node = await getNode(userId, c.req.param("id"))
+  if (!node) return c.json({ error: "not found" }, 404)
+  const bytes = Buffer.from(await c.req.arrayBuffer())
+  await storage().put({
+    key: `users/${userId}/.thumbnails/${node.id}`,
+    body: bytes,
+    contentType: "application/octet-stream",
+  })
+  return c.json({ ok: true })
+})
+
+driveRoutes.get("/nodes/:id/thumbnail", async (c) => {
+  const userId = c.get("userId")
+  const node = await getNode(userId, c.req.param("id"))
+  if (!node) return c.json({ error: "not found" }, 404)
+  const stream = await storage()
+    .getStream(`users/${userId}/.thumbnails/${node.id}`)
+    .catch(() => null)
+  if (!stream) return c.json({ error: "not found" }, 404)
+  return new Response(Readable.toWeb(stream) as ReadableStream, {
+    headers: { "Content-Type": "application/octet-stream", "Cache-Control": "no-store" },
+  })
 })
 
 driveRoutes.post("/nodes/archive", async (c) => {
@@ -214,7 +252,7 @@ driveRoutes.post("/nodes/:id/extract", async (c) => {
 
 driveRoutes.get("/folders", async (c) => {
   const folders = await listFolders(c.get("userId"))
-  return c.json({ folders: folders.map(serializeNode) })
+  return c.json({ folders: folders.map((n) => serializeNode(n)) })
 })
 
 driveRoutes.post("/nodes/:id/copy", async (c) => {
@@ -298,7 +336,7 @@ driveRoutes.patch("/nodes/:id", async (c) => {
 
 driveRoutes.get("/trash", async (c) => {
   const nodes = await listTrash(c.get("userId"))
-  return c.json({ children: nodes.map(serializeNode) })
+  return c.json({ children: nodes.map((n) => serializeNode(n)) })
 })
 
 driveRoutes.post("/trash/empty", async (c) => {
