@@ -60,12 +60,24 @@ export const canAccessDoc = async (userId: string, nodeId: string): Promise<bool
     .where(and(eq(schema.nodes.id, nodeId), eq(schema.nodes.ownerId, userId)))
     .limit(1)
   if (owned[0]) return true
+  // E2E Photos reuse the doc_keys table keyed by the *asset* id (not a drive node).
+  if (await userOwnsAsset(userId, nodeId)) return true
   const collab = await db
     .select({ id: schema.collaborators.id })
     .from(schema.collaborators)
     .where(and(eq(schema.collaborators.nodeId, nodeId), eq(schema.collaborators.userId, userId)))
     .limit(1)
   return Boolean(collab[0])
+}
+
+/** Whether the user owns a Photos asset with this id (E2E content keys are keyed by asset id). */
+export const userOwnsAsset = async (userId: string, id: string): Promise<boolean> => {
+  const asset = await db
+    .select({ id: schema.assets.id })
+    .from(schema.assets)
+    .where(and(eq(schema.assets.id, id), eq(schema.assets.ownerId, userId)))
+    .limit(1)
+  return Boolean(asset[0])
 }
 
 /** Fetch a doc node + content bytes for any viewer (owner or collaborator), else null. */
