@@ -1,4 +1,5 @@
 import { type PermissionDef, registerPermissions } from "@workspace/auth"
+import { registerLimitCatalog } from "./limits"
 
 export const ADMIN_PERMISSIONS: PermissionDef[] = [
   { key: "admin.instance.manage", description: "Manage instance settings", resource: "instance", action: "manage" },
@@ -14,4 +15,5 @@ export const ADMIN_PERMISSIONS: PermissionDef[] = [
 /** Register the admin permission catalog into the shared registry. */
 export const registerAdminModule = (): void => {
   registerPermissions(ADMIN_PERMISSIONS)
+  registerLimitCatalog()
 }

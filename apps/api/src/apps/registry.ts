@@ -1,4 +1,4 @@
-export type AppCategory = "storage" | "productivity" | "communication" | "security"
+export type AppCategory = "storage" | "productivity" | "communication" | "security" | "system"
 export type AppPrivacy = "server-side" | "e2e"
 export type AppStatus = "available" | "coming_soon"
 
@@ -119,6 +119,17 @@ export const SUITE_APPS: AppManifest[] = [
     category: "security",
     privacy: "e2e",
     status: "coming_soon",
+  },
+  {
+    id: "admin",
+    name: "Admin",
+    description: "Manage users, apps, limits, and instance settings",
+    icon: "shield-lock",
+    route: "/admin",
+    category: "system",
+    privacy: "server-side",
+    status: "available",
+    requiredPermission: "admin.instance.manage",
   },
 ]
 
