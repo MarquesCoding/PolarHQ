@@ -40,6 +40,8 @@ import { PageSpinner } from "@components/Spinner/Spinner"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 import DetailsPanel from "@pages/Drive/components/DetailsPanel/DetailsPanel"
 import DriveBackgroundMenu from "@pages/Drive/components/DriveBackgroundMenu/DriveBackgroundMenu"
+import dynamic from "next/dynamic"
+import { is3DModelName } from "@lib/model3dExt"
 import ImageViewer from "@pages/Drive/components/ImageViewer/ImageViewer"
 import MoveDialog from "@pages/Drive/components/MoveDialog/MoveDialog"
 import NewFolderDialog from "@pages/Drive/components/NewFolderDialog/NewFolderDialog"
@@ -55,6 +57,10 @@ const DOC_ROUTES: Record<DocType, string> = {
   sheet: "/sheets",
   slides: "/slides",
 }
+
+const ModelViewer = dynamic(() => import("@pages/Drive/components/ModelViewer/ModelViewer"), {
+  ssr: false,
+})
 
 interface BrowserProps {
   folderId?: string
@@ -75,6 +81,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   const [versionsNode, setVersionsNode] = useState<DriveNode | null>(null)
   const [shareNode, setShareNode] = useState<DriveNode | null>(null)
   const [viewingNode, setViewingNode] = useState<DriveNode | null>(null)
+  const [viewingModel, setViewingModel] = useState<DriveNode | null>(null)
   const [newFolderOpen, setNewFolderOpen] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
 
@@ -122,6 +129,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     const type = docTypeOf(node.mimeType)
     if (type) router.push(`${DOC_ROUTES[type]}/${node.id}`)
     else if (node.mimeType?.startsWith("image/")) setViewingNode(node)
+    else if (is3DModelName(node.name)) setViewingModel(node)
     else downloadIds([node.id])
   }
 
@@ -200,7 +208,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
 
   const actions: DriveNodeActions = {
     open: (node) => open(node),
-    view: (node) => setViewingNode(node),
+    view: (node) => (is3DModelName(node.name) ? setViewingModel(node) : setViewingNode(node)),
     download: (node) => downloadIds([node.id]),
     copyLink: (node) => {
       if (!node.downloadUrl) return
@@ -396,6 +404,9 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     <AnimatePresence>
       {viewingNode ? (
         <ImageViewer key="viewer" node={viewingNode} onClose={() => setViewingNode(null)} />
+      ) : null}
+      {viewingModel ? (
+        <ModelViewer key="model" node={viewingModel} onClose={() => setViewingModel(null)} />
       ) : null}
     </AnimatePresence>
     </div>
