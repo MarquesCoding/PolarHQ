@@ -1,0 +1,43 @@
+{
+  "deriveKey": [
+    {
+      "password": "correct horse battery staple",
+      "salt": "AQIDBAUGBwgJCgsMDQ4PEA==",
+      "ops": 3,
+      "mem": 134217728,
+      "expected": "Rr3X5sJ6C14tqzxcKiiNRpA42rNI50tk1pffj+ott4c="
+    },
+    {
+      "password": "correct horse battery staple",
+      "salt": "AQIDBAUGBwgJCgsMDQ4PEA==",
+      "ops": 2,
+      "mem": 67108864,
+      "expected": "E/5+N/yL6ffx0ZoknX6bEidb4jHGQSLlUleo5qqP+gU="
+    }
+  ],
+  "secretboxOpen": {
+    "key": "eU7XJ41MiGPr5rMysV2zps/ie5MF/L9QqfPcvMX3U2w=",
+    "blob": "Ro6OjxtXgjJXKcoy1RMK701ZUX+BHuExrMDeCGxq65Ts4S0qBz+TZduppkAdtsYnuA6bfB0giKH9jkYgnWTsVPVMTeiljA==",
+    "expected": "dGhlIHF1aWNrIGJyb3duIGZveCDwn6aKIGp1bXBz"
+  },
+  "sealedBoxOpen": {
+    "publicKey": "viuLdbNpuPRZuLFTeZvFqwei+P66BMEcyEPRn+Va4lw=",
+    "privateKey": "w5Au9gDBiPCpsNMtXnjt+IbWGIfmmKgaqwhMj4bb/m8=",
+    "sealed": "yEtuMBvBNrlicFWao8+l02Sgkq1O195KyNSG5KtYyFmaelHhge2HNXlD/RYIPuISG5W0VoJysH7bPzQlyoZ176gaKKygNCbm",
+    "expected": "c2VhbGVkLWJveCBwYXlsb2FkIHZhbHVl"
+  },
+  "unlockChain": {
+    "password": "correct horse battery staple",
+    "salt": "AQIDBAUGBwgJCgsMDQ4PEA==",
+    "ops": 3,
+    "mem": 134217728,
+    "publicKey": "viuLdbNpuPRZuLFTeZvFqwei+P66BMEcyEPRn+Va4lw=",
+    "wrappedPrivateKey": "tmlFv1oUo2XC0Geibb5/utthpVyXbH+dsA4g/GTlAkFn8luQ0uJWAQu3GiwTbvzWpDBavdRAfdVtPUqC6XuP8c0i9MLVXY9M",
+    "expectedPrivateKey": "w5Au9gDBiPCpsNMtXnjt+IbWGIfmmKgaqwhMj4bb/m8=",
+    "wrappedMetaKey": "4VLOJYg9dJMnR0vARoo34a9kwKRx+JrWiKqhWefiTxAiqkjyuLw9hNpeSbxAvKQSAssI3bmU0Pgqw9gBRUfpRmdLTPfjHqKhD9PsHB61RJE=",
+    "expectedMetaKey": "RD/Z9mBaQ0FDDDiZxKtXlPwxBIbOB07weS8cbS5bKDU=",
+    "wrappedContentKey": "HwRDNYqxhI613PFf2m8njb2Xhi08MTAE8Cn5VbGfpnSSiOiNA/tQBN5xMecTpvjpMj7A/nXqVoKz7keR/z/gWiP4457ptlRj0X80mYcH1i4=",
+    "thumbBlob": "dYBwmfpdPZs8ZKczMZLX1uBKErRoDTGg6q8QqgdW6B489hbU/ggFM3zX5HfUpkPb7b3anY5iAj7gHwawAE1vM9E3",
+    "expectedThumb": "UFJFVEVORC1KUEVHLUJZVEVTLQDDvy1lbmQ="
+  }
+}
