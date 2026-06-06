@@ -1,7 +1,9 @@
 import { createId } from "@paralleldrive/cuid2"
 import {
+  bigint,
   boolean,
   index,
+  integer,
   jsonb,
   pgSchema,
   primaryKey,
@@ -173,6 +175,43 @@ export const instanceSettings = core.table("instance_settings", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
+
+export const backupStatus = core.enum("backup_status", ["running", "completed", "failed"])
+
+/**
+ * Singleton config for scheduled off-site backups to an S3-compatible bucket. The secret access
+ * key is stored here (plaintext, self-hosted) but never returned to clients.
+ */
+export const backupSettings = core.table("backup_settings", {
+  id: text("id").primaryKey().default("singleton"),
+  enabled: boolean("enabled").notNull().default(false),
+  endpoint: text("endpoint"),
+  region: text("region"),
+  bucket: text("bucket"),
+  prefix: text("prefix"),
+  accessKeyId: text("access_key_id"),
+  secretAccessKey: text("secret_access_key"),
+  forcePathStyle: boolean("force_path_style").notNull().default(true),
+  frequencyHours: integer("frequency_hours").notNull().default(24),
+  lastRunAt: timestamp("last_run_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const backupRuns = core.table(
+  "backup_runs",
+  {
+    id: id(),
+    status: backupStatus("status").notNull().default("running"),
+    trigger: text("trigger").notNull(),
+    objectCount: integer("object_count").notNull().default(0),
+    bytes: bigint("bytes", { mode: "number" }).notNull().default(0),
+    error: text("error"),
+    startedAt: timestamp("started_at").notNull().defaultNow(),
+    finishedAt: timestamp("finished_at"),
+  },
+  (t) => [index("backup_runs_started_idx").on(t.startedAt)],
+)
 
 export const auditLog = core.table(
   "audit_log",

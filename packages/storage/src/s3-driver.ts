@@ -81,13 +81,22 @@ export class S3Driver implements StorageDriver {
   }
 
   async list(prefix: string): Promise<ObjectInfo[]> {
-    const response = await this.client.send(
-      new ListObjectsV2Command({ Bucket: this.bucket, Prefix: prefix }),
-    )
-    return (response.Contents ?? []).map((item) => ({
-      key: item.Key ?? "",
-      size: item.Size ?? 0,
-    }))
+    const objects: ObjectInfo[] = []
+    let token: string | undefined
+    do {
+      const response = await this.client.send(
+        new ListObjectsV2Command({
+          Bucket: this.bucket,
+          Prefix: prefix,
+          ContinuationToken: token,
+        }),
+      )
+      for (const item of response.Contents ?? []) {
+        objects.push({ key: item.Key ?? "", size: item.Size ?? 0 })
+      }
+      token = response.IsTruncated ? response.NextContinuationToken : undefined
+    } while (token)
+    return objects
   }
 
   async presignGet(key: string, expiresInSeconds = 3600): Promise<string> {
