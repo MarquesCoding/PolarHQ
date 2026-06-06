@@ -28,6 +28,8 @@ interface SizeControlProps {
   onGapChange?: (value: number) => void
   rounded?: boolean
   onRoundedChange?: (value: boolean) => void
+  square?: boolean
+  onSquareChange?: (value: boolean) => void
 }
 
 const SizeControl = ({
@@ -37,6 +39,8 @@ const SizeControl = ({
   onGapChange,
   rounded = true,
   onRoundedChange,
+  square = false,
+  onSquareChange,
 }: SizeControlProps) => {
   const [open, setOpen] = useState(false)
   const [scrubbing, setScrubbing] = useState(false)
@@ -153,6 +157,13 @@ const SizeControl = ({
                   </div>
                 </div>
               </>
+            ) : null}
+
+            {onSquareChange ? (
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Square tiles</span>
+                <Switch checked={square} onCheckedChange={onSquareChange} />
+              </div>
             ) : null}
 
             {onRoundedChange ? (

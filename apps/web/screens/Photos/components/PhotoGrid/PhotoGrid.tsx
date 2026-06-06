@@ -83,6 +83,7 @@ const buildLayout = (
   width: number,
   rowHeight: number,
   gap: number,
+  square: boolean,
 ): Layout => {
   if (width <= 0 || assets.length === 0) return { rows: [], totalHeight: 0 }
   const rows: Row[] = []
@@ -107,6 +108,24 @@ const buildLayout = (
       assetIds: group.map((asset) => asset.id),
     })
     y += HEADER_HEIGHT + HEADER_GAP
+
+    if (square) {
+      const cols = Math.max(1, Math.round((width + gap) / (rowHeight + gap)))
+      const tile = (width - (cols - 1) * gap) / cols
+      for (let start = 0; start < group.length; start += cols) {
+        const slice = group.slice(start, start + cols)
+        const cells = slice.map((asset, column) => ({
+          asset,
+          x: column * (tile + gap),
+          width: tile,
+          height: tile,
+        }))
+        rows.push({ type: "images", key: `r-${slice[0]!.id}`, y, height: tile, cells })
+        y += tile + gap
+      }
+      y += SECTION_GAP
+      continue
+    }
 
     let current: { asset: GridAsset; aspect: number }[] = []
     let aspectSum = 0
@@ -170,6 +189,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   const [rowHeight] = usePersistentNumber("photos.rowHeight", 180)
   const [gap] = usePersistentNumber("photos.gap", DEFAULT_GAP)
   const [rounded] = usePersistentNumber("photos.rounded", 1)
+  const [square] = usePersistentNumber("photos.square", 0)
 
   useEffect(() => {
     const element = containerRef.current
@@ -187,8 +207,8 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     [assets],
   )
   const layout = useMemo(
-    () => buildLayout(sortedGridAssets, width, rowHeight, gap),
-    [sortedGridAssets, width, rowHeight, gap],
+    () => buildLayout(sortedGridAssets, width, rowHeight, gap, square === 1),
+    [sortedGridAssets, width, rowHeight, gap, square],
   )
 
   useEffect(() => {
