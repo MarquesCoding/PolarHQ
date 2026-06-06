@@ -527,6 +527,37 @@ importers:
         specifier: ^5
         version: 5.9.3
 
+  services/backup:
+    dependencies:
+      '@workspace/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@workspace/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@workspace/jobs':
+        specifier: workspace:*
+        version: link:../../packages/jobs
+      '@workspace/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(kysely@0.29.2)(postgres@3.4.9)
+    devDependencies:
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      bullmq:
+        specifier: ^5.78.0
+        version: 5.78.0
+      tsx:
+        specifier: ^4.22.4
+        version: 4.22.4
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
   services/media:
     dependencies:
       '@workspace/config':
