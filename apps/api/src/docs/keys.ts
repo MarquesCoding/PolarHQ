@@ -87,6 +87,22 @@ export const getDocKey = async (userId: string, nodeId: string): Promise<string 
   return row?.wrappedKey ?? null
 }
 
+/**
+ * Replace ALL wrapped content keys for a node with a new set — used when rotating the
+ * content key after revoking a collaborator, so a removed user's stale key is destroyed.
+ * Owner-only; non-authorized entries are dropped by setDocKeys.
+ */
+export const replaceDocKeys = async (
+  ownerId: string,
+  nodeId: string,
+  entries: { userId: string; wrappedKey: string }[],
+): Promise<void> => {
+  const node = await getNode(ownerId, nodeId)
+  if (!node) throw new Error("not found")
+  await db.delete(schema.docKeys).where(eq(schema.docKeys.nodeId, nodeId))
+  await setDocKeys(ownerId, nodeId, entries)
+}
+
 /** Store the (already-wrapped) content key for one or more users. Owner-only. */
 export const setDocKeys = async (
   ownerId: string,

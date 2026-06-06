@@ -1,7 +1,14 @@
 "use client"
 
 import { apiFetch } from "@lib/apiClient"
-import { type DocMeta, type DocType, createDoc } from "@lib/docs"
+import {
+  type DocMeta,
+  type DocType,
+  createDoc,
+  fetchDocCollaborators,
+  fetchDocContent,
+  saveDocContent,
+} from "@lib/docs"
 import { fingerprintOf, verifyAndPin } from "@lib/keyVerification"
 import { secureStoreClear, secureStoreGet, secureStoreSet } from "@lib/secureStore"
 import {
@@ -246,4 +253,44 @@ export const shareDocKey = async (nodeId: string, email: string): Promise<ShareK
     }),
   })
   return { status: "ok", fingerprint: fingerprintOf(target.publicKey) }
+}
+
+/**
+ * Rotate an encrypted doc's content key so a removed collaborator can no longer read it:
+ * generate a fresh key, re-encrypt the stored snapshot under it, and re-wrap it to the
+ * owner + every *remaining* collaborator. Call this after removeDocCollaborator. The old
+ * key (held by the revoked user) is destroyed server-side by the rotate endpoint.
+ */
+export const rekeyDoc = async (nodeId: string, selfUserId: string): Promise<void> => {
+  if (!keypair) throw new Error("locked")
+  const oldKey = await getDocContentKey(nodeId)
+  if (!oldKey) return // plaintext doc — nothing to rotate
+  const newKey = newContentKey()
+
+  // Re-encrypt the stored snapshot under the new key.
+  const content = new Uint8Array(await fetchDocContent(nodeId))
+  if (content.byteLength) {
+    const plain = secretboxOpen(content, oldKey)
+    await saveDocContent(nodeId, secretboxSeal(plain, newKey))
+  }
+
+  // Wrap the new key to the owner + every remaining collaborator (revoked users excluded).
+  const entries = [{ userId: selfUserId, wrappedKey: toB64(sealTo(newKey, keypair.publicKey)) }]
+  for (const collab of await fetchDocCollaborators(nodeId)) {
+    const target = await apiFetch<{ userId: string; publicKey: string }>(
+      `/api/v1/docs/keys/public?email=${encodeURIComponent(collab.email)}`,
+    ).catch(() => null)
+    if (!target) continue
+    if (verifyAndPin(target.userId, target.publicKey).changed) continue // suspicious key change
+    entries.push({
+      userId: target.userId,
+      wrappedKey: toB64(sealTo(newKey, fromB64(target.publicKey))),
+    })
+  }
+
+  await apiFetch(`/api/v1/docs/documents/${nodeId}/keys/rotate`, {
+    method: "POST",
+    body: JSON.stringify({ keys: entries }),
+  })
+  contentKeyCache.set(nodeId, newKey)
 }
