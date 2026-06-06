@@ -12,7 +12,7 @@ import {
   moveDriveNode,
   trashDriveNode,
 } from "@lib/drive"
-import { isDocNode } from "@lib/docs"
+import { type DocType, docTypeOf } from "@lib/docs"
 import { createEncryptedDoc } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import { SelectionProvider, useSelection } from "@lib/selection"
@@ -48,6 +48,12 @@ import type { DriveNodeActions } from "@pages/Drive/components/NodeContextMenu/N
 import NodeTable from "@pages/Drive/components/NodeTable/NodeTable"
 import RenameDialog from "@pages/Drive/components/RenameDialog/RenameDialog"
 import VersionHistoryDialog from "@pages/Drive/components/VersionHistoryDialog/VersionHistoryDialog"
+
+const DOC_ROUTES: Record<DocType, string> = {
+  doc: "/docs",
+  sheet: "/sheets",
+  slides: "/slides",
+}
 
 interface BrowserProps {
   folderId?: string
@@ -110,19 +116,23 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   }
 
   const open = (node: DriveNode) => {
-    if (node.kind === "folder") router.push(`/drive/${node.id}`)
-    else if (isDocNode(node)) router.push(`/docs/${node.id}`)
+    if (node.kind === "folder") {
+      router.push(`/drive/${node.id}`)
+      return
+    }
+    const type = docTypeOf(node.mimeType)
+    if (type) router.push(`${DOC_ROUTES[type]}/${node.id}`)
     else if (node.mimeType?.startsWith("image/")) setViewingNode(node)
     else downloadIds([node.id])
   }
 
-  const newDocument = async () => {
+  const newDoc = async (type: DocType) => {
     try {
-      const doc = await createEncryptedDoc(parentId)
+      const doc = await createEncryptedDoc(parentId, type)
       invalidate()
-      router.push(`/docs/${doc.id}`)
+      router.push(`${DOC_ROUTES[type]}/${doc.id}`)
     } catch {
-      toast.error("Could not create document")
+      toast.error("Could not create")
     }
   }
 
@@ -226,7 +236,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
       <DriveBackgroundMenu
         onUpload={() => fileInput.current?.click()}
         onNewFolder={() => setNewFolderOpen(true)}
-        onNewDocument={() => void newDocument()}
+        onNew={(type) => void newDoc(type)}
       >
       <div
         className="flex flex-1 flex-col"
@@ -293,7 +303,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
       />
 
       <SelectionBar>
-        {single && isDocNode(single) ? (
+        {single && docTypeOf(single.mimeType) ? (
           <Button variant="ghost" size="sm" onClick={() => open(single)}>
             <IconExternalLink className="size-4" />
             Open

@@ -14,9 +14,10 @@ interface DocCardProps {
   onOpen: (doc: DocMeta) => void
   onSelect: (doc: DocMeta, shiftKey: boolean, additive: boolean) => void
   onToggle: (doc: DocMeta) => void
+  iconName?: string
 }
 
-const DocCard = ({ doc, selected, onOpen, onSelect, onToggle }: DocCardProps) => (
+const DocCard = ({ doc, selected, onOpen, onSelect, onToggle, iconName = "document" }: DocCardProps) => (
   <div
     data-doc-card={doc.id}
     onClick={(event: MouseEvent) => onSelect(doc, event.shiftKey, event.metaKey || event.ctrlKey)}
@@ -47,7 +48,7 @@ const DocCard = ({ doc, selected, onOpen, onSelect, onToggle }: DocCardProps) =>
     </Button>
 
     <div className="bg-card group-hover:border-primary/40 flex aspect-[4/5] items-center justify-center rounded-xl border transition">
-      <Icon name="document" className="text-muted-foreground size-14" />
+      <Icon name={iconName} className="text-muted-foreground size-14" />
     </div>
 
     <div className="flex flex-col">

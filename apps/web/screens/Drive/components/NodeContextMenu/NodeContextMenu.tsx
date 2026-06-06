@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import type { DriveNode } from "@lib/drive"
-import { isDocNode } from "@lib/docs"
+import { docTypeOf } from "@lib/docs"
 import {
   IconArrowsMove,
   IconCopy,
@@ -64,10 +64,10 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
           </ContextMenuItem>
         ) : (
           <>
-            {isDocNode(node) ? (
+            {docTypeOf(node.mimeType) ? (
               <ContextMenuItem onClick={() => actions.open(node)}>
                 <IconExternalLink />
-                Open document
+                Open
               </ContextMenuItem>
             ) : null}
             {isImage ? (

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { driveFolderIdFromPath, fetchNodes } from "@lib/drive"
+import type { DocType } from "@lib/docs"
 import { createEncryptedDoc } from "@lib/e2e"
 import { useUploadManager } from "@lib/uploadManager"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
@@ -12,6 +13,8 @@ import {
   IconFilePlus,
   IconFolderPlus,
   IconInfoCircle,
+  IconPresentation,
+  IconTable,
   IconUpload,
 } from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -52,13 +55,14 @@ const DriveTopActions = () => {
   const uploadFiles = (files: FileList) => {
     if (parentId) upload.upload(files, { kind: "drive", parentId })
   }
-  const newDocument = async () => {
+  const routes: Record<DocType, string> = { doc: "/docs", sheet: "/sheets", slides: "/slides" }
+  const newDoc = async (type: DocType) => {
     try {
-      const doc = await createEncryptedDoc(parentId)
+      const doc = await createEncryptedDoc(parentId, type)
       void queryClient.invalidateQueries({ queryKey: ["docs"] })
-      router.push(`/docs/${doc.id}`)
+      router.push(`${routes[type]}/${doc.id}`)
     } catch {
-      toast.error("Could not create document")
+      toast.error("Could not create")
     }
   }
 
@@ -91,9 +95,17 @@ const DriveTopActions = () => {
             <IconFolderPlus className="size-4" />
             New folder
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => void newDocument()}>
+          <DropdownMenuItem onClick={() => void newDoc("doc")}>
             <IconFilePlus className="size-4" />
             New document
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => void newDoc("sheet")}>
+            <IconTable className="size-4" />
+            New spreadsheet
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => void newDoc("slides")}>
+            <IconPresentation className="size-4" />
+            New presentation
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

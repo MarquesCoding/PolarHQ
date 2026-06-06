@@ -1,7 +1,14 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { IconFilePlus, IconFolderPlus, IconUpload } from "@tabler/icons-react"
+import type { DocType } from "@lib/docs"
+import {
+  IconFilePlus,
+  IconFolderPlus,
+  IconPresentation,
+  IconTable,
+  IconUpload,
+} from "@tabler/icons-react"
 import {
   ContextMenu,
   ContextMenuContent,
@@ -13,15 +20,15 @@ import {
 interface DriveBackgroundMenuProps {
   onUpload: () => void
   onNewFolder: () => void
-  onNewDocument: () => void
+  onNew: (type: DocType) => void
   children: ReactNode
 }
 
-/** Right-click menu for the empty Drive area: upload files, create a folder, or create a document here. */
+/** Right-click menu for the empty Drive area: upload, create a folder, or create a document/sheet/deck. */
 const DriveBackgroundMenu = ({
   onUpload,
   onNewFolder,
-  onNewDocument,
+  onNew,
   children,
 }: DriveBackgroundMenuProps) => (
   <ContextMenu>
@@ -36,9 +43,17 @@ const DriveBackgroundMenu = ({
         New folder
       </ContextMenuItem>
       <ContextMenuSeparator />
-      <ContextMenuItem onClick={onNewDocument}>
+      <ContextMenuItem onClick={() => onNew("doc")}>
         <IconFilePlus />
         New document
+      </ContextMenuItem>
+      <ContextMenuItem onClick={() => onNew("sheet")}>
+        <IconTable />
+        New spreadsheet
+      </ContextMenuItem>
+      <ContextMenuItem onClick={() => onNew("slides")}>
+        <IconPresentation />
+        New presentation
       </ContextMenuItem>
     </ContextMenuContent>
   </ContextMenu>
