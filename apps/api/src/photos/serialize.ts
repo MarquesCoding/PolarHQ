@@ -36,6 +36,7 @@ export interface GridAssetDto {
   originalFilename: string
   encrypted: boolean
   encryptedName: string | null
+  mimeType: string
   type: Asset["type"]
   status: Asset["status"]
   width: number | null
@@ -54,6 +55,7 @@ export const serializeGridAsset = (asset: Asset): GridAssetDto => ({
   originalFilename: asset.originalFilename,
   encrypted: asset.encrypted,
   encryptedName: asset.encryptedName,
+  mimeType: asset.mimeType,
   type: asset.type,
   status: asset.status,
   width: asset.width,

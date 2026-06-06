@@ -73,12 +73,16 @@ photosRoutes.post("/assets", async (c) => {
   if (body["encrypted"] === "true") {
     const num = (v: unknown) =>
       typeof v === "string" && v.trim() && Number.isFinite(Number(v)) ? Number(v) : undefined
+    const mime = typeof body["mimeType"] === "string" ? body["mimeType"] : "image/jpeg"
+    const type = mime.startsWith("video/") ? "video" : mime.startsWith("audio/") ? "audio" : "image"
     const { asset, mirrorNodeId } = await ingestEncryptedAsset({
       ownerId: c.get("userId"),
       bytes,
-      mimeType: typeof body["mimeType"] === "string" ? body["mimeType"] : "image/jpeg",
+      mimeType: mime,
+      type,
       width: num(body["width"]),
       height: num(body["height"]),
+      durationMs: num(body["durationMs"]),
       takenAt: clientModifiedAt,
       encryptedName: typeof body["encryptedName"] === "string" ? body["encryptedName"] : null,
       placeholderName: file.name || "encrypted",

@@ -156,16 +156,16 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
   const download = () =>
     upload.download(displayName, [{ id: asset.id, name: displayName, encrypted: asset.encrypted }])
 
-  // Encrypted images: decrypt the full original to an object URL for the viewer.
+  // Encrypted media: decrypt the full original to an object URL for the viewer/player.
   const [decryptedSrc, setDecryptedSrc] = useState<string | null>(null)
   useEffect(() => {
-    if (!asset.encrypted || asset.type !== "image") {
+    if (!asset.encrypted) {
       setDecryptedSrc(null)
       return
     }
     let active = true
     let url: string | null = null
-    void fetchDecryptedPhotoOriginal(asset.id, "image/jpeg").then((result) => {
+    void fetchDecryptedPhotoOriginal(asset.id, asset.mimeType).then((result) => {
       if (!active) {
         if (result) URL.revokeObjectURL(result)
         return
@@ -177,7 +177,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
       active = false
       if (url) URL.revokeObjectURL(url)
     }
-  }, [asset.id, asset.encrypted, asset.type])
+  }, [asset.id, asset.encrypted, asset.mimeType])
 
   const source = asset.encrypted
     ? (decryptedSrc ?? undefined)
@@ -280,15 +280,15 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
             <MediaPlayer
               key={asset.id}
               kind="video"
-              src={asset.videoUrl ?? ""}
-              poster={asset.previewUrl ?? undefined}
+              src={asset.encrypted ? (decryptedSrc ?? "") : (asset.videoUrl ?? "")}
+              poster={asset.encrypted ? undefined : (asset.previewUrl ?? undefined)}
             />
           ) : asset.type === "audio" ? (
             <MediaPlayer
               key={asset.id}
               kind="audio"
-              src={assetOriginalUrl(asset.id)}
-              name={asset.originalFilename}
+              src={asset.encrypted ? (decryptedSrc ?? "") : assetOriginalUrl(asset.id)}
+              name={displayName}
             />
           ) : source ? (
             <motion.div
