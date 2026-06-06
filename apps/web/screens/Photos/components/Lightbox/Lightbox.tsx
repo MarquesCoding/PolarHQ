@@ -7,7 +7,7 @@ import { type GridAsset, assetOriginalUrl, favoriteAssets, trashAssets } from "@
 import { fetchDecryptedMotionVideo, fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
-import { IconCopy, IconLivePhoto } from "@tabler/icons-react"
+import { IconLivePhoto } from "@tabler/icons-react"
 import { useUploadManager } from "@lib/uploadManager"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
@@ -259,7 +259,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
               onClick={copyImage}
               className="rounded-full"
             >
-              <IconCopy className="size-5" />
+              <Icon name="duplicate" className="size-5" />
             </Button>
           ) : null}
           <Button
