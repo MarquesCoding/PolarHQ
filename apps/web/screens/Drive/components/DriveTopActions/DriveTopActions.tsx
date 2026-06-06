@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { driveFolderIdFromPath, fetchNodes } from "@lib/drive"
+import { driveFolderIdFromPath, emptyDriveTrash, fetchNodes } from "@lib/drive"
 import type { DocType } from "@lib/docs"
 import { createEncryptedDoc } from "@lib/e2e"
 import { useUploadManager } from "@lib/uploadManager"
@@ -15,10 +15,12 @@ import {
   IconInfoCircle,
   IconPresentation,
   IconTable,
+  IconTrashX,
   IconUpload,
 } from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
+import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,6 +49,27 @@ const DriveTopActions = () => {
     queryFn: () => fetchNodes(folderId ?? undefined),
     enabled,
   })
+
+  if (pathname.endsWith("/trash")) {
+    return (
+      <ConfirmButton
+        icon={<IconTrashX className="size-4" />}
+        confirmLabel="Empty trash?"
+        onConfirm={async () => {
+          try {
+            await emptyDriveTrash()
+            toast.success("Trash emptied")
+            void queryClient.invalidateQueries({ queryKey: ["drive"] })
+            void queryClient.invalidateQueries({ queryKey: ["photos"] })
+          } catch {
+            toast.error("Action failed")
+          }
+        }}
+      >
+        Empty trash
+      </ConfirmButton>
+    )
+  }
 
   if (folderId === null) return null
 

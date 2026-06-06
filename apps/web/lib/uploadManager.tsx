@@ -69,6 +69,11 @@ interface UploadManagerApi {
   upload: (files: FileList | File[], target?: UploadTarget) => void
   download: (name: string, items: DownloadItem[]) => void
   archive: (name: string, nodeIds: string[], parentId: string) => void
+  task: (
+    name: string,
+    total: number,
+    run: (onProgress: (done: number) => void) => Promise<unknown>,
+  ) => void
   remove: (id: string) => void
   clearFinished: () => void
 }
@@ -355,6 +360,27 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     [update, invalidate],
   )
 
+  const task = useCallback(
+    (
+      name: string,
+      total: number,
+      run: (onProgress: (done: number) => void) => Promise<unknown>,
+    ) => {
+      const id = nextId()
+      setItems((previous) => [
+        { id, kind: "task", name, size: total, loaded: 0, speed: 0, status: "uploading" },
+        ...previous,
+      ])
+      void run((done) => update(id, { loaded: done }))
+        .then(() => {
+          update(id, { status: "done", loaded: total })
+          invalidate()
+        })
+        .catch(() => update(id, { status: "error", error: "Failed" }))
+    },
+    [update, invalidate],
+  )
+
   const onEvent = useCallback(
     (event: LiveEvent) => {
       if (event.type === "drive.archive.progress") {
@@ -395,7 +421,9 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
   useLiveEvents(onEvent)
 
   return (
-    <UploadContext.Provider value={{ items, upload, download, archive, remove, clearFinished }}>
+    <UploadContext.Provider
+      value={{ items, upload, download, archive, task, remove, clearFinished }}
+    >
       {children}
     </UploadContext.Provider>
   )
