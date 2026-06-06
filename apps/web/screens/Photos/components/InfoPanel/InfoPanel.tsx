@@ -1,5 +1,6 @@
 "use client"
 
+import { decryptName } from "@lib/e2e"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { fetchAsset } from "@lib/photos"
@@ -101,7 +102,10 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
       <h2 className="text-base font-semibold">Details</h2>
 
       <Section icon="file-text" title="File">
-        <Row label="Name" value={asset.originalFilename} />
+        <Row
+          label="Name"
+          value={(asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename}
+        />
         <Row label="Type" value={asset.mimeType} />
         <Row label="Size" value={formatBytes(asset.sizeBytes)} />
         <Row label="Dimensions" value={dimensions} />
