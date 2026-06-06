@@ -14,7 +14,7 @@ public enum OrbitCrypto {
         case badBase64
     }
 
-    private static let sodium = Sodium()
+    nonisolated(unsafe) private static let sodium = Sodium()
 
     public struct Keypair: Sendable {
         public let publicKey: Data
@@ -57,9 +57,8 @@ public enum OrbitCrypto {
 
     /// Encrypt with a 32-byte key, returning `nonce‖ciphertext` (random nonce).
     public static func secretboxSeal(_ message: Data, key: Data) throws -> Data {
-        guard let sealed = sodium.secretBox.seal(message: [UInt8](message), secretKey: [UInt8](key)) else {
-            throw CryptoError.encryptFailed
-        }
+        let sealed: [UInt8]? = sodium.secretBox.seal(message: [UInt8](message), secretKey: [UInt8](key))
+        guard let sealed else { throw CryptoError.encryptFailed }
         return Data(sealed)
     }
 
