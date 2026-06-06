@@ -14,6 +14,7 @@ const NAV = [
   { href: "/admin", label: "Overview", icon: "gauge" },
   { href: "/admin/users", label: "Users", icon: "users" },
   { href: "/admin/groups", label: "Groups", icon: "users-group" },
+  { href: "/admin/workgroups", label: "Workgroups", icon: "buildings" },
   { href: "/admin/roles", label: "Roles", icon: "user-shield" },
   { href: "/admin/apps", label: "Apps", icon: "apps" },
   { href: "/admin/limits", label: "Limits", icon: "sliders" },
