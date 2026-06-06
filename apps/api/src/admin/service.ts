@@ -135,8 +135,85 @@ export const removeGroupMember = async (groupId: string, userId: string) => {
     .where(and(eq(schema.groupMembers.groupId, groupId), eq(schema.groupMembers.userId, userId)))
 }
 
+export const listWorkgroups = async () =>
+  db.select().from(schema.workgroups).orderBy(schema.workgroups.name)
+
+export const createWorkgroup = async (input: { name: string; description?: string }) => {
+  const inserted = await db
+    .insert(schema.workgroups)
+    .values({ name: input.name, description: input.description })
+    .returning()
+  const workgroup = inserted[0]
+  if (!workgroup) throw new Error("Failed to create workgroup")
+  return workgroup
+}
+
+export const addWorkgroupGroup = async (workgroupId: string, groupId: string) => {
+  await db.insert(schema.workgroupGroups).values({ workgroupId, groupId }).onConflictDoNothing()
+}
+
+export const removeWorkgroupGroup = async (workgroupId: string, groupId: string) => {
+  await db
+    .delete(schema.workgroupGroups)
+    .where(
+      and(
+        eq(schema.workgroupGroups.workgroupId, workgroupId),
+        eq(schema.workgroupGroups.groupId, groupId),
+      ),
+    )
+}
+
+/** Workgroup detail: profile, member groups, and per-workgroup limit overrides. */
+export const getWorkgroupDetail = async (workgroupId: string) => {
+  const rows = await db
+    .select()
+    .from(schema.workgroups)
+    .where(eq(schema.workgroups.id, workgroupId))
+    .limit(1)
+  const workgroup = rows[0]
+  if (!workgroup) return null
+
+  const groups = await db
+    .select({ id: schema.groups.id, name: schema.groups.name })
+    .from(schema.workgroupGroups)
+    .innerJoin(schema.groups, eq(schema.groups.id, schema.workgroupGroups.groupId))
+    .where(eq(schema.workgroupGroups.workgroupId, workgroupId))
+
+  const instanceRows = await db
+    .select({ key: schema.limits.key, value: schema.limits.value })
+    .from(schema.limits)
+    .where(eq(schema.limits.subjectType, "instance"))
+  const instanceValues = new Map(instanceRows.map((row) => [row.key, row.value]))
+
+  const overrideRows = await db
+    .select({ key: schema.limits.key, value: schema.limits.value })
+    .from(schema.limits)
+    .where(
+      and(
+        eq(schema.limits.subjectType, "workgroup"),
+        eq(schema.limits.subjectId, workgroupId),
+      ),
+    )
+  const overrides = new Map(overrideRows.map((row) => [row.key, row.value]))
+
+  const limits = LIMIT_CATALOG.map((def) => ({
+    key: def.key,
+    label: def.label,
+    hasOverride: overrides.has(def.key),
+    override: (overrides.get(def.key) ?? null) as number | string | boolean | null,
+    instanceValue: (instanceValues.get(def.key) ?? def.systemDefault) as
+      | number
+      | string
+      | boolean
+      | null,
+  }))
+  return { ...workgroup, groups, limits }
+}
+
+export type LimitSubjectType = "user" | "group" | "workgroup" | "instance"
+
 export interface SetLimitInput {
-  subjectType: "user" | "group" | "instance"
+  subjectType: LimitSubjectType
   subjectId: string
   key: string
   value: unknown
@@ -350,7 +427,7 @@ export const unassignRole = async (userId: string, roleId: string) => {
 
 /** Remove a limit override so the subject falls back to the inherited/instance value. */
 export const clearLimit = async (
-  subjectType: "user" | "group" | "instance",
+  subjectType: LimitSubjectType,
   subjectId: string,
   key: string,
 ) => {
