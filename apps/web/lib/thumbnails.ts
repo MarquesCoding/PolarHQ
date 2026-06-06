@@ -56,3 +56,81 @@ export const analyzeImage = (file: File, maxDimension = MAX_DIMENSION): Promise<
 /** Generate a downscaled JPEG thumbnail for an image file, in the browser. */
 export const generateImageThumbnail = (file: File): Promise<Uint8Array> =>
   analyzeImage(file).then((r) => r.thumbnail)
+
+export interface VideoAnalysis {
+  /** A downscaled JPEG poster frame (null if the browser couldn't decode the video). */
+  poster: Uint8Array | null
+  width: number
+  height: number
+  durationMs: number
+}
+
+/**
+ * Decode a video in the browser to grab a poster frame + its dimensions/duration, so an
+ * E2E server (which can't process the ciphertext) still gets a thumbnail + grid metadata.
+ */
+export const analyzeVideo = (file: File, maxDimension = MAX_DIMENSION): Promise<VideoAnalysis> =>
+  new Promise((resolve) => {
+    const url = URL.createObjectURL(file)
+    const video = document.createElement("video")
+    video.preload = "metadata"
+    video.muted = true
+    let meta = { width: 0, height: 0, durationMs: 0 }
+    const fail = () => {
+      URL.revokeObjectURL(url)
+      resolve({ poster: null, ...meta })
+    }
+    video.onerror = fail
+    video.onloadedmetadata = () => {
+      meta = {
+        width: video.videoWidth,
+        height: video.videoHeight,
+        durationMs: Math.round((video.duration || 0) * 1000),
+      }
+      // Seek a little in to avoid a black first frame.
+      video.currentTime = Math.min(1, (video.duration || 2) / 2)
+    }
+    video.onseeked = () => {
+      try {
+        const scale = Math.min(1, maxDimension / Math.max(meta.width || 1, meta.height || 1))
+        const canvas = document.createElement("canvas")
+        canvas.width = Math.max(1, Math.round((meta.width || 1) * scale))
+        canvas.height = Math.max(1, Math.round((meta.height || 1) * scale))
+        const ctx = canvas.getContext("2d")
+        if (!ctx) return fail()
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+        canvas.toBlob(
+          (blob) => {
+            URL.revokeObjectURL(url)
+            if (!blob) {
+              resolve({ poster: null, ...meta })
+              return
+            }
+            blob.arrayBuffer().then((buf) => resolve({ poster: new Uint8Array(buf), ...meta }))
+          },
+          "image/jpeg",
+          QUALITY,
+        )
+      } catch {
+        fail()
+      }
+    }
+    video.src = url
+  })
+
+/** Read an audio file's duration (ms) in the browser. */
+export const analyzeAudio = (file: File): Promise<number> =>
+  new Promise((resolve) => {
+    const url = URL.createObjectURL(file)
+    const audio = document.createElement("audio")
+    audio.preload = "metadata"
+    audio.onerror = () => {
+      URL.revokeObjectURL(url)
+      resolve(0)
+    }
+    audio.onloadedmetadata = () => {
+      URL.revokeObjectURL(url)
+      resolve(Math.round((audio.duration || 0) * 1000))
+    }
+    audio.src = url
+  })

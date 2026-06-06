@@ -11,7 +11,7 @@ import {
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 import type { Asset, GridAsset } from "@lib/photos"
-import { analyzeImage } from "@lib/thumbnails"
+import { analyzeAudio, analyzeImage, analyzeVideo } from "@lib/thumbnails"
 
 /** Map an asset to a download item, resolving the encrypted filename for the saved file. */
 export const downloadItemFor = (
@@ -22,16 +22,40 @@ export const downloadItemFor = (
   encrypted: asset.encrypted,
 })
 
+const putThumbnail = (url: string, body: Uint8Array): Promise<Response> =>
+  fetch(url, {
+    method: "PUT",
+    credentials: "include",
+    headers: { "content-type": "application/octet-stream" },
+    body: body as BodyInit,
+  })
+
 /**
- * Upload an image end-to-end encrypted, mirroring the Drive model: encrypt the original
- * with a fresh content key, generate + encrypt a thumbnail client-side, and send the
- * dimensions/takenAt/filename the grid needs (the server can't read EXIF on ciphertext).
- * The server stores only opaque bytes and runs no media processing.
+ * Upload media (image/video/audio) end-to-end encrypted, mirroring the Drive model: encrypt
+ * the original with a fresh content key, generate + encrypt a thumbnail/poster client-side,
+ * and send the dimensions/duration/takenAt/filename the grid needs (the server can't read
+ * the ciphertext). The server stores only opaque bytes and runs no media processing.
  */
-export const uploadEncryptedPhoto = async (file: File): Promise<Asset> => {
+export const uploadEncryptedMedia = async (file: File): Promise<Asset> => {
   const key = createContentKey()
   const original = new Uint8Array(await file.arrayBuffer())
-  const { thumbnail, width, height } = await analyzeImage(file)
+
+  // Decode once on the client for a thumbnail/poster + the metadata the grid needs.
+  let thumbnail: Uint8Array | null = null
+  let width: number | undefined
+  let height: number | undefined
+  let durationMs: number | undefined
+  if (file.type.startsWith("video/")) {
+    const v = await analyzeVideo(file).catch(() => null)
+    if (v) ({ poster: thumbnail, width, height, durationMs } = v)
+  } else if (file.type.startsWith("audio/")) {
+    durationMs = await analyzeAudio(file).catch(() => 0)
+  } else {
+    const i = await analyzeImage(file)
+    thumbnail = i.thumbnail
+    width = i.width
+    height = i.height
+  }
 
   const encryptedName = encryptName(file.name)
   const form = new FormData()
@@ -42,9 +66,10 @@ export const uploadEncryptedPhoto = async (file: File): Promise<Asset> => {
     }),
   )
   form.set("encrypted", "true")
-  form.set("mimeType", file.type || "image/jpeg")
-  form.set("width", String(width))
-  form.set("height", String(height))
+  form.set("mimeType", file.type || "application/octet-stream")
+  if (width !== undefined) form.set("width", String(width))
+  if (height !== undefined) form.set("height", String(height))
+  if (durationMs !== undefined) form.set("durationMs", String(durationMs))
   if (encryptedName) form.set("encryptedName", encryptedName)
   if (file.lastModified) form.set("mtime", String(file.lastModified))
 
@@ -59,30 +84,24 @@ export const uploadEncryptedPhoto = async (file: File): Promise<Asset> => {
     mirrorNodeId: string | null
   }
 
-  const encryptedThumb = secretboxSeal(thumbnail, key)
-
   // Wrap the content key to the asset and (so the Drive "Photos" mirror is a self-contained
   // encrypted file) to the mirror node too.
   await storeContentKey(asset.id, key)
   if (mirrorNodeId) await storeContentKey(mirrorNodeId, key)
 
-  // Upload the encrypted thumbnail to the Photos endpoint, and to the Drive mirror's endpoint.
-  await fetch(`${API_URL}/api/v1/photos/assets/${asset.id}/thumbnail`, {
-    method: "PUT",
-    credentials: "include",
-    headers: { "content-type": "application/octet-stream" },
-    body: encryptedThumb as BodyInit,
-  })
-  if (mirrorNodeId)
-    await fetch(`${API_URL}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, {
-      method: "PUT",
-      credentials: "include",
-      headers: { "content-type": "application/octet-stream" },
-      body: encryptedThumb as BodyInit,
-    })
+  // Upload the encrypted thumbnail/poster to the Photos endpoint + the Drive mirror endpoint.
+  if (thumbnail) {
+    const encryptedThumb = secretboxSeal(thumbnail, key)
+    await putThumbnail(`${API_URL}/api/v1/photos/assets/${asset.id}/thumbnail`, encryptedThumb)
+    if (mirrorNodeId)
+      await putThumbnail(`${API_URL}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, encryptedThumb)
+  }
 
   return asset
 }
+
+/** @deprecated use uploadEncryptedMedia */
+export const uploadEncryptedPhoto = uploadEncryptedMedia
 
 /** Fetch + decrypt an encrypted asset's thumbnail into an object URL (or null). */
 export const fetchDecryptedPhotoThumbnail = async (assetId: string): Promise<string | null> => {

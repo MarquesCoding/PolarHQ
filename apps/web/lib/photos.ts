@@ -61,6 +61,7 @@ export interface GridAsset {
   originalFilename: string
   encrypted: boolean
   encryptedName: string | null
+  mimeType: string
   type: "image" | "video" | "audio"
   status: AssetStatus
   width: number | null

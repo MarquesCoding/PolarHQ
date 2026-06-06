@@ -86,11 +86,13 @@ export const ingestUpload = async (input: IngestInput): Promise<IngestResult> =>
 
 export interface EncryptedIngestInput {
   ownerId: string
-  /** Ciphertext of the original image. */
+  /** Ciphertext of the original media. */
   bytes: Buffer
   mimeType: string
+  type?: "image" | "video" | "audio"
   width?: number
   height?: number
+  durationMs?: number
   takenAt?: Date
   /** Filename encrypted with the account metadata key (the plaintext column gets a placeholder). */
   encryptedName?: string | null
@@ -127,10 +129,11 @@ export const ingestEncryptedAsset = async (
       encryptedName: input.encryptedName ?? null,
       encrypted: true,
       mimeType: input.mimeType,
-      type: "image",
+      type: input.type ?? "image",
       sizeBytes: input.bytes.length,
       width: input.width ?? null,
       height: input.height ?? null,
+      durationMs: input.durationMs ?? null,
       storageKey: keys.original,
       status: "ready",
       takenAt: input.takenAt ?? null,
