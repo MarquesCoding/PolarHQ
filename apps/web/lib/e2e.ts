@@ -2,6 +2,7 @@
 
 import { apiFetch } from "@lib/apiClient"
 import { type DocMeta, type DocType, createDoc } from "@lib/docs"
+import { secureStoreClear, secureStoreGet, secureStoreSet } from "@lib/secureStore"
 import {
   type Keypair,
   cryptoReady,
@@ -27,37 +28,40 @@ interface KeyBundle {
   recoveryWrapped: string | null
 }
 
-// Persisted (localStorage) so the keypair stays unlocked across refreshes, tabs, and
-// split-view iframes once you sign in — cleared only on sign-out (see lockKeys).
-const STORE_KEY = "orbit.e2e.kp"
+// The unlocked keypair is persisted encrypted at rest (see secureStore) so it survives
+// refreshes/tabs once signed in, while a storage dump stays useless. Cleared on sign-out.
+const LEGACY_KEY = "orbit.e2e.kp"
+const encoder = new TextEncoder()
+const decoder = new TextDecoder()
 
 let keypair: Keypair | null = null
 const contentKeyCache = new Map<string, Uint8Array>()
 
-const restore = () => {
-  if (keypair || typeof localStorage === "undefined") return
+const restore = async () => {
+  if (keypair) return
+  // Remove any legacy plaintext key from the old localStorage scheme.
+  if (typeof localStorage !== "undefined") localStorage.removeItem(LEGACY_KEY)
+  const blob = await secureStoreGet()
+  if (!blob) return
   try {
-    const raw = localStorage.getItem(STORE_KEY)
-    if (!raw) return
-    const { pk, sk } = JSON.parse(raw) as { pk: string; sk: string }
+    const { pk, sk } = JSON.parse(decoder.decode(blob)) as { pk: string; sk: string }
     keypair = { publicKey: fromB64(pk), privateKey: fromB64(sk) }
   } catch {
     /* ignore */
   }
 }
 
-const persist = () => {
-  if (!keypair || typeof localStorage === "undefined") return
-  localStorage.setItem(
-    STORE_KEY,
-    JSON.stringify({ pk: toB64(keypair.publicKey), sk: toB64(keypair.privateKey) }),
+const persist = async () => {
+  if (!keypair) return
+  await secureStoreSet(
+    encoder.encode(JSON.stringify({ pk: toB64(keypair.publicKey), sk: toB64(keypair.privateKey) })),
   )
 }
 
 /** Initialize libsodium and restore the unlocked keypair, if the user has unlocked before. */
 export const e2eReady = async (): Promise<void> => {
   await cryptoReady()
-  restore()
+  await restore()
 }
 
 export const isUnlocked = (): boolean => keypair !== null
@@ -91,7 +95,7 @@ export const setupKeys = async (password: string): Promise<{ recoveryCode: strin
     }),
   })
   keypair = pair
-  persist()
+  await persist()
   return { recoveryCode: recoveryCodeFromKey(recoveryKey) }
 }
 
@@ -106,7 +110,7 @@ export const unlockKeys = async (password: string): Promise<boolean> => {
       deriveKey(password, fromB64(bundle.kdfSalt)),
     )
     keypair = { publicKey: fromB64(bundle.publicKey), privateKey }
-    persist()
+    await persist()
     return true
   } catch {
     return false
@@ -121,7 +125,7 @@ export const unlockWithRecovery = async (code: string): Promise<boolean> => {
   try {
     const privateKey = secretboxOpen(fromB64(bundle.recoveryWrapped), recoveryKeyFromCode(code))
     keypair = { publicKey: fromB64(bundle.publicKey), privateKey }
-    persist()
+    await persist()
     return true
   } catch {
     return false
@@ -131,7 +135,8 @@ export const unlockWithRecovery = async (code: string): Promise<boolean> => {
 export const lockKeys = (): void => {
   keypair = null
   contentKeyCache.clear()
-  if (typeof localStorage !== "undefined") localStorage.removeItem(STORE_KEY)
+  void secureStoreClear()
+  if (typeof localStorage !== "undefined") localStorage.removeItem(LEGACY_KEY)
 }
 
 /** The wrapped content key the server holds for this user/doc (null if plaintext or no access). */
