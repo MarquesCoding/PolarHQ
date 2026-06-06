@@ -15,9 +15,7 @@ import {
   RawImage,
   env,
 } from "@huggingface/transformers"
-
-const MODEL = "Xenova/clip-vit-base-patch32"
-export const MODEL_VERSION = "clip-vit-base-patch32-q8"
+import { MODEL } from "./model"
 
 // Pull models from the CDN (we ship no local weights).
 env.allowLocalModels = false

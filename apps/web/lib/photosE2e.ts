@@ -97,6 +97,14 @@ export const uploadEncryptedMedia = async (file: File): Promise<Asset> => {
       await putThumbnail(`${API_URL}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, encryptedThumb)
   }
 
+  // Index for semantic search in the background (images only). Lazily loaded so the heavy
+  // CLIP library only enters the bundle when E2E media actually uploads.
+  if (file.type.startsWith("image/")) {
+    void import("@lib/photoIndex")
+      .then((index) => index.embedAndStore(asset.id, file))
+      .catch(() => undefined)
+  }
+
   return asset
 }
 
