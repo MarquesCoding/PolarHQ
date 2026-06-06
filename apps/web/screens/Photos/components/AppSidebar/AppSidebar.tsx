@@ -27,10 +27,15 @@ const NAV = [
 const isActiveHref = (pathname: string, href: string): boolean =>
   href === "/photos" ? pathname === href : pathname.startsWith(href)
 
-const withTooltip = (label: string, collapsed: boolean, element: ReactElement): ReactElement => {
+const withTooltip = (
+  key: string,
+  label: string,
+  collapsed: boolean,
+  element: ReactElement,
+): ReactElement => {
   if (!collapsed) return element
   return (
-    <Tooltip>
+    <Tooltip key={key}>
       <TooltipTrigger render={element} />
       <TooltipContent side="right">{label}</TooltipContent>
     </Tooltip>
@@ -133,7 +138,7 @@ const AppSidebar = () => {
             )
           }
 
-          return withTooltip(item.label, collapsed, link)
+          return withTooltip(item.href, item.label, collapsed, link)
         })}
       </nav>
 
