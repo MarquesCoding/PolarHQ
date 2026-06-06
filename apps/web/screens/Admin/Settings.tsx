@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import { type AdminSettings, fetchAdminSettings, updateAdminSettings } from "@lib/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
@@ -98,11 +99,14 @@ const Settings = () => {
             </div>
           </div>
 
-          <div className="panel flex flex-col gap-2 rounded-xl p-5 opacity-70">
-            <span className="text-sm font-medium">Automatic S3 backup</span>
-            <span className="text-muted-foreground text-xs">
-              Scheduled off-site backups to an S3-compatible bucket. Coming soon.
-            </span>
+          <div className="panel flex items-center justify-between gap-3 rounded-xl p-5">
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">Automatic S3 backup</span>
+              <span className="text-muted-foreground text-xs">
+                Scheduled off-site backups to an S3-compatible bucket.
+              </span>
+            </div>
+            <Button variant="secondary" render={<Link href="/admin/backup">Configure</Link>} />
           </div>
         </div>
       )}
