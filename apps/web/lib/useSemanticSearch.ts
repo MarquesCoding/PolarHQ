@@ -4,8 +4,8 @@ import { useEffect, useState } from "react"
 import { dbg } from "@lib/debug"
 import { cosine, embedText, embedderSupported } from "@lib/embedder"
 import { isUnlocked } from "@lib/e2e"
-import { fetchIndex } from "@lib/photoIndex"
-import { useQuery } from "@tanstack/react-query"
+import { fetchIndex, onIndexChanged } from "@lib/photoIndex"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 // CLIP image↔text cosine for a real match sits well below 1; relevant results cluster near
 // the top score. Keep results within a margin of the best, with an absolute floor, and always
@@ -28,12 +28,29 @@ interface SemanticSearch {
  */
 export const useSemanticSearch = (query: string): SemanticSearch => {
   const enabled = isUnlocked() && embedderSupported()
+  const queryClient = useQueryClient()
   const { data: index } = useQuery({
     queryKey: ["photos", "clip-index"],
     queryFn: fetchIndex,
     enabled,
     staleTime: 60_000,
   })
+
+  // Refresh the in-memory index shortly after new vectors are stored (upload / backfill), so
+  // a just-indexed photo becomes searchable without a reload. Debounced to batch a burst.
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const off = onIndexChanged(() => {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        void queryClient.invalidateQueries({ queryKey: ["photos", "clip-index"] })
+      }, 1500)
+    })
+    return () => {
+      clearTimeout(timer)
+      off()
+    }
+  }, [queryClient])
 
   const [rankedIds, setRankedIds] = useState<string[] | null>(null)
   const [searching, setSearching] = useState(false)

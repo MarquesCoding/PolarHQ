@@ -4,6 +4,7 @@ import { apiFetch } from "@lib/apiClient"
 import { dbg } from "@lib/debug"
 import { MODEL_VERSION, embedImage, embedderSupported } from "@lib/embedder"
 import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@lib/e2e"
+import { API_URL } from "@lib/env"
 import { fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
 
 /**
@@ -13,6 +14,17 @@ import { fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
  */
 
 const KIND = "clip"
+
+// Notify listeners (the search hook) when the index gains vectors, so a just-embedded photo
+// becomes searchable without a reload instead of waiting on a stale cache.
+const indexListeners = new Set<() => void>()
+export const onIndexChanged = (fn: () => void): (() => void) => {
+  indexListeners.add(fn)
+  return () => indexListeners.delete(fn)
+}
+const notifyIndexChanged = (): void => {
+  for (const fn of indexListeners) fn()
+}
 
 const f32ToBytes = (v: Float32Array): Uint8Array =>
   new Uint8Array(v.buffer, v.byteOffset, v.byteLength)
@@ -28,6 +40,24 @@ export const storeEmbedding = async (assetId: string, vector: Float32Array): Pro
     method: "PUT",
     body: JSON.stringify({ kind: KIND, modelVersion: MODEL_VERSION, vector: encrypted }),
   })
+  notifyIndexChanged()
+}
+
+/** Get an image blob to embed: decrypt it if encrypted, else fetch the plaintext original. */
+const photoBlobForEmbedding = async (assetId: string): Promise<Blob | null> => {
+  const decrypted = await fetchDecryptedPhotoOriginal(assetId, "image/jpeg")
+  if (decrypted) {
+    try {
+      return await fetch(decrypted).then((r) => r.blob())
+    } finally {
+      URL.revokeObjectURL(decrypted)
+    }
+  }
+  // Plaintext asset (e.g. uploaded while locked) — the original endpoint serves it directly.
+  const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/original`, {
+    credentials: "include",
+  })
+  return response.ok ? response.blob() : null
 }
 
 /** Embed an image blob and store the encrypted vector. Returns the vector. */
@@ -36,6 +66,12 @@ export const embedAndStore = async (assetId: string, blob: Blob): Promise<Float3
   await storeEmbedding(assetId, vector)
   dbg("index", "embedded + stored", assetId)
   return vector
+}
+
+/** Embed a single asset by id (decrypting or fetching its original). Null if unavailable. */
+export const embedAsset = async (assetId: string): Promise<Float32Array | null> => {
+  const blob = await photoBlobForEmbedding(assetId)
+  return blob ? embedAndStore(assetId, blob) : null
 }
 
 /** Fetch + decrypt the whole CLIP index into memory (skipping other model versions). */
@@ -72,15 +108,11 @@ export const runBackfill = async (
   dbg("index", `backfill: ${ids.length} photo(s) to index`)
   for (let i = 0; i < ids.length; i += 1) {
     if (shouldStop?.()) return
-    const url = await fetchDecryptedPhotoOriginal(ids[i]!, "image/jpeg")
-    if (!url) continue
     try {
-      const blob = await fetch(url).then((r) => r.blob())
-      await embedAndStore(ids[i]!, blob)
+      const blob = await photoBlobForEmbedding(ids[i]!)
+      if (blob) await embedAndStore(ids[i]!, blob)
     } catch {
       /* skip a photo that fails to embed */
-    } finally {
-      URL.revokeObjectURL(url)
     }
     onProgress?.(i + 1, ids.length)
     if ((i + 1) % 25 === 0 || i + 1 === ids.length)

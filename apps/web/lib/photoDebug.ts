@@ -3,7 +3,7 @@
 import { setDebug } from "@lib/debug"
 import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "@lib/embedder"
 import { isUnlocked } from "@lib/e2e"
-import { ensureIndexing, fetchIndex, fetchMissing } from "@lib/photoIndex"
+import { embedAsset, ensureIndexing, fetchIndex, fetchMissing } from "@lib/photoIndex"
 import { labelAsset } from "@lib/photoLabels"
 
 /**
@@ -29,6 +29,11 @@ export const installPhotoDebug = (): void => {
     disableLogs: () => setDebug(false),
     warmup: () => warmupEmbedder(),
     reindex: () => ensureIndexing(),
+    embed: async (assetId: string) => {
+      const vector = await embedAsset(assetId)
+      console.log(`[orbit:ml] embedded ${assetId}:`, vector ? `${vector.length}-d` : "unavailable")
+      return Boolean(vector)
+    },
     status: async () => {
       const [index, missing] = await Promise.all([fetchIndex(), fetchMissing()])
       const status = {
