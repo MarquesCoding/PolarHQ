@@ -294,6 +294,11 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     marqueeStart.current = pointFromEvent(event)
     marqueeBase.current = event.shiftKey ? new Set(selection.selected) : new Set()
     draggedRef.current = false
+    // Empty-space start (not on a tile): capture now so a drag in any direction —
+    // including off the grid into the margins — keeps feeding the marquee.
+    if (event.target === event.currentTarget) {
+      containerRef.current?.setPointerCapture(event.pointerId)
+    }
   }
 
   const onMarqueeMove = (event: ReactPointerEvent) => {
@@ -330,8 +335,10 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
 
   const onMarqueeUp = (event: ReactPointerEvent) => {
     if (marqueePointer.current !== event.pointerId) return
+    if (containerRef.current?.hasPointerCapture(event.pointerId)) {
+      containerRef.current.releasePointerCapture(event.pointerId)
+    }
     if (draggedRef.current) {
-      containerRef.current?.releasePointerCapture(event.pointerId)
       setMarquee(null)
       window.setTimeout(() => {
         draggedRef.current = false
@@ -428,7 +435,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full"
+      className="relative min-h-full w-full"
       style={{ height: layout.totalHeight }}
       onPointerDown={onMarqueeDown}
       onPointerMove={onMarqueeMove}
