@@ -10,7 +10,11 @@ import {
 import { decryptName } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import type { GridAsset } from "@lib/photos"
-import { fetchDecryptedMotionVideo, fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
+import {
+  fetchDecryptedMotionVideo,
+  fetchDecryptedPhotoOriginal,
+  fetchDecryptedPhotoThumbnail,
+} from "@lib/photosE2e"
 import { IconCircle, IconHeartFilled, IconLivePhoto, IconPhoto } from "@tabler/icons-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
@@ -88,12 +92,19 @@ const PhotoTile = ({
   const [motionUrl, setMotionUrl] = useState<string | null>(() => motionVideos.get(asset.id) ?? null)
   const [motionActive, setMotionActive] = useState(false)
   const videoRef = useRef<HTMLVideoElement | null>(null)
+  const canHoverPlay = asset.motion || asset.type === "video"
+
+  const resolveHoverSource = (): Promise<string | null> => {
+    if (asset.motion) return fetchDecryptedMotionVideo(asset.id)
+    if (asset.encrypted) return fetchDecryptedPhotoOriginal(asset.id, asset.mimeType)
+    return Promise.resolve(asset.videoUrl)
+  }
 
   const startMotion = (event: ReactPointerEvent) => {
-    if (!asset.motion || event.pointerType !== "mouse") return
+    if (!canHoverPlay || event.pointerType !== "mouse") return
     setMotionActive(true)
     if (motionUrl || motionVideos.has(asset.id)) return
-    void fetchDecryptedMotionVideo(asset.id).then((url) => {
+    void resolveHoverSource().then((url) => {
       if (!url) return
       motionVideos.set(asset.id, url)
       setMotionUrl(url)
@@ -232,7 +243,7 @@ const PhotoTile = ({
         <span className="ring-primary pointer-events-none absolute inset-0 z-10 rounded-[inherit] ring-2 ring-inset" />
       ) : null}
 
-      {asset.motion && motionUrl ? (
+      {canHoverPlay && motionUrl ? (
         <video
           ref={videoRef}
           src={motionUrl}
@@ -258,7 +269,12 @@ const PhotoTile = ({
       ) : null}
 
       {asset.type === "video" ? (
-        <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        <span
+          className={cn(
+            "pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity",
+            motionActive ? "opacity-0" : "opacity-100",
+          )}
+        >
           <Icon name="play" className="size-9 text-white/90 drop-shadow-md" />
         </span>
       ) : null}
