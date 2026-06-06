@@ -10,6 +10,7 @@ import { useZoomPan } from "@lib/useZoomPan"
 import { IconLivePhoto } from "@tabler/icons-react"
 import { useUploadManager } from "@lib/uploadManager"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
+import PhotoEditor from "@pages/Photos/components/PhotoEditor/PhotoEditor"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
@@ -31,6 +32,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
   const info = infoPref === 1
   const toggleInfo = () => setInfoPref(info ? 0 : 1)
   const deleteArmed = useRef(false)
+  const [editing, setEditing] = useState(false)
   const asset = assets[index]
   const zoom = useZoomPan(asset?.id)
 
@@ -255,6 +257,23 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
             <Button
               variant="ghost"
               size="icon-sm"
+              aria-label="Edit image"
+              onClick={() => {
+                if (asset.encrypted && !decryptedSrc) {
+                  toast("Decrypting…")
+                  return
+                }
+                setEditing(true)
+              }}
+              className="rounded-full"
+            >
+              <Icon name="sliders" className="size-5" />
+            </Button>
+          ) : null}
+          {asset.type === "image" ? (
+            <Button
+              variant="ghost"
+              size="icon-sm"
               aria-label="Copy image"
               onClick={copyImage}
               className="rounded-full"
@@ -403,6 +422,18 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
               <InfoPanel assetId={asset.id} />
             </div>
           </motion.aside>
+        ) : null}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {editing && asset.type === "image" ? (
+          <PhotoEditor
+            key="editor"
+            asset={asset}
+            sourceUrl={asset.encrypted ? (decryptedSrc ?? "") : assetOriginalUrl(asset.id)}
+            onClose={() => setEditing(false)}
+            onSaved={refresh}
+          />
         ) : null}
       </AnimatePresence>
     </motion.div>
