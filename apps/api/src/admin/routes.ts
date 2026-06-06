@@ -64,6 +64,46 @@ adminRoutes.get("/audit", guard("admin.audit.read"), async (c) => {
   return c.json({ entries: await adminService.listAudit() })
 })
 
+adminRoutes.get("/backup/settings", guard("admin.backup.manage"), async (c) => {
+  return c.json({ settings: await adminService.getBackupSettings() })
+})
+
+adminRoutes.patch("/backup/settings", guard("admin.backup.manage"), async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({
+      enabled: z.boolean().optional(),
+      endpoint: z.string().nullable().optional(),
+      region: z.string().nullable().optional(),
+      bucket: z.string().nullable().optional(),
+      prefix: z.string().nullable().optional(),
+      accessKeyId: z.string().nullable().optional(),
+      secretAccessKey: z.string().nullable().optional(),
+      forcePathStyle: z.boolean().optional(),
+      frequencyHours: z.number().int().positive().optional(),
+    }),
+  )
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  const settings = await adminService.updateBackupSettings(parsed.data)
+  await adminService.recordAudit({ actorId: c.get("userId"), action: "backup.settings" })
+  return c.json({ settings })
+})
+
+adminRoutes.get("/backup/runs", guard("admin.backup.manage"), async (c) => {
+  return c.json({ runs: await adminService.listBackupRuns() })
+})
+
+adminRoutes.post("/backup/run", guard("admin.backup.manage"), async (c) => {
+  const run = await adminService.triggerBackup()
+  await adminService.recordAudit({
+    actorId: c.get("userId"),
+    action: "backup.run",
+    targetType: "backup",
+    targetId: run.id,
+  })
+  return c.json({ run }, 201)
+})
+
 adminRoutes.get("/users/:id", guard("admin.users.manage"), async (c) => {
   const detail = await adminService.getUserDetail(c.req.param("id"))
   if (!detail) return c.json({ error: "not found" }, 404)
