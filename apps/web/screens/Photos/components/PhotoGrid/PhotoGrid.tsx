@@ -3,6 +3,7 @@
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
 import type { GridAsset } from "@lib/photos"
+import { fetchDecryptedPhotoOriginal, fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
 import { useSelection } from "@lib/selection"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import Lightbox from "@pages/Photos/components/Lightbox/Lightbox"
@@ -195,6 +196,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   const [range, setRange] = useState({ start: 0, end: 0 })
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [preview, setPreview] = useState<GridAsset | null>(null)
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null)
   const [hoveredDay, setHoveredDay] = useState<string | null>(null)
   const [marquee, setMarquee] = useState<{
     x0: number
@@ -385,6 +387,35 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     ;(scroller ?? window).scrollBy({ top: delta, behavior: "smooth" })
   }
 
+  useEffect(() => {
+    if (!preview) {
+      setPreviewSrc(null)
+      return
+    }
+    if (!preview.encrypted) {
+      setPreviewSrc(preview.previewUrl ?? preview.thumbnailUrl ?? null)
+      return
+    }
+    let active = true
+    let url: string | null = null
+    const resolve =
+      preview.type === "image"
+        ? fetchDecryptedPhotoOriginal(preview.id, preview.mimeType)
+        : fetchDecryptedPhotoThumbnail(preview.id)
+    void resolve.then((result) => {
+      if (!active) {
+        if (result) URL.revokeObjectURL(result)
+        return
+      }
+      url = result
+      setPreviewSrc(result)
+    })
+    return () => {
+      active = false
+      if (url) URL.revokeObjectURL(url)
+    }
+  }, [preview])
+
   const seen = seenRef.current
   useEffect(() => {
     for (const row of visibleRows) {
@@ -511,7 +542,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
             transition={{ duration: 0.15 }}
           >
             <motion.img
-              src={preview.previewUrl ?? preview.thumbnailUrl ?? ""}
+              src={previewSrc ?? ""}
               alt={preview.originalFilename}
               className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
               initial={{ scale: 0.85, opacity: 0 }}

@@ -197,7 +197,6 @@ const PhotoTile = ({
               corners.br && "rounded-br-lg",
             )
           : rounded && "rounded-lg",
-        selected && "ring-primary ring-2 ring-inset",
       )}
     >
       {thumbSrc ? (
@@ -228,6 +227,10 @@ const PhotoTile = ({
           ) : null}
         </div>
       )}
+
+      {selected ? (
+        <span className="ring-primary pointer-events-none absolute inset-0 z-10 rounded-[inherit] ring-2 ring-inset" />
+      ) : null}
 
       {asset.motion && motionUrl ? (
         <video
