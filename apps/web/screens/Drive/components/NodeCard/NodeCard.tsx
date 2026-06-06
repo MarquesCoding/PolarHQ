@@ -2,6 +2,7 @@
 
 import { type MouseEvent, useEffect, useRef, useState } from "react"
 import type { DriveNode } from "@lib/drive"
+import { fetchDecryptedThumbnail } from "@lib/driveE2e"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { IconCircle, IconCircleCheckFilled } from "@tabler/icons-react"
@@ -66,12 +67,32 @@ const NodeCard = ({
   const [thumbLoaded, setThumbLoaded] = useState(() =>
     node.thumbnailUrl ? loadedThumbnails.has(node.thumbnailUrl) : false,
   )
+  const [decryptedThumb, setDecryptedThumb] = useState<string | null>(null)
   const type = typeIcon(node)
   const springTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const thumbUrl = node.thumbnailUrl ?? decryptedThumb
 
   useEffect(() => {
     setThumbLoaded(node.thumbnailUrl ? loadedThumbnails.has(node.thumbnailUrl) : false)
   }, [node.thumbnailUrl])
+
+  useEffect(() => {
+    if (!node.encrypted || !(node.mimeType ?? "").startsWith("image/")) return
+    let url: string | null = null
+    let cancelled = false
+    void fetchDecryptedThumbnail(node.id).then((decrypted) => {
+      if (cancelled) {
+        if (decrypted) URL.revokeObjectURL(decrypted)
+        return
+      }
+      url = decrypted
+      setDecryptedThumb(decrypted)
+    })
+    return () => {
+      cancelled = true
+      if (url) URL.revokeObjectURL(url)
+    }
+  }, [node.id, node.encrypted, node.mimeType])
 
   const clearSpring = () => {
     clearTimeout(springTimer.current)
@@ -154,15 +175,15 @@ const NodeCard = ({
       </button>
 
       <div className="aspect-square w-full overflow-hidden rounded-lg">
-        {node.thumbnailUrl ? (
+        {thumbUrl ? (
           <div className="bg-sidebar-accent/50 relative h-full w-full">
             <img
-              src={node.thumbnailUrl}
+              src={thumbUrl}
               alt={node.name}
               loading="lazy"
               draggable={false}
               onLoad={() => {
-                if (node.thumbnailUrl) loadedThumbnails.add(node.thumbnailUrl)
+                loadedThumbnails.add(thumbUrl)
                 setThumbLoaded(true)
               }}
               className={cn(

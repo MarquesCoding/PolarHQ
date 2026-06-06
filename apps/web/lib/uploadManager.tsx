@@ -11,6 +11,8 @@ import {
 } from "react"
 import { API_URL } from "@lib/env"
 import { archiveDriveNodes } from "@lib/drive"
+import { uploadEncryptedDriveFile } from "@lib/driveE2e"
+import { isUnlocked } from "@lib/e2e"
 import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@lib/download"
 import { deleteAssets, fetchProcessing } from "@lib/photos"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
@@ -248,12 +250,19 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
           },
           ...previous,
         ])
-        xhrUpload(
-          file,
-          target,
-          (loaded, speed) => update(id, { loaded, speed }),
-          (xhr) => requests.current.set(id, xhr),
-        )
+        // Drive uploads are end-to-end encrypted client-side when keys are unlocked.
+        const uploadPromise =
+          target.kind === "drive" && isUnlocked()
+            ? uploadEncryptedDriveFile(target.parentId, file).then(
+                (node) => ({ node }) as UploadResponse,
+              )
+            : xhrUpload(
+                file,
+                target,
+                (loaded, speed) => update(id, { loaded, speed }),
+                (xhr) => requests.current.set(id, xhr),
+              )
+        uploadPromise
           .then((response) => {
             const result = normalizeResponse(target, response, readyAssets.current)
             update(id, { status: result.status, loaded: file.size, assetId: result.assetId })

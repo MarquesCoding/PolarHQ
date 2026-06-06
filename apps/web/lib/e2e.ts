@@ -192,6 +192,19 @@ export const createEncryptedDoc = async (
   return doc
 }
 
+/** A fresh content key (not yet stored) — used to encrypt before the node exists (uploads). */
+export const createContentKey = (): Uint8Array => newContentKey()
+
+/** Store an already-generated content key wrapped to the owner, for a node id. */
+export const storeContentKey = async (nodeId: string, key: Uint8Array): Promise<void> => {
+  if (!keypair) throw new Error("locked")
+  await apiFetch(`/api/v1/docs/documents/${nodeId}/self-key`, {
+    method: "POST",
+    body: JSON.stringify({ wrappedKey: toB64(sealTo(key, keypair.publicKey)) }),
+  })
+  contentKeyCache.set(nodeId, key)
+}
+
 /** Wrap a doc's content key to a collaborator (by email). False if they have no keys yet. */
 export const shareDocKey = async (nodeId: string, email: string): Promise<boolean> => {
   const key = await getDocContentKey(nodeId)

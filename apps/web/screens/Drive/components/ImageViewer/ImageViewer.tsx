@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import type { DriveNode } from "@lib/drive"
+import { fetchDecryptedFile } from "@lib/driveE2e"
 import { Icon } from "@lib/icons"
 import { Button } from "@workspace/ui/components/button"
 import { motion } from "motion/react"
@@ -14,7 +15,8 @@ interface ImageViewerProps {
 /** Full-screen image viewer (zoom/pan-lite) styled like the Photos lightbox, for Drive images. */
 const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
   const [scale, setScale] = useState(1)
-  const src = node.downloadUrl ?? node.thumbnailUrl ?? undefined
+  const [decrypted, setDecrypted] = useState<string | null>(null)
+  const src = node.encrypted ? (decrypted ?? undefined) : (node.downloadUrl ?? node.thumbnailUrl ?? undefined)
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -24,10 +26,28 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
     return () => window.removeEventListener("keydown", onKey)
   }, [onClose])
 
+  useEffect(() => {
+    if (!node.encrypted || !node.downloadUrl) return
+    let url: string | null = null
+    let cancelled = false
+    void fetchDecryptedFile(node.id, node.downloadUrl, node.mimeType).then((decryptedUrl) => {
+      if (cancelled) {
+        if (decryptedUrl) URL.revokeObjectURL(decryptedUrl)
+        return
+      }
+      url = decryptedUrl
+      setDecrypted(decryptedUrl)
+    })
+    return () => {
+      cancelled = true
+      if (url) URL.revokeObjectURL(url)
+    }
+  }, [node.id, node.encrypted, node.downloadUrl, node.mimeType])
+
   const download = () => {
-    if (!node.downloadUrl) return
+    if (!src) return
     const anchor = document.createElement("a")
-    anchor.href = node.downloadUrl
+    anchor.href = src
     anchor.download = node.name
     document.body.appendChild(anchor)
     anchor.click()
