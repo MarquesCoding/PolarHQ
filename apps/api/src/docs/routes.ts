@@ -9,6 +9,7 @@ import {
   getUserKeys,
   replaceDocKeys,
   setDocKeys,
+  setMetaKey,
   setUserKeys,
 } from "./keys"
 import {
@@ -43,6 +44,8 @@ const serializeDoc = (node: DriveNode, userId: string) => ({
   id: node.id,
   parentId: node.parentId,
   name: node.name,
+  encryptedName: node.encryptedName,
+  sharedName: node.sharedName,
   mimeType: node.mimeType,
   sizeBytes: node.sizeBytes,
   createdAt: node.createdAt,
@@ -165,6 +168,7 @@ docsRoutes.post("/keys", async (c) => {
       kdfSalt: z.string(),
       kdfParams: z.string().nullish(),
       recoveryWrapped: z.string().nullish(),
+      wrappedMetaKey: z.string().nullish(),
     }),
   )
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
@@ -174,9 +178,18 @@ docsRoutes.post("/keys", async (c) => {
     kdfSalt: parsed.data.kdfSalt,
     kdfParams: parsed.data.kdfParams ?? null,
     recoveryWrapped: parsed.data.recoveryWrapped ?? null,
+    wrappedMetaKey: parsed.data.wrappedMetaKey ?? null,
   })
   const bundle = await getUserKeys(c.get("userId"))
   return c.json({ keys: bundle }, 201)
+})
+
+// Back-fill the account metadata key for an account enrolled before metadata encryption.
+docsRoutes.put("/keys/meta", async (c) => {
+  const parsed = await parse(c, z.object({ wrappedMetaKey: z.string() }))
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  await setMetaKey(c.get("userId"), parsed.data.wrappedMetaKey)
+  return c.json({ ok: true })
 })
 
 docsRoutes.get("/keys/public", async (c) => {

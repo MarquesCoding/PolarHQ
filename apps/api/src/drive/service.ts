@@ -105,12 +105,13 @@ export const createFolder = async (
   ownerId: string,
   parentId: string | null,
   name: string,
+  encryptedName?: string | null,
 ): Promise<DriveNode> => {
   const { rootId } = await ensureUserRoots(ownerId)
   const resolvedParentId = parentId && parentId !== "root" ? parentId : rootId
   const inserted = await db
     .insert(schema.nodes)
-    .values({ ownerId, parentId: resolvedParentId, kind: "folder", name })
+    .values({ ownerId, parentId: resolvedParentId, kind: "folder", name, encryptedName })
     .returning()
   return inserted[0]!
 }
@@ -122,6 +123,7 @@ export const ingestDriveFile = async (input: {
   filename: string
   mimeType: string
   bytes: Buffer
+  encryptedName?: string | null
 }): Promise<DriveNode> => {
   const nodeId = createId()
   const key = driveObjectKey(input.ownerId, nodeId, input.filename)
@@ -134,6 +136,7 @@ export const ingestDriveFile = async (input: {
       parentId: input.parentId,
       kind: "file",
       name: input.filename,
+      encryptedName: input.encryptedName,
       mimeType: input.mimeType,
       sizeBytes: input.bytes.length,
       storageKey: key,
@@ -212,10 +215,17 @@ export const renameNode = async (
   ownerId: string,
   id: string,
   name: string,
+  encryptedName?: string | null,
+  sharedName?: string | null,
 ): Promise<void> => {
+  // Only touch the encrypted-name columns when the caller actually supplied them, so a
+  // plaintext rename (e.g. from a dialog without the content key) doesn't wipe them.
+  const set: Partial<typeof schema.nodes.$inferInsert> = { name, updatedAt: new Date() }
+  if (encryptedName !== undefined) set.encryptedName = encryptedName
+  if (sharedName !== undefined) set.sharedName = sharedName
   await db
     .update(schema.nodes)
-    .set({ name, updatedAt: new Date() })
+    .set(set)
     .where(and(eq(schema.nodes.ownerId, ownerId), eq(schema.nodes.id, id)))
 }
 
@@ -795,6 +805,7 @@ interface DriveFileInput {
   filename: string
   mimeType: string
   bytes: Buffer
+  encryptedName?: string | null
 }
 
 /**

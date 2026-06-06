@@ -37,6 +37,7 @@ interface KeyBundle {
   kdfSalt: string
   kdfParams: string | null
   recoveryWrapped: string | null
+  wrappedMetaKey: string | null
 }
 
 // The unlocked keypair is persisted encrypted at rest (see secureStore) so it survives
@@ -46,6 +47,8 @@ const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 
 let keypair: Keypair | null = null
+// The account metadata key — decrypts node names (see encryptName/decryptName).
+let metaKey: Uint8Array | null = null
 const contentKeyCache = new Map<string, Uint8Array>()
 
 const restore = async () => {
@@ -55,8 +58,13 @@ const restore = async () => {
   const blob = await secureStoreGet()
   if (!blob) return
   try {
-    const { pk, sk } = JSON.parse(decoder.decode(blob)) as { pk: string; sk: string }
+    const { pk, sk, mk } = JSON.parse(decoder.decode(blob)) as {
+      pk: string
+      sk: string
+      mk?: string
+    }
     keypair = { publicKey: fromB64(pk), privateKey: fromB64(sk) }
+    if (mk) metaKey = fromB64(mk)
   } catch {
     /* ignore */
   }
@@ -65,14 +73,50 @@ const restore = async () => {
 const persist = async () => {
   if (!keypair) return
   await secureStoreSet(
-    encoder.encode(JSON.stringify({ pk: toB64(keypair.publicKey), sk: toB64(keypair.privateKey) })),
+    encoder.encode(
+      JSON.stringify({
+        pk: toB64(keypair.publicKey),
+        sk: toB64(keypair.privateKey),
+        mk: metaKey ? toB64(metaKey) : undefined,
+      }),
+    ),
   )
+}
+
+/**
+ * Ensure the account metadata key is loaded into memory — unsealing it from the bundle,
+ * or lazily generating + enrolling one for accounts created before metadata encryption.
+ */
+const ensureMetaKey = async (bundle: KeyBundle): Promise<void> => {
+  if (!keypair) return
+  if (bundle.wrappedMetaKey) {
+    try {
+      metaKey = openSealed(fromB64(bundle.wrappedMetaKey), keypair)
+      return
+    } catch {
+      /* fall through to re-enroll */
+    }
+  }
+  const key = newContentKey()
+  await apiFetch("/api/v1/docs/keys/meta", {
+    method: "PUT",
+    body: JSON.stringify({ wrappedMetaKey: toB64(sealTo(key, keypair.publicKey)) }),
+  })
+  metaKey = key
 }
 
 /** Initialize libsodium and restore the unlocked keypair, if the user has unlocked before. */
 export const e2eReady = async (): Promise<void> => {
   await cryptoReady()
   await restore()
+  // Restored the keypair from a pre-metadata session but never loaded the metadata key.
+  if (keypair && !metaKey) {
+    const bundle = await fetchKeyBundle().catch(() => null)
+    if (bundle) {
+      await ensureMetaKey(bundle)
+      await persist()
+    }
+  }
 }
 
 export const isUnlocked = (): boolean => keypair !== null
@@ -97,6 +141,7 @@ export const setupKeys = async (password: string): Promise<{ recoveryCode: strin
   const salt = newSalt()
   const params = defaultKdfParams()
   const recoveryKey = newRecoveryKey()
+  const accountMetaKey = newContentKey()
   await apiFetch("/api/v1/docs/keys", {
     method: "POST",
     body: JSON.stringify({
@@ -105,9 +150,11 @@ export const setupKeys = async (password: string): Promise<{ recoveryCode: strin
       kdfSalt: toB64(salt),
       kdfParams: JSON.stringify(params),
       recoveryWrapped: toB64(secretboxSeal(pair.privateKey, recoveryKey)),
+      wrappedMetaKey: toB64(sealTo(accountMetaKey, pair.publicKey)),
     }),
   })
   keypair = pair
+  metaKey = accountMetaKey
   await persist()
   return { recoveryCode: recoveryCodeFromKey(recoveryKey) }
 }
@@ -124,6 +171,7 @@ export const unlockKeys = async (password: string): Promise<boolean> => {
       deriveKey(password, fromB64(bundle.kdfSalt), params),
     )
     keypair = { publicKey: fromB64(bundle.publicKey), privateKey }
+    await ensureMetaKey(bundle)
     await persist()
     return true
   } catch {
@@ -139,6 +187,7 @@ export const unlockWithRecovery = async (code: string): Promise<boolean> => {
   try {
     const privateKey = secretboxOpen(fromB64(bundle.recoveryWrapped), recoveryKeyFromCode(code))
     keypair = { publicKey: fromB64(bundle.publicKey), privateKey }
+    await ensureMetaKey(bundle)
     await persist()
     return true
   } catch {
@@ -148,9 +197,47 @@ export const unlockWithRecovery = async (code: string): Promise<boolean> => {
 
 export const lockKeys = (): void => {
   keypair = null
+  metaKey = null
   contentKeyCache.clear()
   void secureStoreClear()
   if (typeof localStorage !== "undefined") localStorage.removeItem(LEGACY_KEY)
+}
+
+/** A unique, non-revealing placeholder stored in the plaintext `name` of an encrypted node. */
+export const encryptedPlaceholder = (): string =>
+  typeof crypto !== "undefined" && "randomUUID" in crypto ? `enc-${crypto.randomUUID()}` : "encrypted"
+
+/** Encrypt a node name with the account metadata key (null if locked / no key). */
+export const encryptName = (name: string): string | null =>
+  metaKey ? toB64(secretboxSeal(encoder.encode(name), metaKey)) : null
+
+/** Decrypt a node's encrypted name, or null if locked / unreadable. */
+export const decryptName = (encryptedName: string | null | undefined): string | null => {
+  if (!encryptedName || !metaKey) return null
+  try {
+    return decoder.decode(secretboxOpen(fromB64(encryptedName), metaKey))
+  } catch {
+    return null
+  }
+}
+
+/** Encrypt a name with a specific content key (for shared-doc names readable by collaborators). */
+export const encryptNameWith = (name: string, key: Uint8Array): string =>
+  toB64(secretboxSeal(encoder.encode(name), key))
+
+/** Decrypt a shared-doc name using the doc's content key, or null if unavailable. */
+export const decryptSharedName = async (
+  nodeId: string,
+  sharedName: string | null | undefined,
+): Promise<string | null> => {
+  if (!sharedName) return null
+  const key = await getDocContentKey(nodeId)
+  if (!key) return null
+  try {
+    return decoder.decode(secretboxOpen(fromB64(sharedName), key))
+  } catch {
+    return null
+  }
 }
 
 /** The wrapped content key the server holds for this user/doc (null if plaintext or no access). */

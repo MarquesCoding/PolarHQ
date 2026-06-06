@@ -56,6 +56,8 @@ const serializeNode = (node: DriveNode, encryptedIds?: Set<string>) => ({
   parentId: node.parentId,
   kind: node.kind,
   name: node.name,
+  encryptedName: node.encryptedName,
+  sharedName: node.sharedName,
   mimeType: node.mimeType,
   sizeBytes: node.sizeBytes,
   special: node.special,
@@ -112,10 +114,19 @@ driveRoutes.get("/nodes", async (c) => {
 driveRoutes.post("/nodes/folder", async (c) => {
   const parsed = await parse(
     c,
-    z.object({ parentId: z.string().nullish(), name: z.string().min(1) }),
+    z.object({
+      parentId: z.string().nullish(),
+      name: z.string().min(1),
+      encryptedName: z.string().nullish(),
+    }),
   )
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
-  const node = await createFolder(c.get("userId"), parsed.data.parentId ?? null, parsed.data.name)
+  const node = await createFolder(
+    c.get("userId"),
+    parsed.data.parentId ?? null,
+    parsed.data.name,
+    parsed.data.encryptedName ?? null,
+  )
   return c.json({ node: serializeNode(node) }, 201)
 })
 
@@ -140,7 +151,15 @@ driveRoutes.post("/nodes/upload", async (c) => {
   // separately) and never run server-side media processing — the client owns the thumbnail.
   if (body["encrypted"] === "true") {
     const originalMime = typeof body["mimeType"] === "string" ? body["mimeType"] : mimeType
-    const node = await upsertDriveFile({ ownerId: userId, parentId, filename, mimeType: originalMime, bytes })
+    const encryptedName = typeof body["encryptedName"] === "string" ? body["encryptedName"] : null
+    const node = await upsertDriveFile({
+      ownerId: userId,
+      parentId,
+      filename,
+      mimeType: originalMime,
+      bytes,
+      encryptedName,
+    })
     return c.json({ node: serializeNode(node) }, 201)
   }
 
@@ -318,7 +337,12 @@ driveRoutes.get("/nodes/:id/versions/:versionId/download", async (c) => {
 driveRoutes.patch("/nodes/:id", async (c) => {
   const parsed = await parse(
     c,
-    z.object({ name: z.string().min(1).optional(), parentId: z.string().optional() }),
+    z.object({
+      name: z.string().min(1).optional(),
+      encryptedName: z.string().nullish(),
+      sharedName: z.string().nullish(),
+      parentId: z.string().optional(),
+    }),
   )
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
   const userId = c.get("userId")
@@ -326,7 +350,14 @@ driveRoutes.patch("/nodes/:id", async (c) => {
   const node = await getNode(userId, id)
   if (!node) return c.json({ error: "not found" }, 404)
   if (node.special) return c.json({ error: "cannot modify a system folder" }, 400)
-  if (parsed.data.name) await renameNode(userId, id, parsed.data.name)
+  if (parsed.data.name)
+    await renameNode(
+      userId,
+      id,
+      parsed.data.name,
+      parsed.data.encryptedName,
+      parsed.data.sharedName,
+    )
   if (parsed.data.parentId) {
     const { rootId, photosId } = await ensureUserRoots(userId)
     const targetId = parsed.data.parentId === "root" ? rootId : parsed.data.parentId

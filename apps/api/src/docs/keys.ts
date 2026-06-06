@@ -9,6 +9,7 @@ export interface UserKeyBundle {
   kdfSalt: string
   kdfParams: string | null
   recoveryWrapped: string | null
+  wrappedMetaKey: string | null
 }
 
 /** The caller's own key bundle (public key + wrapped private key), or null if not set up. */
@@ -23,7 +24,16 @@ export const getUserKeys = async (userId: string): Promise<UserKeyBundle | null>
     kdfSalt: row.kdfSalt,
     kdfParams: row.kdfParams,
     recoveryWrapped: row.recoveryWrapped,
+    wrappedMetaKey: row.wrappedMetaKey,
   }
+}
+
+/** Set (or back-fill) the account metadata key for a user who lacks one. */
+export const setMetaKey = async (userId: string, wrappedMetaKey: string): Promise<void> => {
+  await db
+    .update(schema.userKeys)
+    .set({ wrappedMetaKey })
+    .where(eq(schema.userKeys.userId, userId))
 }
 
 /** Store a user's key bundle once (no-op if already set up). The server never sees the private key. */
@@ -37,6 +47,7 @@ export const setUserKeys = async (userId: string, bundle: UserKeyBundle): Promis
       kdfSalt: bundle.kdfSalt,
       kdfParams: bundle.kdfParams,
       recoveryWrapped: bundle.recoveryWrapped,
+      wrappedMetaKey: bundle.wrappedMetaKey,
     })
     .onConflictDoNothing()
 }

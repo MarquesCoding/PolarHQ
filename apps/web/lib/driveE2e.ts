@@ -1,8 +1,14 @@
 "use client"
 
 import { secretboxOpen, secretboxSeal } from "@lib/crypto"
-import type { DriveNode } from "@lib/drive"
-import { createContentKey, getDocContentKey, storeContentKey } from "@lib/e2e"
+import { type DriveNode, decryptNodeName } from "@lib/drive"
+import {
+  createContentKey,
+  encryptName,
+  encryptedPlaceholder,
+  getDocContentKey,
+  storeContentKey,
+} from "@lib/e2e"
 import { API_URL } from "@lib/env"
 import { generateImageThumbnail } from "@lib/thumbnails"
 
@@ -18,15 +24,19 @@ export const uploadEncryptedDriveFile = async (
   const key = createContentKey()
   const original = new Uint8Array(await file.arrayBuffer())
 
+  // The filename itself is sensitive: send a random placeholder as the multipart filename
+  // and the real name encrypted with the account metadata key.
+  const encryptedName = encryptName(file.name)
   const form = new FormData()
   form.set(
     "file",
-    new File([secretboxSeal(original, key) as BlobPart], file.name, {
+    new File([secretboxSeal(original, key) as BlobPart], encryptedName ? encryptedPlaceholder() : file.name, {
       type: "application/octet-stream",
     }),
   )
   form.set("mimeType", file.type || "application/octet-stream")
   form.set("encrypted", "true")
+  if (encryptedName) form.set("encryptedName", encryptedName)
   if (parentId) form.set("parentId", parentId)
   if (file.lastModified) form.set("mtime", String(file.lastModified))
 
@@ -52,7 +62,7 @@ export const uploadEncryptedDriveFile = async (
     }
   }
 
-  return { ...node, encrypted: true }
+  return { ...decryptNodeName(node), encrypted: true }
 }
 
 /** Fetch + decrypt an encrypted node's thumbnail into an object URL (or null). */
