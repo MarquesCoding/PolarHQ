@@ -188,7 +188,7 @@ const PhotoTile = ({
         }
       }}
       className={cn(
-        "bg-muted border-foreground/10 group relative h-full w-full cursor-pointer overflow-hidden border transition",
+        "bg-muted border-foreground/10 group relative h-full w-full cursor-pointer overflow-hidden border outline-none transition focus-visible:outline-none",
         corners
           ? cn(
               corners.tl && "rounded-tl-lg",
@@ -197,7 +197,7 @@ const PhotoTile = ({
               corners.br && "rounded-br-lg",
             )
           : rounded && "rounded-lg",
-        selected && "ring-primary ring-offset-background ring-2 ring-offset-2",
+        selected && "ring-primary ring-2 ring-inset",
       )}
     >
       {thumbSrc ? (
