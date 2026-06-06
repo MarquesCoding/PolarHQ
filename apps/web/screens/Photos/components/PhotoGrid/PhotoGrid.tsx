@@ -12,6 +12,7 @@ import TimelineScrubber, {
   type TimelineMarker,
 } from "@pages/Photos/components/TimelineScrubber/TimelineScrubber"
 import { IconCircle } from "@tabler/icons-react"
+import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 
@@ -146,7 +147,7 @@ const buildLayout = (
       date: dateOf(item.asset),
       assetIds: dayAssetIds.get(item.day) ?? [],
       x,
-      y: labelY,
+      y: labelY + (HEADER_HEIGHT + HEADER_GAP - gap) / 2,
     })
   }
 
@@ -495,13 +496,13 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
       {layout.labels.map((label) => (
         <div
           key={label.key}
-          className="group absolute flex items-center"
+          className="group absolute flex -translate-y-1/2 items-center"
           style={{ top: label.y, left: label.x, transition: HEADER_RESIZE_CSS }}
         >
-          <button
-            type="button"
+          <Button
+            variant="ghost"
             onClick={() => selection.toggleMany(label.assetIds)}
-            className="flex items-center py-0.5 text-sm font-medium"
+            className="flex h-auto items-center gap-0 rounded-md p-0 py-0.5 text-sm font-medium hover:bg-transparent"
           >
             <span
               className={cn(
@@ -518,7 +519,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
               )}
             </span>
             <span>{label.label}</span>
-          </button>
+          </Button>
         </div>
       ))}
       {visibleRows.map((row) =>
