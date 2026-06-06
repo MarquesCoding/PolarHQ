@@ -100,10 +100,14 @@ export interface EncryptedIngestInput {
 /**
  * Ingest an end-to-end-encrypted image: the bytes are already ciphertext, so we store them
  * as-is and run NO media processing — the client owns the content key, thumbnail, and the
- * dimensions/takenAt the grid needs. The asset is `ready` immediately. No Drive mirror yet
- * (the encrypted-photo↔Drive key coupling is a separate piece of work).
+ * dimensions/takenAt the grid needs. The asset is `ready` immediately. We also create the
+ * Drive "Photos" mirror node (carrying the encrypted name); the client wraps the content
+ * key to that node id and uploads the encrypted thumbnail there too, so the mirror is a
+ * self-contained encrypted Drive file that Drive's existing decrypt path can read.
  */
-export const ingestEncryptedAsset = async (input: EncryptedIngestInput): Promise<Asset> => {
+export const ingestEncryptedAsset = async (
+  input: EncryptedIngestInput,
+): Promise<{ asset: Asset; mirrorNodeId: string | null }> => {
   const checksum = sha256(input.bytes)
   const assetId = createId()
   const keys = assetObjectKeys(input.ownerId, assetId, ".bin")
@@ -135,7 +139,9 @@ export const ingestEncryptedAsset = async (input: EncryptedIngestInput): Promise
 
   const asset = inserted[0]
   if (!asset) throw new Error("Failed to insert asset")
-  return asset
+
+  const mirror = await ensurePhotosDriveNode(input.ownerId, asset).catch(() => null)
+  return { asset, mirrorNodeId: mirror?.id ?? null }
 }
 
 /** Store a client-encrypted thumbnail for an asset and mark it displayable. */
