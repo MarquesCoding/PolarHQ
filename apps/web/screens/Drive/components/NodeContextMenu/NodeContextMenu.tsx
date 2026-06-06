@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { type DriveNode, isArchiveName } from "@lib/drive"
 import { docTypeOf } from "@lib/docs"
+import { is3DModelName } from "@lib/model3dExt"
 import {
   IconArrowsMove,
   IconCopy,
@@ -56,6 +57,7 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
   const router = useRouter()
   const isFile = node.kind === "file"
   const isImage = isFile && Boolean(node.mimeType?.startsWith("image/"))
+  const is3D = isFile && is3DModelName(node.name)
 
   return (
     <ContextMenu>
@@ -87,10 +89,10 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
                 Open
               </ContextMenuItem>
             ) : null}
-            {isImage ? (
+            {isImage || is3D ? (
               <ContextMenuItem onClick={() => actions.view(node)}>
                 <IconEye />
-                View
+                {is3D ? "View in 3D" : "View"}
               </ContextMenuItem>
             ) : null}
             {isFile ? (
