@@ -22,6 +22,8 @@ import { motion } from "motion/react"
  */
 const loadedThumbnails = new Set<string>()
 
+const decryptedThumbnails = new Map<string, string>()
+
 const formatDuration = (ms: number): string => {
   const total = Math.round(ms / 1000)
   const minutes = Math.floor(total / 60)
@@ -53,22 +55,19 @@ const PhotoTile = ({
   onPreviewEnd,
 }: PhotoTileProps) => {
   const [loaded, setLoaded] = useState(() => loadedThumbnails.has(asset.id))
-  const [decryptedThumb, setDecryptedThumb] = useState<string | null>(null)
+  const [decryptedThumb, setDecryptedThumb] = useState<string | null>(() =>
+    asset.encrypted ? (decryptedThumbnails.get(asset.id) ?? null) : null,
+  )
   useEffect(() => {
-    if (!asset.encrypted) return
+    if (!asset.encrypted || decryptedThumbnails.has(asset.id)) return
     let active = true
-    let url: string | null = null
     void fetchDecryptedPhotoThumbnail(asset.id).then((result) => {
-      if (!active) {
-        if (result) URL.revokeObjectURL(result)
-        return
-      }
-      url = result
-      setDecryptedThumb(result)
+      if (!result) return
+      decryptedThumbnails.set(asset.id, result)
+      if (active) setDecryptedThumb(result)
     })
     return () => {
       active = false
-      if (url) URL.revokeObjectURL(url)
     }
   }, [asset.id, asset.encrypted])
 
@@ -169,9 +168,11 @@ const PhotoTile = ({
       ) : (
         <div className="text-muted-foreground flex h-full w-full flex-col items-center justify-center gap-1">
           <IconPhoto className="size-5" />
-          <span className="text-[10px]">
-            {asset.status === "failed" ? "Failed" : "Processing…"}
-          </span>
+          {asset.status === "failed" ? (
+            <span className="text-[10px]">Failed</span>
+          ) : asset.status === "processing" || asset.status === "uploading" ? (
+            <span className="text-[10px]">Processing…</span>
+          ) : null}
         </div>
       )}
 
