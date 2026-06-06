@@ -77,6 +77,8 @@ export interface GridAsset {
   previewUrl: string | null
   videoUrl: string | null
   motion: boolean
+  stackId: string | null
+  stackCount: number
 }
 
 export interface TimelinePage {
@@ -221,6 +223,33 @@ export const deleteAssets = (assetIds: string[]) =>
 
 export const emptyTrash = () =>
   apiFetch("/api/v1/photos/assets/actions/empty-trash", { method: "POST" })
+
+export interface StackResult {
+  stackId: string
+  primaryId: string
+  count: number
+}
+
+export const stackAssets = (assetIds: string[]): Promise<StackResult> =>
+  apiFetch("/api/v1/photos/assets/actions/stack", {
+    method: "POST",
+    body: JSON.stringify({ assetIds }),
+  })
+
+export const unstackAssets = (stackId: string) =>
+  apiFetch("/api/v1/photos/assets/actions/unstack", {
+    method: "POST",
+    body: JSON.stringify({ stackId }),
+  })
+
+export const setStackCover = (assetId: string) =>
+  apiFetch("/api/v1/photos/assets/actions/stack-cover", {
+    method: "POST",
+    body: JSON.stringify({ assetId }),
+  })
+
+export const fetchStackMembers = (stackId: string): Promise<{ assets: GridAsset[] }> =>
+  apiFetch(`/api/v1/photos/stacks/${stackId}`)
 
 export interface ProcessingAsset {
   id: string

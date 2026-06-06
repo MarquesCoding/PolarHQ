@@ -2,7 +2,7 @@
 
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
-import type { GridAsset } from "@lib/photos"
+import { type GridAsset, fetchStackMembers } from "@lib/photos"
 import { fetchDecryptedPhotoOriginal, fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
 import { useSelection } from "@lib/selection"
 import { usePersistentNumber } from "@lib/persistentSetting"
@@ -233,6 +233,8 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   const [width, setWidth] = useState(0)
   const [range, setRange] = useState({ start: 0, end: 0 })
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [stackMembers, setStackMembers] = useState<GridAsset[] | null>(null)
+  const [stackIndex, setStackIndex] = useState<number | null>(null)
   const [preview, setPreview] = useState<GridAsset | null>(null)
   const [previewSrc, setPreviewSrc] = useState<string | null>(null)
   const [hoveredDay, setHoveredDay] = useState<string | null>(null)
@@ -317,7 +319,15 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   }
   const onOpen = (id: string) => {
     if (draggedRef.current) return
-    const position = sortedGridAssets.findIndex((asset) => asset.id === id)
+    const asset = sortedGridAssets.find((item) => item.id === id)
+    if (asset?.stackId && asset.stackCount > 1) {
+      void fetchStackMembers(asset.stackId).then(({ assets }) => {
+        setStackMembers(assets)
+        setStackIndex(0)
+      })
+      return
+    }
+    const position = sortedGridAssets.findIndex((item) => item.id === id)
     if (position >= 0) setOpenIndex(position)
   }
 
@@ -565,6 +575,21 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
             index={openIndex}
             onIndexChange={setOpenIndex}
             onClose={() => setOpenIndex(null)}
+          />
+        ) : null}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {stackMembers && stackIndex !== null ? (
+          <Lightbox
+            key="stack-lightbox"
+            assets={stackMembers}
+            index={stackIndex}
+            onIndexChange={setStackIndex}
+            onClose={() => {
+              setStackMembers(null)
+              setStackIndex(null)
+            }}
           />
         ) : null}
       </AnimatePresence>

@@ -59,6 +59,8 @@ export const assets = photos.table(
     encryptedName: text("encrypted_name"),
     encryptedLocation: text("encrypted_location"),
     encryptedExif: text("encrypted_exif"),
+    stackId: text("stack_id"),
+    stackPrimary: boolean("stack_primary").notNull().default(false),
     status: assetStatus("status").notNull().default("uploading"),
     inLibrary: boolean("in_library").notNull().default(true),
     isFavorite: boolean("is_favorite").notNull().default(false),
@@ -71,6 +73,7 @@ export const assets = photos.table(
     uniqueIndex("assets_owner_checksum_uq").on(t.ownerId, t.checksum),
     index("assets_owner_taken_idx").on(t.ownerId, t.takenAt),
     index("assets_owner_created_idx").on(t.ownerId, t.createdAt),
+    index("assets_owner_stack_idx").on(t.ownerId, t.stackId),
   ],
 )
 
