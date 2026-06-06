@@ -51,26 +51,32 @@ driveRoutes.use("*", async (c, next) => {
 const driveBase = `${config.api.url}/api/v1/drive/nodes`
 const photosBase = `${config.api.url}/api/v1/photos/assets`
 
-const serializeNode = (node: DriveNode, encryptedIds?: Set<string>) => ({
-  id: node.id,
-  parentId: node.parentId,
-  kind: node.kind,
-  name: node.name,
-  encryptedName: node.encryptedName,
-  sharedName: node.sharedName,
-  mimeType: node.mimeType,
-  sizeBytes: node.sizeBytes,
-  special: node.special,
-  photoAssetId: node.photoAssetId,
-  encrypted: encryptedIds?.has(node.id) ?? false,
-  trashedAt: node.trashedAt,
-  createdAt: node.createdAt,
-  updatedAt: node.updatedAt,
-  downloadUrl: node.kind === "file" ? `${driveBase}/${node.id}/download` : null,
-  thumbnailUrl: node.photoAssetId
-    ? `${photosBase}/${node.photoAssetId}/thumbnail?u=${node.updatedAt.getTime()}`
-    : null,
-})
+const serializeNode = (node: DriveNode, encryptedIds?: Set<string>) => {
+  const encrypted = encryptedIds?.has(node.id) ?? false
+  return {
+    id: node.id,
+    parentId: node.parentId,
+    kind: node.kind,
+    name: node.name,
+    encryptedName: node.encryptedName,
+    sharedName: node.sharedName,
+    mimeType: node.mimeType,
+    sizeBytes: node.sizeBytes,
+    special: node.special,
+    photoAssetId: node.photoAssetId,
+    encrypted,
+    trashedAt: node.trashedAt,
+    createdAt: node.createdAt,
+    updatedAt: node.updatedAt,
+    downloadUrl: node.kind === "file" ? `${driveBase}/${node.id}/download` : null,
+    // Encrypted photo mirrors serve their thumbnail (ciphertext) from the Drive endpoint,
+    // which the client decrypts; the plaintext Photos thumbnail URL would not decode.
+    thumbnailUrl:
+      node.photoAssetId && !encrypted
+        ? `${photosBase}/${node.photoAssetId}/thumbnail?u=${node.updatedAt.getTime()}`
+        : null,
+  }
+}
 
 const serializeShare = (share: DriveShare) => ({
   token: share.token,

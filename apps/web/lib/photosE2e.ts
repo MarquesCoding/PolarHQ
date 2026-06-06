@@ -54,17 +54,32 @@ export const uploadEncryptedPhoto = async (file: File): Promise<Asset> => {
     body: form,
   })
   if (!response.ok) throw new Error(`Upload failed (${response.status})`)
-  const { asset } = (await response.json()) as { asset: Asset }
+  const { asset, mirrorNodeId } = (await response.json()) as {
+    asset: Asset
+    mirrorNodeId: string | null
+  }
 
+  const encryptedThumb = secretboxSeal(thumbnail, key)
+
+  // Wrap the content key to the asset and (so the Drive "Photos" mirror is a self-contained
+  // encrypted file) to the mirror node too.
   await storeContentKey(asset.id, key)
+  if (mirrorNodeId) await storeContentKey(mirrorNodeId, key)
 
-  // Encrypt + upload the thumbnail under the same content key.
+  // Upload the encrypted thumbnail to the Photos endpoint, and to the Drive mirror's endpoint.
   await fetch(`${API_URL}/api/v1/photos/assets/${asset.id}/thumbnail`, {
     method: "PUT",
     credentials: "include",
     headers: { "content-type": "application/octet-stream" },
-    body: secretboxSeal(thumbnail, key) as BodyInit,
+    body: encryptedThumb as BodyInit,
   })
+  if (mirrorNodeId)
+    await fetch(`${API_URL}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, {
+      method: "PUT",
+      credentials: "include",
+      headers: { "content-type": "application/octet-stream" },
+      body: encryptedThumb as BodyInit,
+    })
 
   return asset
 }

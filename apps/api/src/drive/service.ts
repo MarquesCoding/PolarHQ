@@ -157,6 +157,7 @@ export const ensurePhotosDriveNode = async (
     mimeType: string
     sizeBytes: number
     storageKey: string
+    encryptedName?: string | null
   },
 ): Promise<DriveNode> => {
   const existing = await db
@@ -174,6 +175,7 @@ export const ensurePhotosDriveNode = async (
       parentId: photosId,
       kind: "file",
       name: asset.originalFilename,
+      encryptedName: asset.encryptedName ?? null,
       mimeType: asset.mimeType,
       sizeBytes: asset.sizeBytes,
       storageKey: asset.storageKey,
