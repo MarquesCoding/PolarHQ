@@ -12,6 +12,7 @@ export interface DriveNode {
   sizeBytes: number | null
   special: string | null
   photoAssetId: string | null
+  encrypted?: boolean
   trashedAt: string | null
   createdAt: string
   updatedAt: string
