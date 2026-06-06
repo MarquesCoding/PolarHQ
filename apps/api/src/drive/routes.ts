@@ -5,6 +5,7 @@ import { storage } from "@workspace/storage"
 import { type Context, Hono } from "hono"
 import { z } from "zod"
 import { getSessionUser } from "../context"
+import { readUploadForm } from "../uploads"
 import { nodesWithKeys } from "../docs/keys"
 import { ingestUpload, purgeAssets, restoreAssets, trashAssets } from "../photos/service"
 import {
@@ -141,24 +142,27 @@ driveRoutes.post("/nodes/folder", async (c) => {
 
 driveRoutes.post("/nodes/upload", async (c) => {
   const userId = c.get("userId")
-  const body = await c.req.parseBody()
-  const file = body["file"]
+  const form = await readUploadForm(c, userId)
+  const file = form.get("file")
   if (!(file instanceof File)) return c.json({ error: "file field is required" }, 400)
 
-  const parentRaw = typeof body["parentId"] === "string" ? body["parentId"] : null
+  const parentRaw = form.get("parentId")
   const { rootId, photosId } = await ensureUserRoots(userId)
-  const parentId = parentRaw && parentRaw !== "root" ? parentRaw : rootId
+  const parentId =
+    typeof parentRaw === "string" && parentRaw !== "root" ? parentRaw : rootId
 
   const bytes = Buffer.from(await file.arrayBuffer())
   const filename = file.name || "file"
   const mimeType = file.type || "application/octet-stream"
-  const mtimeRaw = body["mtime"]
+  const mtimeRaw = form.get("mtime")
   const mtime = typeof mtimeRaw === "string" ? Number(mtimeRaw) : NaN
   const clientModifiedAt = Number.isFinite(mtime) && mtime > 0 ? new Date(mtime) : undefined
 
-  if (body["encrypted"] === "true") {
-    const originalMime = typeof body["mimeType"] === "string" ? body["mimeType"] : mimeType
-    const encryptedName = typeof body["encryptedName"] === "string" ? body["encryptedName"] : null
+  if (form.get("encrypted") === "true") {
+    const originalMimeRaw = form.get("mimeType")
+    const originalMime = typeof originalMimeRaw === "string" ? originalMimeRaw : mimeType
+    const encryptedNameRaw = form.get("encryptedName")
+    const encryptedName = typeof encryptedNameRaw === "string" ? encryptedNameRaw : null
     const node = await upsertDriveFile({
       ownerId: userId,
       parentId,
