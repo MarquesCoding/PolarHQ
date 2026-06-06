@@ -1,5 +1,7 @@
-import { Readable } from "node:stream"
 import { randomUUID } from "node:crypto"
+import { readFileSync } from "node:fs"
+import { Readable } from "node:stream"
+import { fileURLToPath } from "node:url"
 import { createNodeWebSocket } from "@hono/node-ws"
 import { trpcServer } from "@hono/trpc-server"
 import { auth } from "@workspace/auth"
@@ -51,6 +53,18 @@ app.use(
 )
 
 app.get("/health", (c) => c.json({ ok: true, app: config.appName }))
+
+let sodiumJs: Buffer | null = null
+app.get("/_sodium.js", (c) => {
+  if (!sodiumJs)
+    sodiumJs = readFileSync(fileURLToPath(new URL("../static/sodium.js", import.meta.url)))
+  return new Response(sodiumJs, {
+    headers: {
+      "Content-Type": "text/javascript; charset=utf-8",
+      "Cache-Control": "public, max-age=31536000, immutable",
+    },
+  })
+})
 
 app.get("/s/:token", async (c) => {
   const token = c.req.param("token")
