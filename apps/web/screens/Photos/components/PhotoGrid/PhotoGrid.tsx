@@ -19,6 +19,9 @@ const DEFAULT_GAP = 12
 const HEADER_HEIGHT = 30
 const HEADER_GAP = 6
 const SECTION_GAP = 32
+/** Visual margin around the grid, baked into the layout so the surrounding space is still
+ * part of the (selectable) grid container rather than dead outer padding. */
+const INSET = 24
 const RESIZE_EASE = "cubic-bezier(0.22, 0.61, 0.36, 1)"
 const TILE_RESIZE_CSS = `top 0.3s ${RESIZE_EASE}, left 0.3s ${RESIZE_EASE}, width 0.3s ${RESIZE_EASE}, height 0.3s ${RESIZE_EASE}`
 const HEADER_RESIZE_CSS = `top 0.3s ${RESIZE_EASE}`
@@ -97,8 +100,9 @@ const buildLayout = (
   square: boolean,
 ): Layout => {
   if (width <= 0 || assets.length === 0) return { rows: [], totalHeight: 0 }
+  const innerWidth = Math.max(width - INSET * 2, 1)
   const rows: Row[] = []
-  let y = 0
+  let y = INSET
   let i = 0
 
   while (i < assets.length) {
@@ -122,15 +126,15 @@ const buildLayout = (
     y += HEADER_HEIGHT + HEADER_GAP
 
     if (square) {
-      const cols = Math.max(1, Math.round((width + gap) / (rowHeight + gap)))
-      const tile = (width - (cols - 1) * gap) / cols
+      const cols = Math.max(1, Math.round((innerWidth + gap) / (rowHeight + gap)))
+      const tile = (innerWidth - (cols - 1) * gap) / cols
       const totalRows = Math.ceil(group.length / cols)
       for (let start = 0, rowIndex = 0; start < group.length; start += cols, rowIndex += 1) {
         const slice = group.slice(start, start + cols)
         const lastRow = rowIndex === totalRows - 1
         const cells = slice.map((asset, column) => ({
           asset,
-          x: column * (tile + gap),
+          x: INSET + column * (tile + gap),
           width: tile,
           height: tile,
           corners: {
@@ -153,8 +157,8 @@ const buildLayout = (
     const flush = (stretch: boolean) => {
       if (current.length === 0) return
       const gaps = (current.length - 1) * gap
-      const height = stretch ? (width - gaps) / aspectSum : rowHeight
-      let x = 0
+      const height = stretch ? (innerWidth - gaps) / aspectSum : rowHeight
+      let x = INSET
       const cells = current.map((item) => {
         const cellWidth = height * item.aspect
         const cell: Cell = { asset: item.asset, x, width: cellWidth, height }
@@ -171,14 +175,14 @@ const buildLayout = (
       const aspect = aspectOf(asset)
       current.push({ asset, aspect })
       aspectSum += aspect
-      if (aspectSum * rowHeight + (current.length - 1) * gap >= width) flush(true)
+      if (aspectSum * rowHeight + (current.length - 1) * gap >= innerWidth) flush(true)
     }
     flush(false)
     y += SECTION_GAP
   }
 
   const contentBottom = rows.reduce((max, row) => Math.max(max, row.y + row.height), 0)
-  return { rows, totalHeight: contentBottom }
+  return { rows, totalHeight: contentBottom + INSET }
 }
 
 interface PhotoGridProps {
@@ -465,8 +469,8 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
         row.type === "header" ? (
           <div
             key={row.key}
-            className="group absolute left-0 flex items-center"
-            style={{ top: row.y, transition: HEADER_RESIZE_CSS }}
+            className="group absolute flex items-center"
+            style={{ top: row.y, left: INSET, transition: HEADER_RESIZE_CSS }}
           >
             <button
               type="button"

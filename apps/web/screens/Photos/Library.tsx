@@ -115,7 +115,7 @@ const LibraryInner = () => {
 
   return (
     <DropZone
-      className="relative flex flex-1 flex-col gap-6 p-6"
+      className="relative flex flex-1 flex-col"
       onFiles={(files) => upload.upload(files)}
     >
       {query.isLoading ? (
