@@ -14,6 +14,8 @@ import {
   IconHistory,
   IconInfoCircle,
   IconLink,
+  IconLock,
+  IconLockOpen,
   IconPencil,
   IconPhoto,
   IconTrash,
@@ -36,6 +38,8 @@ export interface DriveNodeActions {
   move: (node: DriveNode) => void
   copy: (node: DriveNode) => void
   extract: (node: DriveNode) => void
+  lock: (node: DriveNode) => void
+  removeLock: (node: DriveNode) => void
   rename: (node: DriveNode) => void
   details: (node: DriveNode) => void
   versions: (node: DriveNode) => void
@@ -119,6 +123,19 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
                 <IconFileExport />
                 Extract here
               </ContextMenuItem>
+            ) : null}
+            {!isFile && !node.special ? (
+              node.locked ? (
+                <ContextMenuItem onClick={() => actions.removeLock(node)}>
+                  <IconLockOpen />
+                  Remove lock
+                </ContextMenuItem>
+              ) : (
+                <ContextMenuItem onClick={() => actions.lock(node)}>
+                  <IconLock />
+                  Lock folder
+                </ContextMenuItem>
+              )
             ) : null}
             <ContextMenuItem onClick={() => actions.rename(node)}>
               <IconPencil />

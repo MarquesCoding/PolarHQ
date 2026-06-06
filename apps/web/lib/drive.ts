@@ -18,6 +18,7 @@ export interface DriveNode {
   special: string | null
   photoAssetId: string | null
   encrypted?: boolean
+  locked?: boolean
   trashedAt: string | null
   createdAt: string
   updatedAt: string
@@ -138,6 +139,18 @@ export const extractDriveNode = (id: string): Promise<{ node: DriveNode }> =>
 
 export const copyDriveNode = (id: string): Promise<{ node: DriveNode }> =>
   apiFetch(`/api/v1/drive/nodes/${id}/copy`, { method: "POST" })
+
+export const fetchFolderLock = (id: string): Promise<{ salt: string; verifier: string }> =>
+  apiFetch(`/api/v1/drive/nodes/${id}/lock`)
+
+export const setFolderLockApi = (id: string, salt: string, verifier: string): Promise<{ ok: true }> =>
+  apiFetch(`/api/v1/drive/nodes/${id}/lock`, {
+    method: "POST",
+    body: JSON.stringify({ salt, verifier }),
+  })
+
+export const removeFolderLockApi = (id: string): Promise<{ ok: true }> =>
+  apiFetch(`/api/v1/drive/nodes/${id}/lock`, { method: "DELETE" })
 
 export const fetchFolders = (): Promise<{ folders: DriveNode[] }> =>
   apiFetch<{ folders: DriveNode[] }>("/api/v1/drive/folders").then((r) => ({

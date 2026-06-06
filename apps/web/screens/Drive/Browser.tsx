@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useReducer, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   type DriveNode,
@@ -41,7 +41,10 @@ import ShareDialog from "@components/ShareDialog/ShareDialog"
 import DetailsPanel from "@pages/Drive/components/DetailsPanel/DetailsPanel"
 import DriveBackgroundMenu from "@pages/Drive/components/DriveBackgroundMenu/DriveBackgroundMenu"
 import dynamic from "next/dynamic"
+import { isFolderUnlocked } from "@lib/folderLock"
 import { is3DModelName } from "@lib/model3dExt"
+import FolderLockDialog from "@pages/Drive/components/FolderLockDialog/FolderLockDialog"
+import FolderLockGate from "@pages/Drive/components/FolderLockGate/FolderLockGate"
 import ImageViewer from "@pages/Drive/components/ImageViewer/ImageViewer"
 import MoveDialog from "@pages/Drive/components/MoveDialog/MoveDialog"
 import NewFolderDialog from "@pages/Drive/components/NewFolderDialog/NewFolderDialog"
@@ -82,6 +85,10 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   const [shareNode, setShareNode] = useState<DriveNode | null>(null)
   const [viewingNode, setViewingNode] = useState<DriveNode | null>(null)
   const [viewingModel, setViewingModel] = useState<DriveNode | null>(null)
+  const [lockDialog, setLockDialog] = useState<{ node: DriveNode; mode: "lock" | "remove" } | null>(
+    null,
+  )
+  const [, forceTick] = useReducer((value: number) => value + 1, 0)
   const [newFolderOpen, setNewFolderOpen] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
 
@@ -95,6 +102,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   }
 
   const parentId = data?.parent.id ?? null
+  const parentLocked = Boolean(data?.parent.locked) && !isFolderUnlocked(parentId ?? "")
   const children = data?.children ?? []
   const visible = (
     search ? children.filter((node) => node.name.toLowerCase().includes(search)) : children
@@ -219,6 +227,8 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     move: (node) => setMoving([node.id]),
     copy: (node) => void copy(node.id),
     extract: (node) => void extract(node.id),
+    lock: (node) => setLockDialog({ node, mode: "lock" }),
+    removeLock: (node) => setLockDialog({ node, mode: "remove" }),
     rename: (node) => setRenaming(node),
     details: (node) => {
       if (!selection.isSelected(node.id)) selection.selectOnly(node.id)
@@ -263,6 +273,8 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
       >
         {isLoading ? (
           <PageSpinner />
+        ) : parentLocked && data ? (
+          <FolderLockGate node={data.parent} onUnlocked={forceTick} />
         ) : visible.length === 0 && !parentFolder ? (
           <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 text-center">
             <Icon name="folder-open" className="size-8" />
@@ -395,6 +407,13 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
         onOpenChange={(value) => !value && setShareNode(null)}
         createLink={(options) => createShareLink(shareNode!.id, options)}
         encryptKeyId={shareNode?.encrypted ? shareNode.id : undefined}
+      />
+      <FolderLockDialog
+        node={lockDialog?.node ?? null}
+        mode={lockDialog?.mode ?? "lock"}
+        open={Boolean(lockDialog)}
+        onOpenChange={(value) => !value && setLockDialog(null)}
+        onDone={invalidate}
       />
     </DropZone>
     <DetailsPanel

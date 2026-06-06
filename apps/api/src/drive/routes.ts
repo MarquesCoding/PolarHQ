@@ -13,6 +13,7 @@ import {
   type DriveVersion,
   archiveNodes,
   breadcrumb,
+  clearNodeLock,
   copyNode,
   createFolder,
   createShare,
@@ -21,6 +22,8 @@ import {
   ensureUserRoots,
   extractArchive,
   getNode,
+  getNodeLock,
+  setNodeLock,
   getVersion,
   isMediaMime,
   linkAssetNode,
@@ -66,6 +69,7 @@ const serializeNode = (node: DriveNode, encryptedIds?: Set<string>) => {
     special: node.special,
     photoAssetId: node.photoAssetId,
     encrypted,
+    locked: Boolean(node.lockVerifier),
     trashedAt: node.trashedAt,
     createdAt: node.createdAt,
     updatedAt: node.updatedAt,
@@ -330,6 +334,25 @@ driveRoutes.get("/nodes/:id/versions/:versionId/download", async (c) => {
       "Content-Disposition": attachment(version.name),
     },
   })
+})
+
+driveRoutes.get("/nodes/:id/lock", async (c) => {
+  const lock = await getNodeLock(c.get("userId"), c.req.param("id"))
+  if (!lock) return c.json({ error: "not found" }, 404)
+  return c.json(lock)
+})
+
+driveRoutes.post("/nodes/:id/lock", async (c) => {
+  const parsed = await parse(c, z.object({ salt: z.string(), verifier: z.string() }))
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  const ok = await setNodeLock(c.get("userId"), c.req.param("id"), parsed.data.salt, parsed.data.verifier)
+  if (!ok) return c.json({ error: "cannot lock this folder" }, 400)
+  return c.json({ ok: true })
+})
+
+driveRoutes.delete("/nodes/:id/lock", async (c) => {
+  await clearNodeLock(c.get("userId"), c.req.param("id"))
+  return c.json({ ok: true })
 })
 
 driveRoutes.patch("/nodes/:id", async (c) => {
