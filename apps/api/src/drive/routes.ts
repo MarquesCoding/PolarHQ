@@ -267,6 +267,10 @@ driveRoutes.post("/nodes/:id/share", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
   if (!node) return c.json({ error: "not found" }, 404)
+  // A public link would expose ciphertext with no way to decrypt — block it for now.
+  if ((await nodesWithKeys(userId, [node.id])).has(node.id)) {
+    return c.json({ error: "Encrypted files can’t be shared with a public link" }, 400)
+  }
   const parsed = await parse(
     c,
     z.object({
