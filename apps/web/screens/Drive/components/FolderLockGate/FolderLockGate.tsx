@@ -1,0 +1,60 @@
+"use client"
+
+import { useState } from "react"
+import type { DriveNode } from "@lib/drive"
+import { unlockFolder } from "@lib/folderLock"
+import { IconLock } from "@tabler/icons-react"
+import { Button } from "@workspace/ui/components/button"
+import { Input } from "@workspace/ui/components/input"
+
+interface FolderLockGateProps {
+  node: DriveNode
+  onUnlocked: () => void
+}
+
+const FolderLockGate = ({ node, onUnlocked }: FolderLockGateProps) => {
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  const submit = async () => {
+    if (!password) return
+    setBusy(true)
+    setError(null)
+    if (await unlockFolder(node.id, password)) onUnlocked()
+    else {
+      setError("Incorrect password.")
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
+      <div className="bg-muted text-muted-foreground flex size-14 items-center justify-center rounded-2xl">
+        <IconLock className="size-7" />
+      </div>
+      <div>
+        <p className="text-sm font-medium">“{node.name}” is locked</p>
+        <p className="text-muted-foreground text-xs">Enter its password to view the contents.</p>
+      </div>
+      <div className="flex w-full max-w-xs flex-col gap-2">
+        <Input
+          autoFocus
+          type="password"
+          name="orbit-folder-unlock"
+          autoComplete="off"
+          placeholder="Folder password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          onKeyDown={(event) => event.key === "Enter" && void submit()}
+        />
+        {error ? <p className="text-destructive text-sm">{error}</p> : null}
+        <Button disabled={busy || !password} onClick={() => void submit()}>
+          Unlock
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+export default FolderLockGate

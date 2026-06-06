@@ -29,6 +29,8 @@ export const nodes = drive.table(
     storageKey: text("storage_key"),
     photoAssetId: text("photo_asset_id"),
     special: text("special"),
+    lockSalt: text("lock_salt"),
+    lockVerifier: text("lock_verifier"),
     trashedAt: timestamp("trashed_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),

@@ -240,6 +240,37 @@ export const moveNode = async (
     .where(and(eq(schema.nodes.ownerId, ownerId), eq(schema.nodes.id, id)))
 }
 
+export const setNodeLock = async (
+  ownerId: string,
+  id: string,
+  salt: string,
+  verifier: string,
+): Promise<boolean> => {
+  const node = await getNode(ownerId, id)
+  if (!node || node.kind !== "folder" || node.special) return false
+  await db
+    .update(schema.nodes)
+    .set({ lockSalt: salt, lockVerifier: verifier, updatedAt: new Date() })
+    .where(and(eq(schema.nodes.ownerId, ownerId), eq(schema.nodes.id, id)))
+  return true
+}
+
+export const clearNodeLock = async (ownerId: string, id: string): Promise<void> => {
+  await db
+    .update(schema.nodes)
+    .set({ lockSalt: null, lockVerifier: null, updatedAt: new Date() })
+    .where(and(eq(schema.nodes.ownerId, ownerId), eq(schema.nodes.id, id)))
+}
+
+export const getNodeLock = async (
+  ownerId: string,
+  id: string,
+): Promise<{ salt: string; verifier: string } | null> => {
+  const node = await getNode(ownerId, id)
+  if (!node?.lockSalt || !node.lockVerifier) return null
+  return { salt: node.lockSalt, verifier: node.lockVerifier }
+}
+
 const linkedAssetIds = (nodes: DriveNode[]): string[] =>
   nodes.map((node) => node.photoAssetId).filter((value): value is string => Boolean(value))
 
