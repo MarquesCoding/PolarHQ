@@ -73,11 +73,19 @@ export interface AdminSettings {
   setupCompleted: boolean
 }
 
+export interface UserLimit {
+  key: string
+  label: string
+  value: LimitValue
+  hasOverride: boolean
+  override: LimitValue
+}
+
 export interface AdminUserDetail extends AdminUser {
   banReason: string | null
   roles: { id: string; name: string }[]
   groups: { id: string; name: string }[]
-  limits: { key: string; label: string; value: LimitValue }[]
+  limits: UserLimit[]
 }
 
 export const fetchOverview = (): Promise<AdminOverview> =>
@@ -154,6 +162,35 @@ export const assignRole = (userId: string, roleId: string): Promise<unknown> =>
   apiFetch("/api/v1/admin/role-assignments", {
     method: "POST",
     body: JSON.stringify({ userId, roleId }),
+  })
+
+export const unassignRole = (userId: string, roleId: string): Promise<unknown> =>
+  apiFetch("/api/v1/admin/role-assignments", {
+    method: "DELETE",
+    body: JSON.stringify({ userId, roleId }),
+  })
+
+export type LimitSubject = "user" | "group" | "instance"
+
+export const setLimitFor = (
+  subjectType: LimitSubject,
+  subjectId: string,
+  key: string,
+  value: LimitValue,
+): Promise<unknown> =>
+  apiFetch("/api/v1/admin/limits", {
+    method: "PUT",
+    body: JSON.stringify({ subjectType, subjectId, key, value }),
+  })
+
+export const clearLimitFor = (
+  subjectType: LimitSubject,
+  subjectId: string,
+  key: string,
+): Promise<unknown> =>
+  apiFetch("/api/v1/admin/limits", {
+    method: "DELETE",
+    body: JSON.stringify({ subjectType, subjectId, key }),
   })
 
 export const fetchAdminSettings = (): Promise<AdminSettings> =>

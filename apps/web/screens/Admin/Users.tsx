@@ -1,11 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import {
   type AdminUser,
   fetchAdminUsers,
   setUserBanned,
   setUserRole,
 } from "@lib/admin"
+import UserDetailSheet from "@pages/Admin/components/UserDetailSheet/UserDetailSheet"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Badge } from "@workspace/ui/components/badge"
@@ -35,6 +37,7 @@ const isAdmin = (role: string | null): boolean => role === "admin" || role === "
 
 const Users = () => {
   const queryClient = useQueryClient()
+  const [selected, setSelected] = useState<string | null>(null)
   const { data: users, isLoading } = useQuery({
     queryKey: ["admin", "users"],
     queryFn: fetchAdminUsers,
@@ -66,7 +69,13 @@ const Users = () => {
   const row = (user: AdminUser) => (
     <div
       key={user.id}
-      className="border-border/60 flex items-center gap-3 border-b px-3 py-2.5 last:border-b-0"
+      role="button"
+      tabIndex={0}
+      onClick={() => setSelected(user.id)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") setSelected(user.id)
+      }}
+      className="border-border/60 hover:bg-muted/40 flex cursor-pointer items-center gap-3 border-b px-3 py-2.5 transition last:border-b-0"
     >
       <Avatar size="sm">
         <AvatarFallback>{initials(user.name)}</AvatarFallback>
@@ -80,7 +89,12 @@ const Users = () => {
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <Button variant="ghost" size="icon-sm" aria-label="User actions">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="User actions"
+              onClick={(event) => event.stopPropagation()}
+            >
               <IconDotsVertical className="size-4" />
             </Button>
           }
@@ -120,6 +134,7 @@ const Users = () => {
       ) : (
         <div className="panel overflow-hidden rounded-xl">{(users ?? []).map(row)}</div>
       )}
+      <UserDetailSheet userId={selected} onOpenChange={(open) => !open && setSelected(null)} />
     </AdminPage>
   )
 }
