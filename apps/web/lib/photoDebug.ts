@@ -4,6 +4,7 @@ import { setDebug } from "@lib/debug"
 import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "@lib/embedder"
 import { isUnlocked } from "@lib/e2e"
 import { ensureIndexing, fetchIndex, fetchMissing } from "@lib/photoIndex"
+import { labelAsset } from "@lib/photoLabels"
 
 /**
  * Console debugging for the on-device ML pipeline. Attaches `window.orbit.ml` with helpers
@@ -49,6 +50,17 @@ export const installPhotoDebug = (): void => {
         .slice(0, topN)
       console.table(results)
       return results
+    },
+    // Zero-shot "tags": the closest labels to a photo's vector. Defaults to the first
+    // indexed photo so you can just call `orbit.ml.labels()`.
+    labels: async (assetId?: string, topK = 10) => {
+      const index = await fetchIndex()
+      const id = assetId ?? [...index.keys()][0]
+      if (!id) throw new Error("index is empty — nothing to label yet")
+      const labels = await labelAsset(id, topK)
+      console.log(`[orbit:ml] labels for ${id}:`)
+      console.table(labels)
+      return { assetId: id, labels }
     },
   }
 
