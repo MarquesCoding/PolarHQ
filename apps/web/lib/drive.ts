@@ -1,4 +1,5 @@
 import { apiFetch } from "@lib/apiClient"
+import { decryptName, encryptName, encryptedPlaceholder } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 
 export type DriveKind = "folder" | "file"
@@ -8,6 +9,10 @@ export interface DriveNode {
   parentId: string | null
   kind: DriveKind
   name: string
+  /** The name encrypted with the owner's account metadata key (E2E); `name` is a placeholder. */
+  encryptedName?: string | null
+  /** For shared docs: the name encrypted with the content key, readable by collaborators. */
+  sharedName?: string | null
   mimeType: string | null
   sizeBytes: number | null
   special: string | null
@@ -18,6 +23,28 @@ export interface DriveNode {
   updatedAt: string
   downloadUrl: string | null
   thumbnailUrl: string | null
+}
+
+/** Replace a node's placeholder name with its decrypted name, when we hold the metadata key. */
+export const decryptNodeName = <T extends Pick<DriveNode, "name" | "encryptedName">>(
+  node: T,
+): T => {
+  const name = decryptName(node.encryptedName)
+  return name ? { ...node, name } : node
+}
+
+/** Build the request fields for a node name — encrypted when keys are available, else plaintext. */
+const nameFields = (
+  name: string,
+  sharedName?: string | null,
+): { name: string; encryptedName?: string; sharedName?: string | null } => {
+  const encryptedName = encryptName(name)
+  if (!encryptedName) return { name }
+  // Only include sharedName when explicitly provided, so a plaintext-dialog rename
+  // (which can't reach the content key) doesn't clobber a doc's existing sharedName.
+  return sharedName === undefined
+    ? { name: encryptedPlaceholder(), encryptedName }
+    : { name: encryptedPlaceholder(), encryptedName, sharedName }
 }
 
 export interface DriveListing {
@@ -32,8 +59,16 @@ export interface DriveUploadResult {
 }
 
 /** List a folder's contents. `parent` is a node id, or null/"root" for My Drive. */
-export const fetchNodes = (parent?: string | null): Promise<DriveListing> =>
-  apiFetch(`/api/v1/drive/nodes${parent ? `?parent=${encodeURIComponent(parent)}` : ""}`)
+export const fetchNodes = async (parent?: string | null): Promise<DriveListing> => {
+  const listing = await apiFetch<DriveListing>(
+    `/api/v1/drive/nodes${parent ? `?parent=${encodeURIComponent(parent)}` : ""}`,
+  )
+  return {
+    parent: decryptNodeName(listing.parent),
+    breadcrumb: listing.breadcrumb.map(decryptNodeName),
+    children: listing.children.map(decryptNodeName),
+  }
+}
 
 /**
  * Resolve a Drive browser path to its folder id: `undefined` for the root
@@ -46,14 +81,25 @@ export const driveFolderIdFromPath = (pathname: string): string | undefined | nu
   return match[1]
 }
 
-export const createDriveFolder = (parentId: string | null, name: string): Promise<{ node: DriveNode }> =>
-  apiFetch("/api/v1/drive/nodes/folder", {
+export const createDriveFolder = (
+  parentId: string | null,
+  name: string,
+): Promise<{ node: DriveNode }> =>
+  apiFetch<{ node: DriveNode }>("/api/v1/drive/nodes/folder", {
     method: "POST",
-    body: JSON.stringify({ parentId, name }),
-  })
+    body: JSON.stringify({ parentId, ...nameFields(name) }),
+  }).then((r) => ({ node: decryptNodeName(r.node) }))
 
-export const renameDriveNode = (id: string, name: string): Promise<{ ok: true }> =>
-  apiFetch(`/api/v1/drive/nodes/${id}`, { method: "PATCH", body: JSON.stringify({ name }) })
+/** Rename a node. For shared docs, pass `sharedName` (content-key-encrypted) for collaborators. */
+export const renameDriveNode = (
+  id: string,
+  name: string,
+  sharedName?: string | null,
+): Promise<{ ok: true }> =>
+  apiFetch(`/api/v1/drive/nodes/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(nameFields(name, sharedName)),
+  })
 
 export const moveDriveNode = (id: string, parentId: string): Promise<{ ok: true }> =>
   apiFetch(`/api/v1/drive/nodes/${id}`, { method: "PATCH", body: JSON.stringify({ parentId }) })
@@ -96,7 +142,9 @@ export const copyDriveNode = (id: string): Promise<{ node: DriveNode }> =>
   apiFetch(`/api/v1/drive/nodes/${id}/copy`, { method: "POST" })
 
 export const fetchFolders = (): Promise<{ folders: DriveNode[] }> =>
-  apiFetch("/api/v1/drive/folders")
+  apiFetch<{ folders: DriveNode[] }>("/api/v1/drive/folders").then((r) => ({
+    folders: r.folders.map(decryptNodeName),
+  }))
 
 export interface ShareLink {
   token: string
@@ -133,7 +181,9 @@ export const restoreDriveVersion = (id: string, versionId: string): Promise<{ no
   apiFetch(`/api/v1/drive/nodes/${id}/versions/${versionId}/restore`, { method: "POST" })
 
 export const fetchDriveTrash = (): Promise<{ children: DriveNode[] }> =>
-  apiFetch("/api/v1/drive/trash")
+  apiFetch<{ children: DriveNode[] }>("/api/v1/drive/trash").then((r) => ({
+    children: r.children.map(decryptNodeName),
+  }))
 
 export const emptyDriveTrash = (): Promise<{ ok: true }> =>
   apiFetch("/api/v1/drive/trash/empty", { method: "POST" })

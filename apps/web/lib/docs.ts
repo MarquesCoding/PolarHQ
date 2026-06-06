@@ -1,5 +1,6 @@
 import { apiFetch } from "@lib/apiClient"
 import type { DriveNode } from "@lib/drive"
+import { decryptName, decryptSharedName } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 
 /** Mimes that mark a Drive node as an Orbit collaborative document (body = Yjs snapshot). */
@@ -22,6 +23,8 @@ export interface DocMeta {
   id: string
   parentId: string | null
   name: string
+  encryptedName?: string | null
+  sharedName?: string | null
   mimeType: string | null
   sizeBytes: number | null
   createdAt: string
@@ -29,6 +32,17 @@ export interface DocMeta {
   /** Whether the requesting user owns this document (vs. it being shared with them). */
   owner: boolean
   downloadUrl: string
+}
+
+/**
+ * Decrypt a doc's display name: owners decrypt via the account metadata key; collaborators
+ * (who don't hold it) decrypt the content-key-wrapped `sharedName`.
+ */
+const decryptDocName = async (doc: DocMeta): Promise<DocMeta> => {
+  const name = doc.owner
+    ? decryptName(doc.encryptedName)
+    : await decryptSharedName(doc.id, doc.sharedName)
+  return name ? { ...doc, name } : doc
 }
 
 export interface DocListing {
@@ -49,8 +63,13 @@ export interface DocCollaborator {
 export const isDocNode = (node: Pick<DriveNode, "mimeType">): boolean =>
   node.mimeType === DOC_MIME
 
-export const fetchDocs = (type: DocType = "doc"): Promise<DocListing> =>
-  apiFetch<DocListing>(`/api/v1/docs/documents?type=${type}`)
+export const fetchDocs = async (type: DocType = "doc"): Promise<DocListing> => {
+  const listing = await apiFetch<DocListing>(`/api/v1/docs/documents?type=${type}`)
+  return {
+    documents: await Promise.all(listing.documents.map(decryptDocName)),
+    shared: await Promise.all(listing.shared.map(decryptDocName)),
+  }
+}
 
 export const fetchDocCollaborators = (id: string): Promise<DocCollaborator[]> =>
   apiFetch<{ collaborators: DocCollaborator[] }>(
@@ -71,7 +90,7 @@ export const removeDocCollaborator = (id: string, userId: string): Promise<{ ok:
   apiFetch(`/api/v1/docs/documents/${id}/collaborators/${userId}`, { method: "DELETE" })
 
 export const fetchDoc = (id: string): Promise<DocMeta> =>
-  apiFetch<{ document: DocMeta }>(`/api/v1/docs/documents/${id}`).then((r) => r.document)
+  apiFetch<{ document: DocMeta }>(`/api/v1/docs/documents/${id}`).then((r) => decryptDocName(r.document))
 
 export const createDoc = (
   parentId?: string | null,

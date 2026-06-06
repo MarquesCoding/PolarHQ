@@ -4,6 +4,7 @@ import { type ReactNode, useEffect, useState } from "react"
 import { authClient } from "@lib/authClient"
 import { type DocMeta } from "@lib/docs"
 import { renameDriveNode } from "@lib/drive"
+import { encryptNameWith } from "@lib/e2e"
 import type { RelayProvider } from "@lib/yjsProvider"
 import { IconDeviceFloppy, IconShieldLock, IconUserPlus } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
@@ -48,6 +49,8 @@ interface CollabHeaderProps {
   saveState: "saved" | "saving" | "dirty"
   lastSavedAt: number | null
   onSave: () => void
+  /** The doc's content key, used to wrap the title for collaborators when renaming. */
+  contentKey?: Uint8Array | null
   /** App-specific controls rendered before Share (e.g. a Present button). */
   tools?: ReactNode
 }
@@ -61,6 +64,7 @@ const CollabHeader = ({
   saveState,
   lastSavedAt,
   onSave,
+  contentKey,
   tools,
 }: CollabHeaderProps) => {
   const queryClient = useQueryClient()
@@ -94,7 +98,8 @@ const CollabHeader = ({
       setTitle(doc.name)
       return
     }
-    void renameDriveNode(nodeId, next).then(() =>
+    const sharedName = contentKey ? encryptNameWith(next, contentKey) : null
+    void renameDriveNode(nodeId, next, sharedName).then(() =>
       queryClient.invalidateQueries({ queryKey: ["docs"] }),
     )
   }

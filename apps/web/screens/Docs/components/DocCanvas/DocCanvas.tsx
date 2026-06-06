@@ -12,6 +12,7 @@ import { secretboxSeal } from "@lib/crypto"
 import { renameDriveNode } from "@lib/drive"
 import { safeLinkOptions } from "@lib/editorConfig"
 import { type DocMeta, saveDocContent } from "@lib/docs"
+import { encryptNameWith } from "@lib/e2e"
 import { imageFilesFrom, insertImageFiles } from "@lib/editorImages"
 import type { RelayProvider } from "@lib/yjsProvider"
 import { Collaboration } from "@tiptap/extension-collaboration"
@@ -342,7 +343,8 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
       setTitle(doc.name)
       return
     }
-    void renameDriveNode(nodeId, next).then(() =>
+    const sharedName = contentKey ? encryptNameWith(next, contentKey) : null
+    void renameDriveNode(nodeId, next, sharedName).then(() =>
       queryClient.invalidateQueries({ queryKey: ["docs"] }),
     )
   }

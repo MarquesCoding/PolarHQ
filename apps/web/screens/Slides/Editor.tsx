@@ -60,6 +60,7 @@ const SlidesWorkspace = ({ nodeId, collab }: { nodeId: string; collab: CollabDoc
         saveState={collab.saveState}
         lastSavedAt={collab.lastSavedAt}
         onSave={() => void collab.save()}
+        contentKey={collab.contentKey}
         tools={
           <Button
             variant="ghost"

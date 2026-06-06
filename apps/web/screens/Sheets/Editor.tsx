@@ -18,6 +18,7 @@ const Editor = ({ nodeId }: { nodeId: string }) => (
           saveState={collab.saveState}
           lastSavedAt={collab.lastSavedAt}
           onSave={() => void collab.save()}
+          contentKey={collab.contentKey}
         />
         <SheetGrid ydoc={collab.ydoc} />
       </div>
