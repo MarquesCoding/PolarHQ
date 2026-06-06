@@ -188,11 +188,49 @@ adminRoutes.delete("/groups/:id/members/:userId", guard("admin.groups.manage"), 
   return c.json({ ok: true })
 })
 
+adminRoutes.get("/workgroups", guard("admin.workgroups.manage"), async (c) => {
+  return c.json({ workgroups: await adminService.listWorkgroups() })
+})
+
+adminRoutes.get("/workgroups/:id", guard("admin.workgroups.manage"), async (c) => {
+  const detail = await adminService.getWorkgroupDetail(c.req.param("id"))
+  if (!detail) return c.json({ error: "not found" }, 404)
+  return c.json({ workgroup: detail })
+})
+
+adminRoutes.post("/workgroups", guard("admin.workgroups.manage"), async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({ name: z.string().min(1), description: z.string().optional() }),
+  )
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  const workgroup = await adminService.createWorkgroup(parsed.data)
+  await adminService.recordAudit({
+    actorId: c.get("userId"),
+    action: "workgroup.create",
+    targetType: "workgroup",
+    targetId: workgroup.id,
+  })
+  return c.json({ workgroup }, 201)
+})
+
+adminRoutes.post("/workgroups/:id/groups", guard("admin.workgroups.manage"), async (c) => {
+  const parsed = await parse(c, z.object({ groupId: z.string().min(1) }))
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  await adminService.addWorkgroupGroup(c.req.param("id"), parsed.data.groupId)
+  return c.json({ ok: true }, 201)
+})
+
+adminRoutes.delete("/workgroups/:id/groups/:groupId", guard("admin.workgroups.manage"), async (c) => {
+  await adminService.removeWorkgroupGroup(c.req.param("id"), c.req.param("groupId"))
+  return c.json({ ok: true })
+})
+
 adminRoutes.put("/limits", guard("admin.limits.manage"), async (c) => {
   const parsed = await parse(
     c,
     z.object({
-      subjectType: z.enum(["user", "group", "instance"]),
+      subjectType: z.enum(["user", "group", "workgroup", "instance"]),
       subjectId: z.string().min(1),
       key: z.string().min(1),
       value: z.unknown(),
@@ -214,7 +252,7 @@ adminRoutes.delete("/limits", guard("admin.limits.manage"), async (c) => {
   const parsed = await parse(
     c,
     z.object({
-      subjectType: z.enum(["user", "group", "instance"]),
+      subjectType: z.enum(["user", "group", "workgroup", "instance"]),
       subjectId: z.string().min(1),
       key: z.string().min(1),
     }),
