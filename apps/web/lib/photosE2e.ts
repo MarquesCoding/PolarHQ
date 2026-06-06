@@ -83,6 +83,22 @@ export const extractEncryptedMetadata = async (file: File): Promise<ExtractedMet
   }
 }
 
+const isHeic = (file: File): boolean =>
+  /image\/(heic|heif)/i.test(file.type) || /\.hei[cf]$/i.test(file.name)
+
+/** Decode a HEIC/HEIF image to a JPEG File in the browser (libheif via heic2any). */
+const convertHeicToJpeg = async (file: File): Promise<File | null> => {
+  try {
+    const { default: heic2any } = await import("heic2any")
+    const result = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.92 })
+    const blob = Array.isArray(result) ? result[0] : result
+    if (!blob) return null
+    return new File([blob], file.name.replace(/\.hei[cf]$/i, ".jpg"), { type: "image/jpeg" })
+  } catch {
+    return null
+  }
+}
+
 /** Map an asset to a download item, resolving the encrypted filename for the saved file. */
 export const downloadItemFor = (
   asset: Pick<GridAsset, "id" | "encrypted" | "encryptedName" | "originalFilename">,
@@ -108,36 +124,39 @@ const putThumbnail = (url: string, body: Uint8Array): Promise<Response> =>
  */
 export const uploadEncryptedMedia = async (file: File, motionFile?: File): Promise<Asset> => {
   const key = createContentKey()
-  const original = new Uint8Array(await file.arrayBuffer())
+  // HEIC can't be decoded/displayed by browsers, so transcode to JPEG up front; EXIF is still
+  // read from the original HEIC, which exifr handles.
+  const source = isHeic(file) ? ((await convertHeicToJpeg(file)) ?? file) : file
+  const original = new Uint8Array(await source.arrayBuffer())
 
   let thumbnail: Uint8Array | null = null
   let width: number | undefined
   let height: number | undefined
   let durationMs: number | undefined
   let metadata: ExtractedMetadata = EMPTY_METADATA
-  if (file.type.startsWith("video/")) {
-    const v = await analyzeVideo(file).catch(() => null)
+  if (source.type.startsWith("video/")) {
+    const v = await analyzeVideo(source).catch(() => null)
     if (v) ({ poster: thumbnail, width, height, durationMs } = v)
-  } else if (file.type.startsWith("audio/")) {
-    durationMs = await analyzeAudio(file).catch(() => 0)
+  } else if (source.type.startsWith("audio/")) {
+    durationMs = await analyzeAudio(source).catch(() => 0)
   } else {
-    const i = await analyzeImage(file)
+    const i = await analyzeImage(source)
     thumbnail = i.thumbnail
     width = i.width
     height = i.height
     metadata = await extractEncryptedMetadata(file)
   }
 
-  const encryptedName = encryptName(file.name)
+  const encryptedName = encryptName(source.name)
   const form = new FormData()
   form.set(
     "file",
-    new File([secretboxSeal(original, key) as BlobPart], encryptedName ? encryptedPlaceholder() : file.name, {
+    new File([secretboxSeal(original, key) as BlobPart], encryptedName ? encryptedPlaceholder() : source.name, {
       type: "application/octet-stream",
     }),
   )
   form.set("encrypted", "true")
-  form.set("mimeType", file.type || "application/octet-stream")
+  form.set("mimeType", source.type || "application/octet-stream")
   if (width !== undefined) form.set("width", String(width))
   if (height !== undefined) form.set("height", String(height))
   if (durationMs !== undefined) form.set("durationMs", String(durationMs))
@@ -168,7 +187,7 @@ export const uploadEncryptedMedia = async (file: File, motionFile?: File): Promi
       await putThumbnail(`${API_URL}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, encryptedThumb)
   }
 
-  if (file.type.startsWith("image/")) {
+  if (source.type.startsWith("image/")) {
     const motionBytes = motionFile
       ? new Uint8Array(await motionFile.arrayBuffer())
       : await extractMotionVideo(file).catch(() => null)
@@ -179,7 +198,7 @@ export const uploadEncryptedMedia = async (file: File, motionFile?: File): Promi
       ).catch(() => undefined)
     }
     void import("@lib/photoIndex")
-      .then((index) => index.embedAndStore(asset.id, file))
+      .then((index) => index.embedAndStore(asset.id, source))
       .catch(() => undefined)
   }
 

@@ -44,6 +44,7 @@
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.6.14",
     "exifr": "^7.1.3",
+    "heic2any": "^0.0.4",
     "hyperformula": "^3.3.0",
     "lib0": "^0.2.117",
     "libsodium-wrappers-sumo": "^0.8.4",
