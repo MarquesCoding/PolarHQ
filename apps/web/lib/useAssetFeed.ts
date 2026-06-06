@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react"
-import type { TimelinePage } from "@lib/photos"
+import type { GridAsset, TimelinePage } from "@lib/photos"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -18,7 +18,11 @@ export const useAssetFeed = (
     queryKey,
     queryFn: ({ pageParam }) => fetcher(pageParam),
     initialPageParam: undefined as string | undefined,
-    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    getNextPageParam: (last, _all, lastParam) => {
+      if (!last.nextCursor || last.assets.length === 0) return undefined
+      if (last.nextCursor === lastParam) return undefined
+      return last.nextCursor
+    },
   })
 
   useEffect(() => {
@@ -38,6 +42,14 @@ export const useAssetFeed = (
   )
   useLiveEvents(onEvent)
 
-  const assets = (query.data?.pages ?? []).flatMap((page) => page.assets)
+  const seen = new Set<string>()
+  const assets: GridAsset[] = []
+  for (const page of query.data?.pages ?? []) {
+    for (const asset of page.assets) {
+      if (seen.has(asset.id)) continue
+      seen.add(asset.id)
+      assets.push(asset)
+    }
+  }
   return { query, assets, invalidate }
 }
