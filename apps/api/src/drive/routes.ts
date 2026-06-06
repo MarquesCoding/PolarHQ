@@ -27,6 +27,7 @@ import {
   listChildren,
   listFolders,
   listTrash,
+  purgeExpiredTrash,
   listVersions,
   moveNode,
   purgeTrash,
@@ -367,7 +368,10 @@ driveRoutes.patch("/nodes/:id", async (c) => {
 })
 
 driveRoutes.get("/trash", async (c) => {
-  const nodes = await listTrash(c.get("userId"))
+  const userId = c.get("userId")
+  const { removedAssetIds } = await purgeExpiredTrash(userId)
+  if (removedAssetIds.length > 0) await purgeAssets(userId, removedAssetIds)
+  const nodes = await listTrash(userId)
   return c.json({ children: nodes.map((n) => serializeNode(n)) })
 })
 
