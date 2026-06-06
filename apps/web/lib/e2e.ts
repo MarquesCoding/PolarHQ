@@ -291,6 +291,20 @@ export const decryptName = (encryptedName: string | null | undefined): string | 
   }
 }
 
+/** Encrypt arbitrary bytes under the account metadata key (e.g. ML embeddings). Null if locked. */
+export const encryptWithMetaKey = (bytes: Uint8Array): string | null =>
+  metaKey ? toB64(secretboxSeal(bytes, metaKey)) : null
+
+/** Decrypt bytes encrypted with the account metadata key, or null if locked / unreadable. */
+export const decryptWithMetaKey = (b64: string): Uint8Array | null => {
+  if (!metaKey) return null
+  try {
+    return secretboxOpen(fromB64(b64), metaKey)
+  } catch {
+    return null
+  }
+}
+
 /** Encrypt a name with a specific content key (for shared-doc names readable by collaborators). */
 export const encryptNameWith = (name: string, key: Uint8Array): string =>
   toB64(secretboxSeal(encoder.encode(name), key))

@@ -1,6 +1,6 @@
 "use client"
 
-import { MODEL_VERSION } from "./clipWorker"
+import { MODEL_VERSION } from "./model"
 
 export { MODEL_VERSION }
 
