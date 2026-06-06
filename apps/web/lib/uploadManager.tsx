@@ -99,7 +99,8 @@ interface NormalizedUpload {
 const isMediaFile = (file: File): boolean =>
   file.type.startsWith("image/") ||
   file.type.startsWith("video/") ||
-  file.type.startsWith("audio/")
+  file.type.startsWith("audio/") ||
+  (!file.type && MEDIA_EXTENSION.test(file.name))
 
 const endpointFor = (target: UploadTarget): string =>
   target.kind === "drive"
