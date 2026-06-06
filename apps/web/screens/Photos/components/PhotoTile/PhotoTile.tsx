@@ -1,8 +1,16 @@
 "use client"
 
-import { type PointerEvent as ReactPointerEvent, useLayoutEffect, useRef, useState } from "react"
+import {
+  type PointerEvent as ReactPointerEvent,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react"
+import { decryptName } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import type { GridAsset } from "@lib/photos"
+import { fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
 import { IconCircle, IconHeartFilled, IconPhoto } from "@tabler/icons-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
@@ -45,6 +53,28 @@ const PhotoTile = ({
   onPreviewEnd,
 }: PhotoTileProps) => {
   const [loaded, setLoaded] = useState(() => loadedThumbnails.has(asset.id))
+  // Encrypted thumbnails are ciphertext at their URL — fetch + decrypt to an object URL.
+  const [decryptedThumb, setDecryptedThumb] = useState<string | null>(null)
+  useEffect(() => {
+    if (!asset.encrypted) return
+    let active = true
+    let url: string | null = null
+    void fetchDecryptedPhotoThumbnail(asset.id).then((result) => {
+      if (!active) {
+        if (result) URL.revokeObjectURL(result)
+        return
+      }
+      url = result
+      setDecryptedThumb(result)
+    })
+    return () => {
+      active = false
+      if (url) URL.revokeObjectURL(url)
+    }
+  }, [asset.id, asset.encrypted])
+
+  const thumbSrc = asset.encrypted ? decryptedThumb : asset.thumbnailUrl
+  const displayName = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
   const imgRef = useRef<HTMLImageElement | null>(null)
   const holdTimer = useRef<number | null>(null)
   const longPressed = useRef(false)
@@ -91,7 +121,7 @@ const PhotoTile = ({
     <motion.div
       role="button"
       tabIndex={0}
-      aria-label={asset.originalFilename}
+      aria-label={displayName}
       initial={animateIn ? { opacity: 0, scale: 0.9, y: 10 } : false}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.35, delay, ease: [0.22, 0.61, 0.36, 1] }}
@@ -119,12 +149,12 @@ const PhotoTile = ({
         selected && "ring-primary ring-offset-background ring-2 ring-offset-2",
       )}
     >
-      {asset.thumbnailUrl ? (
+      {thumbSrc ? (
         <motion.img
           ref={imgRef}
           layoutId={`photo-${asset.id}`}
-          src={asset.thumbnailUrl}
-          alt={asset.originalFilename}
+          src={thumbSrc}
+          alt={displayName}
           loading="lazy"
           onLoad={markLoaded}
           transition={{ duration: 0 }}

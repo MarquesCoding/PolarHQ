@@ -2,7 +2,9 @@
 
 import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
+import { decryptName } from "@lib/e2e"
 import { type GridAsset, assetOriginalUrl, favoriteAssets, trashAssets } from "@lib/photos"
+import { fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
 import { useUploadManager } from "@lib/uploadManager"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
@@ -149,9 +151,36 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
     else onIndexChange(index > 0 ? index - 1 : index + 1)
   }
 
-  const download = () => upload.download(asset.originalFilename, [asset.id])
+  const displayName =
+    (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
+  const download = () => upload.download(displayName, [asset.id])
 
-  const source = asset.previewUrl ?? asset.thumbnailUrl ?? undefined
+  // Encrypted images: decrypt the full original to an object URL for the viewer.
+  const [decryptedSrc, setDecryptedSrc] = useState<string | null>(null)
+  useEffect(() => {
+    if (!asset.encrypted || asset.type !== "image") {
+      setDecryptedSrc(null)
+      return
+    }
+    let active = true
+    let url: string | null = null
+    void fetchDecryptedPhotoOriginal(asset.id, "image/jpeg").then((result) => {
+      if (!active) {
+        if (result) URL.revokeObjectURL(result)
+        return
+      }
+      url = result
+      setDecryptedSrc(result)
+    })
+    return () => {
+      active = false
+      if (url) URL.revokeObjectURL(url)
+    }
+  }, [asset.id, asset.encrypted, asset.type])
+
+  const source = asset.encrypted
+    ? (decryptedSrc ?? undefined)
+    : (asset.previewUrl ?? asset.thumbnailUrl ?? undefined)
   const taken = asset.takenAt ? new Date(asset.takenAt).toLocaleDateString() : undefined
 
   return (
@@ -176,9 +205,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
             <Icon name="xmark" className="size-5" />
           </Button>
           <div className="flex min-w-0 flex-col leading-tight">
-            <span className="max-w-[40vw] truncate text-xs font-medium">
-              {asset.originalFilename}
-            </span>
+            <span className="max-w-[40vw] truncate text-xs font-medium">{displayName}</span>
             {taken ? <span className="text-muted-foreground text-[11px]">{taken}</span> : null}
           </div>
         </div>
@@ -271,13 +298,16 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
               <motion.img
                 layoutId={`photo-${asset.id}`}
                 src={source}
-                alt={asset.originalFilename}
+                alt={displayName}
                 draggable={false}
                 className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
                 style={{
                   aspectRatio:
                     asset.width && asset.height ? `${asset.width} / ${asset.height}` : undefined,
-                  backgroundImage: asset.thumbnailUrl ? `url(${asset.thumbnailUrl})` : undefined,
+                  backgroundImage:
+                    !asset.encrypted && asset.thumbnailUrl
+                      ? `url(${asset.thumbnailUrl})`
+                      : undefined,
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",

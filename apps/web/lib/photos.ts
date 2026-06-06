@@ -33,6 +33,8 @@ export interface Asset {
   id: string
   ownerId: string
   originalFilename: string
+  encrypted: boolean
+  encryptedName: string | null
   mimeType: string
   type: "image" | "video" | "audio"
   width: number | null
@@ -57,6 +59,8 @@ export interface Asset {
 export interface GridAsset {
   id: string
   originalFilename: string
+  encrypted: boolean
+  encryptedName: string | null
   type: "image" | "video" | "audio"
   status: AssetStatus
   width: number | null

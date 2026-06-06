@@ -13,6 +13,7 @@ import { API_URL } from "@lib/env"
 import { archiveDriveNodes } from "@lib/drive"
 import { uploadEncryptedDriveFile } from "@lib/driveE2e"
 import { isUnlocked } from "@lib/e2e"
+import { uploadEncryptedPhoto } from "@lib/photosE2e"
 import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@lib/download"
 import { deleteAssets, fetchProcessing } from "@lib/photos"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
@@ -250,18 +251,24 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
           },
           ...previous,
         ])
-        // Drive uploads are end-to-end encrypted client-side when keys are unlocked.
+        // Uploads are end-to-end encrypted client-side when keys are unlocked: Drive for
+        // any file, Photos for images (the E2E image pipeline). Everything else uploads
+        // plaintext through the server (e.g. video/audio, or while locked).
         const uploadPromise =
           target.kind === "drive" && isUnlocked()
             ? uploadEncryptedDriveFile(target.parentId, file).then(
                 (node) => ({ node }) as UploadResponse,
               )
-            : xhrUpload(
-                file,
-                target,
-                (loaded, speed) => update(id, { loaded, speed }),
-                (xhr) => requests.current.set(id, xhr),
-              )
+            : target.kind === "photos" && isUnlocked() && file.type.startsWith("image/")
+              ? uploadEncryptedPhoto(file).then(
+                  (asset) => ({ asset, deduped: false }) as UploadResponse,
+                )
+              : xhrUpload(
+                  file,
+                  target,
+                  (loaded, speed) => update(id, { loaded, speed }),
+                  (xhr) => requests.current.set(id, xhr),
+                )
         uploadPromise
           .then((response) => {
             const result = normalizeResponse(target, response, readyAssets.current)
