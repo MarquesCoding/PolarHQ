@@ -4,15 +4,8 @@ import { useEffect, useState } from "react"
 import { dbg } from "@lib/debug"
 import { cosine, embedText, embedderSupported } from "@lib/embedder"
 import { isUnlocked } from "@lib/e2e"
-import { fetchIndex, onIndexChanged } from "@lib/photoIndex"
+import { fetchIndex, getSearchThreshold, onIndexChanged, searchPrompt } from "@lib/photoIndex"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-
-// CLIP image↔text cosine for a real match sits well below 1; relevant results cluster near
-// the top score. Keep results within a margin of the best, with an absolute floor, and always
-// surface a few so a query is never silently empty.
-const FLOOR = 0.18
-const MARGIN = 0.1
-const MIN_RESULTS = 8
 
 interface SemanticSearch {
   /** Asset ids ranked by relevance, or null when there's no query / index isn't ready. */
@@ -36,8 +29,6 @@ export const useSemanticSearch = (query: string): SemanticSearch => {
     staleTime: 60_000,
   })
 
-  // Refresh the in-memory index shortly after new vectors are stored (upload / backfill), so
-  // a just-indexed photo becomes searchable without a reload. Debounced to batch a burst.
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined
     const off = onIndexChanged(() => {
@@ -63,19 +54,18 @@ export const useSemanticSearch = (query: string): SemanticSearch => {
     }
     let cancelled = false
     setSearching(true)
-    void embedText(q)
+    void embedText(searchPrompt(q))
       .then((queryVector) => {
         if (cancelled) return
         const scored: Array<[string, number]> = []
         for (const [id, vector] of index) scored.push([id, cosine(queryVector, vector)])
         scored.sort((a, b) => b[1] - a[1])
         const best = scored[0]?.[1] ?? 0
-        const floor = Math.max(FLOOR, best - MARGIN)
-        let ids = scored.filter(([, score]) => score >= floor).map(([id]) => id)
-        if (ids.length < MIN_RESULTS) ids = scored.slice(0, MIN_RESULTS).map(([id]) => id)
+        const threshold = getSearchThreshold()
+        const ids = scored.filter(([, score]) => score >= threshold).map(([id]) => id)
         dbg(
           "search",
-          `"${q}" → ${ids.length} result(s), top score ${best.toFixed(3)}`,
+          `"${q}" → ${ids.length} result(s) ≥ ${threshold}, top score ${best.toFixed(3)}`,
           scored.slice(0, 5).map(([id, s]) => `${id}:${s.toFixed(3)}`),
         )
         setRankedIds(ids)

@@ -87,7 +87,6 @@ export const analyzeVideo = (file: File, maxDimension = MAX_DIMENSION): Promise<
         height: video.videoHeight,
         durationMs: Math.round((video.duration || 0) * 1000),
       }
-      // Seek a little in to avoid a black first frame.
       video.currentTime = Math.min(1, (video.duration || 2) / 2)
     }
     video.onseeked = () => {

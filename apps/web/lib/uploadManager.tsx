@@ -258,9 +258,6 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
           },
           ...previous,
         ])
-        // Uploads are end-to-end encrypted client-side when keys are unlocked: Drive for
-        // any file, Photos for any media (image/video/audio). Everything else uploads
-        // plaintext through the server (e.g. while locked).
         const uploadPromise =
           target.kind === "drive" && isUnlocked()
             ? uploadEncryptedDriveFile(target.parentId, file).then(
@@ -327,8 +324,6 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
       const onProgress = ({ received, total }: DownloadProgress) =>
         update(id, { loaded: received, size: total || 0 })
 
-      // Encrypted photos are decrypted client-side; plaintext ones use the server
-      // download/zip path. A mixed selection does both.
       const encrypted = downloads.filter((d) => d.encrypted)
       const plain = downloads.filter((d) => !d.encrypted)
       const run = async () => {

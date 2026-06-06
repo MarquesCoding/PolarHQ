@@ -119,7 +119,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
       <SelectionBar
         downloadItems={downloadItems}
         shareAssetId={one?.id}
-        shareName={one?.originalFilename}
+        shareName={one ? downloadItemFor(one).name : undefined}
       >
         <Button
           variant="ghost"

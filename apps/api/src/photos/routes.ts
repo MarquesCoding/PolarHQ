@@ -71,8 +71,6 @@ photosRoutes.post("/assets", async (c) => {
   const mtime = typeof mtimeRaw === "string" ? Number(mtimeRaw) : NaN
   const clientModifiedAt = Number.isFinite(mtime) && mtime > 0 ? new Date(mtime) : undefined
 
-  // E2E upload: bytes are ciphertext. Store as-is, no media processing — the client
-  // supplies the original mime, dimensions, takenAt and (separately) the thumbnail.
   if (body["encrypted"] === "true") {
     const num = (v: unknown) =>
       typeof v === "string" && v.trim() && Number.isFinite(Number(v)) ? Number(v) : undefined
@@ -125,8 +123,6 @@ photosRoutes.get("/usage", async (c) => {
   return c.json(await getUsage(c.get("userId")))
 })
 
-// On-device ML embeddings (encrypted client-side). The server only stores/relays ciphertext;
-// semantic search runs entirely in the browser over the decrypted index.
 photosRoutes.put("/assets/:id/embedding", async (c) => {
   const parsed = await parse(
     c,
@@ -316,7 +312,6 @@ photosRoutes.get("/assets/:id/thumbnail", async (c) => {
   return streamObject(asset.thumbnailKey, "image/webp")
 })
 
-// Store a client-encrypted thumbnail for an E2E asset (opaque ciphertext).
 photosRoutes.put("/assets/:id/thumbnail", async (c) => {
   const bytes = Buffer.from(await c.req.arrayBuffer())
   const ok = await setEncryptedThumbnail(c.get("userId"), c.req.param("id"), bytes)

@@ -40,7 +40,6 @@ export const uploadEncryptedMedia = async (file: File): Promise<Asset> => {
   const key = createContentKey()
   const original = new Uint8Array(await file.arrayBuffer())
 
-  // Decode once on the client for a thumbnail/poster + the metadata the grid needs.
   let thumbnail: Uint8Array | null = null
   let width: number | undefined
   let height: number | undefined
@@ -84,12 +83,9 @@ export const uploadEncryptedMedia = async (file: File): Promise<Asset> => {
     mirrorNodeId: string | null
   }
 
-  // Wrap the content key to the asset and (so the Drive "Photos" mirror is a self-contained
-  // encrypted file) to the mirror node too.
   await storeContentKey(asset.id, key)
   if (mirrorNodeId) await storeContentKey(mirrorNodeId, key)
 
-  // Upload the encrypted thumbnail/poster to the Photos endpoint + the Drive mirror endpoint.
   if (thumbnail) {
     const encryptedThumb = secretboxSeal(thumbnail, key)
     await putThumbnail(`${API_URL}/api/v1/photos/assets/${asset.id}/thumbnail`, encryptedThumb)
@@ -97,8 +93,6 @@ export const uploadEncryptedMedia = async (file: File): Promise<Asset> => {
       await putThumbnail(`${API_URL}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, encryptedThumb)
   }
 
-  // Index for semantic search in the background (images only). Lazily loaded so the heavy
-  // CLIP library only enters the bundle when E2E media actually uploads.
   if (file.type.startsWith("image/")) {
     void import("@lib/photoIndex")
       .then((index) => index.embedAndStore(asset.id, file))

@@ -34,33 +34,26 @@ const LibraryInner = () => {
     fetchAssets({ view: "library", cursor }),
   )
 
-  // Install the console debug handle + kick off the on-device semantic indexer once.
   useEffect(() => {
     installPhotoDebug()
     ensureIndexing()
   }, [])
   const semantic = useSemanticSearch(search)
 
-  // While searching, eagerly load the whole library so semantic results aren't capped to
-  // the first page (the grid's lazy paging is off during search).
   useEffect(() => {
     if (search && query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
   }, [search, query.hasNextPage, query.isFetchingNextPage, query])
 
   const nameOf = (asset: GridAsset): string =>
     (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
+  const byId = new Map(assets.map((asset) => [asset.id, asset]))
   const visible = !search
     ? assets
     : semantic.rankedIds
-      ? // Ranked by CLIP relevance, intersected with the loaded feed.
-        (() => {
-          const byId = new Map(assets.map((asset) => [asset.id, asset]))
-          return semantic.rankedIds
-            .map((id) => byId.get(id))
-            .filter((asset): asset is GridAsset => Boolean(asset))
-        })()
-      : // No index yet — fall back to a (decrypted) filename match.
-        assets.filter((asset) => nameOf(asset).toLowerCase().includes(search))
+      ? semantic.rankedIds
+          .map((id) => byId.get(id))
+          .filter((asset): asset is GridAsset => Boolean(asset))
+      : assets.filter((asset) => nameOf(asset).toLowerCase().includes(search))
 
   const ids = [...selection.selected]
   const one = ids.length === 1 ? visible.find((asset) => asset.id === ids[0]) : undefined
@@ -117,7 +110,7 @@ const LibraryInner = () => {
       <SelectionBar
         downloadItems={downloadItems}
         shareAssetId={one?.id}
-        shareName={one?.originalFilename}
+        shareName={one ? nameOf(one) : undefined}
       >
         <Button
           variant="ghost"

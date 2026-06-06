@@ -82,8 +82,8 @@ const ShareDialog = ({ name, open, onOpenChange, createLink }: ShareDialogProps)
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={false}>
-        <DialogHeader>
-          <DialogTitle className="truncate pe-2">Share “{name}”</DialogTitle>
+        <DialogHeader className="min-w-0">
+          <DialogTitle className="min-w-0 truncate pe-2">Share “{name}”</DialogTitle>
           <DialogDescription>Anyone with this link can download the file.</DialogDescription>
         </DialogHeader>
 

@@ -1,8 +1,5 @@
 "use client"
 
-// Lightweight, opt-in debug logging. Enable with `localStorage.orbit.debug = "1"` (or
-// `window.orbit.ml.enableLogs()`), then reload. Off by default so it never spams users.
-
 const KEY = "orbit.debug"
 
 export const isDebug = (): boolean => {

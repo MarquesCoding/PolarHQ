@@ -48,8 +48,6 @@ export const userKeys = docs.table("user_keys", {
   kdfSalt: text("kdf_salt").notNull(),
   kdfParams: text("kdf_params"),
   recoveryWrapped: text("recovery_wrapped"),
-  // Account-wide metadata key (random symmetric key sealed to the user's public key),
-  // used to encrypt node names so the server never sees them. Null for legacy accounts.
   wrappedMetaKey: text("wrapped_meta_key"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 })

@@ -24,8 +24,6 @@ export const uploadEncryptedDriveFile = async (
   const key = createContentKey()
   const original = new Uint8Array(await file.arrayBuffer())
 
-  // The filename itself is sensitive: send a random placeholder as the multipart filename
-  // and the real name encrypted with the account metadata key.
   const encryptedName = encryptName(file.name)
   const form = new FormData()
   form.set(
