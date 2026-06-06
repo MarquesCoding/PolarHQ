@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { decryptName } from "@lib/e2e"
 import { installPhotoDebug } from "@lib/photoDebug"
 import { ensureIndexing } from "@lib/photoIndex"
@@ -23,6 +23,7 @@ import TagDialog from "@pages/Photos/components/TagDialog/TagDialog"
 import { Icon } from "@lib/icons"
 import { IconPhoto } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
+import { Kbd } from "@workspace/ui/components/kbd"
 import { toast } from "sonner"
 
 const LibraryInner = () => {
@@ -90,10 +91,26 @@ const LibraryInner = () => {
     )
   }
   const trashConfirm = useArmedConfirm(trashSelected)
+
+  const [albumOpen, setAlbumOpen] = useState(false)
+  const [tagOpen, setTagOpen] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
+
+  const favourite = () => run(() => favoriteAssets(ids, true), "Added to favourites")
+  const download = () => {
+    if (downloadItems.length === 0) return
+    upload.download(downloadItems.length === 1 ? "Photo" : `${downloadItems.length} photos.zip`, downloadItems)
+  }
+
   useSelectionHotkeys({
     active: selection.count > 0,
     onClear: selection.clear,
     confirm: trashConfirm,
+    onFavourite: favourite,
+    onDownload: download,
+    onAlbum: () => setAlbumOpen(true),
+    onTag: () => setTagOpen(true),
+    onShare: one ? () => setShareOpen(true) : undefined,
   })
 
   return (
@@ -128,23 +145,28 @@ const LibraryInner = () => {
         shareAssetId={one?.id}
         shareName={one ? nameOf(one) : undefined}
         shareEncrypted={one?.encrypted}
+        shareOpen={shareOpen}
+        onShareOpenChange={setShareOpen}
       >
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => run(() => favoriteAssets(ids, true), "Added to favourites")}
-        >
+        <Button variant="ghost" size="sm" onClick={favourite}>
           <Icon name="favourites" className="size-4" />
           Favourite
+          <Kbd>⇧F</Kbd>
         </Button>
-        <AddToAlbumDialog assetIds={ids} onDone={afterAction} />
-        <TagDialog assetIds={ids} onDone={afterAction} />
+        <AddToAlbumDialog
+          assetIds={ids}
+          onDone={afterAction}
+          open={albumOpen}
+          onOpenChange={setAlbumOpen}
+        />
+        <TagDialog assetIds={ids} onDone={afterAction} open={tagOpen} onOpenChange={setTagOpen} />
         <ConfirmButton
           icon={<Icon name="trash" className="size-4" />}
           armed={trashConfirm.armed}
           onTrigger={trashConfirm.trigger}
         >
           Trash
+          <Kbd>⇧D</Kbd>
         </ConfirmButton>
       </SelectionBar>
     </DropZone>

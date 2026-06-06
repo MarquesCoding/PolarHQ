@@ -6,6 +6,7 @@ import { sharePhoto } from "@lib/photos"
 import { useSelection } from "@lib/selection"
 import { type DownloadItem, useUploadManager } from "@lib/uploadManager"
 import { Button } from "@workspace/ui/components/button"
+import { Kbd } from "@workspace/ui/components/kbd"
 import { Separator } from "@workspace/ui/components/separator"
 import { AnimatePresence, motion } from "motion/react"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
@@ -18,6 +19,9 @@ interface SelectionBarProps {
   shareAssetId?: string
   shareName?: string
   shareEncrypted?: boolean
+  /** Optional controlled share-dialog state (so a keybind can open it). */
+  shareOpen?: boolean
+  onShareOpenChange?: (open: boolean) => void
 }
 
 /** Shared floating selection action bar: count, clear, optional download/share, and app actions. */
@@ -27,10 +31,14 @@ const SelectionBar = ({
   shareAssetId,
   shareName,
   shareEncrypted,
+  shareOpen: shareOpenProp,
+  onShareOpenChange,
 }: SelectionBarProps) => {
   const selection = useSelection()
   const upload = useUploadManager()
-  const [shareOpen, setShareOpen] = useState(false)
+  const [internalShareOpen, setInternalShareOpen] = useState(false)
+  const shareOpen = shareOpenProp ?? internalShareOpen
+  const setShareOpen = onShareOpenChange ?? setInternalShareOpen
 
   const download = () => {
     if (!downloadItems || downloadItems.length === 0) return
@@ -66,12 +74,14 @@ const SelectionBar = ({
                 <Button variant="ghost" size="sm" onClick={download}>
                   <Icon name="download" className="size-4" />
                   Download
+                  <Kbd>⇧W</Kbd>
                 </Button>
               ) : null}
               {shareAssetId ? (
                 <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
                   <Icon name="share" className="size-4" />
                   Share
+                  <Kbd>⇧S</Kbd>
                 </Button>
               ) : null}
               {children}
