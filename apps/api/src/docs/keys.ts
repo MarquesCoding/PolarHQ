@@ -36,6 +36,21 @@ export const setMetaKey = async (userId: string, wrappedMetaKey: string): Promis
     .where(eq(schema.userKeys.userId, userId))
 }
 
+/** Re-wrap the private key under stronger KDF params (migrating a legacy account). */
+export const updateKdf = async (
+  userId: string,
+  input: { wrappedPrivateKey: string; kdfSalt: string; kdfParams: string },
+): Promise<void> => {
+  await db
+    .update(schema.userKeys)
+    .set({
+      wrappedPrivateKey: input.wrappedPrivateKey,
+      kdfSalt: input.kdfSalt,
+      kdfParams: input.kdfParams,
+    })
+    .where(eq(schema.userKeys.userId, userId))
+}
+
 /** Store a user's key bundle once (no-op if already set up). The server never sees the private key. */
 export const setUserKeys = async (userId: string, bundle: UserKeyBundle): Promise<void> => {
   await db

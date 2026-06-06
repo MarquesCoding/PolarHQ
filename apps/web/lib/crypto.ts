@@ -46,6 +46,16 @@ export const defaultKdfParams = (): KdfParams => ({
   mem: 128 * 1024 * 1024,
 })
 
+/**
+ * The Argon2id parameters used before KDF params were versioned (#60). Accounts enrolled
+ * then have no stored params, so their key was wrapped with these — unlock MUST derive with
+ * the same values or it produces the wrong key (a spurious "incorrect password").
+ */
+export const legacyKdfParams = (): KdfParams => ({
+  ops: sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+  mem: sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+})
+
 /** Derive a 32-byte key-encryption-key from a password + salt (Argon2id). */
 export const deriveKey = (
   password: string,

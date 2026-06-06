@@ -11,6 +11,7 @@ import {
   setDocKeys,
   setMetaKey,
   setUserKeys,
+  updateKdf,
 } from "./keys"
 import {
   DOC_MIME,
@@ -189,6 +190,17 @@ docsRoutes.put("/keys/meta", async (c) => {
   const parsed = await parse(c, z.object({ wrappedMetaKey: z.string() }))
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)
   await setMetaKey(c.get("userId"), parsed.data.wrappedMetaKey)
+  return c.json({ ok: true })
+})
+
+// Migrate a legacy account to stronger KDF params (the client re-wraps its own private key).
+docsRoutes.put("/keys/kdf", async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({ wrappedPrivateKey: z.string(), kdfSalt: z.string(), kdfParams: z.string() }),
+  )
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  await updateKdf(c.get("userId"), parsed.data)
   return c.json({ ok: true })
 })
 

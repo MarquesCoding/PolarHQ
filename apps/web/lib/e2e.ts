@@ -18,6 +18,7 @@ import {
   defaultKdfParams,
   deriveKey,
   fromB64,
+  legacyKdfParams,
   generateKeypair,
   newContentKey,
   newRecoveryKey,
@@ -207,7 +208,11 @@ export const unlockKeys = async (password: string): Promise<boolean> => {
   const bundle = await fetchKeyBundle()
   if (!bundle) return false
   try {
-    const params = bundle.kdfParams ? (JSON.parse(bundle.kdfParams) as KdfParams) : undefined
+    // Accounts enrolled before KDF params were versioned have none stored — their key was
+    // wrapped with the legacy INTERACTIVE params, so derive with those (not the new default).
+    const params = bundle.kdfParams
+      ? (JSON.parse(bundle.kdfParams) as KdfParams)
+      : legacyKdfParams()
     const privateKey = secretboxOpen(
       fromB64(bundle.wrappedPrivateKey),
       deriveKey(password, fromB64(bundle.kdfSalt), params),
@@ -215,9 +220,32 @@ export const unlockKeys = async (password: string): Promise<boolean> => {
     keypair = { publicKey: fromB64(bundle.publicKey), privateKey }
     await ensureMetaKey(bundle)
     await persist()
+    // Upgrade a legacy account to the stronger KDF now that we hold the password + key.
+    if (!bundle.kdfParams) void upgradeKdf(password, privateKey)
     return true
   } catch {
     return false
+  }
+}
+
+/**
+ * Re-wrap the private key with the current (stronger) KDF params and persist the new bundle,
+ * migrating a legacy account off the old INTERACTIVE parameters. Best-effort.
+ */
+const upgradeKdf = async (password: string, privateKey: Uint8Array): Promise<void> => {
+  try {
+    const salt = newSalt()
+    const params = defaultKdfParams()
+    await apiFetch("/api/v1/docs/keys/kdf", {
+      method: "PUT",
+      body: JSON.stringify({
+        wrappedPrivateKey: toB64(secretboxSeal(privateKey, deriveKey(password, salt, params))),
+        kdfSalt: toB64(salt),
+        kdfParams: JSON.stringify(params),
+      }),
+    })
+  } catch {
+    /* ignore — the account still unlocks with the legacy params next time */
   }
 }
 
