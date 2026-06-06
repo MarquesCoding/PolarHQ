@@ -1,5 +1,5 @@
 import { db, schema } from "@workspace/db"
-import { resolveLimit } from "@workspace/auth"
+import { getPermissionCatalog, resolveLimit } from "@workspace/auth"
 import { and, count, desc, eq, isNull, sql } from "drizzle-orm"
 import { getAppsForUser } from "../apps/service"
 import { getInstanceSettings, updateInstanceSettings } from "../instance"
@@ -20,6 +20,9 @@ export const listUsers = async () => {
 }
 
 export const listRoles = async () => db.select().from(schema.roles).orderBy(schema.roles.name)
+
+/** The registered permission catalog (every app module's permissions), for the role editor. */
+export const listPermissions = () => getPermissionCatalog()
 
 export interface CreateRoleInput {
   name: string

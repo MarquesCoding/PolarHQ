@@ -1,10 +1,17 @@
 "use client"
 
-import { useState } from "react"
-import { type AdminRole, createAdminRole, fetchAdminRoles } from "@lib/admin"
+import { useMemo, useState } from "react"
+import {
+  type AdminPermission,
+  type AdminRole,
+  createAdminRole,
+  fetchAdminPermissions,
+  fetchAdminRoles,
+} from "@lib/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
+import { Checkbox } from "@workspace/ui/components/checkbox"
 import {
   Dialog,
   DialogClose,
@@ -20,25 +27,64 @@ import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
 
+const appOf = (key: string): string => key.split(".")[0] ?? "other"
+
+interface PermissionGroup {
+  app: string
+  permissions: AdminPermission[]
+}
+
+const groupPermissions = (permissions: AdminPermission[]): PermissionGroup[] => {
+  const map = new Map<string, AdminPermission[]>()
+  for (const permission of permissions) {
+    const app = appOf(permission.key)
+    const list = map.get(app) ?? []
+    list.push(permission)
+    map.set(app, list)
+  }
+  return [...map.entries()]
+    .map(([app, list]) => ({ app, permissions: list }))
+    .sort((a, b) => a.app.localeCompare(b.app))
+}
+
 const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [permissions, setPermissions] = useState("")
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+
+  const { data: permissions } = useQuery({
+    queryKey: ["admin", "permissions"],
+    queryFn: fetchAdminPermissions,
+    enabled: open,
+  })
+  const groups = useMemo(() => groupPermissions(permissions ?? []), [permissions])
+
+  const toggle = (key: string, on: boolean) =>
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (on) next.add(key)
+      else next.delete(key)
+      return next
+    })
+
+  const toggleGroup = (keys: string[], on: boolean) =>
+    setSelected((prev) => {
+      const next = new Set(prev)
+      for (const key of keys) {
+        if (on) next.add(key)
+        else next.delete(key)
+      }
+      return next
+    })
 
   const create = useMutation({
-    mutationFn: () => {
-      const list = permissions
-        .split(/[\s,]+/)
-        .map((entry) => entry.trim())
-        .filter(Boolean)
-      return createAdminRole(name.trim(), description.trim(), list)
-    },
+    mutationFn: () => createAdminRole(name.trim(), description.trim(), [...selected]),
     onSuccess: () => {
       toast.success("Role created")
       setName("")
       setDescription("")
-      setPermissions("")
+      setSelected(new Set())
       setOpen(false)
       onCreated()
     },
@@ -66,16 +112,49 @@ const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="role-perms">Permissions</Label>
-            <Input
-              id="role-perms"
-              value={permissions}
-              placeholder="photos.* drive.file.read"
-              onChange={(event) => setPermissions(event.target.value)}
-            />
-            <span className="text-muted-foreground text-xs">
-              Space or comma separated. Wildcards like <code>photos.*</code> are allowed.
+            <span className="text-sm font-medium">
+              Permissions
+              <span className="text-muted-foreground ml-1.5 font-normal">{selected.size}</span>
             </span>
+            <div className="scrollbar-slim border-border/60 flex max-h-72 flex-col gap-4 overflow-y-auto rounded-lg border p-3">
+              {groups.map((group) => {
+                const keys = group.permissions.map((permission) => permission.key)
+                const allOn = keys.every((key) => selected.has(key))
+                const someOn = keys.some((key) => selected.has(key))
+                return (
+                  <div key={group.app} className="flex flex-col gap-1.5">
+                    <Label className="flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
+                      <Checkbox
+                        checked={allOn}
+                        indeterminate={!allOn && someOn}
+                        onCheckedChange={(on) => toggleGroup(keys, on === true)}
+                      />
+                      {group.app}
+                    </Label>
+                    <div className="ml-6 flex flex-col gap-1.5">
+                      {group.permissions.map((permission) => (
+                        <Label
+                          key={permission.key}
+                          className="flex items-start gap-2 text-sm font-normal"
+                        >
+                          <Checkbox
+                            checked={selected.has(permission.key)}
+                            onCheckedChange={(on) => toggle(permission.key, on === true)}
+                            className="mt-0.5"
+                          />
+                          <span className="flex min-w-0 flex-col">
+                            <span>{permission.description}</span>
+                            <span className="text-muted-foreground font-mono text-xs">
+                              {permission.key}
+                            </span>
+                          </span>
+                        </Label>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
         <DialogFooter>

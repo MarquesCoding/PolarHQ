@@ -101,6 +101,10 @@ adminRoutes.get("/roles", guard("admin.roles.manage"), async (c) => {
   return c.json({ roles: await adminService.listRoles() })
 })
 
+adminRoutes.get("/permissions", guard("admin.roles.manage"), async (c) => {
+  return c.json({ permissions: adminService.listPermissions() })
+})
+
 adminRoutes.post("/roles", guard("admin.roles.manage"), async (c) => {
   const parsed = await parse(
     c,
