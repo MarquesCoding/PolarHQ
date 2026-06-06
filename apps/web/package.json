@@ -39,6 +39,7 @@
     "@tiptap/starter-kit": "^3.26.0",
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.6.14",
+    "hyperformula": "^3.3.0",
     "lib0": "^0.2.117",
     "libsodium-wrappers-sumo": "^0.8.4",
     "motion": "^12.40.0",
