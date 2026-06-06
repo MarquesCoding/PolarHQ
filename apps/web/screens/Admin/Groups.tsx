@@ -8,6 +8,7 @@ import {
   fetchAdminGroups,
   fetchAdminUsers,
 } from "@lib/admin"
+import GroupDetailSheet from "@pages/Admin/components/GroupDetailSheet/GroupDetailSheet"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
@@ -67,6 +68,7 @@ const Groups = () => {
     queryFn: fetchAdminGroups,
   })
   const [name, setName] = useState("")
+  const [selected, setSelected] = useState<string | null>(null)
 
   const create = useMutation({
     mutationFn: () => createAdminGroup(name.trim()),
@@ -81,12 +83,16 @@ const Groups = () => {
 
   const groupRow = (group: AdminGroup) => (
     <div key={group.id} className="flex items-center gap-3 px-3 py-3">
-      <div className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate text-sm font-medium">{group.name}</span>
+      <Button
+        variant="ghost"
+        onClick={() => setSelected(group.id)}
+        className="-mx-1 h-auto min-w-0 flex-1 flex-col items-start gap-0 px-1 py-1 font-normal"
+      >
+        <span className="w-full truncate text-sm font-medium">{group.name}</span>
         {group.description ? (
-          <span className="text-muted-foreground truncate text-xs">{group.description}</span>
+          <span className="text-muted-foreground w-full truncate text-xs">{group.description}</span>
         ) : null}
-      </div>
+      </Button>
       <AddMember groupId={group.id} />
     </div>
   )
@@ -118,6 +124,7 @@ const Groups = () => {
       ) : (
         <p className="text-muted-foreground text-sm">No groups yet.</p>
       )}
+      <GroupDetailSheet groupId={selected} onOpenChange={(open) => !open && setSelected(null)} />
     </AdminPage>
   )
 }

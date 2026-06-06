@@ -127,8 +127,24 @@ export const setInstanceLimit = (key: string, value: LimitValue): Promise<unknow
     body: JSON.stringify({ subjectType: "instance", subjectId: "instance", key, value }),
   })
 
+export interface GroupLimit {
+  key: string
+  label: string
+  hasOverride: boolean
+  override: LimitValue
+  instanceValue: LimitValue
+}
+
+export interface AdminGroupDetail extends AdminGroup {
+  members: { id: string; name: string; email: string }[]
+  limits: GroupLimit[]
+}
+
 export const fetchAdminGroups = (): Promise<AdminGroup[]> =>
   apiFetch<{ groups: AdminGroup[] }>("/api/v1/admin/groups").then((r) => r.groups)
+
+export const fetchAdminGroup = (id: string): Promise<AdminGroupDetail> =>
+  apiFetch<{ group: AdminGroupDetail }>(`/api/v1/admin/groups/${id}`).then((r) => r.group)
 
 export const createAdminGroup = (name: string, description?: string): Promise<unknown> =>
   apiFetch("/api/v1/admin/groups", {

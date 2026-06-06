@@ -81,6 +81,44 @@ export const createGroup = async (input: { name: string; description?: string })
   return group
 }
 
+/** Group detail: profile, members, and per-group limit overrides (vs the instance default). */
+export const getGroupDetail = async (groupId: string) => {
+  const rows = await db.select().from(schema.groups).where(eq(schema.groups.id, groupId)).limit(1)
+  const group = rows[0]
+  if (!group) return null
+
+  const members = await db
+    .select({ id: schema.user.id, name: schema.user.name, email: schema.user.email })
+    .from(schema.groupMembers)
+    .innerJoin(schema.user, eq(schema.user.id, schema.groupMembers.userId))
+    .where(eq(schema.groupMembers.groupId, groupId))
+
+  const instanceRows = await db
+    .select({ key: schema.limits.key, value: schema.limits.value })
+    .from(schema.limits)
+    .where(eq(schema.limits.subjectType, "instance"))
+  const instanceValues = new Map(instanceRows.map((row) => [row.key, row.value]))
+
+  const overrideRows = await db
+    .select({ key: schema.limits.key, value: schema.limits.value })
+    .from(schema.limits)
+    .where(and(eq(schema.limits.subjectType, "group"), eq(schema.limits.subjectId, groupId)))
+  const overrides = new Map(overrideRows.map((row) => [row.key, row.value]))
+
+  const limits = LIMIT_CATALOG.map((def) => ({
+    key: def.key,
+    label: def.label,
+    hasOverride: overrides.has(def.key),
+    override: (overrides.get(def.key) ?? null) as number | string | boolean | null,
+    instanceValue: (instanceValues.get(def.key) ?? def.systemDefault) as
+      | number
+      | string
+      | boolean
+      | null,
+  }))
+  return { ...group, members, limits }
+}
+
 export const addGroupMember = async (groupId: string, userId: string) => {
   await db
     .insert(schema.groupMembers)
