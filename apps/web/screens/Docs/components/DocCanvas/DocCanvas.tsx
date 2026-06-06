@@ -10,6 +10,7 @@ import {
 } from "@lib/commentMark"
 import { secretboxSeal } from "@lib/crypto"
 import { renameDriveNode } from "@lib/drive"
+import { safeLinkOptions } from "@lib/editorConfig"
 import { type DocMeta, saveDocContent } from "@lib/docs"
 import { imageFilesFrom, insertImageFiles } from "@lib/editorImages"
 import type { RelayProvider } from "@lib/yjsProvider"
@@ -159,7 +160,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
     immediatelyRender: false,
     onSelectionUpdate: ({ editor: instance }) => setHasSelection(!instance.state.selection.empty),
     extensions: [
-      StarterKit.configure({ undoRedo: false, link: { openOnClick: false } }),
+      StarterKit.configure({ undoRedo: false, link: safeLinkOptions }),
       CommentMark,
       TextStyle,
       Color,

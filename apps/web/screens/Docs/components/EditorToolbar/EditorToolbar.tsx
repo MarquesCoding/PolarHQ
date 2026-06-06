@@ -1,6 +1,7 @@
 "use client"
 
 import { type ReactNode, useRef } from "react"
+import { sanitizeLinkHref } from "@lib/editorConfig"
 import { type Editor, useEditorState } from "@tiptap/react"
 import {
   IconAlignCenter,
@@ -110,8 +111,10 @@ const EditorToolbar = ({ editor }: { editor: Editor }) => {
       editor.chain().focus().unsetLink().run()
       return
     }
-    const url = window.prompt("Link URL")
-    if (url) editor.chain().focus().setLink({ href: url }).run()
+    const input = window.prompt("Link URL")
+    if (!input) return
+    const href = sanitizeLinkHref(input)
+    if (href) editor.chain().focus().setLink({ href }).run()
   }
 
   const addImage = () => {

@@ -8,6 +8,7 @@ import { TextAlign } from "@tiptap/extension-text-align"
 import { TextStyle } from "@tiptap/extension-text-style"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
+import { safeLinkOptions } from "@lib/editorConfig"
 import type * as Y from "yjs"
 
 export const textFragmentName = (elId: string): string => `el:${elId}:text`
@@ -25,7 +26,7 @@ const SlideTextBox = ({ ydoc, elId, editable, color }: SlideTextBoxProps) => {
     immediatelyRender: false,
     editable,
     extensions: [
-      StarterKit.configure({ undoRedo: false, link: { openOnClick: false } }),
+      StarterKit.configure({ undoRedo: false, link: safeLinkOptions }),
       TextStyle,
       Color,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
