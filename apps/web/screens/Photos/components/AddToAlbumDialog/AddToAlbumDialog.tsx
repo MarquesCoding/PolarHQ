@@ -13,16 +13,26 @@ import {
   DialogTitle,
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
+import { Kbd } from "@workspace/ui/components/kbd"
 import { toast } from "sonner"
 
 interface AddToAlbumDialogProps {
   assetIds: string[]
   onDone: () => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-const AddToAlbumDialog = ({ assetIds, onDone }: AddToAlbumDialogProps) => {
+const AddToAlbumDialog = ({
+  assetIds,
+  onDone,
+  open: openProp,
+  onOpenChange,
+}: AddToAlbumDialogProps) => {
   const queryClient = useQueryClient()
-  const [open, setOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = openProp ?? internalOpen
+  const setOpen = onOpenChange ?? setInternalOpen
   const [name, setName] = useState("")
   const { data: albums } = useQuery({
     queryKey: ["photos", "albums"],
@@ -63,6 +73,7 @@ const AddToAlbumDialog = ({ assetIds, onDone }: AddToAlbumDialogProps) => {
       <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
         <Icon name="albums" className="size-4" />
         Album
+        <Kbd>⇧A</Kbd>
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>

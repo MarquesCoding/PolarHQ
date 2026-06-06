@@ -13,16 +13,21 @@ import {
   DialogTitle,
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
+import { Kbd } from "@workspace/ui/components/kbd"
 import { toast } from "sonner"
 
 interface TagDialogProps {
   assetIds: string[]
   onDone: () => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-const TagDialog = ({ assetIds, onDone }: TagDialogProps) => {
+const TagDialog = ({ assetIds, onDone, open: openProp, onOpenChange }: TagDialogProps) => {
   const queryClient = useQueryClient()
-  const [open, setOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = openProp ?? internalOpen
+  const setOpen = onOpenChange ?? setInternalOpen
   const [name, setName] = useState("")
   const { data: tags } = useQuery({ queryKey: ["photos", "tags"], queryFn: fetchTags, enabled: open })
 
@@ -59,6 +64,7 @@ const TagDialog = ({ assetIds, onDone }: TagDialogProps) => {
       <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
         <Icon name="tag" className="size-4" />
         Tag
+        <Kbd>⇧T</Kbd>
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
