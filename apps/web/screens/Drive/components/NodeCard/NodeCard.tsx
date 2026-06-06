@@ -33,6 +33,10 @@ const typeIcon = (node: DriveNode): { name: string; color: string } => {
   const mime = node.mimeType ?? ""
   if (mime === "application/vnd.orbit.doc")
     return { name: "document", color: "text-muted-foreground" }
+  if (mime === "application/vnd.orbit.sheet")
+    return { name: "table", color: "text-muted-foreground" }
+  if (mime === "application/vnd.orbit.slides")
+    return { name: "presentation", color: "text-muted-foreground" }
   if (mime.startsWith("audio/")) return { name: "music", color: "text-emerald-400" }
   if (mime.startsWith("video/")) return { name: "video", color: "text-rose-400" }
   if (mime === "application/pdf" || name.endsWith(".pdf"))

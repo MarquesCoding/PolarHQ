@@ -37,6 +37,8 @@ const iconFor = (node: DriveNode): string => {
   const name = node.name.toLowerCase()
   const mime = node.mimeType ?? ""
   if (mime === "application/vnd.orbit.doc") return "document"
+  if (mime === "application/vnd.orbit.sheet") return "table"
+  if (mime === "application/vnd.orbit.slides") return "presentation"
   if (mime.startsWith("audio/")) return "music"
   if (mime.startsWith("video/")) return "video"
   if (mime === "application/pdf" || name.endsWith(".pdf")) return "file-pdf"

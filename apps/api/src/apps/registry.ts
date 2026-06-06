@@ -66,7 +66,8 @@ export const SUITE_APPS: AppManifest[] = [
     route: "/sheets",
     category: "productivity",
     privacy: "e2e",
-    status: "coming_soon",
+    status: "available",
+    requiredPermission: "docs.document.read",
   },
   {
     id: "slides",
@@ -76,7 +77,8 @@ export const SUITE_APPS: AppManifest[] = [
     route: "/slides",
     category: "productivity",
     privacy: "e2e",
-    status: "coming_soon",
+    status: "available",
+    requiredPermission: "docs.document.read",
   },
   {
     id: "calendar",
