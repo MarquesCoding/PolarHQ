@@ -5,7 +5,7 @@ import { resolveLimit } from "@workspace/auth"
 import { db, schema } from "@workspace/db"
 import { enqueueProcessAsset } from "@workspace/jobs"
 import { assetObjectKeys, storage } from "@workspace/storage"
-import { and, desc, eq, inArray, isNull, lt, sql } from "drizzle-orm"
+import { and, desc, eq, inArray, isNotNull, isNull, lt, sql } from "drizzle-orm"
 import {
   ensurePhotosDriveNode,
   removeNodesForAssets,
@@ -96,6 +96,7 @@ export interface EncryptedIngestInput {
   takenAt?: Date
   /** Filename encrypted with the account metadata key (the plaintext column gets a placeholder). */
   encryptedName?: string | null
+  encryptedLocation?: string | null
   placeholderName: string
 }
 
@@ -127,6 +128,7 @@ export const ingestEncryptedAsset = async (
       checksum,
       originalFilename: input.placeholderName,
       encryptedName: input.encryptedName ?? null,
+      encryptedLocation: input.encryptedLocation ?? null,
       encrypted: true,
       mimeType: input.mimeType,
       type: input.type ?? "image",
@@ -211,6 +213,68 @@ export const assetsMissingEmbedding = async (
         eq(schema.assets.type, "image"),
         eq(schema.assets.isTrashed, false),
         isNull(schema.embeddings.assetId),
+      ),
+    )
+  return rows.map((r) => r.id)
+}
+
+/** Store the encrypted GPS location for an owned asset (client-extracted at upload/backfill). */
+export const setEncryptedLocation = async (
+  ownerId: string,
+  assetId: string,
+  encryptedLocation: string,
+): Promise<boolean> => {
+  const asset = await getAsset(ownerId, assetId)
+  if (!asset) return false
+  await db
+    .update(schema.assets)
+    .set({ encryptedLocation, updatedAt: new Date() })
+    .where(eq(schema.assets.id, assetId))
+  return true
+}
+
+export interface LocationRow {
+  assetId: string
+  encryptedLocation: string
+  takenAt: Date | null
+}
+
+/** Encrypted locations for the owner's non-trashed photos (the map decrypts them client-side). */
+export const listLocations = async (ownerId: string): Promise<LocationRow[]> =>
+  db
+    .select({
+      assetId: schema.assets.id,
+      encryptedLocation: schema.assets.encryptedLocation,
+      takenAt: schema.assets.takenAt,
+    })
+    .from(schema.assets)
+    .where(
+      and(
+        eq(schema.assets.ownerId, ownerId),
+        eq(schema.assets.isTrashed, false),
+        isNotNull(schema.assets.encryptedLocation),
+      ),
+    )
+    .then((rows) =>
+      rows.map((r) => ({
+        assetId: r.assetId,
+        encryptedLocation: r.encryptedLocation!,
+        takenAt: r.takenAt,
+      })),
+    )
+
+/** Owned image ids that have no encrypted location yet — the GPS backfill worklist. */
+export const assetsMissingLocation = async (ownerId: string): Promise<string[]> => {
+  const rows = await db
+    .select({ id: schema.assets.id })
+    .from(schema.assets)
+    .where(
+      and(
+        eq(schema.assets.ownerId, ownerId),
+        eq(schema.assets.type, "image"),
+        eq(schema.assets.encrypted, true),
+        eq(schema.assets.isTrashed, false),
+        isNull(schema.assets.encryptedLocation),
       ),
     )
   return rows.map((r) => r.id)

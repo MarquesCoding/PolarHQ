@@ -21,14 +21,17 @@ import {
   getAsset,
   emptyTrash,
   getUsage,
+  assetsMissingLocation,
   ingestEncryptedAsset,
   ingestUpload,
   listAssets,
   listEmbeddings,
+  listLocations,
   listProcessing,
   purgeAssets,
   restoreAssets,
   setEmbedding,
+  setEncryptedLocation,
   setEncryptedThumbnail,
   setFavorite,
   trashAsset,
@@ -86,6 +89,8 @@ photosRoutes.post("/assets", async (c) => {
       durationMs: num(body["durationMs"]),
       takenAt: clientModifiedAt,
       encryptedName: typeof body["encryptedName"] === "string" ? body["encryptedName"] : null,
+      encryptedLocation:
+        typeof body["encryptedLocation"] === "string" ? body["encryptedLocation"] : null,
       placeholderName: file.name || "encrypted",
     })
     return c.json({ asset: await serializeAsset(asset), mirrorNodeId, deduped: false }, 201)
@@ -143,6 +148,22 @@ photosRoutes.get("/embeddings/missing", async (c) => {
   const kind = c.req.query("kind") ?? "clip"
   const modelVersion = c.req.query("modelVersion") || undefined
   return c.json({ assetIds: await assetsMissingEmbedding(c.get("userId"), kind, modelVersion) })
+})
+
+photosRoutes.get("/locations", async (c) => {
+  return c.json({ locations: await listLocations(c.get("userId")) })
+})
+
+photosRoutes.get("/locations/missing", async (c) => {
+  return c.json({ assetIds: await assetsMissingLocation(c.get("userId")) })
+})
+
+photosRoutes.put("/assets/:id/location", async (c) => {
+  const parsed = await parse(c, z.object({ encryptedLocation: z.string() }))
+  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  const ok = await setEncryptedLocation(c.get("userId"), c.req.param("id"), parsed.data.encryptedLocation)
+  if (!ok) return c.json({ error: "not found" }, 404)
+  return c.json({ ok: true })
 })
 
 photosRoutes.get("/assets/processing", async (c) => {
