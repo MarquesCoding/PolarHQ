@@ -302,8 +302,6 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
                 draggable={false}
                 className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
                 style={{
-                  aspectRatio:
-                    asset.width && asset.height ? `${asset.width} / ${asset.height}` : undefined,
                   backgroundImage:
                     !asset.encrypted && asset.thumbnailUrl
                       ? `url(${asset.thumbnailUrl})`
