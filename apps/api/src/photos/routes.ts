@@ -105,6 +105,7 @@ photosRoutes.post("/assets", async (c) => {
       encryptedExif: typeof encryptedExifRaw === "string" ? encryptedExifRaw : null,
       placeholderName: file.name || "encrypted",
     })
+    await notify(c.get("userId"))
     return c.json({ asset: await serializeAsset(asset), mirrorNodeId, deduped: false }, 201)
   }
 
@@ -117,6 +118,7 @@ photosRoutes.post("/assets", async (c) => {
   })
 
   const asset = await serializeAsset(result.asset)
+  if (!result.deduped) await notify(c.get("userId"))
   return c.json({ asset, deduped: result.deduped }, result.deduped ? 200 : 201)
 })
 
@@ -386,6 +388,7 @@ photosRoutes.put("/assets/:id/thumbnail", async (c) => {
   const bytes = Buffer.from(await c.req.arrayBuffer())
   const ok = await setEncryptedThumbnail(c.get("userId"), c.req.param("id"), bytes)
   if (!ok) return c.json({ error: "not found" }, 404)
+  await notify(c.get("userId"))
   return c.json({ ok: true })
 })
 
