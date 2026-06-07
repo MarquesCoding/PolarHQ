@@ -1,19 +1,31 @@
 import SwiftUI
 
 /// Consistent large-title header + account menu, with bottom inset so content clears the tab bar.
-struct ScreenScaffold<Content: View>: View {
+struct ScreenScaffold<Content: View, Trailing: View>: View {
     let title: String
+    @ViewBuilder var trailing: () -> Trailing
     @ViewBuilder var content: () -> Content
     @EnvironmentObject private var state: AppState
     @EnvironmentObject private var e2e: E2EManager
 
+    init(
+        title: String,
+        @ViewBuilder trailing: @escaping () -> Trailing = { EmptyView() },
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.title = title
+        self.trailing = trailing
+        self.content = content
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
+            HStack(spacing: 14) {
                 Text(title)
                     .font(.largeTitle.weight(.bold))
                     .foregroundStyle(Theme.foreground)
                 Spacer()
+                trailing()
                 Menu {
                     if let email = state.user?.email {
                         Text(email)

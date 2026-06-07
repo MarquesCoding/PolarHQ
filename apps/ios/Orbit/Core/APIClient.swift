@@ -100,6 +100,74 @@ actor APIClient {
         try await getJSON("api/v1/docs/documents/\(id)/key", as: WrappedKeyEnvelope.self).wrappedKey
     }
 
+    @discardableResult
+    func postJSON<T: Encodable>(_ path: String, body: T) async throws -> Data {
+        let payload = try JSONEncoder().encode(body)
+        let (data, response) = try await URLSession.shared.data(for: request(path, method: "POST", body: payload))
+        guard let http = response as? HTTPURLResponse else { throw APIError.decoding }
+        guard (200..<300).contains(http.statusCode) else { throw APIError.http(http.statusCode) }
+        return data
+    }
+
+    func setFavorite(_ assetIds: [String], favorite: Bool) async throws {
+        try await postJSON("api/v1/photos/assets/actions/favorite", body: FavoriteBody(assetIds: assetIds, favorite: favorite))
+    }
+
+    func trash(_ assetIds: [String]) async throws {
+        try await postJSON("api/v1/photos/assets/actions/trash", body: AssetIdsBody(assetIds: assetIds))
+    }
+
+    /// Upload an already-encrypted asset (multipart). Returns the new asset id + Drive mirror id.
+    func uploadEncryptedAsset(
+        ciphertext: Data,
+        mimeType: String,
+        width: Int,
+        height: Int,
+        takenAtMs: Int?
+    ) async throws -> (assetId: String, mirrorNodeId: String?) {
+        let boundary = "orbit-\(UUID().uuidString)"
+        var fields: [String: String] = ["encrypted": "true", "mimeType": mimeType, "width": String(width), "height": String(height)]
+        if let takenAtMs { fields["mtime"] = String(takenAtMs) }
+
+        var body = Data()
+        let dash = "--\(boundary)\r\n"
+        for (name, value) in fields {
+            body.append(dash.data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
+            body.append("\(value)\r\n".data(using: .utf8)!)
+        }
+        body.append(dash.data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"encrypted\"\r\n".data(using: .utf8)!)
+        body.append("Content-Type: application/octet-stream\r\n\r\n".data(using: .utf8)!)
+        body.append(ciphertext)
+        body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+
+        var req = request("api/v1/photos/assets", method: "POST")
+        req.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        req.httpBody = body
+        let (data, response) = try await URLSession.shared.upload(for: req, from: body)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw APIError.http((response as? HTTPURLResponse)?.statusCode ?? -1)
+        }
+        let parsed = try JSONDecoder().decode(UploadResponse.self, from: data)
+        return (parsed.asset.id, parsed.mirrorNodeId)
+    }
+
+    /// Store the (sealed) content key for an asset/document, wrapped to the owner.
+    func storeSelfKey(documentId: String, wrappedKey: String) async throws {
+        try await postJSON("api/v1/docs/documents/\(documentId)/self-key", body: WrappedKeyBody(wrappedKey: wrappedKey))
+    }
+
+    /// Upload an encrypted thumbnail blob for an asset.
+    func putEncryptedThumbnail(assetId: String, ciphertext: Data) async throws {
+        var req = request("api/v1/photos/assets/\(assetId)/thumbnail", method: "PUT")
+        req.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+        let (_, response) = try await URLSession.shared.upload(for: req, from: ciphertext)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw APIError.http((response as? HTTPURLResponse)?.statusCode ?? -1)
+        }
+    }
+
     /// Authenticated raw bytes for a path (e.g. an encrypted thumbnail/original).
     func data(_ path: String) async throws -> Data {
         let (data, response) = try await URLSession.shared.data(for: request(path))
@@ -130,6 +198,25 @@ struct KeyBundle: Decodable, Sendable {
 
 struct WrappedKeyEnvelope: Decodable, Sendable {
     let wrappedKey: String?
+}
+
+struct FavoriteBody: Encodable, Sendable {
+    let assetIds: [String]
+    let favorite: Bool
+}
+
+struct WrappedKeyBody: Encodable, Sendable {
+    let wrappedKey: String
+}
+
+struct UploadResponse: Decodable, Sendable {
+    struct AssetRef: Decodable, Sendable { let id: String }
+    let asset: AssetRef
+    let mirrorNodeId: String?
+}
+
+struct AssetIdsBody: Encodable, Sendable {
+    let assetIds: [String]
 }
 
 struct SessionUser: Decodable, Sendable {
