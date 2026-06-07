@@ -54,6 +54,8 @@ struct PhotosView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         .task { await model.load(state.api()) }
         .refreshable { await model.load(state.api()) }
         .fullScreenCover(item: $viewer) { seed in
