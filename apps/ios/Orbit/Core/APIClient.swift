@@ -31,12 +31,22 @@ actor APIClient {
         self.token = token
     }
 
+    /// The server's own origin (scheme://host:port) — better-auth implicitly trusts its base URL,
+    /// so sending this satisfies the CSRF/origin check for a native client with no browser origin.
+    private var origin: String {
+        var value = baseURL.scheme.map { "\($0)://" } ?? "https://"
+        value += baseURL.host ?? ""
+        if let port = baseURL.port { value += ":\(port)" }
+        return value
+    }
+
     private func request(_ path: String, method: String = "GET", body: Data? = nil) -> URLRequest {
         let full = URL(string: "\(baseURL.absoluteString)/\(path)") ?? baseURL
         var request = URLRequest(url: full)
         request.httpMethod = method
         request.timeoutInterval = 30
         request.setValue("Orbit-iOS/0.1.0", forHTTPHeaderField: "User-Agent")
+        request.setValue(origin, forHTTPHeaderField: "Origin")
         if let body {
             request.httpBody = body
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
