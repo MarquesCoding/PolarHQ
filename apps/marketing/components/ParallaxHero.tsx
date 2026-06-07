@@ -9,46 +9,52 @@ interface PhotoConfig {
   x: number
   y: number
   rot: number
-  size: number
-  gradient: string
+  w: number
+  h: number
+  seed: string
 }
 
+/// Scattered across the screen with varied aspect ratios; they converge UP toward the screenshot.
 const PHOTOS: PhotoConfig[] = [
-  { x: -560, y: -200, rot: -12, size: 150, gradient: "linear-gradient(135deg,#f6d365,#fda085)" },
-  { x: -620, y: 120, rot: -6, size: 130, gradient: "linear-gradient(135deg,#84fab0,#8fd3f4)" },
-  { x: -380, y: 280, rot: 9, size: 160, gradient: "linear-gradient(135deg,#a18cd1,#fbc2eb)" },
-  { x: -300, y: -300, rot: 11, size: 130, gradient: "linear-gradient(135deg,#5ee7df,#b490ca)" },
-  { x: -160, y: 300, rot: -7, size: 120, gradient: "linear-gradient(135deg,#0ba360,#3cba92)" },
-  { x: -120, y: -360, rot: 6, size: 120, gradient: "linear-gradient(135deg,#fc5c7d,#6a82fb)" },
-  { x: 560, y: -190, rot: 12, size: 150, gradient: "linear-gradient(135deg,#2980b9,#6dd5fa)" },
-  { x: 620, y: 130, rot: 6, size: 130, gradient: "linear-gradient(135deg,#f093fb,#f5576c)" },
-  { x: 380, y: 290, rot: -9, size: 160, gradient: "linear-gradient(135deg,#4facfe,#00f2fe)" },
-  { x: 300, y: -300, rot: -11, size: 130, gradient: "linear-gradient(135deg,#ffecd2,#fcb69f)" },
-  { x: 170, y: 310, rot: 7, size: 120, gradient: "linear-gradient(135deg,#11998e,#38ef7d)" },
-  { x: 130, y: -360, rot: -5, size: 120, gradient: "linear-gradient(135deg,#667eea,#764ba2)" },
+  { x: -560, y: 40, rot: -10, w: 170, h: 230, seed: "orbit-a" },
+  { x: -640, y: 240, rot: -5, w: 230, h: 150, seed: "orbit-b" },
+  { x: -380, y: 340, rot: 8, w: 160, h: 200, seed: "orbit-c" },
+  { x: -300, y: 90, rot: 9, w: 210, h: 140, seed: "orbit-d" },
+  { x: -150, y: 360, rot: -7, w: 150, h: 200, seed: "orbit-e" },
+  { x: -120, y: 150, rot: 5, w: 130, h: 170, seed: "orbit-f" },
+  { x: 560, y: 50, rot: 11, w: 180, h: 240, seed: "orbit-g" },
+  { x: 640, y: 250, rot: 5, w: 220, h: 150, seed: "orbit-h" },
+  { x: 380, y: 350, rot: -9, w: 160, h: 210, seed: "orbit-i" },
+  { x: 300, y: 90, rot: -10, w: 200, h: 140, seed: "orbit-j" },
+  { x: 160, y: 360, rot: 7, w: 150, h: 190, seed: "orbit-k" },
+  { x: 130, y: 150, rot: -6, w: 140, h: 180, seed: "orbit-l" },
 ]
+
+const TARGET_Y = -300
 
 const FloatingPhoto = ({ progress, cfg }: { progress: MotionValue<number>; cfg: PhotoConfig }) => {
   const x = useTransform(progress, [0, 0.5], [cfg.x, 0])
-  const y = useTransform(progress, [0, 0.5], [cfg.y, 0])
-  const scale = useTransform(progress, [0, 0.5], [1, 0.12])
-  const opacity = useTransform(progress, [0.3, 0.5], [1, 0])
+  const y = useTransform(progress, [0, 0.5], [cfg.y, TARGET_Y])
+  const scale = useTransform(progress, [0, 0.5], [1, 0.1])
+  const opacity = useTransform(progress, [0.32, 0.5], [1, 0])
   const rotate = useTransform(progress, [0, 0.5], [cfg.rot, 0])
 
   return (
     <motion.div
-      className="absolute top-1/2 left-1/2 rounded-2xl shadow-xl ring-1 ring-white/10"
+      className="absolute top-1/2 left-1/2 overflow-hidden rounded-2xl bg-white/5 shadow-xl ring-1 ring-white/10"
       style={{
         x,
         y,
         scale,
         opacity,
         rotate,
-        width: cfg.size,
-        height: cfg.size,
-        marginLeft: -cfg.size / 2,
-        marginTop: -cfg.size / 2,
-        backgroundImage: cfg.gradient,
+        width: cfg.w,
+        height: cfg.h,
+        marginLeft: -cfg.w / 2,
+        marginTop: -cfg.h / 2,
+        backgroundImage: `url(https://picsum.photos/seed/${cfg.seed}/${cfg.w * 2}/${cfg.h * 2})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     />
   )
@@ -59,21 +65,21 @@ const ParallaxHero = () => {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] })
 
   const headOpacity = useTransform(scrollYProgress, [0, 0.16], [1, 0])
-  const headY = useTransform(scrollYProgress, [0, 0.16], [0, -48])
-  const macScale = useTransform(scrollYProgress, [0.3, 0.64], [0.82, 1])
-  const macOpacity = useTransform(scrollYProgress, [0.34, 0.56], [0, 1])
+  const headY = useTransform(scrollYProgress, [0, 0.16], [0, -40])
+  const macScale = useTransform(scrollYProgress, [0.32, 0.62], [0.86, 1])
+  const macOpacity = useTransform(scrollYProgress, [0.36, 0.56], [0, 1])
   const hintOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0])
 
   return (
     <section ref={ref} className="relative h-[320vh]">
-      <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-screen overflow-hidden">
         {PHOTOS.map((cfg, i) => (
           <FloatingPhoto key={i} progress={scrollYProgress} cfg={cfg} />
         ))}
 
         <motion.div
           style={{ opacity: headOpacity, y: headY }}
-          className="absolute z-10 mx-auto max-w-3xl px-6 text-center"
+          className="absolute top-1/2 left-1/2 z-10 w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 px-6 text-center"
         >
           <h1 className="text-foreground text-5xl font-extrabold tracking-tight sm:text-7xl">
             One private home
@@ -91,7 +97,7 @@ const ParallaxHero = () => {
 
         <motion.div
           style={{ scale: macScale, opacity: macOpacity }}
-          className="relative z-20 w-full max-w-4xl px-6"
+          className="absolute left-1/2 top-[9%] z-20 w-[min(92vw,940px)] -translate-x-1/2 origin-top"
         >
           <MacWindow />
         </motion.div>
