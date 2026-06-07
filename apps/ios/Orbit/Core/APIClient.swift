@@ -102,6 +102,22 @@ actor APIClient {
         return try await getJSON(path, as: PhotoPage.self)
     }
 
+    func trashNode(_ id: String) async throws {
+        try await postJSON("api/v1/drive/nodes/\(id)/trash", body: EmptyBody())
+    }
+
+    func renameNode(_ id: String, name: String, encryptedName: String?) async throws {
+        let payload = try JSONEncoder().encode(RenameBody(name: name, encryptedName: encryptedName))
+        let (_, response) = try await URLSession.shared.data(for: request("api/v1/drive/nodes/\(id)", method: "PATCH", body: payload))
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw APIError.http((response as? HTTPURLResponse)?.statusCode ?? -1)
+        }
+    }
+
+    func createFolder(parentId: String?, name: String, encryptedName: String?) async throws {
+        try await postJSON("api/v1/drive/nodes/folder", body: NewFolderBody(parentId: parentId, name: name, encryptedName: encryptedName))
+    }
+
     func driveNodes(parent: String?) async throws -> DriveListing {
         var path = "api/v1/drive/nodes"
         if let parent, let encoded = parent.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
@@ -245,6 +261,7 @@ struct DriveNode: Decodable, Identifiable, Sendable {
     let mimeType: String?
     let sizeBytes: Int?
     let thumbnailUrl: String?
+    let updatedAt: String?
 
     var isFolder: Bool { kind == "folder" }
 }
@@ -266,6 +283,19 @@ struct UploadResponse: Decodable, Sendable {
 
 struct AssetIdsBody: Encodable, Sendable {
     let assetIds: [String]
+}
+
+struct EmptyBody: Encodable, Sendable {}
+
+struct RenameBody: Encodable, Sendable {
+    let name: String
+    let encryptedName: String?
+}
+
+struct NewFolderBody: Encodable, Sendable {
+    let parentId: String?
+    let name: String
+    let encryptedName: String?
 }
 
 struct SessionUser: Decodable, Sendable {
