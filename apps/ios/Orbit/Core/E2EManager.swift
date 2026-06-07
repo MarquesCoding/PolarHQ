@@ -1,6 +1,7 @@
 import Foundation
 import OrbitCrypto
 import SwiftUI
+import UIKit
 
 /// Account metadata-encryption state, mirroring the web's `lib/e2e.ts`. Unlocks the keypair from
 /// the password (or restores it from Keychain), unwraps per-asset content keys, and decrypts the
@@ -97,6 +98,46 @@ final class E2EManager: ObservableObject {
         guard let key = await contentKey(for: assetId, client: client) else { return nil }
         guard let blob = try? await client.data("api/v1/photos/assets/\(assetId)/original") else { return nil }
         return try? OrbitCrypto.secretboxOpen(blob, key: key)
+    }
+
+    /// Encrypt an image end-to-end and upload it as a new asset (re-encoded to JPEG so every
+    /// client can display it): fresh content key → encrypt original + thumbnail → upload → wrap
+    /// the content key to the owner. Requires the keypair to be unlocked.
+    func uploadImage(_ source: Data, client: APIClient) async throws {
+        guard let keypair else { throw OrbitCrypto.CryptoError.decryptFailed }
+        guard let ui = UIImage(data: source), let jpeg = ui.jpegData(compressionQuality: 0.95) else {
+            throw OrbitCrypto.CryptoError.encryptFailed
+        }
+        let width = Int(ui.size.width * ui.scale)
+        let height = Int(ui.size.height * ui.scale)
+        let contentKey = OrbitCrypto.newContentKey()
+
+        let encryptedOriginal = try OrbitCrypto.secretboxSeal(jpeg, key: contentKey)
+        let (assetId, mirrorNodeId) = try await client.uploadEncryptedAsset(
+            ciphertext: encryptedOriginal,
+            mimeType: "image/jpeg",
+            width: width,
+            height: height,
+            takenAtMs: nil
+        )
+
+        let wrapped = OrbitCrypto.toBase64(try OrbitCrypto.sealTo(contentKey, recipientPublicKey: keypair.publicKey))
+        try await client.storeSelfKey(documentId: assetId, wrappedKey: wrapped)
+        if let mirrorNodeId { try? await client.storeSelfKey(documentId: mirrorNodeId, wrappedKey: wrapped) }
+
+        if let thumb = Self.thumbnail(ui, maxDimension: 512) {
+            let encryptedThumb = try OrbitCrypto.secretboxSeal(thumb, key: contentKey)
+            try? await client.putEncryptedThumbnail(assetId: assetId, ciphertext: encryptedThumb)
+        }
+    }
+
+    private static func thumbnail(_ image: UIImage, maxDimension: CGFloat) -> Data? {
+        let longest = max(image.size.width, image.size.height)
+        let scale = min(1, maxDimension / max(longest, 1))
+        let size = CGSize(width: image.size.width * scale, height: image.size.height * scale)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let scaled = renderer.image { _ in image.draw(in: CGRect(origin: .zero, size: size)) }
+        return scaled.jpegData(compressionQuality: 0.8)
     }
 
     /// Decrypt an account-meta-key blob (encrypted names, EXIF, locations).

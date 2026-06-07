@@ -25,6 +25,9 @@ public enum OrbitCrypto {
         }
     }
 
+    /// A fresh random 32-byte symmetric content key (for encrypting a new asset).
+    public static func newContentKey() -> Data { Data(sodium.secretBox.key()) }
+
     public static func toBase64(_ data: Data) -> String { data.base64EncodedString() }
 
     public static func fromBase64(_ value: String) throws -> Data {
