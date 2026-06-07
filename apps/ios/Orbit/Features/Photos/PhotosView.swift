@@ -9,11 +9,14 @@ nonisolated(unsafe) private let isoWithFraction: ISO8601DateFormatter = {
 nonisolated(unsafe) private let isoPlain = ISO8601DateFormatter()
 
 /// Epoch seconds for an asset's capture date (`takenAt` ?? `createdAt`), parsing both ISO-8601
-/// forms (with/without fractional seconds). Matches the web's `new Date(...).getTime()` ordering —
-/// string compare is wrong because the timestamps mix precisions.
+/// forms (with/without fractional seconds), matching the web's Date-based ordering.
 private func assetEpoch(_ asset: PhotoAsset) -> Double {
     let value = asset.takenAt ?? asset.createdAt ?? ""
     return (isoWithFraction.date(from: value) ?? isoPlain.date(from: value))?.timeIntervalSince1970 ?? 0
+}
+
+private func assetDate(_ asset: PhotoAsset) -> Date {
+    Date(timeIntervalSince1970: assetEpoch(asset))
 }
 
 @MainActor
@@ -48,13 +51,21 @@ final class PhotosViewModel: ObservableObject {
     }
 }
 
-private enum PhotosTab {
-    case library
-    case collections
+private enum Zoom: String, CaseIterable {
+    case years = "Years"
+    case months = "Months"
+    case all = "All"
 }
 
-/// Immersive, Apple-Photos-style library: full-bleed grid with pinch-to-zoom density and
-/// floaty Liquid-Glass chrome (Library/Collections pill + Search), pushed from Home.
+private struct PhotoGroup: Identifiable {
+    let key: String
+    let title: String
+    var items: [PhotoAsset]
+    var id: String { key }
+}
+
+/// Immersive Apple-Photos library: Years / Months / All zoom levels with sticky date headers,
+/// pinch-to-zoom density in All, and floaty Liquid-Glass chrome.
 struct PhotosView: View {
     @EnvironmentObject private var state: AppState
     @EnvironmentObject private var e2e: E2EManager
@@ -62,7 +73,7 @@ struct PhotosView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var model = PhotosViewModel()
 
-    @State private var tab: PhotosTab = .library
+    @State private var zoom: Zoom = .all
     @State private var viewer: ViewerSeed?
     @State private var picks: [PhotosPickerItem] = []
     @State private var uploading = false
@@ -75,10 +86,16 @@ struct PhotosView: View {
         ZStack(alignment: .bottom) {
             Theme.background.ignoresSafeArea()
 
-            if tab == .library {
-                libraryGrid
+            if model.loading && model.assets.isEmpty {
+                ProgressView()
+            } else if model.assets.isEmpty {
+                ComingSoon(icon: "photo.on.rectangle", message: "No photos yet.")
             } else {
-                ComingSoon(icon: "rectangle.stack", message: "Albums & collections are coming soon.")
+                switch zoom {
+                case .all: allView
+                case .months: monthsView
+                case .years: yearsView
+                }
             }
 
             topChrome
@@ -99,22 +116,43 @@ struct PhotosView: View {
         }
     }
 
+    // MARK: Grouping
+
+    private var indexById: [String: Int] {
+        Dictionary(model.assets.enumerated().map { ($1.id, $0) }, uniquingKeysWith: { a, _ in a })
+    }
+
+    private func groups(_ granularity: (Date) -> (key: String, title: String)) -> [PhotoGroup] {
+        var result: [PhotoGroup] = []
+        for asset in model.assets {
+            let info = granularity(assetDate(asset))
+            if result.last?.key == info.key {
+                result[result.count - 1].items.append(asset)
+            } else {
+                result.append(PhotoGroup(key: info.key, title: info.title, items: [asset]))
+            }
+        }
+        return result
+    }
+
+    // MARK: Layouts
+
     private var columns: [GridItem] {
         Array(repeating: GridItem(.flexible(), spacing: spacing), count: gridCount)
     }
 
-    private var libraryGrid: some View {
+    private var allView: some View {
         ScrollView {
-            LazyVGrid(columns: columns, spacing: spacing) {
-                ForEach(Array(model.assets.enumerated()), id: \.element.id) { offset, asset in
-                    Button { viewer = ViewerSeed(index: offset) } label: {
-                        PhotoTileView(asset: asset, compact: gridCount >= 6)
+            LazyVStack(alignment: .leading, spacing: 8, pinnedViews: [.sectionHeaders]) {
+                ForEach(groups(dayKey)) { group in
+                    Section {
+                        grid(group.items)
+                    } header: {
+                        sectionHeader(group.title)
                     }
-                    .buttonStyle(.plain)
                 }
             }
-            .padding(.horizontal, spacing)
-            .padding(.top, 96)
+            .padding(.top, 88)
             .padding(.bottom, 110)
         }
         .scrollIndicators(.hidden)
@@ -128,14 +166,86 @@ struct PhotosView: View {
                 }
                 .onEnded { _ in pinchBase = nil }
         )
-        .overlay {
-            if model.loading && model.assets.isEmpty {
-                ProgressView()
-            } else if model.assets.isEmpty {
-                ComingSoon(icon: "photo.on.rectangle", message: "No photos yet.")
-            }
-        }
     }
+
+    private var monthsView: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 18) {
+                ForEach(groups(monthKey)) { group in
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(group.title).font(.title2.weight(.bold)).foregroundStyle(Theme.foreground)
+                            .padding(.horizontal, 12)
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: spacing), count: 3), spacing: spacing) {
+                            ForEach(group.items) { tile($0) }
+                        }
+                        .padding(.horizontal, spacing)
+                    }
+                }
+            }
+            .padding(.top, 88)
+            .padding(.bottom, 110)
+        }
+        .scrollIndicators(.hidden)
+    }
+
+    private var yearsView: some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                ForEach(groups(yearKey)) { group in
+                    Button { withAnimation(.snappy) { zoom = .months } } label: {
+                        ZStack(alignment: .bottomLeading) {
+                            if let cover = group.items.first {
+                                DecryptedThumbnail(asset: cover)
+                                    .frame(height: 200)
+                                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                            }
+                            LinearGradient(colors: [.black.opacity(0.6), .clear], startPoint: .bottom, endPoint: .center)
+                                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(group.title).font(.title2.weight(.bold))
+                                Text("\(group.items.count) items").font(.caption)
+                            }
+                            .foregroundStyle(.white)
+                            .padding(12)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.top, 88)
+            .padding(.bottom, 110)
+        }
+        .scrollIndicators(.hidden)
+    }
+
+    private func grid(_ items: [PhotoAsset]) -> some View {
+        LazyVGrid(columns: columns, spacing: spacing) {
+            ForEach(items) { tile($0) }
+        }
+        .padding(.horizontal, spacing)
+    }
+
+    private func tile(_ asset: PhotoAsset) -> some View {
+        Button {
+            if let index = indexById[asset.id] { viewer = ViewerSeed(index: index) }
+        } label: {
+            PhotoTileView(asset: asset, compact: gridCount >= 6)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.headline)
+            .foregroundStyle(Theme.foreground)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.ultraThinMaterial)
+    }
+
+    // MARK: Chrome
 
     private var topChrome: some View {
         VStack {
@@ -147,19 +257,9 @@ struct PhotosView: View {
                         .frame(width: 38, height: 38)
                         .glassEffect(in: .circle)
                 }
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("Library").font(.title2.weight(.bold))
-                    if let date = model.assets.first?.takenAt ?? model.assets.first?.createdAt {
-                        Text(prettyDate(date))
-                            .font(.footnote)
-                            .foregroundStyle(Theme.mutedForeground)
-                    }
-                }
-                .foregroundStyle(Theme.foreground)
-                .padding(.leading, 4)
-
+                Text("Library").font(.title2.weight(.bold)).foregroundStyle(Theme.foreground)
+                    .padding(.leading, 4)
                 Spacer()
-
                 PhotosPicker(selection: $picks, matching: .images, photoLibrary: .shared()) {
                     Group {
                         if uploading { ProgressView() } else { Image(systemName: "plus") }
@@ -180,9 +280,10 @@ struct PhotosView: View {
     private var bottomChrome: some View {
         HStack {
             GlassEffectContainer(spacing: 10) {
-                HStack(spacing: 4) {
-                    segment("Library", tab: .library)
-                    segment("Collections", tab: .collections)
+                HStack(spacing: 2) {
+                    ForEach(Zoom.allCases, id: \.self) { value in
+                        segment(value)
+                    }
                 }
                 .padding(4)
                 .glassEffect(in: .capsule)
@@ -201,33 +302,52 @@ struct PhotosView: View {
         .padding(.bottom, 12)
     }
 
-    private func segment(_ title: String, tab value: PhotosTab) -> some View {
+    private func segment(_ value: Zoom) -> some View {
         Button {
-            withAnimation(.snappy) { tab = value }
+            withAnimation(.snappy) { zoom = value }
         } label: {
-            Text(title)
+            Text(value.rawValue)
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tab == value ? Theme.primaryForeground : Theme.foreground)
-                .padding(.horizontal, 16)
+                .foregroundStyle(zoom == value ? Theme.primaryForeground : Theme.foreground)
+                .padding(.horizontal, 14)
                 .padding(.vertical, 9)
                 .background {
-                    if tab == value {
-                        Capsule().fill(Theme.primary)
-                    }
+                    if zoom == value { Capsule().fill(Theme.primary) }
                 }
         }
         .buttonStyle(.plain)
     }
 
-    private func prettyDate(_ iso: String) -> String {
-        let parser = ISO8601DateFormatter()
-        parser.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        let date = parser.date(from: iso) ?? ISO8601DateFormatter().date(from: iso)
-        guard let date else { return "" }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d MMM yyyy"
-        return formatter.string(from: date)
+    // MARK: Date keys
+
+    private func dayKey(_ date: Date) -> (key: String, title: String) {
+        let cal = Calendar.current
+        let comps = cal.dateComponents([.year, .month, .day], from: date)
+        let key = "\(comps.year ?? 0)-\(comps.month ?? 0)-\(comps.day ?? 0)"
+        let title: String
+        if cal.isDateInToday(date) { title = "Today" }
+        else if cal.isDateInYesterday(date) { title = "Yesterday" }
+        else {
+            let f = DateFormatter()
+            f.dateFormat = cal.isDate(date, equalTo: .now, toGranularity: .year) ? "EEEE, d MMMM" : "d MMMM yyyy"
+            title = f.string(from: date)
+        }
+        return (key, title)
     }
+
+    private func monthKey(_ date: Date) -> (key: String, title: String) {
+        let comps = Calendar.current.dateComponents([.year, .month], from: date)
+        let f = DateFormatter()
+        f.dateFormat = "MMMM yyyy"
+        return ("\(comps.year ?? 0)-\(comps.month ?? 0)", f.string(from: date))
+    }
+
+    private func yearKey(_ date: Date) -> (key: String, title: String) {
+        let year = Calendar.current.component(.year, from: date)
+        return ("\(year)", "\(year)")
+    }
+
+    // MARK: Upload
 
     private func upload(_ items: [PhotosPickerItem]) async {
         guard let client = state.api() else { return }
