@@ -90,11 +90,46 @@ actor APIClient {
         return try await getJSON(path, as: PhotoPage.self)
     }
 
+    /// The current user's E2E key bundle (null if they've never set up encryption).
+    func keyBundle() async throws -> KeyBundle? {
+        try await getJSON("api/v1/docs/keys/me", as: KeyBundleEnvelope.self).keys
+    }
+
+    /// The wrapped (sealed-box) content key for a doc/asset, or nil if none is stored.
+    func wrappedKey(forDocument id: String) async throws -> String? {
+        try await getJSON("api/v1/docs/documents/\(id)/key", as: WrappedKeyEnvelope.self).wrappedKey
+    }
+
+    /// Authenticated raw bytes for a path (e.g. an encrypted thumbnail/original).
+    func data(_ path: String) async throws -> Data {
+        let (data, response) = try await URLSession.shared.data(for: request(path))
+        guard let http = response as? HTTPURLResponse else { throw APIError.decoding }
+        guard (200..<300).contains(http.statusCode) else { throw APIError.http(http.statusCode) }
+        return data
+    }
+
     private struct TokenBody: Decodable { let token: String? }
 }
 
 struct SessionEnvelope: Decodable, Sendable {
     let user: SessionUser?
+}
+
+struct KeyBundleEnvelope: Decodable, Sendable {
+    let keys: KeyBundle?
+}
+
+struct KeyBundle: Decodable, Sendable {
+    let publicKey: String
+    let wrappedPrivateKey: String
+    let kdfSalt: String
+    let kdfParams: String?
+    let recoveryWrapped: String?
+    let wrappedMetaKey: String?
+}
+
+struct WrappedKeyEnvelope: Decodable, Sendable {
+    let wrappedKey: String?
 }
 
 struct SessionUser: Decodable, Sendable {

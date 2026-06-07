@@ -5,6 +5,7 @@ struct ScreenScaffold<Content: View>: View {
     let title: String
     @ViewBuilder var content: () -> Content
     @EnvironmentObject private var state: AppState
+    @EnvironmentObject private var e2e: E2EManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -17,8 +18,14 @@ struct ScreenScaffold<Content: View>: View {
                     if let email = state.user?.email {
                         Text(email)
                     }
-                    Button("Sign out", role: .destructive) { state.signOut() }
-                    Button("Change server") { state.changeServer() }
+                    Button("Sign out", role: .destructive) {
+                        e2e.reset()
+                        state.signOut()
+                    }
+                    Button("Change server") {
+                        e2e.reset()
+                        state.changeServer()
+                    }
                 } label: {
                     Image(systemName: "person.crop.circle.fill")
                         .font(.system(size: 28))
