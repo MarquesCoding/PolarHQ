@@ -1,10 +1,19 @@
 import PhotosUI
 import SwiftUI
 
-/// Order key matching the web grid: capture date (`takenAt`) falling back to upload date.
-/// ISO-8601 strings compare chronologically, so no Date parsing is needed.
-private func dateKey(_ asset: PhotoAsset) -> String {
-    asset.takenAt ?? asset.createdAt ?? ""
+nonisolated(unsafe) private let isoWithFraction: ISO8601DateFormatter = {
+    let f = ISO8601DateFormatter()
+    f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    return f
+}()
+nonisolated(unsafe) private let isoPlain = ISO8601DateFormatter()
+
+/// Epoch seconds for an asset's capture date (`takenAt` ?? `createdAt`), parsing both ISO-8601
+/// forms (with/without fractional seconds). Matches the web's `new Date(...).getTime()` ordering —
+/// string compare is wrong because the timestamps mix precisions.
+private func assetEpoch(_ asset: PhotoAsset) -> Double {
+    let value = asset.takenAt ?? asset.createdAt ?? ""
+    return (isoWithFraction.date(from: value) ?? isoPlain.date(from: value))?.timeIntervalSince1970 ?? 0
 }
 
 @MainActor
@@ -18,8 +27,10 @@ final class PhotosViewModel: ObservableObject {
         loading = true
         defer { loading = false }
         do {
-            let fetched = try await client.photos(cursor: nil).assets
-            assets = fetched.sorted { dateKey($0) > dateKey($1) }
+            let keyed = try await client.photos(cursor: nil).assets.map { ($0, assetEpoch($0)) }
+            assets = keyed
+                .sorted { $0.1 != $1.1 ? $0.1 > $1.1 : $0.0.id > $1.0.id }
+                .map(\.0)
             error = nil
         } catch {
             self.error = error.localizedDescription
