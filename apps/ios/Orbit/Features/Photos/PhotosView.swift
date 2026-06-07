@@ -1,6 +1,12 @@
 import PhotosUI
 import SwiftUI
 
+/// Order key matching the web grid: capture date (`takenAt`) falling back to upload date.
+/// ISO-8601 strings compare chronologically, so no Date parsing is needed.
+private func dateKey(_ asset: PhotoAsset) -> String {
+    asset.takenAt ?? asset.createdAt ?? ""
+}
+
 @MainActor
 final class PhotosViewModel: ObservableObject {
     @Published var assets: [PhotoAsset] = []
@@ -12,7 +18,8 @@ final class PhotosViewModel: ObservableObject {
         loading = true
         defer { loading = false }
         do {
-            assets = try await client.photos(cursor: nil).assets
+            let fetched = try await client.photos(cursor: nil).assets
+            assets = fetched.sorted { dateKey($0) > dateKey($1) }
             error = nil
         } catch {
             self.error = error.localizedDescription
