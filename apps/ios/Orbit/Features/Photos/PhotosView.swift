@@ -27,8 +27,18 @@ final class PhotosViewModel: ObservableObject {
         loading = true
         defer { loading = false }
         do {
-            let keyed = try await client.photos(cursor: nil).assets.map { ($0, assetEpoch($0)) }
-            assets = keyed
+            var all: [PhotoAsset] = []
+            var cursor: String?
+            var pages = 0
+            repeat {
+                let page = try await client.photos(cursor: cursor)
+                all.append(contentsOf: page.assets)
+                pages += 1
+                if page.assets.isEmpty || page.nextCursor == cursor { break }
+                cursor = page.nextCursor
+            } while cursor != nil && pages < 200
+            assets = all
+                .map { ($0, assetEpoch($0)) }
                 .sorted { $0.1 != $1.1 ? $0.1 > $1.1 : $0.0.id > $1.0.id }
                 .map(\.0)
             error = nil
