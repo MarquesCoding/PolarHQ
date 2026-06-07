@@ -53,6 +53,10 @@ driveRoutes.use("*", async (c, next) => {
   await next()
 })
 
+/** Broadcast a Drive change to the user's other sessions/devices for live sync. */
+const notify = (userId: string) =>
+  publishUserEvent(userId, { type: "drive.node.changed", scope: `user:${userId}`, payload: {} })
+
 const driveBase = `${config.api.url}/api/v1/drive/nodes`
 const photosBase = `${config.api.url}/api/v1/photos/assets`
 
@@ -137,6 +141,7 @@ driveRoutes.post("/nodes/folder", async (c) => {
     parsed.data.name,
     parsed.data.encryptedName ?? null,
   )
+  await notify(c.get("userId"))
   return c.json({ node: serializeNode(node) }, 201)
 })
 
@@ -172,6 +177,7 @@ driveRoutes.post("/nodes/upload", async (c) => {
       bytes,
       encryptedName,
     })
+    await notify(userId)
     return c.json({ node: serializeNode(node) }, 201)
   }
 
@@ -187,6 +193,7 @@ driveRoutes.post("/nodes/upload", async (c) => {
       sizeBytes: result.asset.sizeBytes,
       storageKey: result.asset.storageKey,
     })
+    await notify(userId)
     return c.json({ node: serializeNode(node), registeredInPhotos: true }, 201)
   }
 
@@ -206,6 +213,7 @@ driveRoutes.post("/nodes/upload", async (c) => {
       sizeBytes: result.asset.sizeBytes,
       storageKey: result.asset.storageKey,
     })
+    await notify(userId)
     return c.json({ node: serializeNode(node), registeredInPhotos: true }, 201)
   }
 
@@ -392,6 +400,7 @@ driveRoutes.patch("/nodes/:id", async (c) => {
     }
     await moveNode(userId, id, parsed.data.parentId)
   }
+  await notify(userId)
   return c.json({ ok: true })
 })
 
@@ -417,6 +426,7 @@ driveRoutes.post("/nodes/:id/trash", async (c) => {
   if (node.special) return c.json({ error: "cannot delete a system folder" }, 400)
   const { trashedAssetIds } = await trashNodeTree(userId, node.id)
   if (trashedAssetIds.length > 0) await trashAssets(userId, trashedAssetIds)
+  await notify(userId)
   return c.json({ ok: true })
 })
 
@@ -426,6 +436,7 @@ driveRoutes.post("/nodes/:id/restore", async (c) => {
   if (!node) return c.json({ error: "not found" }, 404)
   const { restoredAssetIds } = await restoreNodeTree(userId, node.id)
   if (restoredAssetIds.length > 0) await restoreAssets(userId, restoredAssetIds)
+  await notify(userId)
   return c.json({ ok: true })
 })
 
@@ -436,6 +447,7 @@ driveRoutes.delete("/nodes/:id", async (c) => {
   if (node.special) return c.json({ error: "cannot delete a system folder" }, 400)
   const { removedAssetIds } = await deleteNode(userId, node.id)
   if (removedAssetIds.length > 0) await purgeAssets(userId, removedAssetIds)
+  await notify(userId)
   return c.json({ ok: true })
 })
 

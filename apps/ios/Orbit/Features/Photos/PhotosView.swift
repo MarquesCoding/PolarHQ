@@ -23,6 +23,7 @@ final class PhotosViewModel: ObservableObject {
 struct PhotosView: View {
     @EnvironmentObject private var state: AppState
     @EnvironmentObject private var e2e: E2EManager
+    @EnvironmentObject private var live: LiveEvents
     @StateObject private var model = PhotosViewModel()
     @State private var viewer: ViewerSeed?
     @State private var picks: [PhotosPickerItem] = []
@@ -63,6 +64,9 @@ struct PhotosView: View {
         .onChange(of: picks) { _, items in
             guard !items.isEmpty else { return }
             Task { await upload(items) }
+        }
+        .onChange(of: live.photosTick) {
+            Task { await model.load(state.api()) }
         }
     }
 
