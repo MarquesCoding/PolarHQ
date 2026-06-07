@@ -27,7 +27,7 @@ struct DecryptedThumbnail: View {
                 }
             }
             .clipped()
-            .task(id: asset.id) { await load() }
+            .task(id: "\(asset.id)|\(asset.thumbnailUrl ?? "")") { await load() }
     }
 
     private var placeholderIcon: String {
@@ -41,7 +41,7 @@ struct DecryptedThumbnail: View {
             image = cached
             return
         }
-        guard let client = state.api() else { return }
+        guard asset.thumbnailUrl != nil, let client = state.api() else { return }
         let data: Data?
         if asset.encrypted {
             data = await e2e.decryptedThumbnail(assetId: asset.id, client: client)
