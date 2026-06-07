@@ -14,34 +14,34 @@ interface PhotoConfig {
   seed: string
 }
 
-/// Scattered across the screen with varied aspect ratios; they converge UP toward the screenshot.
+/// Scattered with varied aspect ratios; on scroll they sweep UP toward the top of the screen.
 const PHOTOS: PhotoConfig[] = [
-  { x: -560, y: 40, rot: -10, w: 170, h: 230, seed: "orbit-a" },
-  { x: -640, y: 240, rot: -5, w: 230, h: 150, seed: "orbit-b" },
-  { x: -380, y: 340, rot: 8, w: 160, h: 200, seed: "orbit-c" },
-  { x: -300, y: 90, rot: 9, w: 210, h: 140, seed: "orbit-d" },
-  { x: -150, y: 360, rot: -7, w: 150, h: 200, seed: "orbit-e" },
-  { x: -120, y: 150, rot: 5, w: 130, h: 170, seed: "orbit-f" },
-  { x: 560, y: 50, rot: 11, w: 180, h: 240, seed: "orbit-g" },
-  { x: 640, y: 250, rot: 5, w: 220, h: 150, seed: "orbit-h" },
-  { x: 380, y: 350, rot: -9, w: 160, h: 210, seed: "orbit-i" },
-  { x: 300, y: 90, rot: -10, w: 200, h: 140, seed: "orbit-j" },
-  { x: 160, y: 360, rot: 7, w: 150, h: 190, seed: "orbit-k" },
-  { x: 130, y: 150, rot: -6, w: 140, h: 180, seed: "orbit-l" },
+  { x: -560, y: -120, rot: -10, w: 170, h: 230, seed: "orbit-a" },
+  { x: -640, y: 80, rot: -5, w: 230, h: 150, seed: "orbit-b" },
+  { x: -380, y: 180, rot: 8, w: 160, h: 200, seed: "orbit-c" },
+  { x: -300, y: -90, rot: 9, w: 210, h: 140, seed: "orbit-d" },
+  { x: -170, y: 200, rot: -7, w: 150, h: 200, seed: "orbit-e" },
+  { x: -120, y: 10, rot: 5, w: 130, h: 170, seed: "orbit-f" },
+  { x: 560, y: -110, rot: 11, w: 180, h: 240, seed: "orbit-g" },
+  { x: 640, y: 90, rot: 5, w: 220, h: 150, seed: "orbit-h" },
+  { x: 380, y: 190, rot: -9, w: 160, h: 210, seed: "orbit-i" },
+  { x: 300, y: -80, rot: -10, w: 200, h: 140, seed: "orbit-j" },
+  { x: 170, y: 200, rot: 7, w: 150, h: 190, seed: "orbit-k" },
+  { x: 130, y: 10, rot: -6, w: 140, h: 180, seed: "orbit-l" },
 ]
 
-const TARGET_Y = -300
+const TARGET_Y = -460
 
 const FloatingPhoto = ({ progress, cfg }: { progress: MotionValue<number>; cfg: PhotoConfig }) => {
-  const x = useTransform(progress, [0, 0.5], [cfg.x, 0])
-  const y = useTransform(progress, [0, 0.5], [cfg.y, TARGET_Y])
-  const scale = useTransform(progress, [0, 0.5], [1, 0.1])
-  const opacity = useTransform(progress, [0.32, 0.5], [1, 0])
-  const rotate = useTransform(progress, [0, 0.5], [cfg.rot, 0])
+  const x = useTransform(progress, [0, 0.55], [cfg.x, 0])
+  const y = useTransform(progress, [0, 0.55], [cfg.y, TARGET_Y])
+  const scale = useTransform(progress, [0, 0.55], [1, 0.12])
+  const opacity = useTransform(progress, [0.35, 0.55], [1, 0])
+  const rotate = useTransform(progress, [0, 0.55], [cfg.rot, 0])
 
   return (
     <motion.div
-      className="absolute top-1/2 left-1/2 overflow-hidden rounded-2xl bg-white/5 shadow-xl ring-1 ring-white/10"
+      className="absolute top-1/2 left-1/2 overflow-hidden rounded-2xl bg-white/5 shadow-2xl ring-1 ring-white/10"
       style={{
         x,
         y,
@@ -64,10 +64,11 @@ const ParallaxHero = () => {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] })
 
-  const headOpacity = useTransform(scrollYProgress, [0, 0.16], [1, 0])
-  const headY = useTransform(scrollYProgress, [0, 0.16], [0, -40])
-  const macScale = useTransform(scrollYProgress, [0.32, 0.62], [0.86, 1])
-  const macOpacity = useTransform(scrollYProgress, [0.36, 0.56], [0, 1])
+  const headOpacity = useTransform(scrollYProgress, [0, 0.18], [1, 0])
+  const headY = useTransform(scrollYProgress, [0, 0.18], [0, -60])
+  const macScale = useTransform(scrollYProgress, [0.34, 0.7], [0.94, 1])
+  const macOpacity = useTransform(scrollYProgress, [0.36, 0.58], [0, 1])
+  const macY = useTransform(scrollYProgress, [0.34, 0.7], [90, 0])
   const hintOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0])
 
   return (
@@ -79,7 +80,7 @@ const ParallaxHero = () => {
 
         <motion.div
           style={{ opacity: headOpacity, y: headY }}
-          className="absolute top-1/2 left-1/2 z-10 w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 px-6 text-center"
+          className="absolute top-1/2 left-1/2 z-30 w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 px-6 text-center"
         >
           <h1 className="text-foreground text-5xl font-extrabold tracking-tight sm:text-7xl">
             One private home
@@ -96,8 +97,8 @@ const ParallaxHero = () => {
         </motion.div>
 
         <motion.div
-          style={{ scale: macScale, opacity: macOpacity }}
-          className="absolute left-1/2 top-[9%] z-20 w-[min(92vw,940px)] -translate-x-1/2 origin-top"
+          style={{ scale: macScale, opacity: macOpacity, y: macY }}
+          className="absolute left-1/2 top-[34%] z-20 w-[min(95vw,1120px)] -translate-x-1/2 origin-top"
         >
           <MacWindow />
         </motion.div>
