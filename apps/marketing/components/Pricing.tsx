@@ -89,7 +89,7 @@ const Pricing = () => (
           </div>
           <Button
             variant={plan.highlight ? "default" : "outline"}
-            className="mt-6 w-full rounded-full"
+            className="mt-6 w-full"
           >
             {plan.cta}
           </Button>

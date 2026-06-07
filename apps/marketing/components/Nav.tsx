@@ -11,7 +11,7 @@ const links = [
 
 const Nav = () => (
   <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
-    <nav className="flex w-full max-w-5xl items-center justify-between rounded-full border border-black/5 bg-white/70 px-4 py-2.5 shadow-sm backdrop-blur-xl">
+    <nav className="flex w-full max-w-5xl items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 shadow-sm backdrop-blur-xl">
       <a href="#" className="flex items-center gap-2 pl-1">
         <span className="bg-primary flex size-7 items-center justify-center rounded-lg">
           <span className="size-3 rounded-full bg-white" />
@@ -30,8 +30,8 @@ const Nav = () => (
         ))}
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" className="rounded-full">Log in</Button>
-        <Button size="sm" className="rounded-full px-4">Get started</Button>
+        <Button variant="ghost" size="sm">Log in</Button>
+        <Button size="sm" className="px-4">Get started</Button>
       </div>
     </nav>
   </header>

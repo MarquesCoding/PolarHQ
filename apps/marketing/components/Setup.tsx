@@ -42,11 +42,11 @@ const Setup = () => (
           </div>
 
           <div className="mt-10 flex flex-wrap gap-3">
-            <Button className="rounded-full px-5">
+            <Button className="px-5">
               <Icon name="download" className="size-4" />
               Download for iOS
             </Button>
-            <Button variant="outline" className="rounded-full px-5">
+            <Button variant="outline" className="px-5">
               Read the docs
             </Button>
           </div>

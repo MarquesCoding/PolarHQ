@@ -1,13 +1,13 @@
 @import "@workspace/ui/globals.css";
 
-/* Marketing-specific light palette: cleaner whites than the app's grey, brand blue kept. */
+/* Marketing dark palette: deep near-black with the app's brand blue. */
 :root {
-  --background: #ffffff;
-  --foreground: #0b0b0f;
-  --card: #f5f5f7;
-  --muted: #f1f1f4;
-  --muted-foreground: #6b6b73;
-  --border: rgb(0 0 0 / 8%);
+  --background: #0a0a0d;
+  --foreground: #fafafa;
+  --card: #161619;
+  --muted: #1b1b1f;
+  --muted-foreground: #a1a1aa;
+  --border: rgb(255 255 255 / 10%);
   --primary: #288dff;
   --primary-foreground: #ffffff;
 }
