@@ -16,6 +16,7 @@ private struct DriveFolderView: View {
 
     @EnvironmentObject private var state: AppState
     @EnvironmentObject private var e2e: E2EManager
+    @EnvironmentObject private var live: LiveEvents
     @State private var children: [DriveNode] = []
     @State private var loading = true
     @State private var error: String?
@@ -44,6 +45,7 @@ private struct DriveFolderView: View {
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(parentId == nil ? .large : .inline)
         .task { await load() }
+        .onChange(of: live.driveTick) { Task { await load() } }
     }
 
     private var sorted: [DriveNode] {

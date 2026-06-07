@@ -16,6 +16,7 @@ final class AppState: ObservableObject {
     @Published var lastError: String?
 
     let e2e = E2EManager()
+    let live = LiveEvents()
     private var token: String?
     private var client: APIClient?
 
@@ -67,6 +68,7 @@ final class AppState: ObservableObject {
             Keychain.set(token, for: Key.token)
             user = try await client.currentUser()
             _ = await e2e.unlock(password: password, client: client)
+            connectLive()
             phase = .authenticated
         } catch {
             lastError = error.localizedDescription
@@ -79,7 +81,13 @@ final class AppState: ObservableObject {
     func restoreSession() async {
         guard phase == .authenticated, let client else { return }
         await e2e.bootstrap(client: client)
+        connectLive()
         user = try? await client.currentUser()
+    }
+
+    private func connectLive() {
+        guard let serverURL, let token else { return }
+        live.connect(baseURL: serverURL, token: token)
     }
 
     func signOut() {
@@ -87,6 +95,7 @@ final class AppState: ObservableObject {
         user = nil
         Keychain.set(nil, for: Key.token)
         e2e.reset()
+        live.disconnect()
         Task { await client?.setToken(nil) }
         if serverURL != nil { phase = .signIn }
     }

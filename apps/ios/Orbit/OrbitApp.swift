@@ -9,6 +9,7 @@ struct OrbitApp: App {
             RootView()
                 .environmentObject(state)
                 .environmentObject(state.e2e)
+                .environmentObject(state.live)
                 .tint(Theme.primary)
                 .task { await state.restoreSession() }
         }
