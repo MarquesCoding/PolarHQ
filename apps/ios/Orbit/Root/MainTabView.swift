@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @EnvironmentObject private var state: AppState
+    @EnvironmentObject private var e2e: E2EManager
     @State private var selection: OrbitTab = .photos
 
     var body: some View {
@@ -19,5 +21,11 @@ struct MainTabView: View {
                 .padding(.bottom, 6)
         }
         .background(Theme.background.ignoresSafeArea())
+        .task {
+            if let client = state.api() { await e2e.bootstrap(client: client) }
+        }
+        .fullScreenCover(isPresented: .constant(e2e.state == .locked)) {
+            UnlockView()
+        }
     }
 }

@@ -35,15 +35,6 @@ struct PhotosView: View {
                 ComingSoon(icon: "photo.on.rectangle", message: "No photos yet.")
             } else {
                 ScrollView {
-                    if model.assets.contains(where: \.encrypted) {
-                        Label("End-to-end encrypted — thumbnails decrypt on-device (coming next).",
-                              systemImage: "lock.fill")
-                            .font(.caption)
-                            .foregroundStyle(Theme.mutedForeground)
-                            .padding(.horizontal, 20)
-                            .padding(.bottom, 8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
                     LazyVGrid(columns: columns, spacing: 3) {
                         ForEach(model.assets) { asset in
                             PhotoTileView(asset: asset)
@@ -64,10 +55,7 @@ private struct PhotoTileView: View {
 
     var body: some View {
         ZStack {
-            Rectangle().fill(Theme.card)
-            Image(systemName: asset.encrypted ? "lock.fill" : (asset.type == "video" ? "play.fill" : "photo"))
-                .font(.system(size: 18))
-                .foregroundStyle(Theme.mutedForeground)
+            DecryptedThumbnail(asset: asset)
 
             if asset.stackCount > 1 {
                 badge("square.stack.3d.up.fill", text: "\(asset.stackCount)")
