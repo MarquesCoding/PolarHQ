@@ -90,6 +90,14 @@ actor APIClient {
         return try await getJSON(path, as: PhotoPage.self)
     }
 
+    func driveNodes(parent: String?) async throws -> DriveListing {
+        var path = "api/v1/drive/nodes"
+        if let parent, let encoded = parent.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            path += "?parent=\(encoded)"
+        }
+        return try await getJSON(path, as: DriveListing.self)
+    }
+
     /// The current user's E2E key bundle (null if they've never set up encryption).
     func keyBundle() async throws -> KeyBundle? {
         try await getJSON("api/v1/docs/keys/me", as: KeyBundleEnvelope.self).keys
@@ -198,6 +206,25 @@ struct KeyBundle: Decodable, Sendable {
 
 struct WrappedKeyEnvelope: Decodable, Sendable {
     let wrappedKey: String?
+}
+
+struct DriveListing: Decodable, Sendable {
+    let parent: DriveNode
+    let breadcrumb: [DriveNode]
+    let children: [DriveNode]
+}
+
+struct DriveNode: Decodable, Identifiable, Sendable {
+    let id: String
+    let parentId: String?
+    let kind: String
+    let name: String
+    let encryptedName: String?
+    let mimeType: String?
+    let sizeBytes: Int?
+    let thumbnailUrl: String?
+
+    var isFolder: Bool { kind == "folder" }
 }
 
 struct FavoriteBody: Encodable, Sendable {
