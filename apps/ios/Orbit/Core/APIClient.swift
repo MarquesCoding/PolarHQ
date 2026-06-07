@@ -50,12 +50,14 @@ actor APIClient {
     /// Sign in with email/password; returns the bearer token from the `set-auth-token` header.
     func signIn(email: String, password: String) async throws -> String {
         let payload = try JSONEncoder().encode(["email": email, "password": password])
-        let (data, response) = try await URLSession.shared.data(
-            for: request("api/auth/sign-in/email", method: "POST", body: payload)
-        )
+        let signInRequest = request("api/auth/sign-in/email", method: "POST", body: payload)
+        let (data, response) = try await URLSession.shared.data(for: signInRequest)
         guard let http = response as? HTTPURLResponse else { throw APIError.decoding }
         guard (200..<300).contains(http.statusCode) else {
-            throw APIError.message(http.statusCode == 401 ? "Invalid email or password." : "Sign-in failed (\(http.statusCode)).")
+            if http.statusCode == 401 { throw APIError.message("Invalid email or password.") }
+            let serverMessage = (try? JSONDecoder().decode(ServerError.self, from: data))?.text
+            let target = signInRequest.url?.absoluteString ?? "?"
+            throw APIError.message("\(http.statusCode) @ \(target): \(serverMessage ?? "no message")")
         }
         if let header = http.value(forHTTPHeaderField: "set-auth-token"), !header.isEmpty {
             return header
@@ -185,6 +187,16 @@ actor APIClient {
     }
 
     private struct TokenBody: Decodable { let token: String? }
+}
+
+struct ServerError: Decodable, Sendable {
+    let text: String?
+    enum CodingKeys: String, CodingKey { case message, error }
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        text = (try? container.decode(String.self, forKey: .message))
+            ?? (try? container.decode(String.self, forKey: .error))
+    }
 }
 
 struct SessionEnvelope: Decodable, Sendable {
