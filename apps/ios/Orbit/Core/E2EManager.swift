@@ -141,6 +141,15 @@ final class E2EManager: ObservableObject {
         return scaled.jpegData(compressionQuality: 0.8)
     }
 
+    /// Encrypt a node name under the account meta key, returning a non-revealing plaintext
+    /// placeholder + the encrypted name (nil encrypted when locked → caller sends the raw name).
+    func encryptName(_ name: String) -> (placeholder: String, encrypted: String?) {
+        guard let metaKey, let sealed = try? OrbitCrypto.secretboxSeal(Data(name.utf8), key: metaKey) else {
+            return (name, nil)
+        }
+        return ("enc-\(UUID().uuidString)", OrbitCrypto.toBase64(sealed))
+    }
+
     /// Decrypt an account-meta-key blob (encrypted names, EXIF, locations).
     func decryptMeta(_ base64: String?) -> Data? {
         guard let base64, let metaKey, let blob = try? OrbitCrypto.fromBase64(base64) else { return nil }
