@@ -1,19 +1,22 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { Geist } from "next/font/google"
+import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 
-const geist = Geist({ subsets: ["latin"] })
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export const metadata: Metadata = {
   title: "Orbit — your private home for everything",
   description:
-    "Self-hosted, end-to-end encrypted Photos, Drive, Docs and more — one private suite you run yourself.",
+    "Open-source, self-hosted, end-to-end encrypted Photos, Drive and Docs — one private suite you run yourself.",
 }
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
-  <html lang="en">
-    <body className={geist.className}>{children}</body>
+  <html lang="en" className="dark">
+    <body className={`${geist.variable} ${geistMono.variable} ${geist.className} antialiased`}>
+      {children}
+    </body>
   </html>
 )
 

@@ -1,17 +1,5 @@
 @import "@workspace/ui/globals.css";
 
-/* Marketing dark palette: deep near-black with the app's brand blue. */
-:root {
-  --background: #0a0a0d;
-  --foreground: #fafafa;
-  --card: #161619;
-  --muted: #1b1b1f;
-  --muted-foreground: #a1a1aa;
-  --border: rgb(255 255 255 / 10%);
-  --primary: #288dff;
-  --primary-foreground: #ffffff;
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -22,9 +10,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Giant outlined wordmark used in the footer. */
 .wordmark {
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   line-height: 0.8;
+}
+
+/* Flatten the primary button on the marketing site: solid fill, no gradient/inset/edge ring. */
+.btn-primary {
+  background-image: none;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
 }
