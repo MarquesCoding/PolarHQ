@@ -5,7 +5,7 @@ struct ScreenScaffold<Content: View, Trailing: View>: View {
     let title: String
     @ViewBuilder var trailing: () -> Trailing
     @ViewBuilder var content: () -> Content
-    @EnvironmentObject private var state: AppState
+    @Environment(\.dismiss) private var dismiss
 
     init(
         title: String,
@@ -19,23 +19,17 @@ struct ScreenScaffold<Content: View, Trailing: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 14) {
+            HStack(spacing: 12) {
+                Button { dismiss() } label: {
+                    Image(systemName: "chevron.backward")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(Theme.primary)
+                }
                 Text(title)
                     .font(.largeTitle.weight(.bold))
                     .foregroundStyle(Theme.foreground)
                 Spacer()
                 trailing()
-                Menu {
-                    if let email = state.user?.email {
-                        Text(email)
-                    }
-                    Button("Sign out", role: .destructive) { state.signOut() }
-                    Button("Change server") { state.changeServer() }
-                } label: {
-                    Image(systemName: "person.crop.circle.fill")
-                        .font(.system(size: 28))
-                        .foregroundStyle(Theme.mutedForeground)
-                }
             }
             .padding(.horizontal, 20)
             .padding(.top, 8)

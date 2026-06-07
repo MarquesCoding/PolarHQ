@@ -1,16 +1,8 @@
 import SwiftUI
 
-/// Drive also hosts documents, sheets and presentations (no dedicated tabs — they live here).
+/// A Drive folder browser. Pushed from Home; subfolders push deeper within the same
+/// navigation stack. Drive also hosts documents/sheets/presentations (no separate apps).
 struct DriveView: View {
-    var body: some View {
-        NavigationStack {
-            DriveFolderView(parentId: nil, title: "Drive")
-        }
-        .tint(Theme.primary)
-    }
-}
-
-private struct DriveFolderView: View {
     let parentId: String?
     let title: String
 
@@ -59,7 +51,7 @@ private struct DriveFolderView: View {
     private func row(_ node: DriveNode) -> some View {
         if node.isFolder {
             NavigationLink {
-                DriveFolderView(parentId: node.id, title: displayName(node))
+                DriveView(parentId: node.id, title: displayName(node))
             } label: {
                 rowLabel(node)
             }

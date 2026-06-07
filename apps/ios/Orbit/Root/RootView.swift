@@ -12,7 +12,7 @@ struct RootView: View {
             case .signIn:
                 SignInView()
             case .authenticated:
-                MainTabView()
+                HomeView()
             }
         }
         .animation(.smooth(duration: 0.3), value: state.phase)
