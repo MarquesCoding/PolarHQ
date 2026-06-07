@@ -6,7 +6,6 @@ struct ScreenScaffold<Content: View, Trailing: View>: View {
     @ViewBuilder var trailing: () -> Trailing
     @ViewBuilder var content: () -> Content
     @EnvironmentObject private var state: AppState
-    @EnvironmentObject private var e2e: E2EManager
 
     init(
         title: String,
@@ -30,14 +29,8 @@ struct ScreenScaffold<Content: View, Trailing: View>: View {
                     if let email = state.user?.email {
                         Text(email)
                     }
-                    Button("Sign out", role: .destructive) {
-                        e2e.reset()
-                        state.signOut()
-                    }
-                    Button("Change server") {
-                        e2e.reset()
-                        state.changeServer()
-                    }
+                    Button("Sign out", role: .destructive) { state.signOut() }
+                    Button("Change server") { state.changeServer() }
                 } label: {
                     Image(systemName: "person.crop.circle.fill")
                         .font(.system(size: 28))

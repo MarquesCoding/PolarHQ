@@ -49,7 +49,7 @@ struct PhotosView: View {
                         }
                     }
                     .padding(.horizontal, 12)
-                    .padding(.bottom, 110)
+                    .padding(.bottom, 8)
                 }
             }
         }
@@ -119,7 +119,6 @@ private struct PhotoTileView: View {
                     .padding(5)
             }
         }
-        .aspectRatio(1, contentMode: .fill)
         .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
     }
 

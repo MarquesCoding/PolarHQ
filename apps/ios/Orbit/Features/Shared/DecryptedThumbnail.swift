@@ -10,19 +10,24 @@ struct DecryptedThumbnail: View {
     @State private var image: UIImage?
 
     var body: some View {
-        ZStack {
-            Rectangle().fill(Theme.card)
-            if let image {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-            } else {
-                Image(systemName: placeholderIcon)
-                    .font(.system(size: 18))
-                    .foregroundStyle(Theme.mutedForeground)
+        Color.clear
+            .aspectRatio(1, contentMode: .fit)
+            .overlay {
+                if let image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    ZStack {
+                        Theme.card
+                        Image(systemName: placeholderIcon)
+                            .font(.system(size: 18))
+                            .foregroundStyle(Theme.mutedForeground)
+                    }
+                }
             }
-        }
-        .task(id: asset.id) { await load() }
+            .clipped()
+            .task(id: asset.id) { await load() }
     }
 
     private var placeholderIcon: String {

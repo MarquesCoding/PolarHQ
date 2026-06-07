@@ -5,11 +5,17 @@ Native SwiftUI client for a self-hosted Orbit instance. Targets **iOS 26**.
 ## Build
 
 ```bash
-brew install xcodegen        # one-time
+brew install xcodegen pkg-config libsodium   # one-time
 cd apps/ios
 xcodegen generate            # writes Orbit.xcodeproj (gitignored)
 open Orbit.xcodeproj          # build + run in Xcode 26
 ```
+
+> **Important:** `pkg-config` + `libsodium` are required. swift-sodium declares a
+> `systemLibrary` target whose pkg-config probe will **hang the build indefinitely**
+> ("Building targets…" with no progress) if they're missing. The iOS app links the
+> prebuilt `Clibsodium.xcframework`, not the system lib — these are only needed to
+> satisfy the package-graph probe.
 
 The `.xcodeproj` is generated from `project.yml`; edit `project.yml`, not the
 project file, and re-run `xcodegen generate`.
