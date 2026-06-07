@@ -39,6 +39,7 @@ final class E2EManager: ObservableObject {
 
     /// On launch / after sign-in: restore cached keys, else determine whether the user is enrolled.
     func bootstrap(client: APIClient) async {
+        if state == .unlocked { return }
         if let pub = Keychain.get(Key.publicKey),
            let priv = Keychain.get(Key.privateKey),
            let publicKey = try? OrbitCrypto.fromBase64(pub),

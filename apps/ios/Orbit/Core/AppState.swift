@@ -15,6 +15,7 @@ final class AppState: ObservableObject {
     @Published private(set) var user: SessionUser?
     @Published var lastError: String?
 
+    let e2e = E2EManager()
     private var token: String?
     private var client: APIClient?
 
@@ -65,25 +66,27 @@ final class AppState: ObservableObject {
             self.token = token
             Keychain.set(token, for: Key.token)
             user = try await client.currentUser()
+            _ = await e2e.unlock(password: password, client: client)
             phase = .authenticated
         } catch {
             lastError = error.localizedDescription
         }
     }
 
+    /// On launch with a cached token, trust the stored session and restore the unlocked keys.
+    /// User refresh is best-effort — a transient failure must NOT sign the user out (only an
+    /// explicit, user-initiated sign-out or a server-rejected request should).
     func restoreSession() async {
         guard phase == .authenticated, let client else { return }
-        do {
-            user = try await client.currentUser()
-        } catch {
-            signOut()
-        }
+        await e2e.bootstrap(client: client)
+        user = try? await client.currentUser()
     }
 
     func signOut() {
         token = nil
         user = nil
         Keychain.set(nil, for: Key.token)
+        e2e.reset()
         Task { await client?.setToken(nil) }
         if serverURL != nil { phase = .signIn }
     }

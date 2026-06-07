@@ -38,7 +38,6 @@ private struct DriveFolderView: View {
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
-                .contentMargins(.bottom, 96, for: .scrollContent)
             }
         }
         .background(Theme.background.ignoresSafeArea())

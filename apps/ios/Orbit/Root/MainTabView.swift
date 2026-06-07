@@ -3,24 +3,22 @@ import SwiftUI
 struct MainTabView: View {
     @EnvironmentObject private var state: AppState
     @EnvironmentObject private var e2e: E2EManager
-    @State private var selection: OrbitTab = .photos
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Group {
-                switch selection {
-                case .photos: PhotosView()
-                case .drive: DriveView()
-                case .passwords: PasswordsView()
-                case .authenticator: AuthenticatorView()
-                }
+        TabView {
+            Tab("Photos", systemImage: "photo.stack.fill") {
+                PhotosView()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            FloatingTabBar(selection: $selection)
-                .padding(.bottom, 6)
+            Tab("Drive", systemImage: "folder.fill") {
+                DriveView()
+            }
+            Tab("Passwords", systemImage: "key.fill") {
+                PasswordsView()
+            }
+            Tab("Authenticator", systemImage: "lock.shield.fill") {
+                AuthenticatorView()
+            }
         }
-        .background(Theme.background.ignoresSafeArea())
         .task {
             if let client = state.api() { await e2e.bootstrap(client: client) }
         }
