@@ -20,69 +20,185 @@ final class PhotosViewModel: ObservableObject {
     }
 }
 
+private enum PhotosTab {
+    case library
+    case collections
+}
+
+/// Immersive, Apple-Photos-style library: full-bleed grid with pinch-to-zoom density and
+/// floaty Liquid-Glass chrome (Library/Collections pill + Search), pushed from Home.
 struct PhotosView: View {
     @EnvironmentObject private var state: AppState
     @EnvironmentObject private var e2e: E2EManager
     @EnvironmentObject private var live: LiveEvents
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var model = PhotosViewModel()
+
+    @State private var tab: PhotosTab = .library
     @State private var viewer: ViewerSeed?
     @State private var picks: [PhotosPickerItem] = []
     @State private var uploading = false
+    @AppStorage("photos.gridCount") private var gridCount = 3
+    @State private var pinchBase: Int?
 
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 3), count: 3)
+    private let spacing: CGFloat = 2
 
     var body: some View {
-        ScreenScaffold(title: "Photos", trailing: { uploadButton }) {
-            if model.loading && model.assets.isEmpty {
-                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let error = model.error {
-                ComingSoon(icon: "exclamationmark.triangle", message: error)
-            } else if model.assets.isEmpty {
-                ComingSoon(icon: "photo.on.rectangle", message: "No photos yet.")
+        ZStack(alignment: .bottom) {
+            Theme.background.ignoresSafeArea()
+
+            if tab == .library {
+                libraryGrid
             } else {
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 3) {
-                        ForEach(Array(model.assets.enumerated()), id: \.element.id) { offset, asset in
-                            Button { viewer = ViewerSeed(index: offset) } label: {
-                                PhotoTileView(asset: asset)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.bottom, 8)
-                }
+                ComingSoon(icon: "rectangle.stack", message: "Albums & collections are coming soon.")
             }
+
+            topChrome
+            bottomChrome
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
         .task { await model.load(state.api()) }
-        .refreshable { await model.load(state.api()) }
+        .onChange(of: live.photosTick) { Task { await model.load(state.api()) } }
+        .onChange(of: picks) { _, items in
+            guard !items.isEmpty else { return }
+            Task { await upload(items) }
+        }
         .fullScreenCover(item: $viewer) { seed in
             PhotoViewer(assets: model.assets, index: seed.index) {
                 Task { await model.load(state.api()) }
             }
         }
-        .onChange(of: picks) { _, items in
-            guard !items.isEmpty else { return }
-            Task { await upload(items) }
+    }
+
+    private var columns: [GridItem] {
+        Array(repeating: GridItem(.flexible(), spacing: spacing), count: gridCount)
+    }
+
+    private var libraryGrid: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: spacing) {
+                ForEach(Array(model.assets.enumerated()), id: \.element.id) { offset, asset in
+                    Button { viewer = ViewerSeed(index: offset) } label: {
+                        PhotoTileView(asset: asset, compact: gridCount >= 6)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, spacing)
+            .padding(.top, 96)
+            .padding(.bottom, 110)
         }
-        .onChange(of: live.photosTick) {
-            Task { await model.load(state.api()) }
+        .scrollIndicators(.hidden)
+        .refreshable { await model.load(state.api()) }
+        .gesture(
+            MagnifyGesture()
+                .onChanged { value in
+                    let base = pinchBase ?? gridCount
+                    if pinchBase == nil { pinchBase = gridCount }
+                    gridCount = min(10, max(1, Int((Double(base) / value.magnification).rounded())))
+                }
+                .onEnded { _ in pinchBase = nil }
+        )
+        .overlay {
+            if model.loading && model.assets.isEmpty {
+                ProgressView()
+            } else if model.assets.isEmpty {
+                ComingSoon(icon: "photo.on.rectangle", message: "No photos yet.")
+            }
         }
     }
 
-    private var uploadButton: some View {
-        PhotosPicker(selection: $picks, matching: .images, photoLibrary: .shared()) {
-            if uploading {
-                ProgressView().tint(Theme.primary)
-            } else {
-                Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 26))
-                    .foregroundStyle(Theme.primary)
+    private var topChrome: some View {
+        VStack {
+            HStack(alignment: .center) {
+                Button { dismiss() } label: {
+                    Image(systemName: "chevron.backward")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(Theme.foreground)
+                        .frame(width: 38, height: 38)
+                        .glassEffect(in: .circle)
+                }
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Library").font(.title2.weight(.bold))
+                    if let date = model.assets.first?.takenAt ?? model.assets.first?.createdAt {
+                        Text(prettyDate(date))
+                            .font(.footnote)
+                            .foregroundStyle(Theme.mutedForeground)
+                    }
+                }
+                .foregroundStyle(Theme.foreground)
+                .padding(.leading, 4)
+
+                Spacer()
+
+                PhotosPicker(selection: $picks, matching: .images, photoLibrary: .shared()) {
+                    Group {
+                        if uploading { ProgressView() } else { Image(systemName: "plus") }
+                    }
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Theme.foreground)
+                    .frame(width: 38, height: 38)
+                    .glassEffect(in: .circle)
+                }
+                .disabled(uploading || e2e.state != .unlocked)
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            Spacer()
+        }
+    }
+
+    private var bottomChrome: some View {
+        HStack {
+            GlassEffectContainer(spacing: 10) {
+                HStack(spacing: 4) {
+                    segment("Library", tab: .library)
+                    segment("Collections", tab: .collections)
+                }
+                .padding(4)
+                .glassEffect(in: .capsule)
+            }
+            Spacer()
+            Button {
+            } label: {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(Theme.foreground)
+                    .frame(width: 52, height: 52)
+                    .glassEffect(in: .circle)
             }
         }
-        .disabled(uploading || e2e.state != .unlocked)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
+    }
+
+    private func segment(_ title: String, tab value: PhotosTab) -> some View {
+        Button {
+            withAnimation(.snappy) { tab = value }
+        } label: {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(tab == value ? Theme.primaryForeground : Theme.foreground)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 9)
+                .background {
+                    if tab == value {
+                        Capsule().fill(Theme.primary)
+                    }
+                }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func prettyDate(_ iso: String) -> String {
+        let parser = ISO8601DateFormatter()
+        parser.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let date = parser.date(from: iso) ?? ISO8601DateFormatter().date(from: iso)
+        guard let date else { return "" }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMM yyyy"
+        return formatter.string(from: date)
     }
 
     private func upload(_ items: [PhotosPickerItem]) async {
@@ -106,26 +222,26 @@ private struct ViewerSeed: Identifiable {
 
 private struct PhotoTileView: View {
     let asset: PhotoAsset
+    let compact: Bool
 
     var body: some View {
         ZStack {
             DecryptedThumbnail(asset: asset)
 
-            if asset.stackCount > 1 {
+            if asset.stackCount > 1 && !compact {
                 badge("square.stack.3d.up.fill", text: "\(asset.stackCount)")
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                    .padding(5)
+                    .padding(4)
             }
-            if asset.isFavorite {
+            if asset.isFavorite && !compact {
                 Image(systemName: "heart.fill")
-                    .font(.system(size: 11))
+                    .font(.system(size: 10))
                     .foregroundStyle(.white)
                     .shadow(radius: 1)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
-                    .padding(5)
+                    .padding(4)
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
     }
 
     private func badge(_ icon: String, text: String) -> some View {
