@@ -267,4 +267,6 @@ struct PhotoAsset: Decodable, Identifiable, Sendable {
     let motion: Bool
     let stackCount: Int
     let isFavorite: Bool
+    let takenAt: String?
+    let createdAt: String?
 }
