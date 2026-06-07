@@ -37,7 +37,7 @@ interface MacWindowProps {
 }
 
 const MacWindow = ({ populated = true }: MacWindowProps) => (
-  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[18px] border border-black/40 bg-[#0e0e11] shadow-2xl ring-1 ring-white/10">
+  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[18px] border border-white/10 bg-[#0e0e11] shadow-2xl ring-1 ring-white/10">
     <div className="flex items-center gap-1.5 px-4 py-3">
       <span className="size-2.5 rounded-full bg-[#ff5f57]" />
       <span className="size-2.5 rounded-full bg-[#febc2e]" />

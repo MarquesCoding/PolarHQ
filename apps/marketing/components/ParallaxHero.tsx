@@ -37,7 +37,7 @@ const FloatingPhoto = ({ progress, cfg }: { progress: MotionValue<number>; cfg: 
 
   return (
     <motion.div
-      className="absolute top-1/2 left-1/2 rounded-2xl shadow-xl ring-1 ring-black/5"
+      className="absolute top-1/2 left-1/2 rounded-2xl shadow-xl ring-1 ring-white/10"
       style={{
         x,
         y,
@@ -84,8 +84,8 @@ const ParallaxHero = () => {
             Self-hosted Photos, Drive, Docs and more — end-to-end encrypted, and entirely yours.
           </p>
           <div className="mt-8 flex items-center justify-center gap-3">
-            <Button size="lg" className="rounded-full px-6">Get started</Button>
-            <Button size="lg" variant="ghost" className="rounded-full px-6">View on GitHub</Button>
+            <Button size="lg" className="px-6">Get started</Button>
+            <Button size="lg" variant="ghost" className="px-6">View on GitHub</Button>
           </div>
         </motion.div>
 

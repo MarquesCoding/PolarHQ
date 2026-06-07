@@ -9,7 +9,7 @@ const COLUMNS = [
 ]
 
 const Footer = () => (
-  <footer className="relative overflow-hidden border-t border-black/5 pt-24">
+  <footer className="relative overflow-hidden border-t border-white/10 pt-24">
     <div className="mx-auto max-w-4xl px-6 text-center">
       <h2 className="text-foreground text-4xl font-extrabold tracking-tight sm:text-6xl">
         Take back your cloud.
@@ -18,8 +18,8 @@ const Footer = () => (
         Private by design, self-hosted by choice. Your data has a new home.
       </p>
       <div className="mt-8 flex justify-center gap-3">
-        <Button size="lg" className="rounded-full px-6">Get started free</Button>
-        <Button size="lg" variant="outline" className="rounded-full px-6">View on GitHub</Button>
+        <Button size="lg" className="px-6">Get started free</Button>
+        <Button size="lg" variant="outline" className="px-6">View on GitHub</Button>
       </div>
     </div>
 
@@ -54,7 +54,7 @@ const Footer = () => (
     </div>
 
     <div aria-hidden className="pointer-events-none mt-2 select-none overflow-hidden">
-      <div className="wordmark translate-y-[18%] text-center text-[26vw] text-black/[0.04]">Orbit</div>
+      <div className="wordmark translate-y-[18%] text-center text-[26vw] text-white/[0.05]">Orbit</div>
     </div>
   </footer>
 )
