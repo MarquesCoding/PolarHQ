@@ -51,3 +51,6 @@ next-env.d.ts
 # editors
 .idea/
 *.iml
+/PLAN.md
+/AGENTS.md
+/docs/
