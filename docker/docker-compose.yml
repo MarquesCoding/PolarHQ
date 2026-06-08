@@ -139,18 +139,39 @@ services:
     restart: unless-stopped
 
   # Single front door. Publish on whatever port you like via HTTP_PORT.
+  # The Caddyfile is embedded below (configs) so there's nothing to bind-mount —
+  # this whole file is self-contained and pastes straight into Dockge/Portainer.
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
     ports:
       - "${HTTP_PORT:-8080}:80"
+    configs:
+      - source: caddyfile
+        target: /etc/caddy/Caddyfile
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
       - caddy-config:/config
     depends_on:
       - web
       - api
+
+configs:
+  caddyfile:
+    content: |
+      {
+      	admin off
+      	auto_https off
+      }
+      :80 {
+      	@api path /api/* /ws /ws/* /health /_sodium.js /s/*
+      	handle @api {
+      		reverse_proxy api:3001
+      	}
+      	handle {
+      		reverse_proxy web:3000
+      	}
+      }
 
 volumes:
   postgres-data:
