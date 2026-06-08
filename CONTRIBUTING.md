@@ -15,8 +15,8 @@ PolarHQ is alpha software and moving quickly — issues, ideas, and pull request
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/MarquesCoding/Orbit.git
-cd Orbit
+git clone https://github.com/MarquesCoding/PolarHQ.git
+cd PolarHQ
 pnpm install
 
 # 2. Bring up local infrastructure (Postgres + Redis + MinIO)
@@ -93,7 +93,7 @@ Keep each commit focused and the summary in the imperative mood.
 
 ## Reporting bugs and ideas
 
-Open a [GitHub issue](https://github.com/MarquesCoding/Orbit/issues) with clear steps to
+Open a [GitHub issue](https://github.com/MarquesCoding/PolarHQ/issues) with clear steps to
 reproduce, what you expected, and what happened. Feature ideas and design feedback are
 welcome too — check the [roadmap](https://polarhq.app/roadmap) first to see what's planned.
 
