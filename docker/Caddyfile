@@ -1,0 +1,19 @@
+# PolarHQ front door. Everything is served from one origin/port, so the browser
+# only ever talks to this proxy — no CORS, and the deploy port can be anything.
+{
+	admin off
+	auto_https off
+}
+
+:80 {
+	# API, realtime relay, health, the sodium asset and share links -> api service
+	@api path /api/* /ws /ws/* /health /_sodium.js /s/*
+	handle @api {
+		reverse_proxy api:3001
+	}
+
+	# Everything else -> the web app
+	handle {
+		reverse_proxy web:3000
+	}
+}
