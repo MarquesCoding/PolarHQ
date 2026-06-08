@@ -1,40 +1,96 @@
-"use client"
+import Image from "next/image"
+import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandX } from "@tabler/icons-react"
 
-import { Button } from "@workspace/ui/components/button"
-import { IconBrandGithub, IconDownload } from "@tabler/icons-react"
+interface Column {
+  title: string
+  links: string[]
+}
+
+const SOCIALS = [
+  { label: "GitHub", icon: IconBrandGithubFilled },
+  { label: "X", icon: IconBrandX },
+  { label: "Discord", icon: IconBrandDiscordFilled },
+]
+
+const COLUMNS: Column[] = [
+  { title: "Product", links: ["FAQ", "Blog", "Changelog", "Roadmap"] },
+  { title: "Open source", links: ["Open Collective", "Product Hunt"] },
+  { title: "Pages", links: ["Privacy", "Terms", "Waitlist"] },
+]
+
+const HREFS: Record<string, string> = {
+  Blog: "/blog",
+  Changelog: "/changelog",
+  Roadmap: "/roadmap",
+  Privacy: "/privacy",
+  Terms: "/terms",
+}
 
 const Footer = () => (
-  <footer className="relative mt-32 overflow-hidden">
-    <div className="mx-auto max-w-3xl px-6 text-center">
-      <h2 className="text-foreground text-4xl font-bold tracking-tight sm:text-5xl">
-        Take back your cloud.
-      </h2>
-      <p className="text-muted-foreground mx-auto mt-4 max-w-md text-lg">
-        Open source, self-hosted, and private by design.
-      </p>
-      <div className="mt-8 flex justify-center gap-3">
-        <Button size="lg" className="px-6">
-          <IconDownload className="size-4" />
-          Download
-        </Button>
-        <Button size="lg" variant="outline" className="px-6">
-          <IconBrandGithub className="size-4" />
-          GitHub
-        </Button>
+  <footer className="relative isolate overflow-hidden pt-24">
+    <div className="mx-auto max-w-6xl px-6">
+      <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
+        <div className="max-w-sm">
+          <div className="flex items-center gap-2">
+            <Image src="/logo.png" alt="PolarHQ" width={24} height={24} className="size-6" />
+            <span className="text-foreground text-base font-semibold tracking-tight">PolarHQ</span>
+          </div>
+          <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
+            A self-hosted home for your photos, files and documents. Open source, end to end
+            encrypted, and entirely yours to run. AGPL licensed.
+          </p>
+          <div className="mt-6 flex items-center gap-4">
+            {SOCIALS.map((social) => (
+              <a
+                key={social.label}
+                href="#"
+                aria-label={social.label}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <social.icon className="size-5" />
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-14 gap-y-10 sm:grid-cols-3">
+          {COLUMNS.map((column) => (
+            <div key={column.title}>
+              <h3 className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                {column.title}
+              </h3>
+              <ul className="mt-4 flex flex-col gap-3">
+                {column.links.map((link) => (
+                  <li key={link}>
+                    <a
+                      href={HREFS[link] ?? "#"}
+                      className="text-foreground/80 hover:text-foreground text-[15px] transition-colors"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
+
     </div>
 
-    <div className="border-border mx-auto mt-20 flex max-w-5xl flex-wrap items-center justify-between gap-4 border-t px-6 py-8 text-xs">
-      <span className="text-muted-foreground">© {new Date().getFullYear()} Orbit · AGPL</span>
-      <div className="text-muted-foreground flex gap-5">
-        <a href="#" className="hover:text-foreground transition-colors">GitHub</a>
-        <a href="#" className="hover:text-foreground transition-colors">Docs</a>
-        <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-      </div>
+    <div
+      aria-hidden
+      className="wordmark text-foreground/[0.04] pointer-events-none mt-10 -mb-[0.12em] w-full overflow-hidden text-center text-[18vw] leading-none whitespace-nowrap select-none"
+    >
+      PolarHQ
     </div>
 
-    <div aria-hidden className="pointer-events-none select-none overflow-hidden">
-      <div className="wordmark text-foreground/[0.04] translate-y-[22%] text-center text-[26vw]">Orbit</div>
+    <div className="mx-auto max-w-6xl px-6">
+      <div className="border-border/40 border-t py-6">
+        <span className="text-muted-foreground text-xs">
+          © {new Date().getFullYear()} PolarHQ. AGPL licensed.
+        </span>
+      </div>
     </div>
   </footer>
 )

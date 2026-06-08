@@ -1,0 +1,64 @@
+import type { Metadata } from "next"
+import PageShell from "@components/PageShell"
+import PageHero from "@components/PageHero"
+import PostBanner from "@components/PostBanner"
+import Markdown from "@components/Markdown"
+import ChangelogTimeline from "@components/ChangelogTimeline"
+import Reveal from "@components/Reveal"
+import { RELEASES } from "@lib/changelog"
+import { formatDate } from "@lib/format"
+
+export const metadata: Metadata = {
+  title: "Changelog — PolarHQ",
+  description: "Every release of PolarHQ, newest first.",
+}
+
+const ChangelogPage = () => (
+  <PageShell
+    className="max-w-3xl"
+    hero={
+      <PageHero
+        eyebrow={`Now on Alpha v${RELEASES[0]?.version}`}
+        title="Changelog"
+        subtitle="Everything we've shipped, newest first."
+      />
+    }
+  >
+    <ChangelogTimeline versions={RELEASES.map((r) => ({ version: r.version, date: r.date }))} />
+
+    <div className="space-y-20">
+      {RELEASES.map((release) => (
+        <Reveal key={release.version}>
+        <section id={`v${release.version}`} className="scroll-mt-28">
+          <PostBanner eyebrow={`Alpha v${release.version}`} className="mb-8" />
+
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <span className="rounded-md bg-blue-500/15 px-2 py-0.5 text-xs font-medium text-blue-300">
+              v{release.version}
+            </span>
+            <span className="text-muted-foreground text-sm">{formatDate(release.date)}</span>
+            <div className="flex flex-wrap gap-2">
+              {release.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="border-border/60 text-muted-foreground rounded-md border px-2 py-0.5 text-[11px]"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <h2 className="text-foreground mb-6 text-2xl font-semibold tracking-tight">
+            {release.title}
+          </h2>
+
+          <Markdown>{release.content}</Markdown>
+        </section>
+        </Reveal>
+      ))}
+    </div>
+  </PageShell>
+)
+
+export default ChangelogPage

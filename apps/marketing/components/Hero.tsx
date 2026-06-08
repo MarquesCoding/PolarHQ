@@ -1,72 +1,147 @@
 "use client"
 
-import { motion } from "motion/react"
+import { type Variants, motion } from "motion/react"
 import { Button } from "@workspace/ui/components/button"
-import { IconDownload } from "@tabler/icons-react"
+import {
+  IconBrandAndroid,
+  IconBrandAppleFilled,
+  IconBrandGithubFilled,
+  IconBrandUbuntu,
+  IconBrandWindowsFilled,
+  IconWorld,
+} from "@tabler/icons-react"
 
-const Hero = () => (
-  <section className="relative overflow-hidden">
-    {/* Subtle brand glow on the app's dark background. */}
-    <div
-      className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[680px]"
-      style={{
-        background:
-          "radial-gradient(60% 60% at 50% -8%, rgba(40,141,255,0.28), transparent 70%)",
-      }}
-    />
+const container: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.25 } },
+}
 
-    <div className="mx-auto max-w-5xl px-6 pt-36 text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: "easeOut" }}
-      >
-        <div className="border-border bg-card text-muted-foreground inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[13px] font-medium">
-          <span className="bg-primary size-1.5 rounded-full" />
-          Open source · self-hosted · end-to-end encrypted
-        </div>
+const group: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.09 } },
+}
 
-        <h1 className="text-foreground mt-7 text-5xl font-bold tracking-tight sm:text-7xl">
-          Your private home
-          <br />
-          for{" "}
-          <span className="font-display bg-gradient-to-b from-[#5aa9ff] to-[#1f7ce8] bg-clip-text text-[1.1em] font-normal italic text-transparent">
-            everything.
-          </span>
-        </h1>
+const item: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 0.61, 0.36, 1] } },
+}
 
-        <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-lg">
-          Photos, Drive and Docs — beautifully together, and completely yours.
-        </p>
-
-        <div className="mt-9 flex items-center justify-center gap-3">
-          <Button size="lg" className="px-6">
-            <IconDownload className="size-4" />
-            Download
-          </Button>
-          <Button size="lg" variant="outline" className="px-6">
-            Get started
-          </Button>
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 60, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1], delay: 0.15 }}
-        className="relative mx-auto mt-16 w-full max-w-5xl"
-      >
-        <div
-          className="ring-border relative overflow-hidden rounded-2xl shadow-[0_50px_120px_-30px_rgba(0,0,0,0.8)] ring-1"
-          style={{ aspectRatio: "1001 / 342" }}
+const Hero = () => {
+  return (
+    <section className="relative isolate flex h-svh flex-col overflow-hidden">
+      {/* Autoplaying product demo as a background whose corners round in on load. */}
+      <div className="pointer-events-none absolute inset-0 -z-10 p-4 sm:p-5">
+        <motion.div
+          initial={{ borderRadius: 0 }}
+          animate={{ borderRadius: 6 }}
+          transition={{ duration: 0.9, ease: [0.22, 0.61, 0.36, 1] }}
+          className="relative h-full w-full overflow-hidden"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/screen.png" alt="The Orbit Photos app" className="block w-full" draggable={false} />
-          <div className="to-background pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent" />
-        </div>
+          <video
+            src="/player.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            className="h-full w-full object-cover"
+          />
+          {/* Scrims so the headline and controls stay readable over the bright video. */}
+          <div className="from-background/45 via-background/15 to-background/80 absolute inset-0 bg-gradient-to-b" />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "radial-gradient(56% 48% at 50% 44%, rgba(0,0,0,0.34), transparent 72%)",
+            }}
+          />
+          <p className="text-foreground/35 absolute right-4 bottom-3 text-[11px] tracking-wide">
+            Artwork from Planet of Lana (2023)
+          </p>
+        </motion.div>
+      </div>
+
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="mx-auto flex max-w-5xl flex-1 flex-col items-center justify-center px-6 text-center [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]"
+      >
+        <motion.div
+          variants={item}
+          className="border-border/70 bg-background/70 text-foreground/80 inline-flex items-center rounded-full border px-3 py-1 text-[13px] font-medium backdrop-blur"
+        >
+          Open source · self-hosted · end-to-end encrypted
+        </motion.div>
+
+        <motion.h1
+          variants={item}
+          className="text-foreground mt-7 text-5xl font-medium leading-16 tracking-tight sm:text-7xl"
+        >
+          Your digital life,
+          <br />
+          under your{" "}
+          <span className="text-blue-400 italic" style={{ fontFamily: "var(--font-serif)" }}>
+            control
+          </span>
+          .
+        </motion.h1>
+
+        <motion.p variants={item} className="text-foreground/90 mx-auto mt-6 max-w-2xl text-lg">
+          A modern home for your photos, files, and documents, built around ownership instead of
+          lock-in.
+        </motion.p>
+
+        <motion.div
+          variants={group}
+          className="mt-9 flex flex-col items-center gap-5 [text-shadow:none]"
+        >
+          <motion.div
+            variants={group}
+            className="flex flex-col items-center gap-3 sm:flex-row"
+          >
+            <motion.div variants={item}>
+              <Button
+                size="lg"
+                className="gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-white shadow-sm backdrop-blur hover:bg-white/20"
+              >
+                <IconBrandAppleFilled className="size-4" />
+                Download for Mac
+              </Button>
+            </motion.div>
+            <motion.div variants={item}>
+              <Button
+                size="lg"
+                className="gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-white shadow-sm backdrop-blur hover:bg-white/20"
+              >
+                <IconBrandGithubFilled className="size-4" />
+                Star on GitHub
+              </Button>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            variants={item}
+            className="text-foreground/55 flex items-center gap-3 text-sm"
+          >
+            <span>Alpha v0.1.0</span>
+            <span aria-hidden className="bg-foreground/25 h-3 w-px" />
+            <span>macOS 12+</span>
+          </motion.div>
+
+          <motion.div
+            variants={item}
+            className="text-foreground/55 flex items-center gap-6"
+          >
+            <IconBrandAppleFilled className="size-[18px]" />
+            <IconBrandWindowsFilled className="size-[18px]" />
+            <IconBrandUbuntu className="size-[18px]" />
+            <IconBrandAndroid className="size-[18px]" />
+            <IconWorld className="size-[18px]" />
+          </motion.div>
+        </motion.div>
       </motion.div>
-    </div>
-  </section>
-)
+    </section>
+  )
+}
 
 export default Hero
