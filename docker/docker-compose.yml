@@ -1,13 +1,11 @@
-# PolarHQ — production all-in-one stack. Self-contained: no .env file required.
-#
+# PolarHQ — production all-in-one stack. Self-contained: no .env file, no
+# bind-mounts. Paste this straight into Dockge / Portainer, or run:
 #   docker compose -f docker/docker-compose.yml up -d
-#   (or paste this whole file into Dockge / Portainer)
 #
-# >>> BEFORE YOU DEPLOY, change two things below:
-#       1. AUTH_SECRET   — replace the placeholder (run: openssl rand -base64 32)
-#       2. PUBLIC_URL    — set to how you'll reach it, e.g. http://<host>:8080
-# Everything else has sane defaults. Any value can still be overridden by an
-# environment variable / .env if you prefer (the ${VAR:-default} form).
+# >>> EDIT THESE BEFORE DEPLOYING:
+#   1. AUTH_SECRET (in x-app-env)  — generate your own:  openssl rand -base64 32
+#   2. API_URL / WEB_URL           — how you'll reach it: http://<host>:8080
+#   3. caddy "8080:80"             — change 8080 to expose a different port
 #
 # Bundles Postgres (pgvector), Redis and MinIO, runs migrations once, then
 # starts the API, the media + backup workers, and the web app.
@@ -15,19 +13,20 @@ name: polarhq
 
 x-app-env: &app-env
   NODE_ENV: production
-  APP_NAME: ${APP_NAME:-PolarHQ}
-  # !! CHANGE THIS !! generate your own: openssl rand -base64 32
-  AUTH_SECRET: ${AUTH_SECRET:-CHANGE_ME_generate_with_openssl_rand_base64_32}
-  API_URL: ${PUBLIC_URL:-http://localhost:8080}
-  WEB_URL: ${PUBLIC_URL:-http://localhost:8080}
-  DATABASE_URL: postgres://${POSTGRES_USER:-orbit}:${POSTGRES_PASSWORD:-orbit}@postgres:5432/${POSTGRES_DB:-orbit}
+  APP_NAME: PolarHQ
+  # !! CHANGE THIS !! generate your own:  openssl rand -base64 32
+  AUTH_SECRET: CHANGE_ME_generate_with_openssl_rand_base64_32
+  # !! CHANGE THESE !! to how you reach the app, e.g. http://192.168.1.50:8080
+  API_URL: http://localhost:8080
+  WEB_URL: http://localhost:8080
+  DATABASE_URL: postgres://orbit:orbit@postgres:5432/orbit
   REDIS_URL: redis://redis:6379
   STORAGE_DRIVER: s3
   S3_ENDPOINT: http://minio:9000
   S3_REGION: us-east-1
-  S3_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-orbitadmin}
-  S3_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-orbitadmin}
-  S3_BUCKET: ${S3_BUCKET:-orbit-media}
+  S3_ACCESS_KEY_ID: orbitadmin
+  S3_SECRET_ACCESS_KEY: orbitadmin
+  S3_BUCKET: orbit-media
   S3_FORCE_PATH_STYLE: "true"
 
 services:
@@ -35,13 +34,13 @@ services:
     image: pgvector/pgvector:pg17
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-orbit}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-orbit}
-      POSTGRES_DB: ${POSTGRES_DB:-orbit}
+      POSTGRES_USER: orbit
+      POSTGRES_PASSWORD: orbit
+      POSTGRES_DB: orbit
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-orbit} -d ${POSTGRES_DB:-orbit}"]
+      test: ["CMD-SHELL", "pg_isready -U orbit -d orbit"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -63,8 +62,8 @@ services:
     restart: unless-stopped
     command: ["server", "/data", "--console-address", ":9001"]
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-orbitadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-orbitadmin}
+      MINIO_ROOT_USER: orbitadmin
+      MINIO_ROOT_PASSWORD: orbitadmin
     volumes:
       - minio-data:/data
     healthcheck:
@@ -80,14 +79,14 @@ services:
         condition: service_healthy
     entrypoint: >
       /bin/sh -c "
-      mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-orbitadmin} ${MINIO_ROOT_PASSWORD:-orbitadmin};
-      mc mb --ignore-existing local/${S3_BUCKET:-orbit-media};
-      mc anonymous set none local/${S3_BUCKET:-orbit-media};
+      mc alias set local http://minio:9000 orbitadmin orbitadmin;
+      mc mb --ignore-existing local/orbit-media;
+      mc anonymous set none local/orbit-media;
       exit 0;
       "
 
   migrate:
-    image: ${APP_IMAGE:-ghcr.io/marquescoding/polarhq-app:latest}
+    image: ghcr.io/marquescoding/polarhq-app:latest
     command: ["pnpm", "--filter", "@workspace/db", "db:migrate"]
     environment: *app-env
     depends_on:
@@ -96,7 +95,7 @@ services:
     restart: "no"
 
   api:
-    image: ${APP_IMAGE:-ghcr.io/marquescoding/polarhq-app:latest}
+    image: ghcr.io/marquescoding/polarhq-app:latest
     environment: *app-env
     expose:
       - "3001"
@@ -112,7 +111,7 @@ services:
     restart: unless-stopped
 
   media:
-    image: ${APP_IMAGE:-ghcr.io/marquescoding/polarhq-app:latest}
+    image: ghcr.io/marquescoding/polarhq-app:latest
     command: ["pnpm", "--filter", "@workspace/media", "start"]
     environment: *app-env
     depends_on:
@@ -125,7 +124,7 @@ services:
     restart: unless-stopped
 
   backup:
-    image: ${APP_IMAGE:-ghcr.io/marquescoding/polarhq-app:latest}
+    image: ghcr.io/marquescoding/polarhq-app:latest
     command: ["pnpm", "--filter", "@workspace/backup", "start"]
     environment: *app-env
     depends_on:
@@ -136,7 +135,7 @@ services:
     restart: unless-stopped
 
   web:
-    image: ${WEB_IMAGE:-ghcr.io/marquescoding/polarhq-web:latest}
+    image: ghcr.io/marquescoding/polarhq-web:latest
     environment:
       NODE_ENV: production
     expose:
@@ -145,14 +144,13 @@ services:
       - api
     restart: unless-stopped
 
-  # Single front door. Publish on whatever port you like via HTTP_PORT.
-  # The Caddyfile is embedded below (configs) so there's nothing to bind-mount —
-  # this whole file is self-contained and pastes straight into Dockge/Portainer.
+  # Single front door. Change the published port here (8080) to whatever you want.
+  # The Caddyfile is embedded below (configs) so there's nothing to bind-mount.
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
     ports:
-      - "${HTTP_PORT:-8080}:80"
+      - "8080:80"
     configs:
       - source: caddyfile
         target: /etc/caddy/Caddyfile
