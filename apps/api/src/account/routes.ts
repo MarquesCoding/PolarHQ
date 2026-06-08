@@ -21,8 +21,8 @@ interface ParsedAgent {
 /** Best-effort, human-friendly device label from a User-Agent string. */
 const parseAgent = (ua: string | null | undefined): ParsedAgent => {
   const agent = ua ?? ""
-  if (/Orbit-iOS/i.test(agent)) return { label: "Orbit for iOS", platform: "ios" }
-  if (/Orbit-Android/i.test(agent)) return { label: "Orbit for Android", platform: "android" }
+  if (/Orbit-iOS/i.test(agent)) return { label: "PolarHQ for iOS", platform: "ios" }
+  if (/Orbit-Android/i.test(agent)) return { label: "PolarHQ for Android", platform: "android" }
 
   const browser = /Edg\//.test(agent)
     ? "Edge"

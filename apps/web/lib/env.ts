@@ -1,5 +1,5 @@
 /** Public client config. `APP_NAME` is the single source for the product name. */
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Orbit"
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "PolarHQ"
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 

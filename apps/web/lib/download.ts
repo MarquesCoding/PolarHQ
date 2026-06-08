@@ -76,6 +76,6 @@ export const downloadAssetsZip = (
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ assetIds }),
     },
-    "orbit-photos.zip",
+    "polarhq-photos.zip",
     onProgress,
   )

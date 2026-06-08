@@ -53,7 +53,7 @@ const Branding = () => {
             <Input
               id="instance-name"
               value={name}
-              placeholder="Orbit"
+              placeholder="PolarHQ"
               onChange={(event) => setName(event.target.value)}
             />
           </div>

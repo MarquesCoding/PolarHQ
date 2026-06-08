@@ -1,8 +1,10 @@
 "use client"
 
 import { type ComponentType, type DragEvent, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import logo from "../../public/logo.png"
 import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
 import { lockKeys } from "@lib/e2e"
@@ -10,7 +12,6 @@ import { Icon } from "@lib/icons"
 import { SPLIT_APP_MIME } from "@lib/splitView"
 import { useTheme } from "next-themes"
 import {
-  IconBolt,
   IconDeviceLaptop,
   IconHelp,
   IconLogout,
@@ -98,9 +99,9 @@ const GlobalActionBar = () => {
       <Link
         href="/"
         aria-label="Home"
-        className="bg-primary text-primary-foreground mb-2 flex size-9 items-center justify-center rounded-lg"
+        className="mb-2 flex size-9 items-center justify-center overflow-hidden rounded-lg"
       >
-        <IconBolt className="size-5" />
+        <Image src={logo} alt="PolarHQ" width={36} height={36} className="size-9" priority />
       </Link>
 
       <nav className="flex flex-col items-center gap-1">
