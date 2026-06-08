@@ -7,7 +7,14 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   -webkit-font-smoothing: antialiased;
+}
+
+/* Pure-black page for the landing site. */
+.dark {
+  --background: oklch(0 0 0);
 }
 
 .wordmark {
@@ -24,4 +31,146 @@ body {
 .btn-primary {
   background-image: none !important;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Rendered markdown — tuned to the pure-black landing theme. */
+.prose-polar {
+  color: color-mix(in oklch, var(--foreground) 82%, transparent);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+.prose-polar > :first-child {
+  margin-top: 0;
+}
+.prose-polar h2 {
+  color: var(--foreground);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-top: 2.75rem;
+  margin-bottom: 1rem;
+}
+.prose-polar h3 {
+  color: var(--foreground);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+.prose-polar h4 {
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.prose-polar p {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+}
+.prose-polar a {
+  color: var(--color-blue-400, #60a5fa);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklch, var(--color-blue-400, #60a5fa) 45%, transparent);
+}
+.prose-polar a:hover {
+  text-decoration-color: currentColor;
+}
+.prose-polar strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+.prose-polar ul,
+.prose-polar ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.3rem;
+}
+.prose-polar ul {
+  list-style: none;
+}
+.prose-polar ul > li {
+  position: relative;
+}
+.prose-polar ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1rem;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: color-mix(in oklch, var(--foreground) 35%, transparent);
+}
+.prose-polar ol {
+  list-style: decimal;
+}
+.prose-polar li {
+  margin: 0.35rem 0;
+  padding-left: 0.2rem;
+}
+.prose-polar li::marker {
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+.prose-polar blockquote {
+  margin: 1.5rem 0;
+  padding: 0.25rem 0 0.25rem 1.1rem;
+  border-left: 2px solid color-mix(in oklch, var(--color-blue-400, #60a5fa) 60%, transparent);
+  color: color-mix(in oklch, var(--foreground) 70%, transparent);
+  font-style: italic;
+}
+.prose-polar blockquote p {
+  margin: 0;
+}
+.prose-polar code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.85em;
+  background: color-mix(in oklch, var(--foreground) 9%, transparent);
+  border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  border-radius: 5px;
+  padding: 0.12em 0.4em;
+}
+.prose-polar pre {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.25rem;
+  background: oklch(0.16 0 0);
+  border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  border-radius: 12px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+.prose-polar pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+.prose-polar hr {
+  margin: 2.5rem 0;
+  border: 0;
+  border-top: 1px solid color-mix(in oklch, var(--foreground) 12%, transparent);
+}
+.prose-polar img {
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  margin: 1.5rem 0;
+}
+.prose-polar table {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.prose-polar th,
+.prose-polar td {
+  text-align: left;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+}
+.prose-polar th {
+  color: var(--foreground);
+  font-weight: 600;
 }
