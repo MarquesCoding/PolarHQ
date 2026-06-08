@@ -15,6 +15,13 @@
       "when": 1780602591648,
       "tag": "0001_complex_scourge",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780935903976,
+      "tag": "0002_daily_sabra",
+      "breakpoints": true
     }
   ]
 }
