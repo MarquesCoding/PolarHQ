@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-#
 # PolarHQ "web" image — builds the Next.js app and serves it with `next start`.
 # Build from the repo root:  docker build -f apps/web/Dockerfile .
 #

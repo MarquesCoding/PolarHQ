@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-#
 # PolarHQ "app" image — runs the API and the background workers (media, backup)
 # and the one-shot DB migration. Everything runs from source via tsx, so the
 # role is selected by overriding the container command (see docker-compose.yml).
