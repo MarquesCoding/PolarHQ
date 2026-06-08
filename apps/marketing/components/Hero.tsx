@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react"
 import { Button } from "@workspace/ui/components/button"
-import { IconBrandGithub, IconDownload } from "@tabler/icons-react"
+import { IconDownload } from "@tabler/icons-react"
 
 const Hero = () => (
   <section className="relative overflow-hidden">
@@ -29,12 +29,14 @@ const Hero = () => (
         <h1 className="text-foreground mt-7 text-5xl font-bold tracking-tight sm:text-7xl">
           Your private home
           <br />
-          for <span className="text-primary">everything.</span>
+          for{" "}
+          <span className="font-display bg-gradient-to-b from-[#5aa9ff] to-[#1f7ce8] bg-clip-text text-[1.1em] font-normal italic text-transparent">
+            everything.
+          </span>
         </h1>
 
         <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-lg">
-          Photos, Drive and Docs — encrypted on your device, running on your server. The whole
-          cloud, finally yours.
+          Photos, Drive and Docs — beautifully together, and completely yours.
         </p>
 
         <div className="mt-9 flex items-center justify-center gap-3">
@@ -43,12 +45,9 @@ const Hero = () => (
             Download
           </Button>
           <Button size="lg" variant="outline" className="px-6">
-            <IconBrandGithub className="size-4" />
             Get started
           </Button>
         </div>
-
-        <p className="text-muted-foreground mt-5 text-[13px]">Free &amp; open source · Self-host in minutes · AGPL</p>
       </motion.div>
 
       <motion.div

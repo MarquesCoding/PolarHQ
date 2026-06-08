@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { type ReactElement, useEffect, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
 import { decryptName } from "@lib/e2e"
-import { type GridAsset, assetOriginalUrl, favoriteAssets, trashAssets } from "@lib/photos"
+import { type GridAsset, assetOriginalUrl, favoriteAssets, sharePhoto, trashAssets } from "@lib/photos"
 import { fetchDecryptedMotionVideo, fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
@@ -14,6 +14,8 @@ import PhotoEditor from "@pages/Photos/components/PhotoEditor/PhotoEditor"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
+import ShareDialog from "@components/ShareDialog/ShareDialog"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 import { toast } from "sonner"
@@ -25,6 +27,14 @@ interface LightboxProps {
   onClose: () => void
 }
 
+/** A toolbar button with a hover tooltip (the buttons are icon-only and otherwise ambiguous). */
+const Tip = ({ label, children }: { label: string; children: ReactElement }) => (
+  <Tooltip>
+    <TooltipTrigger render={children} />
+    <TooltipContent>{label}</TooltipContent>
+  </Tooltip>
+)
+
 const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
   const queryClient = useQueryClient()
   const upload = useUploadManager()
@@ -33,6 +43,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
   const toggleInfo = () => setInfoPref(info ? 0 : 1)
   const deleteArmed = useRef(false)
   const [editing, setEditing] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
   const asset = assets[index]
   const zoom = useZoomPan(asset?.id)
 
@@ -244,71 +255,94 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
               <IconLivePhoto className="size-5" />
             </Button>
           ) : null}
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Favourite"
-            onClick={toggleFavourite}
-            className="rounded-full"
-          >
-            <Icon name="favourites" className={cn("size-5", asset.isFavorite && "text-primary")} />
-          </Button>
-          {asset.type === "image" ? (
+          <Tip label="Favourite">
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Edit image"
-              onClick={() => {
-                if (asset.encrypted && !decryptedSrc) {
-                  toast("Decrypting…")
-                  return
-                }
-                setEditing(true)
-              }}
+              aria-label="Favourite"
+              onClick={toggleFavourite}
               className="rounded-full"
             >
-              <Icon name="sliders" className="size-5" />
+              <Icon name="favourites" className={cn("size-5", asset.isFavorite && "text-primary")} />
             </Button>
+          </Tip>
+          {asset.type === "image" ? (
+            <Tip label="Edit">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Edit image"
+                onClick={() => {
+                  if (asset.encrypted && !decryptedSrc) {
+                    toast("Decrypting…")
+                    return
+                  }
+                  setEditing(true)
+                }}
+                className="rounded-full"
+              >
+                <Icon name="sliders" className="size-5" />
+              </Button>
+            </Tip>
           ) : null}
           {asset.type === "image" ? (
+            <Tip label="Copy">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Copy image"
+                onClick={copyImage}
+                className="rounded-full"
+              >
+                <Icon name="duplicate" className="size-5" />
+              </Button>
+            </Tip>
+          ) : null}
+          <Tip label="Share">
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Copy image"
-              onClick={copyImage}
+              aria-label="Share"
+              onClick={() => setShareOpen(true)}
               className="rounded-full"
             >
-              <Icon name="duplicate" className="size-5" />
+              <Icon name="share" className="size-5" />
             </Button>
-          ) : null}
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Download"
-            onClick={download}
-            className="rounded-full"
-          >
-            <Icon name="download" className="size-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Move to trash"
-            onClick={moveToTrash}
-            className="rounded-full"
-          >
-            <Icon name="trash" className="size-5" />
-          </Button>
+          </Tip>
+          <Tip label="Download">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Download"
+              onClick={download}
+              className="rounded-full"
+            >
+              <Icon name="download" className="size-5" />
+            </Button>
+          </Tip>
+          <Tip label="Move to trash">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Move to trash"
+              onClick={moveToTrash}
+              className="rounded-full"
+            >
+              <Icon name="trash" className="size-5" />
+            </Button>
+          </Tip>
           <span className="bg-border mx-0.5 h-5 w-px" />
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Info"
-            onClick={toggleInfo}
-            className={cn("rounded-full", info && "bg-muted")}
-          >
-            <Icon name="info" className="size-5" />
-          </Button>
+          <Tip label="Info">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Info"
+              onClick={toggleInfo}
+              className={cn("rounded-full", info && "bg-muted")}
+            >
+              <Icon name="info" className="size-5" />
+            </Button>
+          </Tip>
         </div>
         </div>
       </div>
@@ -436,6 +470,14 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
           />
         ) : null}
       </AnimatePresence>
+
+      <ShareDialog
+        name={displayName}
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        createLink={(options) => sharePhoto(asset.id, options)}
+        encryptKeyId={asset.encrypted ? asset.id : undefined}
+      />
     </motion.div>
   )
 }

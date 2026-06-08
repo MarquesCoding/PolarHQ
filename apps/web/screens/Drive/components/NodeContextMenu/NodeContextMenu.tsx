@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { type DriveNode, isArchiveName } from "@lib/drive"
 import { docTypeOf } from "@lib/docs"
+import { officeTypeForName } from "@lib/importFlow"
 import { is3DModelName } from "@lib/model3dExt"
 import {
   IconArrowsMove,
@@ -83,7 +84,7 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
           </>
         ) : (
           <>
-            {docTypeOf(node.mimeType) ? (
+            {docTypeOf(node.mimeType) || officeTypeForName(node.name) ? (
               <ContextMenuItem onClick={() => actions.open(node)}>
                 <IconExternalLink />
                 Open

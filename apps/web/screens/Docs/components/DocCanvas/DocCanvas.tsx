@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import Link from "next/link"
 import { authClient } from "@lib/authClient"
 import {
   CommentMark,
@@ -10,14 +11,17 @@ import {
 } from "@lib/commentMark"
 import { secretboxSeal } from "@lib/crypto"
 import { renameDriveNode } from "@lib/drive"
+import { FontSize, Indent, LineHeight } from "@lib/docExtensions"
 import { safeLinkOptions } from "@lib/editorConfig"
 import { type DocMeta, saveDocContent } from "@lib/docs"
 import { encryptNameWith } from "@lib/e2e"
 import { imageFilesFrom, insertImageFiles } from "@lib/editorImages"
+import { applyImportName, takeImport } from "@lib/importFlow"
 import type { RelayProvider } from "@lib/yjsProvider"
 import { Collaboration } from "@tiptap/extension-collaboration"
 import { CollaborationCaret } from "@tiptap/extension-collaboration-caret"
 import { Color } from "@tiptap/extension-color"
+import { FontFamily } from "@tiptap/extension-font-family"
 import { Highlight } from "@tiptap/extension-highlight"
 import { Image } from "@tiptap/extension-image"
 import { Placeholder } from "@tiptap/extension-placeholder"
@@ -33,6 +37,7 @@ import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import {
   IconDeviceFloppy,
+  IconFileText,
   IconMessage,
   IconMessagePlus,
   IconShieldLock,
@@ -44,6 +49,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import * as Y from "yjs"
 import CommentsPanel from "@pages/Docs/components/CommentsPanel/CommentsPanel"
+import DocMenuBar from "@pages/Docs/components/DocMenuBar/DocMenuBar"
 import EditorToolbar from "@pages/Docs/components/EditorToolbar/EditorToolbar"
 import ShareDocDialog from "@pages/Docs/components/ShareDocDialog/ShareDocDialog"
 
@@ -137,6 +143,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(() =>
     doc.updatedAt ? new Date(doc.updatedAt).getTime() : null,
   )
+  const [zoom, setZoom] = useState(100)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const dirtyRef = useRef(false)
 
@@ -165,7 +172,11 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
       CommentMark,
       TextStyle,
       Color,
-      Highlight,
+      FontFamily,
+      FontSize,
+      Indent,
+      LineHeight,
+      Highlight.configure({ multicolor: true }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Image,
       Placeholder.configure({ placeholder: "Write something…" }),
@@ -221,6 +232,14 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
       },
     },
   })
+
+  useEffect(() => {
+    if (!editor) return
+    const payload = takeImport(nodeId)
+    if (!payload || payload.kind !== "doc" || !editor.isEmpty) return
+    editor.commands.setContent(payload.html)
+    applyImportName(nodeId, payload.name, contentKey)
+  }, [editor, nodeId, contentKey])
 
   useEffect(() => {
     const onUpdate = () => {
@@ -356,100 +375,122 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
         : "Not saved yet"
 
   return (
-    <div className="flex min-h-full flex-1 flex-col gap-3 p-4">
-      <div className="mx-auto flex w-full max-w-[840px] items-center gap-3">
-        <Input
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          onBlur={commitTitle}
-          onKeyDown={(event) => event.key === "Enter" && event.currentTarget.blur()}
-          aria-label="Document title"
-          className="h-auto border-none bg-transparent px-0 text-2xl font-semibold shadow-none focus-visible:ring-0"
-        />
-        {peers.length > 0 ? (
-          <div className="flex shrink-0 -space-x-1.5">
-            {peers.slice(0, 4).map((peer, index) => (
-              <span
-                key={`${peer.name}-${index}`}
-                title={peer.name}
-                style={{ backgroundColor: peer.color }}
-                className="border-background flex size-6 items-center justify-center rounded-full border-2 text-[0.6rem] font-semibold text-white"
-              >
-                {initials(peer.name)}
-              </span>
-            ))}
-            {peers.length > 4 ? (
-              <span className="border-background bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full border-2 text-[0.6rem] font-semibold">
-                +{peers.length - 4}
-              </span>
-            ) : null}
-          </div>
-        ) : null}
-        <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{status}</span>
-        {contentKey ? (
-          <Badge
-            variant="secondary"
-            title="Only you and people you share with can read this document"
-            className="shrink-0 gap-1 border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+    <div className="bg-background flex h-svh flex-col overflow-hidden">
+      <header className="bg-card flex flex-col gap-0.5 border-b px-3 pt-2">
+        <div className="flex items-center gap-2">
+          <Link
+            href="/docs"
+            aria-label="Back to Docs"
+            className="flex size-9 shrink-0 items-center justify-center rounded-md bg-blue-600/15 text-blue-600 dark:text-blue-400"
           >
-            <IconShieldLock />
-            Encrypted
-          </Badge>
-        ) : null}
-        {hasSelection ? (
-          <Button variant="ghost" size="icon-sm" aria-label="Add comment" title="Add comment" onClick={addComment}>
-            <IconMessagePlus className="size-4" />
+            <IconFileText className="size-5" />
+          </Link>
+          <Input
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            onBlur={commitTitle}
+            onKeyDown={(event) => event.key === "Enter" && event.currentTarget.blur()}
+            aria-label="Document title"
+            className="h-auto w-auto min-w-0 flex-1 border-none bg-transparent px-0 py-0 text-base font-medium shadow-none focus-visible:ring-0"
+          />
+          {peers.length > 0 ? (
+            <div className="flex shrink-0 -space-x-1.5">
+              {peers.slice(0, 4).map((peer, index) => (
+                <span
+                  key={`${peer.name}-${index}`}
+                  title={peer.name}
+                  style={{ backgroundColor: peer.color }}
+                  className="border-background flex size-6 items-center justify-center rounded-full border-2 text-[0.6rem] font-semibold text-white"
+                >
+                  {initials(peer.name)}
+                </span>
+              ))}
+              {peers.length > 4 ? (
+                <span className="border-background bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full border-2 text-[0.6rem] font-semibold">
+                  +{peers.length - 4}
+                </span>
+              ) : null}
+            </div>
+          ) : null}
+          <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{status}</span>
+          {contentKey ? (
+            <Badge
+              variant="secondary"
+              title="Only you and people you share with can read this document"
+              className="shrink-0 gap-1 border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+            >
+              <IconShieldLock />
+              Encrypted
+            </Badge>
+          ) : null}
+          {hasSelection ? (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Add comment"
+              title="Add comment"
+              onClick={addComment}
+            >
+              <IconMessagePlus className="size-4" />
+            </Button>
+          ) : null}
+          <Button
+            variant={commentsOpen ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setCommentsOpen((value) => !value)}
+          >
+            <IconMessage className="size-4" />
+            {openThreadCount > 0 ? openThreadCount : "Comments"}
           </Button>
-        ) : null}
-        <Button
-          variant={commentsOpen ? "secondary" : "ghost"}
-          size="sm"
-          onClick={() => setCommentsOpen((value) => !value)}
-        >
-          <IconMessage className="size-4" />
-          {openThreadCount > 0 ? openThreadCount : "Comments"}
-        </Button>
-        {doc.owner ? (
-          <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
-            <IconUserPlus className="size-4" />
-            Share
+          {doc.owner ? (
+            <Button size="sm" onClick={() => setShareOpen(true)}>
+              <IconUserPlus className="size-4" />
+              Share
+            </Button>
+          ) : null}
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={saveState === "saving"}
+            onClick={() => void manualSave()}
+          >
+            <IconDeviceFloppy className="size-4" />
+            Save
           </Button>
+        </div>
+        {editor ? (
+          <DocMenuBar
+            editor={editor}
+            title={title}
+            commentsOpen={commentsOpen}
+            onToggleComments={() => setCommentsOpen((value) => !value)}
+            onAddComment={addComment}
+          />
         ) : null}
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={saveState === "saving"}
-          onClick={() => void manualSave()}
-        >
-          <IconDeviceFloppy className="size-4" />
-          Save
-        </Button>
-      </div>
-
-      <ShareDocDialog
-        nodeId={nodeId}
-        name={doc.name}
-        open={shareOpen}
-        onOpenChange={setShareOpen}
-      />
+      </header>
 
       {editor ? (
-        <div className="mx-auto w-full max-w-[840px]">
-          <EditorToolbar editor={editor} />
+        <div className="bg-card/40 flex justify-center border-b px-3 py-1.5">
+          <div className="w-full max-w-[980px]">
+            <EditorToolbar editor={editor} zoom={zoom} onZoomChange={setZoom} />
+          </div>
         </div>
       ) : null}
 
-      <div className="mx-auto flex w-full max-w-[1180px] flex-1 items-start gap-4">
-        <div
-          className="min-w-0 flex-1 cursor-text"
-          onClick={() => editor?.chain().focus().run()}
-        >
-          <div className="mx-auto w-full max-w-[840px]">
+      <ShareDocDialog nodeId={nodeId} name={doc.name} open={shareOpen} onOpenChange={setShareOpen} />
+
+      <div className="bg-muted/30 flex min-h-0 flex-1">
+        <div className="scrollbar-slim min-w-0 flex-1 overflow-auto py-8">
+          <div
+            className="bg-card mx-auto w-full max-w-[850px] cursor-text rounded-sm border px-16 py-14 shadow-lg"
+            style={{ zoom: zoom / 100 }}
+            onClick={() => editor?.chain().focus().run()}
+          >
             <EditorContent editor={editor} />
           </div>
         </div>
         {commentsOpen ? (
-          <div className="sticky top-0 h-[calc(100svh-9rem)] self-start">
+          <div className="bg-card w-80 shrink-0 overflow-auto border-l">
             <CommentsPanel
               threads={threads}
               comments={comments}

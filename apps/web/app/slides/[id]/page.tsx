@@ -1,8 +1,8 @@
-import Editor from "@pages/Slides/Editor"
+import { redirect } from "next/navigation"
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params
-  return <Editor key={id} nodeId={id} />
+  redirect(`/presentation/${id}`)
 }
 
 export default Page

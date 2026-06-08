@@ -3,7 +3,7 @@
 import { type ReactElement, Fragment } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { type DocType, fetchDocs } from "@lib/docs"
+import { type DocType, editorHref, editorOpensNewTab, fetchDocs } from "@lib/docs"
 import { Icon } from "@lib/icons"
 import { useAppSelector } from "@store/hooks"
 import { useQuery } from "@tanstack/react-query"
@@ -89,7 +89,8 @@ const CollabSidebar = ({
           {items.map((item) => (
             <Link
               key={item.id}
-              href={`${route}/${item.id}`}
+              href={editorHref(type, item.id)}
+              target={editorOpensNewTab(type) ? "_blank" : undefined}
               className={cn(
                 "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm transition",
                 pathname === `${route}/${item.id}`

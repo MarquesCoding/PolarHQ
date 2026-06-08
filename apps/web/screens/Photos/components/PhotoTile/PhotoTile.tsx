@@ -77,7 +77,7 @@ const PhotoTile = ({
     asset.encrypted ? (decryptedThumbnails.get(asset.id) ?? null) : null,
   )
   useEffect(() => {
-    if (!asset.encrypted || decryptedThumbnails.has(asset.id)) return
+    if (!asset.encrypted || !asset.thumbnailUrl || decryptedThumbnails.has(asset.id)) return
     let active = true
     void fetchDecryptedPhotoThumbnail(asset.id).then((result) => {
       if (!result) return
@@ -87,7 +87,7 @@ const PhotoTile = ({
     return () => {
       active = false
     }
-  }, [asset.id, asset.encrypted])
+  }, [asset.id, asset.encrypted, asset.thumbnailUrl])
 
   const [motionUrl, setMotionUrl] = useState<string | null>(() => motionVideos.get(asset.id) ?? null)
   const [motionActive, setMotionActive] = useState(false)

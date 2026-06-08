@@ -8,6 +8,7 @@ import { IconPlus } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import ImportButton from "@components/ImportButton/ImportButton"
 import SizeControl from "@pages/Photos/components/SizeControl/SizeControl"
 
 export interface CollabToolbarConfig {
@@ -38,6 +39,7 @@ const CollabToolbar = ({ type, route, createLabel }: CollabToolbarConfig) => {
   return (
     <div className="flex items-center gap-2">
       <SizeControl value={tileSize} onChange={setTileSize} />
+      <ImportButton type={type} />
       <Button size="sm" onClick={() => void create()}>
         <IconPlus className="size-4" />
         {createLabel}

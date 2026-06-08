@@ -38,6 +38,9 @@ const typeIcon = (node: DriveNode): { name: string; color: string } => {
     return { name: "table", color: "text-muted-foreground" }
   if (mime === "application/vnd.orbit.slides")
     return { name: "presentation", color: "text-muted-foreground" }
+  if (/\.(xlsx|xls|csv|tsv|ods)$/i.test(name)) return { name: "table", color: "text-emerald-500" }
+  if (/\.docx$/i.test(name)) return { name: "document", color: "text-blue-500" }
+  if (/\.pptx$/i.test(name)) return { name: "presentation", color: "text-amber-500" }
   if (mime.startsWith("audio/")) return { name: "music", color: "text-emerald-400" }
   if (mime.startsWith("video/")) return { name: "video", color: "text-rose-400" }
   if (mime === "application/pdf" || name.endsWith(".pdf"))
