@@ -1,7 +1,13 @@
-# PolarHQ — production all-in-one stack.
+# PolarHQ — production all-in-one stack. Self-contained: no .env file required.
 #
-#   1. cp docker/.env.example docker/.env   (then set a real AUTH_SECRET)
-#   2. docker compose -f docker/docker-compose.yml --env-file docker/.env up -d
+#   docker compose -f docker/docker-compose.yml up -d
+#   (or paste this whole file into Dockge / Portainer)
+#
+# >>> BEFORE YOU DEPLOY, change two things below:
+#       1. AUTH_SECRET   — replace the placeholder (run: openssl rand -base64 32)
+#       2. PUBLIC_URL    — set to how you'll reach it, e.g. http://<host>:8080
+# Everything else has sane defaults. Any value can still be overridden by an
+# environment variable / .env if you prefer (the ${VAR:-default} form).
 #
 # Bundles Postgres (pgvector), Redis and MinIO, runs migrations once, then
 # starts the API, the media + backup workers, and the web app.
@@ -10,7 +16,8 @@ name: polarhq
 x-app-env: &app-env
   NODE_ENV: production
   APP_NAME: ${APP_NAME:-PolarHQ}
-  AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in docker/.env (openssl rand -base64 32)}
+  # !! CHANGE THIS !! generate your own: openssl rand -base64 32
+  AUTH_SECRET: ${AUTH_SECRET:-CHANGE_ME_generate_with_openssl_rand_base64_32}
   API_URL: ${PUBLIC_URL:-http://localhost:8080}
   WEB_URL: ${PUBLIC_URL:-http://localhost:8080}
   DATABASE_URL: postgres://${POSTGRES_USER:-orbit}:${POSTGRES_PASSWORD:-orbit}@postgres:5432/${POSTGRES_DB:-orbit}
