@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { type DocMeta, fetchDocs } from "@lib/docs"
+import { type DocMeta, fetchDocs, openEditor } from "@lib/docs"
 import { trashDriveNode } from "@lib/drive"
 import { createEncryptedDoc } from "@lib/e2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
@@ -62,7 +62,7 @@ const DocsListInner = () => {
     try {
       const doc = await createEncryptedDoc()
       invalidate()
-      router.push(`/docs/${doc.id}`)
+      openEditor("doc", doc.id, router)
     } catch {
       toast.error("Could not create document")
       setCreating(false)
@@ -93,7 +93,7 @@ const DocsListInner = () => {
   const single = ids.length === 1 ? byId.get(ids[0]!) : undefined
 
   const actions: DocActions = {
-    open: (doc) => router.push(`/docs/${doc.id}`),
+    open: (doc) => openEditor("doc", doc.id, router),
     rename: (doc) => setRenaming(doc),
     download: (doc) => downloadDoc(doc),
     trash: (doc) => void trash([doc.id]),
@@ -112,7 +112,7 @@ const DocsListInner = () => {
           <DocCard
             doc={doc}
             selected={selection.isSelected(doc.id)}
-            onOpen={(value) => router.push(`/docs/${value.id}`)}
+            onOpen={(value) => openEditor("doc", value.id, router)}
             onSelect={select}
             onToggle={(value) => selection.toggle(value.id, ordered)}
           />

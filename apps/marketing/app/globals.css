@@ -16,8 +16,12 @@ body {
   line-height: 0.8;
 }
 
-/* Flatten the primary button on the marketing site: solid fill, no gradient/inset/edge ring. */
+.font-display {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+/* Flat primary button with a small, subtle border (no heavy gradient/embossed ring). */
 .btn-primary {
-  background-image: none;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+  background-image: none !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18) !important;
 }

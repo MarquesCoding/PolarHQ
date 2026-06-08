@@ -3,7 +3,7 @@
 import { type ReactElement, Fragment } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { fetchDocs } from "@lib/docs"
+import { editorHref, fetchDocs } from "@lib/docs"
 import { Icon } from "@lib/icons"
 import { useAppSelector } from "@store/hooks"
 import { useQuery } from "@tanstack/react-query"
@@ -75,7 +75,8 @@ const DocsSidebar = () => {
             return (
               <Link
                 key={doc.id}
-                href={`/docs/${doc.id}`}
+                href={editorHref("doc", doc.id)}
+                target="_blank"
                 className={cn(
                   "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm transition",
                   active

@@ -12,8 +12,9 @@ import {
   moveDriveNode,
   trashDriveNode,
 } from "@lib/drive"
-import { type DocType, docTypeOf } from "@lib/docs"
+import { type DocType, docTypeOf, openEditor } from "@lib/docs"
 import { downloadDriveFile } from "@lib/driveE2e"
+import { importDriveFile, officeTypeForName } from "@lib/importFlow"
 import { createEncryptedDoc } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import { SelectionProvider, useSelection } from "@lib/selection"
@@ -54,12 +55,6 @@ import type { DriveNodeActions } from "@pages/Drive/components/NodeContextMenu/N
 import NodeTable from "@pages/Drive/components/NodeTable/NodeTable"
 import RenameDialog from "@pages/Drive/components/RenameDialog/RenameDialog"
 import VersionHistoryDialog from "@pages/Drive/components/VersionHistoryDialog/VersionHistoryDialog"
-
-const DOC_ROUTES: Record<DocType, string> = {
-  doc: "/docs",
-  sheet: "/sheets",
-  slides: "/slides",
-}
 
 const ModelViewer = dynamic(() => import("@pages/Drive/components/ModelViewer/ModelViewer"), {
   ssr: false,
@@ -137,8 +132,12 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
       return
     }
     const type = docTypeOf(node.mimeType)
-    if (type) router.push(`${DOC_ROUTES[type]}/${node.id}`)
-    else if (node.mimeType?.startsWith("image/")) setViewingNode(node)
+    const office = officeTypeForName(node.name)
+    if (type) openEditor(type, node.id, router)
+    else if (office) {
+      toast.info("Opening…")
+      void importDriveFile(node, office, router).catch(() => toast.error("Could not open this file"))
+    } else if (node.mimeType?.startsWith("image/")) setViewingNode(node)
     else if (is3DModelName(node.name)) setViewingModel(node)
     else downloadIds([node.id])
   }
@@ -147,7 +146,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     try {
       const doc = await createEncryptedDoc(parentId, type)
       invalidate()
-      router.push(`${DOC_ROUTES[type]}/${doc.id}`)
+      openEditor(type, doc.id, router)
     } catch {
       toast.error("Could not create")
     }

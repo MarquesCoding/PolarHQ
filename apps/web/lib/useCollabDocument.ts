@@ -118,7 +118,9 @@ export const useCollabDocument = (nodeId: string): CollabDocument => {
     if (status !== "ready") return
     const onUpdate = () => {
       dirtyRef.current = true
-      setSaveState("dirty")
+      // Yjs observers can fire mid-render (e.g. while React is rendering an editor that
+      // reads the doc); defer the React state update so we never setState during render.
+      queueMicrotask(() => setSaveState("dirty"))
       clearTimeout(saveTimer.current)
       saveTimer.current = setTimeout(() => void flush(), 800)
     }

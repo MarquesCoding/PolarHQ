@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { type DocMeta, type DocType, fetchDocs } from "@lib/docs"
+import { type DocMeta, type DocType, fetchDocs, openEditor } from "@lib/docs"
 import { trashDriveNode } from "@lib/drive"
 import { createEncryptedDoc } from "@lib/e2e"
 import { Icon } from "@lib/icons"
@@ -39,7 +39,7 @@ export interface CollabListConfig {
   createLabel: string
 }
 
-const CollabListInner = ({ type, route, iconName, title, createLabel }: CollabListConfig) => {
+const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfig) => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const selection = useSelection()
@@ -67,7 +67,7 @@ const CollabListInner = ({ type, route, iconName, title, createLabel }: CollabLi
     try {
       const doc = await createEncryptedDoc(null, type)
       invalidate()
-      router.push(`${route}/${doc.id}`)
+      openEditor(type, doc.id, router)
     } catch {
       toast.error("Could not create")
       setCreating(false)
@@ -97,7 +97,7 @@ const CollabListInner = ({ type, route, iconName, title, createLabel }: CollabLi
   const single = ids.length === 1 ? byId.get(ids[0]!) : undefined
 
   const actions: DocActions = {
-    open: (doc) => router.push(`${route}/${doc.id}`),
+    open: (doc) => openEditor(type, doc.id, router),
     rename: (doc) => setRenaming(doc),
     download: (doc) => download(doc),
     trash: (doc) => void trash([doc.id]),
@@ -117,7 +117,7 @@ const CollabListInner = ({ type, route, iconName, title, createLabel }: CollabLi
             doc={doc}
             iconName={iconName}
             selected={selection.isSelected(doc.id)}
-            onOpen={(value) => router.push(`${route}/${value.id}`)}
+            onOpen={(value) => openEditor(type, value.id, router)}
             onSelect={select}
             onToggle={(value) => selection.toggle(value.id, ordered)}
           />

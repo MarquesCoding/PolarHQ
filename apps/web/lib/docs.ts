@@ -14,6 +14,38 @@ export type DocType = "doc" | "sheet" | "slides"
 export const docTypeOf = (mime: string | null): DocType | null =>
   mime === DOC_MIME ? "doc" : mime === SHEET_MIME ? "sheet" : mime === SLIDES_MIME ? "slides" : null
 
+/** List/home route for each document type. */
+export const DOC_ROUTES: Record<DocType, string> = {
+  doc: "/docs",
+  sheet: "/sheets",
+  slides: "/slides",
+}
+
+/** Dedicated fullscreen editor routes (singular), distinct from the list/home routes. */
+export const EDITOR_ROUTES: Record<DocType, string> = {
+  doc: "/document",
+  sheet: "/sheet",
+  slides: "/presentation",
+}
+
+/** The fullscreen editor URL for a document. */
+export const editorHref = (type: DocType, id: string): string => `${EDITOR_ROUTES[type]}/${id}`
+
+/** Documents open in their own fullscreen editor in a new browser tab. */
+export const editorOpensNewTab = (type: DocType): boolean =>
+  (["doc", "sheet", "slides"] as DocType[]).includes(type)
+
+/** Navigate to a document's editor, opening fullscreen apps in a new tab. */
+export const openEditor = (
+  type: DocType,
+  id: string,
+  router: { push: (href: string) => void },
+): void => {
+  const href = editorHref(type, id)
+  if (editorOpensNewTab(type)) window.open(href, "_blank", "noopener")
+  else router.push(href)
+}
+
 export const isSheetNode = (node: Pick<DriveNode, "mimeType">): boolean =>
   node.mimeType === SHEET_MIME
 export const isSlidesNode = (node: Pick<DriveNode, "mimeType">): boolean =>

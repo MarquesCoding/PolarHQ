@@ -82,7 +82,7 @@ const Editor = ({ nodeId }: { nodeId: string }) => {
 
   if (status === "error") {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+      <div className="flex min-h-svh flex-1 flex-col items-center justify-center gap-3 text-center">
         <p className="text-muted-foreground text-sm">This document could not be opened.</p>
         <Button variant="secondary" size="sm" render={<Link href="/docs">Back to Docs</Link>} />
       </div>
@@ -91,7 +91,7 @@ const Editor = ({ nodeId }: { nodeId: string }) => {
 
   if (status === "locked") {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+      <div className="flex min-h-svh flex-1 flex-col items-center justify-center gap-3 text-center">
         <IconShieldLock className="text-muted-foreground size-8" />
         <p className="text-muted-foreground text-sm">This document is encrypted.</p>
         <Button size="sm" onClick={() => setUnlockOpen(true)}>
