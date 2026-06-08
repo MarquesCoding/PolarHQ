@@ -231,6 +231,17 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     void queryClient.invalidateQueries({ queryKey: ["drive"] })
   }, [queryClient])
 
+  // Coalesce refetches during a big batch — invalidating once per finished file
+  // (hundreds of times) hammers the feed; at most once per ~800ms is plenty.
+  const invalidateTimer = useRef<number | null>(null)
+  const scheduleInvalidate = useCallback(() => {
+    if (invalidateTimer.current !== null) return
+    invalidateTimer.current = window.setTimeout(() => {
+      invalidateTimer.current = null
+      invalidate()
+    }, 800)
+  }, [invalidate])
+
   const upload = useCallback(
     (files: FileList | File[], target: UploadTarget = { kind: "photos" }) => {
       const all = Array.from(files)
@@ -241,6 +252,8 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
         queue = uploads.map((entry) => entry.file)
         for (const entry of uploads) if (entry.motion) motionByImage.set(entry.file, entry.motion)
       }
+      // Register every file in the tray up front, collecting the ones to upload.
+      const jobs: { id: string; file: File }[] = []
       for (const file of queue) {
         const id = nextId()
         if (target.kind === "photos" && !isSupportedMedia(file)) {
@@ -273,6 +286,10 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
           },
           ...previous,
         ])
+        jobs.push({ id, file })
+      }
+
+      const runJob = ({ id, file }: { id: string; file: File }) => {
         const uploadPromise =
           target.kind === "drive" && isUnlocked()
             ? uploadEncryptedDriveFile(target.parentId, file).then(
@@ -288,17 +305,30 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
                   (loaded, speed) => update(id, { loaded, speed }),
                   (xhr) => requests.current.set(id, xhr),
                 )
-        uploadPromise
+        return uploadPromise
           .then((response) => {
             const result = normalizeResponse(target, response, readyAssets.current)
             update(id, { status: result.status, loaded: file.size, assetId: result.assetId })
-            invalidate()
+            scheduleInvalidate()
           })
           .catch(() => update(id, { status: "error" }))
           .finally(() => requests.current.delete(id))
       }
+
+      // Bounded concurrency: firing every upload at once trips
+      // net::ERR_INSUFFICIENT_RESOURCES on large (hundreds-of-files) batches.
+      const CONCURRENCY = 4
+      let cursor = 0
+      const runners = Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, async () => {
+        while (cursor < jobs.length) {
+          const job = jobs[cursor]
+          cursor += 1
+          if (job) await runJob(job)
+        }
+      })
+      void Promise.all(runners)
     },
-    [update, invalidate],
+    [update, scheduleInvalidate],
   )
 
   const remove = useCallback(
