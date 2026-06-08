@@ -16,7 +16,10 @@ const Home = () => {
   const { data: session, isPending } = authClient.useSession()
 
   useEffect(() => {
-    if (status && !status.setupCompleted) {
+    // Only send to /setup when setup isn't done AND nobody is signed in. A freshly
+    // signed-up admin has a session but may still read a stale "not completed"
+    // status from cache — don't bounce them back to the setup screen.
+    if (status && !status.setupCompleted && !isPending && !session?.user) {
       router.replace("/setup")
       return
     }
