@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google"
 import "./globals.css"
@@ -12,10 +12,31 @@ const serif = Instrument_Serif({
   variable: "--font-serif",
 })
 
+const TITLE = "PolarHQ — your private home for everything"
+const DESCRIPTION =
+  "Open-source, self-hosted, end-to-end encrypted Photos, Drive and Docs — one private suite you run yourself."
+
 export const metadata: Metadata = {
-  title: "PolarHQ — your private home for everything",
-  description:
-    "Open-source, self-hosted, end-to-end encrypted Photos, Drive and Docs — one private suite you run yourself.",
+  metadataBase: new URL("https://polarhq.app"),
+  applicationName: "PolarHQ",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: "website",
+    siteName: "PolarHQ",
+    url: "https://polarhq.app",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: "#3b82f6",
 }
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
