@@ -1,6 +1,9 @@
 "use client"
 
+import { useState } from "react"
+import RecoveryCodeDialog from "@components/RecoveryCodeDialog"
 import { authClient } from "@lib/authClient"
+import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@lib/e2e"
 import { type RegistrationMode, completeSetup } from "@lib/setup"
 import { useForm } from "@tanstack/react-form"
 import { Button } from "@workspace/ui/components/button"
@@ -44,6 +47,8 @@ const fieldError = (errors: unknown[]): string | null => {
 }
 
 const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
+  const [recoveryCode, setRecoveryCode] = useState<string | null>(null)
+
   const form = useForm({
     defaultValues: {
       name: "",
@@ -61,12 +66,30 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
         })
         if (signIn.error) throw new Error(signIn.error.message ?? "Sign-in failed")
         toast.success("Admin account created")
-        onComplete()
+
+        // Bootstrap end-to-end encryption with the account password right away,
+        // so the user never sees a separate "set up encryption" prompt later.
+        try {
+          await e2eReady()
+          if (await isEnrolled()) {
+            await unlockKeys(value.password)
+            onComplete()
+          } else {
+            const setup = await setupKeys(value.password)
+            setRecoveryCode(setup.recoveryCode)
+          }
+        } catch {
+          onComplete()
+        }
       } catch (error) {
         toast.error(error instanceof Error ? error.message : "Setup failed")
       }
     },
   })
+
+  if (recoveryCode) {
+    return <RecoveryCodeDialog recoveryCode={recoveryCode} onContinue={onComplete} />
+  }
 
   return (
     <form

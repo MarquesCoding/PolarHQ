@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
+import RecoveryCodeDialog from "@components/RecoveryCodeDialog"
 import { authClient } from "@lib/authClient"
 import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@lib/e2e"
 import { APP_NAME } from "@lib/env"
 import { useForm } from "@tanstack/react-form"
-import { IconCopy, IconShieldLock } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import {
   Card,
@@ -15,13 +15,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { toast } from "sonner"
@@ -85,40 +78,7 @@ const SignIn = () => {
   if (recoveryCode) {
     return (
       <main className="flex min-h-svh items-center justify-center p-6">
-        <Dialog open onOpenChange={() => undefined}>
-          <DialogContent showCloseButton={false}>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <IconShieldLock className="size-5" />
-                Save your recovery code
-              </DialogTitle>
-            </DialogHeader>
-            <p className="text-muted-foreground text-sm">
-              Your documents are now end-to-end encrypted. This recovery code is the only way to
-              recover them if you forget your password — store it somewhere safe. We can’t show it
-              again.
-            </p>
-            <div className="flex items-center gap-2">
-              <code className="bg-muted flex-1 rounded-md px-2 py-1.5 font-mono text-xs break-all">
-                {recoveryCode}
-              </code>
-              <Button
-                variant="outline"
-                size="icon-sm"
-                aria-label="Copy recovery code"
-                onClick={() => {
-                  void navigator.clipboard.writeText(recoveryCode)
-                  toast.success("Recovery code copied")
-                }}
-              >
-                <IconCopy className="size-4" />
-              </Button>
-            </div>
-            <DialogFooter>
-              <Button onClick={() => router.replace("/")}>I’ve saved it — continue</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <RecoveryCodeDialog recoveryCode={recoveryCode} onContinue={() => router.replace("/")} />
       </main>
     )
   }
