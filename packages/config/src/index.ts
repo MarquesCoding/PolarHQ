@@ -27,7 +27,7 @@ const boolish = (fallback: boolean) =>
 const EnvSchema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-    APP_NAME: z.string().min(1).default("Orbit"),
+    APP_NAME: z.string().min(1).default("PolarHQ"),
     API_PORT: z.coerce.number().int().positive().default(3001),
     API_URL: z.string().min(1).default("http://localhost:3001"),
     WEB_URL: z.string().min(1).default("http://localhost:3000"),
