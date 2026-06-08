@@ -11,8 +11,8 @@ x-app-env: &app-env
   NODE_ENV: production
   APP_NAME: ${APP_NAME:-PolarHQ}
   AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in docker/.env (openssl rand -base64 32)}
-  API_URL: ${API_URL:-http://localhost:3001}
-  WEB_URL: ${WEB_URL:-http://localhost:3000}
+  API_URL: ${PUBLIC_URL:-http://localhost:8080}
+  WEB_URL: ${PUBLIC_URL:-http://localhost:8080}
   DATABASE_URL: postgres://${POSTGRES_USER:-orbit}:${POSTGRES_PASSWORD:-orbit}@postgres:5432/${POSTGRES_DB:-orbit}
   REDIS_URL: redis://redis:6379
   STORAGE_DRIVER: s3
@@ -91,8 +91,8 @@ services:
   api:
     image: ${APP_IMAGE:-ghcr.io/marquescoding/polarhq-app:latest}
     environment: *app-env
-    ports:
-      - "${API_PORT:-3001}:3001"
+    expose:
+      - "3001"
     depends_on:
       postgres:
         condition: service_healthy
@@ -132,13 +132,29 @@ services:
     image: ${WEB_IMAGE:-ghcr.io/marquescoding/polarhq-web:latest}
     environment:
       NODE_ENV: production
-    ports:
-      - "${WEB_PORT:-3000}:3000"
+    expose:
+      - "3000"
     depends_on:
       - api
     restart: unless-stopped
+
+  # Single front door. Publish on whatever port you like via HTTP_PORT.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - web
+      - api
 
 volumes:
   postgres-data:
   redis-data:
   minio-data:
+  caddy-data:
+  caddy-config:
