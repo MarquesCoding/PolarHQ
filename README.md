@@ -11,9 +11,9 @@ that you run on your own server. One private home for everything.
 
 <p>
   <img src="https://img.shields.io/badge/status-alpha%20v0.3-f59e0b?style=flat-square" alt="Status" />
-  <img src="https://img.shields.io/github/license/MarquesCoding/Orbit?style=flat-square&color=2563eb" alt="License" />
-  <img src="https://img.shields.io/github/stars/MarquesCoding/Orbit?style=flat-square&color=eab308" alt="Stars" />
-  <img src="https://img.shields.io/github/last-commit/MarquesCoding/Orbit?style=flat-square" alt="Last commit" />
+  <img src="https://img.shields.io/github/license/MarquesCoding/PolarHQ?style=flat-square&color=2563eb" alt="License" />
+  <img src="https://img.shields.io/github/stars/MarquesCoding/PolarHQ?style=flat-square&color=eab308" alt="Stars" />
+  <img src="https://img.shields.io/github/last-commit/MarquesCoding/PolarHQ?style=flat-square" alt="Last commit" />
   <img src="https://img.shields.io/badge/PRs-welcome-22c55e?style=flat-square" alt="PRs welcome" />
 </p>
 
