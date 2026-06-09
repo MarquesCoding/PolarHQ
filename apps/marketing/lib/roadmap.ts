@@ -54,7 +54,7 @@ export const ROADMAP: RoadmapColumn[] = [
     label: "Exploring",
     blurb: "Ideas we're weighing for the suite.",
     items: [
-      { title: "Calendar & Mail", description: "Rounding out the suite with the everyday essentials." },
+      { title: "Calendar", description: "Rounding out the suite with the everyday essentials." },
       { title: "Notes & Tasks", description: "Lightweight capture that lives in the same encrypted tree." },
       { title: "Federation", description: "Sharing across independently hosted PolarHQ servers." },
     ],
