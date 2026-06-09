@@ -77,7 +77,7 @@ const DatabaseCanvas = ({ collab }: { collab: CollabDocument }) => {
   }
 
   return (
-    <RelationProvider targetIds={relationTargets}>
+    <RelationProvider dbId={collab.doc?.id ?? ""} targetIds={relationTargets}>
       <div className="flex min-h-0 flex-1 flex-col">
       <div className="border-border flex items-center gap-1 border-b px-3">
         {views.map((view) => {

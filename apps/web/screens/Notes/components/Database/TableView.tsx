@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
@@ -64,7 +65,9 @@ const RollupConfig = ({
   property: Property
   sources: Record<string, DbSnapshot>
 }) => {
-  const relationProps = db.properties.filter((p) => p.type === "relation" && p.targetDb)
+  const relationProps = db.properties.filter(
+    (p) => p.type === "relation" && p.targetDb && !p.reverse,
+  )
   const linked = db.properties.find((p) => p.id === property.relationProp && p.type === "relation")
   const targetProps = linked?.targetDb ? (sources[linked.targetDb]?.properties ?? []) : []
   return (
@@ -206,6 +209,14 @@ const TableView = ({
                   )}
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
+            ) : null}
+            {property.type === "relation" ? (
+              <DropdownMenuCheckboxItem
+                checked={Boolean(property.reverse)}
+                onClick={() => db.setRelationReverse(property.id, !property.reverse)}
+              >
+                Show as backlinks
+              </DropdownMenuCheckboxItem>
             ) : null}
             {property.type === "rollup" ? <RollupConfig db={db} property={property} sources={sources} /> : null}
             <DropdownMenuSeparator />

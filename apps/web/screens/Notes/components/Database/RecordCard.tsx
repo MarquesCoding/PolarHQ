@@ -1,7 +1,7 @@
 "use client"
 
 import { IconCheck, IconX } from "@tabler/icons-react"
-import { Chip, RelationChip, RollupValue } from "./Cell"
+import { BacklinkChips, Chip, RelationChip, RollupValue } from "./Cell"
 import type { Property, Row, SelectOption } from "./model"
 import { snapshotTitle, useRelationSources } from "./relations"
 
@@ -91,6 +91,14 @@ const RecordCard = ({
             <div key={property.id} className="flex items-center gap-1.5 text-xs">
               <span className="text-muted-foreground w-20 shrink-0 truncate">{property.name}</span>
               <RollupValue property={property} row={row} properties={properties} />
+            </div>
+          )
+        }
+        if (property.type === "relation" && property.reverse) {
+          return (
+            <div key={property.id} className="flex items-center gap-1.5 text-xs">
+              <span className="text-muted-foreground w-20 shrink-0 truncate">{property.name}</span>
+              <BacklinkChips property={property} row={row} />
             </div>
           )
         }
