@@ -5,7 +5,13 @@ import { Button } from "@workspace/ui/components/button"
 import RecordCard from "./RecordCard"
 import type { DatabaseState } from "./useDatabase"
 
-const GalleryView = ({ db }: { db: DatabaseState }) => {
+const GalleryView = ({
+  db,
+  onOpenRow,
+}: {
+  db: DatabaseState
+  onOpenRow: (rowId: string) => void
+}) => {
   const { properties, rows } = db
   const titleProp = properties[0]
   const fields = properties.filter((property) => property.id !== titleProp?.id).slice(0, 4)
@@ -16,7 +22,13 @@ const GalleryView = ({ db }: { db: DatabaseState }) => {
       style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}
     >
       {rows.map((row) => (
-        <RecordCard key={row.id} row={row} titleProp={titleProp} fields={fields} />
+        <RecordCard
+          key={row.id}
+          row={row}
+          titleProp={titleProp}
+          fields={fields}
+          onOpen={() => onOpenRow(row.id)}
+        />
       ))}
       <Button
         variant="outline"
