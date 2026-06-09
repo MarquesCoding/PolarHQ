@@ -8,6 +8,7 @@ import {
   type CellBorder,
   type CellFormat,
   type CondRule,
+  type DataRule,
   type Pos,
   COLS,
   COL_W,
@@ -52,6 +53,12 @@ export interface SheetController {
   cfStyleAt: (r: number, c: number) => Partial<CellFormat> | null
   addCondFormat: (rule: CondRule) => void
   removeCondFormat: (index: number) => void
+  dataRules: DataRule[]
+  dataRuleAt: (r: number, c: number) => DataRule | null
+  listOptionsAt: (r: number, c: number) => string[] | null
+  validateCell: (r: number, c: number, value: string) => string | null
+  addDataRule: (rule: DataRule) => void
+  removeDataRule: (index: number) => void
   sheets: Array<{ id: string; name: string }>
   activeSheetId: string
   setActiveSheet: (id: string) => void
@@ -151,6 +158,8 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     activeId === "0" ? "condFormat" : `condFormat:${activeId}`,
   )
   const condFormats = condArr.toArray()
+  const dataArr = ydoc.getArray<DataRule>(activeId === "0" ? "dataRule" : `dataRule:${activeId}`)
+  const dataRules = dataArr.toArray()
 
   const sheets =
     sheetOrder.length > 0
@@ -236,6 +245,7 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     rowHeights.observe(fmtObserver)
     meta.observe(fmtObserver)
     condArr.observe(fmtObserver)
+    dataArr.observe(fmtObserver)
     return () => {
       formats.unobserve(fmtObserver)
       merges.unobserve(fmtObserver)
@@ -243,8 +253,9 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
       rowHeights.unobserve(fmtObserver)
       meta.unobserve(fmtObserver)
       condArr.unobserve(fmtObserver)
+      dataArr.unobserve(fmtObserver)
     }
-  }, [formats, merges, colWidths, rowHeights, meta, condArr])
+  }, [formats, merges, colWidths, rowHeights, meta, condArr, dataArr])
 
   useEffect(() => {
     const manager = new Y.UndoManager([cells, formats, merges, colWidths, rowHeights], {
@@ -394,6 +405,30 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
   }
   const addCondFormat = (rule: CondRule) => condArr.push([rule])
   const removeCondFormat = (index: number) => condArr.delete(index, 1)
+
+  const dataRuleAt = (r: number, c: number): DataRule | null =>
+    dataRules.find((rule) => inBox(r, c, rule.range)) ?? null
+  const listOptionsAt = (r: number, c: number): string[] | null => {
+    const rule = dataRuleAt(r, c)
+    if (!rule || rule.kind !== "list") return null
+    return rule.spec.split(",").map((s) => s.trim()).filter(Boolean)
+  }
+  const validateCell = (r: number, c: number, value: string): string | null => {
+    const rule = dataRuleAt(r, c)
+    if (!rule || value === "" || value.startsWith("=")) return null
+    if (rule.kind === "number") {
+      const [lo, hi] = rule.spec.split(",").map((s) => Number(s.trim()))
+      const n = Number(value)
+      if (!Number.isFinite(n)) return "Enter a number"
+      if (Number.isFinite(lo!) && n < lo!) return `Must be ≥ ${lo}`
+      if (Number.isFinite(hi!) && n > hi!) return `Must be ≤ ${hi}`
+      return null
+    }
+    const opts = rule.spec.split(",").map((s) => s.trim()).filter(Boolean)
+    return opts.includes(value) ? null : `Must be one of: ${opts.join(", ")}`
+  }
+  const addDataRule = (rule: DataRule) => dataArr.push([rule])
+  const removeDataRule = (index: number) => dataArr.delete(index, 1)
 
   const cellStyle = (r: number, c: number): CSSProperties => {
     const f = fmtAt(r, c)
@@ -784,6 +819,12 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     cfStyleAt,
     addCondFormat,
     removeCondFormat,
+    dataRules,
+    dataRuleAt,
+    listOptionsAt,
+    validateCell,
+    addDataRule,
+    removeDataRule,
     sheets,
     activeSheetId: activeId,
     setActiveSheet,
