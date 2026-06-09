@@ -167,6 +167,32 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
         >
           Gridlines
         </DropdownMenuCheckboxItem>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>Freeze columns</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuCheckboxItem
+              checked={sheet.freezeCols === 0}
+              onCheckedChange={() => sheet.setFreezeCols(0)}
+            >
+              No columns
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={sheet.freezeCols === 1}
+              onCheckedChange={() => sheet.setFreezeCols(1)}
+            >
+              1 column
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={sheet.freezeCols === 2}
+              onCheckedChange={() => sheet.setFreezeCols(2)}
+            >
+              2 columns
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuItem onClick={() => sheet.setFreezeCols(sheet.selBox.c1 + 1)}>
+              Up to current column
+            </DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
       </Menu>
 
       <Menu label="Insert">

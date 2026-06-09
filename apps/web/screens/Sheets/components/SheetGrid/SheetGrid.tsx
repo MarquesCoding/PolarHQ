@@ -345,6 +345,7 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
           rows={sheet.rows}
           rowHeight={(row) => sheet.rowH(row) * z}
           headerHeight={Math.round(30 * z)}
+          freezeColumns={sheet.freezeCols}
           getCellContent={getCellContent}
           drawCell={drawCell}
           verticalBorder={sheet.gridlines}
