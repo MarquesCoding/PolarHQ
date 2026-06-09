@@ -12,8 +12,15 @@ export const DOC_MIME = "application/vnd.orbit.doc"
 export const SHEET_MIME = "application/vnd.orbit.sheet"
 export const SLIDES_MIME = "application/vnd.orbit.slides"
 export const NOTE_MIME = "application/vnd.orbit.note"
+export const DATABASE_MIME = "application/vnd.orbit.database"
 
-export const ORBIT_DOC_MIMES = [DOC_MIME, SHEET_MIME, SLIDES_MIME, NOTE_MIME] as const
+export const ORBIT_DOC_MIMES = [
+  DOC_MIME,
+  SHEET_MIME,
+  SLIDES_MIME,
+  NOTE_MIME,
+  DATABASE_MIME,
+] as const
 export type OrbitDocMime = (typeof ORBIT_DOC_MIMES)[number]
 
 export const isOrbitDoc = (mime: string | null): mime is OrbitDocMime =>
@@ -24,6 +31,7 @@ const DEFAULT_TITLE: Record<OrbitDocMime, string> = {
   [SHEET_MIME]: "Untitled spreadsheet",
   [SLIDES_MIME]: "Untitled presentation",
   [NOTE_MIME]: "Untitled note",
+  [DATABASE_MIME]: "Untitled database",
 }
 
 /**

@@ -83,6 +83,7 @@ const DriveTopActions = () => {
     sheet: "/sheets",
     slides: "/slides",
     note: "/notes",
+    database: "/notes",
   }
   const newDoc = async (type: DocType) => {
     try {

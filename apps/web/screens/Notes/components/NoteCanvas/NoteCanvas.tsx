@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { authClient } from "@lib/authClient"
 import type { CollabDocument } from "@lib/useCollabDocument"
 import {
@@ -26,6 +26,7 @@ import { TaskItem } from "@tiptap/extension-task-item"
 import { TaskList } from "@tiptap/extension-task-list"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
+import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 
 const CARET_COLORS = [
@@ -138,9 +139,6 @@ const NoteCanvas = ({ collab }: { collab: CollabDocument }) => {
 
   const [slash, setSlash] = useState<SlashState | null>(null)
   const [index, setIndex] = useState(0)
-  const slashRef = useRef<SlashState | null>(null)
-  const indexRef = useRef(0)
-  const itemsRef = useRef<SlashItem[]>([])
 
   const filtered = slash
     ? SLASH_ITEMS.filter((item) => {
@@ -148,39 +146,40 @@ const NoteCanvas = ({ collab }: { collab: CollabDocument }) => {
         return !q || item.title.toLowerCase().includes(q) || item.keywords.includes(q)
       })
     : []
-  itemsRef.current = filtered
-  indexRef.current = Math.min(index, Math.max(0, filtered.length - 1))
+  const activeIndex = Math.min(index, Math.max(0, filtered.length - 1))
+
+  const live = useRef<{ slash: SlashState | null; filtered: SlashItem[]; index: number }>({
+    slash: null,
+    filtered: [],
+    index: 0,
+  })
+  useEffect(() => {
+    live.current = { slash, filtered, index: activeIndex }
+  })
 
   const syncSlash = (editor: Editor) => {
-    const { state } = editor
-    const sel = state.selection
+    const sel = editor.state.selection
     if (!sel.empty) {
       setSlash(null)
-      slashRef.current = null
       return
     }
-    const $from = sel.$from
-    const textBefore = $from.parent.textBetween(0, $from.parentOffset, undefined, "￼")
+    const textBefore = sel.$from.parent.textBetween(0, sel.$from.parentOffset, undefined, "￼")
     const match = textBefore.match(/(?:^|\s)\/(\w*)$/)
     if (!match) {
       setSlash(null)
-      slashRef.current = null
       return
     }
     const coords = editor.view.coordsAtPos(sel.from)
-    const next = { query: match[1] ?? "", left: coords.left, top: coords.bottom + 4 }
-    setSlash(next)
-    slashRef.current = next
+    setSlash({ query: match[1] ?? "", left: coords.left, top: coords.bottom + 4 })
     setIndex(0)
   }
 
   const choose = (editor: Editor, item: SlashItem) => {
     const to = editor.state.selection.from
-    const from = to - (slashRef.current?.query.length ?? 0) - 1
+    const from = to - (live.current.slash?.query.length ?? 0) - 1
     editor.chain().focus().deleteRange({ from, to }).run()
     item.run(editor)
     setSlash(null)
-    slashRef.current = null
   }
 
   const editor = useEditor({
@@ -205,8 +204,8 @@ const NoteCanvas = ({ collab }: { collab: CollabDocument }) => {
     editorProps: {
       attributes: { class: "doc-editor min-h-[50vh] focus:outline-none" },
       handleKeyDown: (_view, event) => {
-        if (!slashRef.current) return false
-        const items = itemsRef.current
+        if (!live.current.slash) return false
+        const items = live.current.filtered
         if (event.key === "ArrowDown") {
           setIndex((i) => (items.length ? (i + 1) % items.length : 0))
           return true
@@ -216,13 +215,12 @@ const NoteCanvas = ({ collab }: { collab: CollabDocument }) => {
           return true
         }
         if (event.key === "Enter") {
-          const item = items[indexRef.current]
+          const item = items[live.current.index]
           if (item && editor) choose(editor, item)
           return true
         }
         if (event.key === "Escape") {
           setSlash(null)
-          slashRef.current = null
           return true
         }
         return false
@@ -244,23 +242,23 @@ const NoteCanvas = ({ collab }: { collab: CollabDocument }) => {
           style={{ left: slash.left, top: slash.top }}
         >
           {filtered.map((item, i) => (
-            <button
+            <Button
               key={item.title}
-              type="button"
+              variant="ghost"
               onMouseDown={(event) => {
                 event.preventDefault()
                 if (editor) choose(editor, item)
               }}
               className={cn(
-                "flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-sm",
-                i === indexRef.current ? "bg-accent" : "hover:bg-accent/60",
+                "h-auto w-full justify-start gap-2.5 px-2 py-1.5 font-normal",
+                i === activeIndex && "bg-accent",
               )}
             >
               <span className="bg-muted text-muted-foreground flex size-7 shrink-0 items-center justify-center rounded-md">
                 <item.icon className="size-4" />
               </span>
               {item.title}
-            </button>
+            </Button>
           ))}
         </div>
       ) : null}

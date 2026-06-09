@@ -8,8 +8,9 @@ export const DOC_MIME = "application/vnd.orbit.doc"
 export const SHEET_MIME = "application/vnd.orbit.sheet"
 export const SLIDES_MIME = "application/vnd.orbit.slides"
 export const NOTE_MIME = "application/vnd.orbit.note"
+export const DATABASE_MIME = "application/vnd.orbit.database"
 
-export type DocType = "doc" | "sheet" | "slides" | "note"
+export type DocType = "doc" | "sheet" | "slides" | "note" | "database"
 
 /** Map a node mime to its app type (or null if it isn't an Orbit document). */
 export const docTypeOf = (mime: string | null): DocType | null =>
@@ -21,7 +22,9 @@ export const docTypeOf = (mime: string | null): DocType | null =>
         ? "slides"
         : mime === NOTE_MIME
           ? "note"
-          : null
+          : mime === DATABASE_MIME
+            ? "database"
+            : null
 
 /** List/home route for each document type. */
 export const DOC_ROUTES: Record<DocType, string> = {
@@ -29,6 +32,7 @@ export const DOC_ROUTES: Record<DocType, string> = {
   sheet: "/sheets",
   slides: "/slides",
   note: "/notes",
+  database: "/notes",
 }
 
 /** Dedicated fullscreen editor routes (singular), distinct from the list/home routes. */
@@ -37,6 +41,7 @@ export const EDITOR_ROUTES: Record<DocType, string> = {
   sheet: "/sheet",
   slides: "/presentation",
   note: "/notes",
+  database: "/notes",
 }
 
 /** The fullscreen editor URL for a document. */

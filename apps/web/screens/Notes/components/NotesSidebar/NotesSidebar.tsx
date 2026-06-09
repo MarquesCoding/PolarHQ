@@ -2,16 +2,26 @@
 
 import { type ReactElement, Fragment } from "react"
 import Link from "next/link"
-import { editorHref, fetchDocs } from "@lib/docs"
+import { usePathname, useRouter } from "next/navigation"
+import { type DocType, editorHref, fetchDocs } from "@lib/docs"
+import { createEncryptedDoc } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import { useAppSelector } from "@store/hooks"
-import { useQuery } from "@tanstack/react-query"
+import { IconPlus } from "@tabler/icons-react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { Button } from "@workspace/ui/components/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
+import { cn } from "@workspace/ui/lib/utils"
+import { toast } from "sonner"
 import StorageMeter from "@components/StorageMeter/StorageMeter"
 import WorkspaceSwitcher from "@components/WorkspaceSwitcher/WorkspaceSwitcher"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
-import { usePathname } from "next/navigation"
-import { cn } from "@workspace/ui/lib/utils"
 
 const withTooltip = (label: string, collapsed: boolean, element: ReactElement): ReactElement => {
   if (!collapsed) return element
@@ -25,16 +35,38 @@ const withTooltip = (label: string, collapsed: boolean, element: ReactElement): 
 
 const NotesSidebar = () => {
   const pathname = usePathname()
+  const router = useRouter()
+  const queryClient = useQueryClient()
   const isMobile = useIsMobile()
   const userCollapsed = useAppSelector((state) => state.ui.sidebarCollapsed)
   const collapsed = isMobile || userCollapsed
 
-  const { data } = useQuery({
+  const notesQuery = useQuery({
     queryKey: ["docs", "note"],
     queryFn: () => fetchDocs("note"),
     enabled: !collapsed,
   })
-  const notes = [...(data?.documents ?? []), ...(data?.shared ?? [])]
+  const databasesQuery = useQuery({
+    queryKey: ["docs", "database"],
+    queryFn: () => fetchDocs("database"),
+    enabled: !collapsed,
+  })
+  const notes = [...(notesQuery.data?.documents ?? []), ...(notesQuery.data?.shared ?? [])]
+  const databases = [
+    ...(databasesQuery.data?.documents ?? []),
+    ...(databasesQuery.data?.shared ?? []),
+  ]
+
+  const create = async (type: DocType) => {
+    try {
+      const doc = await createEncryptedDoc(null, type)
+      void queryClient.invalidateQueries({ queryKey: ["docs"] })
+      void queryClient.invalidateQueries({ queryKey: ["drive"] })
+      router.push(editorHref(type, doc.id))
+    } catch {
+      toast.error("Could not create")
+    }
+  }
 
   const homeLink = (
     <Link
@@ -52,6 +84,33 @@ const NotesSidebar = () => {
     </Link>
   )
 
+  const section = (label: string, iconName: string, items: typeof notes, type: DocType) =>
+    items.length > 0 ? (
+      <div className="flex flex-col gap-0.5">
+        <p className="text-muted-foreground px-2.5 pb-1 text-xs font-medium tracking-wide uppercase">
+          {label}
+        </p>
+        {items.map((item) => {
+          const active = pathname === `/notes/${item.id}`
+          return (
+            <Link
+              key={item.id}
+              href={editorHref(type, item.id)}
+              className={cn(
+                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm transition",
+                active
+                  ? "bg-sidebar-accent/60 font-medium"
+                  : "text-muted-foreground hover:bg-sidebar-accent/40",
+              )}
+            >
+              <Icon name={iconName} className="text-muted-foreground size-3.5 shrink-0" />
+              <span className="truncate">{item.name}</span>
+            </Link>
+          )
+        })}
+      </div>
+    ) : null
+
   return (
     <aside
       className={cn(
@@ -61,33 +120,39 @@ const NotesSidebar = () => {
     >
       <WorkspaceSwitcher productName="Notes" icon="document" collapsed={collapsed} />
 
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              size="sm"
+              aria-label="Create"
+              className={cn("gap-1.5", collapsed ? "w-9 px-0" : "w-full")}
+            >
+              <IconPlus className="size-4" />
+              {!collapsed ? "New" : null}
+            </Button>
+          }
+        />
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem onClick={() => void create("note")}>
+            <Icon name="document" className="size-4" />
+            New note
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => void create("database")}>
+            <Icon name="database" className="size-4" />
+            New database
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
       <nav className="flex flex-col gap-1">
         <Fragment>{withTooltip("All notes", collapsed, homeLink)}</Fragment>
       </nav>
 
-      {!collapsed && notes.length > 0 ? (
-        <div className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto">
-          <p className="text-muted-foreground px-2.5 pb-1 text-xs font-medium tracking-wide uppercase">
-            Notes
-          </p>
-          {notes.map((note) => {
-            const active = pathname === `/notes/${note.id}`
-            return (
-              <Link
-                key={note.id}
-                href={editorHref("note", note.id)}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm transition",
-                  active
-                    ? "bg-sidebar-accent/60 font-medium"
-                    : "text-muted-foreground hover:bg-sidebar-accent/40",
-                )}
-              >
-                <Icon name="document" className="text-muted-foreground size-3.5 shrink-0" />
-                <span className="truncate">{note.name}</span>
-              </Link>
-            )
-          })}
+      {!collapsed && (notes.length > 0 || databases.length > 0) ? (
+        <div className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
+          {section("Notes", "document", notes, "note")}
+          {section("Databases", "database", databases, "database")}
         </div>
       ) : (
         <div className="flex-1" />
