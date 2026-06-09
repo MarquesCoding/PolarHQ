@@ -19,7 +19,7 @@ import "@glideapps/glide-data-grid/dist/index.css"
 import { toast } from "sonner"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
-import { type CellFormat, COLS, colLabel, shiftFormula } from "@pages/Sheets/sheetModel"
+import { type CellFormat, COLS, colLabel, inBox, shiftFormula } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
 
 const FONT_FAMILY = "ui-sans-serif, system-ui, -apple-system, sans-serif"
@@ -34,6 +34,7 @@ interface Action {
 const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
   const ref = useRef<DataEditorRef>(null)
   const pointer = useRef({ x: 0, y: 0 })
+  const prevRefCells = useRef<Item[]>([])
   const [addN, setAddN] = useState(1000)
   const [overrides, setOverrides] = useState<Record<number, number>>({})
   const [menu, setMenu] = useState<{ x: number; y: number; actions: Array<Action | "sep"> } | null>(null)
@@ -63,6 +64,17 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
       sheet.formats.unobserve(repaint)
     }
   }, [sheet.cells, sheet.formats])
+
+  useEffect(() => {
+    const cells: Item[] = []
+    for (const refBox of sheet.editingRefs)
+      for (let r = refBox.box.r0; r <= refBox.box.r1; r += 1)
+        for (let c = refBox.box.c0; c <= refBox.box.c1; c += 1) cells.push([c, r])
+    const damage = [...prevRefCells.current, ...cells]
+    prevRefCells.current = cells
+    if (damage.length > 0 && damage.length < 5000)
+      ref.current?.updateCells(damage.map((cell) => ({ cell })))
+  }, [sheet.editingRefs])
 
   const theme: Partial<Theme> = {
     accentColor: "#3b82f6",
@@ -136,11 +148,38 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
     const { ctx, rect, col, row, theme: t } = args
     const f = sheet.fmtAt(row, col)
     const hasList = sheet.listOptionsAt(row, col) !== null
-    if (!f.bd && !f.u && !f.s && !hasList) return
+    const refs = sheet.editingRefs.filter((ref) => inBox(row, col, ref.box))
+    if (!f.bd && !f.u && !f.s && !hasList && refs.length === 0) return
     ctx.save()
     ctx.beginPath()
     ctx.rect(rect.x, rect.y, rect.width, rect.height)
     ctx.clip()
+    for (const refBox of refs) {
+      ctx.fillStyle = `${refBox.color}1a`
+      ctx.fillRect(rect.x, rect.y, rect.width, rect.height)
+      ctx.strokeStyle = refBox.color
+      ctx.lineWidth = 2
+      ctx.setLineDash([4, 3])
+      ctx.beginPath()
+      if (row === refBox.box.r0) {
+        ctx.moveTo(rect.x, rect.y + 1)
+        ctx.lineTo(rect.x + rect.width, rect.y + 1)
+      }
+      if (row === refBox.box.r1) {
+        ctx.moveTo(rect.x, rect.y + rect.height - 1)
+        ctx.lineTo(rect.x + rect.width, rect.y + rect.height - 1)
+      }
+      if (col === refBox.box.c0) {
+        ctx.moveTo(rect.x + 1, rect.y)
+        ctx.lineTo(rect.x + 1, rect.y + rect.height)
+      }
+      if (col === refBox.box.c1) {
+        ctx.moveTo(rect.x + rect.width - 1, rect.y)
+        ctx.lineTo(rect.x + rect.width - 1, rect.y + rect.height)
+      }
+      ctx.stroke()
+      ctx.setLineDash([])
+    }
     if (hasList) {
       const cx = rect.x + rect.width - 11
       const cy = rect.y + rect.height / 2

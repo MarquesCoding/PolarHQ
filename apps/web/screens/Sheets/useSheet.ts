@@ -18,10 +18,12 @@ import {
   bounds,
   cellKey,
   clamp,
+  type RefBox,
   formatNumber,
   formatValue,
   inBox,
   lerpHex,
+  parseFormulaRefs,
   shiftFormula,
   toCsv,
 } from "./sheetModel"
@@ -50,6 +52,8 @@ export interface SheetController {
   freezeCols: number
   setFreezeCols: (n: number) => void
   functionNames: string[]
+  editingRefs: RefBox[]
+  setEditingFormula: (formula: string | null) => void
   condFormats: CondRule[]
   cfStyleAt: (r: number, c: number) => Partial<CellFormat> | null
   addCondFormat: (rule: CondRule) => void
@@ -151,8 +155,14 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
 
   const [activeId, setActiveId] = useState("0")
   const [sheetVersion, setSheetVersion] = useState(0)
+  const [editingFormula, setEditingFormula] = useState<string | null>(null)
   const [, force] = useState(0)
   const rerender = () => force((value) => value + 1)
+
+  const editingRefs = useMemo(
+    () => (editingFormula ? parseFormulaRefs(editingFormula) : []),
+    [editingFormula],
+  )
 
   const cells = ydoc.getMap<string>(mapName("cells", activeId))
   const formats = ydoc.getMap<CellFormat>(mapName("formats", activeId))
@@ -839,6 +849,8 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     freezeCols,
     setFreezeCols,
     functionNames,
+    editingRefs,
+    setEditingFormula,
     condFormats,
     cfStyleAt,
     addCondFormat,
