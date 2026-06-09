@@ -16,6 +16,7 @@ import {
   type Theme,
 } from "@glideapps/glide-data-grid"
 import "@glideapps/glide-data-grid/dist/index.css"
+import { toast } from "sonner"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { type CellFormat, COLS, colLabel, shiftFormula } from "@pages/Sheets/sheetModel"
@@ -134,11 +135,23 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
     draw()
     const { ctx, rect, col, row, theme: t } = args
     const f = sheet.fmtAt(row, col)
-    if (!f.bd && !f.u && !f.s) return
+    const hasList = sheet.listOptionsAt(row, col) !== null
+    if (!f.bd && !f.u && !f.s && !hasList) return
     ctx.save()
     ctx.beginPath()
     ctx.rect(rect.x, rect.y, rect.width, rect.height)
     ctx.clip()
+    if (hasList) {
+      const cx = rect.x + rect.width - 11
+      const cy = rect.y + rect.height / 2
+      ctx.strokeStyle = t.textLight ?? "#94a3b8"
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      ctx.moveTo(cx - 3, cy - 2)
+      ctx.lineTo(cx, cy + 2)
+      ctx.lineTo(cx + 3, cy - 2)
+      ctx.stroke()
+    }
     if (f.bd) {
       ctx.strokeStyle = BORDER_COLOR
       ctx.lineWidth = 1
@@ -195,17 +208,33 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
   }
 
   const onCellEdited = (item: Item, value: EditableGridCell) => {
-    if (value.kind === GridCellKind.Text || value.kind === GridCellKind.Number)
-      sheet.setRaw(item[1], item[0], String(value.data ?? ""))
+    if (value.kind === GridCellKind.Text || value.kind === GridCellKind.Number) {
+      const next = String(value.data ?? "")
+      const error = sheet.validateCell(item[1], item[0], next)
+      if (error) {
+        toast.error(error)
+        return
+      }
+      sheet.setRaw(item[1], item[0], next)
+    }
   }
 
   const onCellsEdited = (edits: readonly { location: Item; value: EditableGridCell }[]) => {
+    let rejected: string | null = null
     sheet.transact(() => {
       for (const { location, value } of edits) {
-        if (value.kind === GridCellKind.Text || value.kind === GridCellKind.Number)
-          sheet.setRaw(location[1], location[0], String(value.data ?? ""))
+        if (value.kind === GridCellKind.Text || value.kind === GridCellKind.Number) {
+          const next = String(value.data ?? "")
+          const error = sheet.validateCell(location[1], location[0], next)
+          if (error) {
+            rejected = error
+            continue
+          }
+          sheet.setRaw(location[1], location[0], next)
+        }
       }
     })
+    if (rejected) toast.error(rejected)
     return true
   }
 

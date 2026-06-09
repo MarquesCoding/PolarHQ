@@ -2,6 +2,7 @@
 
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react"
 import { IconChevronDown } from "@tabler/icons-react"
+import { toast } from "sonner"
 import { Input } from "@workspace/ui/components/input"
 import { cn } from "@workspace/ui/lib/utils"
 import { a1Range, clamp } from "@pages/Sheets/sheetModel"
@@ -42,7 +43,13 @@ const FormulaBar = ({ sheet }: { sheet: SheetController }) => {
   }
 
   const commit = (move: boolean) => {
-    sheet.setRaw(focus.r, focus.c, value.trim())
+    const trimmed = value.trim()
+    const error = sheet.validateCell(focus.r, focus.c, trimmed)
+    if (error) {
+      toast.error(error)
+      return
+    }
+    sheet.setRaw(focus.r, focus.c, trimmed)
     editing.current = false
     if (move) sheet.selectOnly({ r: clamp(focus.r + 1, 0, sheet.rows - 1), c: focus.c })
   }

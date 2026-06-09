@@ -19,6 +19,7 @@ import { toast } from "sonner"
 import { ZOOM_LEVELS } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
 import ConditionalFormatDialog from "@pages/Sheets/components/ConditionalFormatDialog/ConditionalFormatDialog"
+import DataValidationDialog from "@pages/Sheets/components/DataValidationDialog/DataValidationDialog"
 
 const Menu = ({ label, children }: { label: string; children: ReactNode }) => (
   <DropdownMenu>
@@ -38,6 +39,7 @@ const Menu = ({ label, children }: { label: string; children: ReactNode }) => (
 const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string }) => {
   const router = useRouter()
   const [cfOpen, setCfOpen] = useState(false)
+  const [dvOpen, setDvOpen] = useState(false)
 
   const copy = async () => {
     const box = sheet.selBox
@@ -259,6 +261,8 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
       <Menu label="Data">
         <DropdownMenuItem onClick={() => sheet.sortSelection("asc")}>Sort range A → Z</DropdownMenuItem>
         <DropdownMenuItem onClick={() => sheet.sortSelection("desc")}>Sort range Z → A</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => setDvOpen(true)}>Data validation…</DropdownMenuItem>
       </Menu>
 
       <Menu label="Help">
@@ -272,6 +276,7 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
       </Menu>
     </div>
       <ConditionalFormatDialog sheet={sheet} open={cfOpen} onOpenChange={setCfOpen} />
+      <DataValidationDialog sheet={sheet} open={dvOpen} onOpenChange={setDvOpen} />
     </>
   )
 }
