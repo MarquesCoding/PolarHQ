@@ -6,6 +6,47 @@ export const COL_W = 112
 export const ROW_H = 28
 export const HEAD_W = 48
 
+export type NumberFormat =
+  | "number"
+  | "percent"
+  | "scientific"
+  | "accounting"
+  | "financial"
+  | "currency"
+  | "currency_rounded"
+  | "date"
+  | "time"
+  | "datetime"
+  | "duration"
+  | "text"
+
+/** Number-format options for the "123" menu, grouped like Google Sheets. */
+export const NUMBER_FORMAT_GROUPS: Array<
+  Array<{ label: string; fmt: NumberFormat | undefined; example: string }>
+> = [
+  [
+    { label: "Automatic", fmt: undefined, example: "" },
+    { label: "Plain text", fmt: "text", example: "" },
+  ],
+  [
+    { label: "Number", fmt: "number", example: "1,000.12" },
+    { label: "Percent", fmt: "percent", example: "10.12%" },
+    { label: "Scientific", fmt: "scientific", example: "1.01E+03" },
+  ],
+  [
+    { label: "Accounting", fmt: "accounting", example: "$ (1,000.12)" },
+    { label: "Financial", fmt: "financial", example: "(1,000.12)" },
+    { label: "Currency", fmt: "currency", example: "$1,000.12" },
+    { label: "Currency rounded", fmt: "currency_rounded", example: "$1,000" },
+  ],
+  [
+    { label: "Date", fmt: "date", example: "9/26/2008" },
+    { label: "Time", fmt: "time", example: "3:59:00 PM" },
+    { label: "Date time", fmt: "datetime", example: "9/26/2008 15:59:00" },
+    { label: "Duration", fmt: "duration", example: "24:01:00" },
+  ],
+]
+
 export interface CellBorder {
   t?: boolean
   r?: boolean
@@ -22,7 +63,7 @@ export interface CellFormat {
   bg?: string
   align?: "left" | "center" | "right"
   valign?: "top" | "middle" | "bottom"
-  fmt?: "number" | "currency" | "percent"
+  fmt?: NumberFormat
   dec?: number
   ff?: string
   fs?: number
@@ -203,17 +244,61 @@ export const formatValue = (value: unknown): string => {
   return String(value)
 }
 
+const EXCEL_EPOCH = Date.UTC(1899, 11, 30)
+const serialToDate = (serial: number): Date => new Date(EXCEL_EPOCH + Math.round(serial * 86_400_000))
+
 export const formatNumber = (n: number, fmt: CellFormat["fmt"], dec?: number): string => {
-  const fixed = (fallback: number) => {
-    const places = dec ?? fallback
-    return { minimumFractionDigits: places, maximumFractionDigits: places }
+  const places = (fallback: number) => {
+    const d = dec ?? fallback
+    return { minimumFractionDigits: d, maximumFractionDigits: d }
   }
-  if (fmt === "currency")
-    return n.toLocaleString(undefined, { style: "currency", currency: "USD", ...fixed(2) })
-  if (fmt === "percent")
-    return n.toLocaleString(undefined, { style: "percent", ...fixed(0) })
-  if (fmt === "number") return n.toLocaleString(undefined, fixed(2))
-  return String(n)
+  const currency = (d: number) =>
+    n.toLocaleString(undefined, { style: "currency", currency: "USD", ...places(d) })
+  switch (fmt) {
+    case "number":
+      return n.toLocaleString(undefined, places(2))
+    case "percent":
+      return n.toLocaleString(undefined, { style: "percent", ...places(2) })
+    case "scientific":
+      return n
+        .toExponential(dec ?? 2)
+        .toUpperCase()
+        .replace(/E([+-])(\d)$/, "E$10$2")
+    case "currency":
+      return currency(2)
+    case "currency_rounded":
+      return currency(0)
+    case "accounting": {
+      const body = Math.abs(n).toLocaleString(undefined, {
+        style: "currency",
+        currency: "USD",
+        ...places(2),
+      })
+      return n < 0 ? `(${body})` : body
+    }
+    case "financial": {
+      const body = Math.abs(n).toLocaleString(undefined, places(2))
+      return n < 0 ? `(${body})` : body
+    }
+    case "date":
+      return serialToDate(n).toLocaleDateString()
+    case "time":
+      return serialToDate(n).toLocaleTimeString()
+    case "datetime": {
+      const d = serialToDate(n)
+      return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`
+    }
+    case "duration": {
+      const total = Math.round(Math.abs(n) * 86_400)
+      const h = Math.floor(total / 3600)
+      const m = Math.floor((total % 3600) / 60)
+      const s = total % 60
+      const pad = (x: number) => String(x).padStart(2, "0")
+      return `${n < 0 ? "-" : ""}${h}:${pad(m)}:${pad(s)}`
+    }
+    default:
+      return String(n)
+  }
 }
 
 /** Build a CSV string from a raw-value lookup over the populated range. */

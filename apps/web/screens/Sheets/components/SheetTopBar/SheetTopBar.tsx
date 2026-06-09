@@ -6,8 +6,9 @@ import { authClient } from "@lib/authClient"
 import { type DocMeta } from "@lib/docs"
 import { renameDriveNode } from "@lib/drive"
 import { encryptNameWith } from "@lib/e2e"
+import { Icon } from "@lib/icons"
 import type { RelayProvider } from "@lib/yjsProvider"
-import { IconShieldLock, IconTable, IconUserPlus } from "@tabler/icons-react"
+import { IconShieldLock, IconUserPlus } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
@@ -66,6 +67,10 @@ const SheetTopBar = ({
   const [shareOpen, setShareOpen] = useState(false)
 
   useEffect(() => {
+    document.title = title ? `${title} — PolarHQ Sheets` : "PolarHQ Sheets"
+  }, [title])
+
+  useEffect(() => {
     const me: Peer = {
       name: session?.user?.name || "Anonymous",
       color: colorFor(session?.user?.id || session?.user?.email || "anon"),
@@ -111,7 +116,7 @@ const SheetTopBar = ({
           aria-label="Back to Sheets"
           className="flex size-9 shrink-0 items-center justify-center rounded-md bg-emerald-600/15 text-emerald-600 dark:text-emerald-400"
         >
-          <IconTable className="size-5" />
+          <Icon name="table" className="size-5" />
         </Link>
         <div className="flex min-w-0 flex-col">
           <Input
