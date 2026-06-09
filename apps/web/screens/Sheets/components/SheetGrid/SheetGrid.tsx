@@ -339,6 +339,7 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
     >
       <div className="min-h-0 flex-1">
         <DataEditor
+          key={sheet.activeSheetId}
           ref={ref}
           theme={theme}
           columns={columns}
