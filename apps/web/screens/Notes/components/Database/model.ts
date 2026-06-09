@@ -1,7 +1,15 @@
 import * as Y from "yjs"
 
 /** A column's value type. */
-export type PropType = "text" | "number" | "select" | "multiSelect" | "checkbox" | "date" | "url"
+export type PropType =
+  | "text"
+  | "number"
+  | "select"
+  | "multiSelect"
+  | "checkbox"
+  | "date"
+  | "url"
+  | "relation"
 
 export interface SelectOption {
   id: string
@@ -14,6 +22,8 @@ export interface Property {
   name: string
   type: PropType
   options?: SelectOption[]
+  /** For relation properties: the linked database's Drive node id. */
+  targetDb?: string
 }
 
 export type ViewType = "table" | "board" | "gallery"
@@ -89,6 +99,8 @@ export const operatorsFor = (type: PropType): FilterOp[] => {
       return ["is", "isNot", "isEmpty", "isNotEmpty"]
     case "multiSelect":
       return ["contains", "notContains", "isEmpty", "isNotEmpty"]
+    case "relation":
+      return ["isEmpty", "isNotEmpty"]
     case "checkbox":
       return ["checked", "unchecked"]
     case "date":
@@ -222,6 +234,7 @@ export const PROP_LABELS: Record<PropType, string> = {
   checkbox: "Checkbox",
   date: "Date",
   url: "URL",
+  relation: "Relation",
 }
 
 const uid = (): string => crypto.randomUUID()
@@ -321,6 +334,9 @@ export const databaseApi = (ydoc: Y.Doc) => {
         if ((type === "select" || type === "multiSelect") && !prop.get("options"))
           prop.set("options", new Y.Array())
       })
+    },
+    setRelationTarget(id: string, targetDb: string): void {
+      tx(() => mapById(roots.properties, id)?.set("targetDb", targetDb))
     },
     deleteProperty(id: string): void {
       tx(() => {
