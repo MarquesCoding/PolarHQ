@@ -21,6 +21,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { type CellFormat, COLS, colLabel, inBox, shiftFormula } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
+import { type FormulaCellData, createFormulaRenderer } from "./formulaCell"
 
 const FONT_FAMILY = "ui-sans-serif, system-ui, -apple-system, sans-serif"
 const BORDER_COLOR = "#64748b"
@@ -35,6 +36,9 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
   const ref = useRef<DataEditorRef>(null)
   const pointer = useRef({ x: 0, y: 0 })
   const prevRefCells = useRef<Item[]>([])
+  const sheetRef = useRef(sheet)
+  sheetRef.current = sheet
+  const customRenderers = useMemo(() => [createFormulaRenderer(sheetRef)], [])
   const [addN, setAddN] = useState(1000)
   const [overrides, setOverrides] = useState<Record<number, number>>({})
   const [menu, setMenu] = useState<{ x: number; y: number; actions: Array<Action | "sep"> } | null>(null)
@@ -133,9 +137,9 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
     if (bg) themeOverride.bgCell = bg
     const merge = sheet.mergeAnchorAt(r, c)
     return {
-      kind: GridCellKind.Text,
-      data: sheet.rawAt(r, c),
-      displayData: sheet.display(r, c),
+      kind: GridCellKind.Custom,
+      data: { kind: "formula-cell", raw: sheet.rawAt(r, c), display: sheet.display(r, c) },
+      copyData: sheet.rawAt(r, c),
       allowOverlay: true,
       contentAlign: f.align,
       themeOverride: Object.keys(themeOverride).length > 0 ? themeOverride : undefined,
@@ -246,31 +250,36 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
     ctx.restore()
   }
 
+  const extractRaw = (value: EditableGridCell): string | null => {
+    if (value.kind === GridCellKind.Custom) return String((value.data as FormulaCellData).raw ?? "")
+    if (value.kind === GridCellKind.Text || value.kind === GridCellKind.Number)
+      return String(value.data ?? "")
+    return null
+  }
+
   const onCellEdited = (item: Item, value: EditableGridCell) => {
-    if (value.kind === GridCellKind.Text || value.kind === GridCellKind.Number) {
-      const next = String(value.data ?? "")
-      const error = sheet.validateCell(item[1], item[0], next)
-      if (error) {
-        toast.error(error)
-        return
-      }
-      sheet.setRaw(item[1], item[0], next)
+    const next = extractRaw(value)
+    if (next === null) return
+    const error = sheet.validateCell(item[1], item[0], next)
+    if (error) {
+      toast.error(error)
+      return
     }
+    sheet.setRaw(item[1], item[0], next)
   }
 
   const onCellsEdited = (edits: readonly { location: Item; value: EditableGridCell }[]) => {
     let rejected: string | null = null
     sheet.transact(() => {
       for (const { location, value } of edits) {
-        if (value.kind === GridCellKind.Text || value.kind === GridCellKind.Number) {
-          const next = String(value.data ?? "")
-          const error = sheet.validateCell(location[1], location[0], next)
-          if (error) {
-            rejected = error
-            continue
-          }
-          sheet.setRaw(location[1], location[0], next)
+        const next = extractRaw(value)
+        if (next === null) continue
+        const error = sheet.validateCell(location[1], location[0], next)
+        if (error) {
+          rejected = error
+          continue
         }
+        sheet.setRaw(location[1], location[0], next)
       }
     })
     if (rejected) toast.error(rejected)
@@ -423,6 +432,7 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
           headerHeight={Math.round(30 * z)}
           freezeColumns={sheet.freezeCols}
           getCellContent={getCellContent}
+          customRenderers={customRenderers}
           drawCell={drawCell}
           verticalBorder={sheet.gridlines}
           onCellEdited={onCellEdited}
