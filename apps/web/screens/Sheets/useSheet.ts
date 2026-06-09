@@ -314,9 +314,9 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
   const addRows = (n: number) => setRowCount((current) => Math.min(50000, current + Math.max(1, n)))
 
   const display = (r: number, c: number): string => {
-    if (!hf) return rawAt(r, c)
-    const value = hf.getCellValue({ sheet, row: r, col: c })
     const f = fmtAt(r, c)
+    if (f.fmt === "text" || !hf) return rawAt(r, c)
+    const value = hf.getCellValue({ sheet, row: r, col: c })
     if (typeof value === "number" && (f.fmt || f.dec != null)) return formatNumber(value, f.fmt, f.dec)
     return formatValue(value)
   }

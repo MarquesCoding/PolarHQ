@@ -20,6 +20,7 @@ import { ZOOM_LEVELS } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
 import ConditionalFormatDialog from "@pages/Sheets/components/ConditionalFormatDialog/ConditionalFormatDialog"
 import DataValidationDialog from "@pages/Sheets/components/DataValidationDialog/DataValidationDialog"
+import NumberFormatItems from "@pages/Sheets/components/NumberFormatItems/NumberFormatItems"
 
 const Menu = ({ label, children }: { label: string; children: ReactNode }) => (
   <DropdownMenu>
@@ -231,16 +232,8 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
         <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Number</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuItem onClick={() => sheet.applyFormat({ fmt: undefined, dec: undefined })}>
-              Automatic
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => sheet.applyFormat({ fmt: "number" })}>Number</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => sheet.applyFormat({ fmt: "percent" })}>Percent</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => sheet.applyFormat({ fmt: "currency" })}>Currency</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => sheet.adjustDecimals(1)}>Increase decimals</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => sheet.adjustDecimals(-1)}>Decrease decimals</DropdownMenuItem>
+          <DropdownMenuSubContent className="min-w-56">
+            <NumberFormatItems sheet={sheet} />
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSub>

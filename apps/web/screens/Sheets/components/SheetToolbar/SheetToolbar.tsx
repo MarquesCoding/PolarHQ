@@ -1,6 +1,6 @@
 "use client"
 
-import { type ReactNode, useRef } from "react"
+import { type ReactNode } from "react"
 import {
   IconAlignCenter,
   IconAlignLeft,
@@ -44,6 +44,8 @@ import {
 import { Separator } from "@workspace/ui/components/separator"
 import { type CellFormat, FONTS, FONT_SIZES, ZOOM_LEVELS } from "@pages/Sheets/sheetModel"
 import type { BorderMode, SheetController } from "@pages/Sheets/useSheet"
+import ColorPalette from "@pages/Sheets/components/ColorPalette/ColorPalette"
+import NumberFormatItems from "@pages/Sheets/components/NumberFormatItems/NumberFormatItems"
 
 const noBlur = (event: { preventDefault: () => void }) => event.preventDefault()
 
@@ -74,45 +76,6 @@ const Tool = ({
 )
 
 const Divider = () => <Separator orientation="vertical" className="mx-1 h-5" />
-
-const ColorButton = ({
-  kind,
-  value,
-  onChange,
-}: {
-  kind: "text" | "fill"
-  value: string
-  onChange: (value: string) => void
-}) => {
-  const ref = useRef<HTMLInputElement>(null)
-  return (
-    <Button
-      variant="ghost"
-      size="icon-sm"
-      aria-label={kind === "text" ? "Text color" : "Fill color"}
-      title={kind === "text" ? "Text color" : "Fill color"}
-      onMouseDown={noBlur}
-      onClick={() => ref.current?.click()}
-    >
-      {kind === "text" ? (
-        <span className="text-sm leading-none font-semibold" style={{ color: value }}>
-          A
-        </span>
-      ) : (
-        <span className="size-3.5 rounded-sm border" style={{ backgroundColor: value }} />
-      )}
-      <input
-        ref={ref}
-        type="color"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="sr-only"
-        tabIndex={-1}
-        aria-hidden
-      />
-    </Button>
-  )
-}
 
 const BORDER_OPTIONS: Array<{ mode: BorderMode; label: string; icon: ReactNode }> = [
   { mode: "all", label: "All borders", icon: <IconBorderAll className="size-4" /> },
@@ -172,19 +135,8 @@ const SheetToolbar = ({ sheet }: { sheet: SheetController }) => {
             </Button>
           }
         />
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => sheet.applyFormat({ fmt: undefined, dec: undefined })}>
-            Automatic
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => sheet.applyFormat({ fmt: "number" })}>
-            Number
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => sheet.applyFormat({ fmt: "percent" })}>
-            Percent
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => sheet.applyFormat({ fmt: "currency" })}>
-            Currency
-          </DropdownMenuItem>
+        <DropdownMenuContent align="start" className="min-w-56">
+          <NumberFormatItems sheet={sheet} />
         </DropdownMenuContent>
       </DropdownMenu>
       <Divider />
@@ -233,10 +185,10 @@ const SheetToolbar = ({ sheet }: { sheet: SheetController }) => {
       <Tool label="Strikethrough" active={f.s} onClick={() => sheet.toggle("s")}>
         <IconStrikethrough className="size-4" />
       </Tool>
-      <ColorButton kind="text" value={f.color ?? "#000000"} onChange={(v) => sheet.applyFormat({ color: v })} />
+      <ColorPalette kind="text" value={f.color} onChange={(v) => sheet.applyFormat({ color: v })} />
       <Divider />
 
-      <ColorButton kind="fill" value={f.bg ?? "#ffffff"} onChange={(v) => sheet.applyFormat({ bg: v })} />
+      <ColorPalette kind="fill" value={f.bg} onChange={(v) => sheet.applyFormat({ bg: v })} />
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
