@@ -26,6 +26,10 @@ export type BorderMode = "all" | "outer" | "inner" | "top" | "bottom" | "left" |
 
 const BORDER_COLOR = "#64748b"
 
+/** Per-sheet Yjs map name. The first sheet ("0") keeps the legacy top-level names for
+ *  backward compatibility with single-sheet documents; others are namespaced by id. */
+const mapName = (base: string, id: string): string => (id === "0" ? base : `${base}:${id}`)
+
 /**
  * The full spreadsheet controller: Yjs-backed cells/formats/merges, a HyperFormula
  * evaluation engine, selection + editing state, history, and every mutating operation.
@@ -42,6 +46,12 @@ export interface SheetController {
   freezeCols: number
   setFreezeCols: (n: number) => void
   functionNames: string[]
+  sheets: Array<{ id: string; name: string }>
+  activeSheetId: string
+  setActiveSheet: (id: string) => void
+  addSheet: () => void
+  deleteSheet: (id: string) => void
+  renameSheet: (id: string, name: string) => void
   rows: number
   addRows: (n: number) => void
 
@@ -117,15 +127,25 @@ export interface SheetController {
 }
 
 export const useSheet = (ydoc: Y.Doc): SheetController => {
-  const cells = ydoc.getMap<string>("cells")
-  const formats = ydoc.getMap<CellFormat>("formats")
-  const merges = ydoc.getMap<Box>("merges")
-  const colWidths = ydoc.getMap<number>("colW")
-  const rowHeights = ydoc.getMap<number>("rowH")
+  const sheetOrder = ydoc.getArray<string>("sheetOrder")
+  const sheetNames = ydoc.getMap<string>("sheetNames")
   const meta = ydoc.getMap<number>("meta")
 
+  const [activeId, setActiveId] = useState("0")
+  const [sheetVersion, setSheetVersion] = useState(0)
   const [, force] = useState(0)
   const rerender = () => force((value) => value + 1)
+
+  const cells = ydoc.getMap<string>(mapName("cells", activeId))
+  const formats = ydoc.getMap<CellFormat>(mapName("formats", activeId))
+  const merges = ydoc.getMap<Box>(mapName("merges", activeId))
+  const colWidths = ydoc.getMap<number>(mapName("colW", activeId))
+  const rowHeights = ydoc.getMap<number>(mapName("rowH", activeId))
+
+  const sheets =
+    sheetOrder.length > 0
+      ? sheetOrder.toArray().map((id) => ({ id, name: sheetNames.get(id) ?? id }))
+      : [{ id: "0", name: "Sheet1" }]
 
   const [sel, setSel] = useState<{ anchor: Pos; focus: Pos }>({
     anchor: { r: 0, c: 0 },
@@ -144,44 +164,75 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
   const dragRef = useRef<"select" | "fill" | "col" | "row" | null>(null)
   const undoRef = useRef<Y.UndoManager | null>(null)
 
-  const [engine, setEngine] = useState<{ hf: HyperFormula; sheet: number } | null>(null)
+  const [engine, setEngine] = useState<{ hf: HyperFormula; idToHf: Map<string, number> } | null>(
+    null,
+  )
   const hf = engine?.hf
-  const sheet = engine?.sheet ?? 0
+  const sheet = engine?.idToHf.get(activeId) ?? 0
+
+  useEffect(() => {
+    if (sheetOrder.length === 0) {
+      ydoc.transact(() => {
+        sheetOrder.push(["0"])
+        sheetNames.set("0", "Sheet1")
+      })
+    }
+    const bump = () => setSheetVersion((value) => value + 1)
+    sheetOrder.observe(bump)
+    sheetNames.observe(bump)
+    return () => {
+      sheetOrder.unobserve(bump)
+      sheetNames.unobserve(bump)
+    }
+  }, [ydoc, sheetOrder, sheetNames])
 
   useEffect(() => {
     const instance = HyperFormula.buildEmpty({ licenseKey: "gpl-v3" })
-    const sheetId = instance.getSheetId(instance.addSheet("Sheet1"))!
-    cells.forEach((raw, key) => {
-      const [r, c] = key.split(":").map(Number)
-      instance.setCellContents({ sheet: sheetId, row: r!, col: c! }, raw)
-    })
-    setEngine({ hf: instance, sheet: sheetId })
-
-    const observer = (event: Y.YMapEvent<string>) => {
-      event.keysChanged.forEach((key) => {
+    const ids = sheetOrder.length > 0 ? sheetOrder.toArray() : ["0"]
+    const idToHf = new Map<string, number>()
+    const subs: Array<{ map: Y.Map<string>; fn: (event: Y.YMapEvent<string>) => void }> = []
+    for (const id of ids) {
+      const hfId = instance.getSheetId(instance.addSheet(sheetNames.get(id) ?? `Sheet${id}`))!
+      idToHf.set(id, hfId)
+      const cellMap = ydoc.getMap<string>(mapName("cells", id))
+      cellMap.forEach((raw, key) => {
         const [r, c] = key.split(":").map(Number)
-        instance.setCellContents({ sheet: sheetId, row: r!, col: c! }, cells.get(key) ?? null)
+        instance.setCellContents({ sheet: hfId, row: r!, col: c! }, raw)
       })
-      rerender()
+      const fn = (event: Y.YMapEvent<string>) => {
+        event.keysChanged.forEach((key) => {
+          const [r, c] = key.split(":").map(Number)
+          instance.setCellContents({ sheet: hfId, row: r!, col: c! }, cellMap.get(key) ?? null)
+        })
+        rerender()
+      }
+      cellMap.observe(fn)
+      subs.push({ map: cellMap, fn })
     }
+    setEngine({ hf: instance, idToHf })
+    return () => {
+      subs.forEach(({ map, fn }) => map.unobserve(fn))
+      instance.destroy()
+      setEngine(null)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ydoc, sheetVersion])
+
+  useEffect(() => {
     const fmtObserver = () => rerender()
-    cells.observe(observer)
     formats.observe(fmtObserver)
     merges.observe(fmtObserver)
     colWidths.observe(fmtObserver)
     rowHeights.observe(fmtObserver)
     meta.observe(fmtObserver)
     return () => {
-      cells.unobserve(observer)
       formats.unobserve(fmtObserver)
       merges.unobserve(fmtObserver)
       colWidths.unobserve(fmtObserver)
       rowHeights.unobserve(fmtObserver)
       meta.unobserve(fmtObserver)
-      instance.destroy()
-      setEngine(null)
     }
-  }, [cells, formats, merges, colWidths, rowHeights, meta])
+  }, [formats, merges, colWidths, rowHeights, meta])
 
   useEffect(() => {
     const manager = new Y.UndoManager([cells, formats, merges, colWidths, rowHeights], {
@@ -242,6 +293,39 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hf])
+
+  const addSheet = () => {
+    const id = String(Date.now())
+    const used = new Set(sheets.map((s) => s.name))
+    let n = sheets.length + 1
+    while (used.has(`Sheet${n}`)) n += 1
+    ydoc.transact(() => {
+      sheetOrder.push([id])
+      sheetNames.set(id, `Sheet${n}`)
+    })
+    setActiveId(id)
+    setSel({ anchor: { r: 0, c: 0 }, focus: { r: 0, c: 0 } })
+  }
+  const deleteSheet = (id: string) => {
+    if (sheetOrder.length <= 1) return
+    const order = sheetOrder.toArray()
+    const idx = order.indexOf(id)
+    ydoc.transact(() => {
+      if (idx >= 0) sheetOrder.delete(idx, 1)
+      sheetNames.delete(id)
+      for (const base of ["cells", "formats", "merges", "colW", "rowH"])
+        ydoc.getMap(mapName(base, id)).clear()
+    })
+    if (activeId === id) setActiveId(order.filter((x) => x !== id)[0] ?? "0")
+  }
+  const renameSheet = (id: string, name: string) => {
+    const trimmed = name.trim()
+    if (trimmed) sheetNames.set(id, trimmed)
+  }
+  const setActiveSheet = (id: string) => {
+    setActiveId(id)
+    setSel({ anchor: { r: 0, c: 0 }, focus: { r: 0, c: 0 } })
+  }
 
   const cellStyle = (r: number, c: number): CSSProperties => {
     const f = fmtAt(r, c)
@@ -628,6 +712,12 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     freezeCols,
     setFreezeCols,
     functionNames,
+    sheets,
+    activeSheetId: activeId,
+    setActiveSheet,
+    addSheet,
+    deleteSheet,
+    renameSheet,
     rows: rowCount,
     addRows,
     rawAt,

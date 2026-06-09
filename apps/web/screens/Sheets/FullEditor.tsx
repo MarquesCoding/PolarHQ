@@ -6,6 +6,7 @@ import type { CollabDocument } from "@lib/useCollabDocument"
 import CollabBoundary from "@pages/Collab/CollabBoundary"
 import FormulaBar from "@pages/Sheets/components/FormulaBar/FormulaBar"
 import SheetGrid from "@pages/Sheets/components/SheetGrid/SheetGrid"
+import SheetTabs from "@pages/Sheets/components/SheetTabs/SheetTabs"
 import SheetToolbar from "@pages/Sheets/components/SheetToolbar/SheetToolbar"
 import SheetTopBar from "@pages/Sheets/components/SheetTopBar/SheetTopBar"
 import { useSheet } from "@pages/Sheets/useSheet"
@@ -41,6 +42,7 @@ const SheetWorkspace = ({ nodeId, collab }: { nodeId: string; collab: CollabDocu
       <SheetToolbar sheet={sheet} />
       <FormulaBar sheet={sheet} />
       <SheetGrid sheet={sheet} />
+      <SheetTabs sheet={sheet} />
     </div>
   )
 }
