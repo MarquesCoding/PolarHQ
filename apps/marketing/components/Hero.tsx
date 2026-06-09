@@ -1,6 +1,7 @@
 "use client"
 
-import { type Variants, motion } from "motion/react"
+import { useRef } from "react"
+import { type Variants, motion, useScroll, useTransform } from "motion/react"
 import { Button } from "@workspace/ui/components/button"
 import {
   IconBrandAndroid,
@@ -13,7 +14,7 @@ import {
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.25 } },
+  show: { transition: { staggerChildren: 0.16, delayChildren: 1.1 } },
 }
 
 const group: Variants = {
@@ -23,27 +24,31 @@ const group: Variants = {
 
 const item: Variants = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 0.61, 0.36, 1] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 0.61, 0.36, 1] } },
 }
 
 const Hero = () => {
+  const ref = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] })
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.86])
+  const borderRadius = useTransform(scrollYProgress, [0, 1], [28, 48])
   return (
-    <section className="relative isolate flex h-svh flex-col overflow-hidden">
-      {/* Autoplaying product demo as a background whose corners round in on load. */}
+    <section ref={ref} className="relative isolate flex h-svh flex-col overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10 p-4 sm:p-5">
         <motion.div
-          initial={{ borderRadius: 0 }}
-          animate={{ borderRadius: 6 }}
-          transition={{ duration: 0.9, ease: [0.22, 0.61, 0.36, 1] }}
-          className="relative h-full w-full overflow-hidden"
+          style={{ scale, borderRadius }}
+          className="relative h-full w-full overflow-hidden mt-4"
         >
-          <video
+          <motion.video
             src="/player.mp4"
             autoPlay
             muted
             loop
             playsInline
             preload="auto"
+            initial={{ scale: 1.15 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 2.8, ease: [0.22, 0.61, 0.36, 1] }}
             className="h-full w-full object-cover"
           />
           {/* Scrims so the headline and controls stay readable over the bright video. */}

@@ -31,7 +31,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
     <PageShell>
       <Link
         href="/blog"
-        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
+        className="text-foreground/75 hover:text-foreground inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
       >
         <IconArrowLeft className="size-4" />
         Back to blog
@@ -50,7 +50,10 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
         ))}
       </div>
 
-      <h1 className="text-foreground mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+      <h1
+        id="top"
+        className="text-foreground mt-4 scroll-mt-24 text-3xl font-semibold tracking-tight sm:text-4xl"
+      >
         {post.title}
       </h1>
       <p className="text-muted-foreground mt-4 text-sm">
