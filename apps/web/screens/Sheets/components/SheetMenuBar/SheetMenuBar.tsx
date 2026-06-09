@@ -205,6 +205,11 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
         <DropdownMenuItem onClick={() => sheet.insertRow("below")}>Row below</DropdownMenuItem>
         <DropdownMenuItem onClick={() => sheet.insertColumn("left")}>Column left</DropdownMenuItem>
         <DropdownMenuItem onClick={() => sheet.insertColumn("right")}>Column right</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => sheet.addChart({ type: "bar", range: { ...sheet.selBox }, title: "Chart" })}
+        >
+          Chart from selection
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => sheet.startEdit(sheet.sel.focus, "=")}>Function</DropdownMenuItem>
       </Menu>

@@ -5,6 +5,7 @@ import { applyImportName, takeImport } from "@lib/importFlow"
 import type { CollabDocument } from "@lib/useCollabDocument"
 import CollabBoundary from "@pages/Collab/CollabBoundary"
 import FormulaBar from "@pages/Sheets/components/FormulaBar/FormulaBar"
+import ChartsPanel from "@pages/Sheets/components/ChartsPanel/ChartsPanel"
 import SheetGrid from "@pages/Sheets/components/SheetGrid/SheetGrid"
 import SheetTabs from "@pages/Sheets/components/SheetTabs/SheetTabs"
 import SheetToolbar from "@pages/Sheets/components/SheetToolbar/SheetToolbar"
@@ -41,7 +42,10 @@ const SheetWorkspace = ({ nodeId, collab }: { nodeId: string; collab: CollabDocu
       />
       <SheetToolbar sheet={sheet} />
       <FormulaBar sheet={sheet} />
-      <SheetGrid sheet={sheet} />
+      <div className="flex min-h-0 flex-1">
+        <SheetGrid sheet={sheet} />
+        {sheet.charts.length > 0 ? <ChartsPanel sheet={sheet} /> : null}
+      </div>
       <SheetTabs sheet={sheet} />
     </div>
   )
