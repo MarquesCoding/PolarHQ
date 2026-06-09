@@ -7,6 +7,7 @@ import {
   type Box,
   type CellBorder,
   type CellFormat,
+  type CondRule,
   type Pos,
   COLS,
   COL_W,
@@ -18,6 +19,7 @@ import {
   formatNumber,
   formatValue,
   inBox,
+  lerpHex,
   shiftFormula,
   toCsv,
 } from "./sheetModel"
@@ -46,6 +48,10 @@ export interface SheetController {
   freezeCols: number
   setFreezeCols: (n: number) => void
   functionNames: string[]
+  condFormats: CondRule[]
+  cfStyleAt: (r: number, c: number) => Partial<CellFormat> | null
+  addCondFormat: (rule: CondRule) => void
+  removeCondFormat: (index: number) => void
   sheets: Array<{ id: string; name: string }>
   activeSheetId: string
   setActiveSheet: (id: string) => void
@@ -141,6 +147,10 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
   const merges = ydoc.getMap<Box>(mapName("merges", activeId))
   const colWidths = ydoc.getMap<number>(mapName("colW", activeId))
   const rowHeights = ydoc.getMap<number>(mapName("rowH", activeId))
+  const condArr = ydoc.getArray<CondRule>(
+    activeId === "0" ? "condFormat" : `condFormat:${activeId}`,
+  )
+  const condFormats = condArr.toArray()
 
   const sheets =
     sheetOrder.length > 0
@@ -225,14 +235,16 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     colWidths.observe(fmtObserver)
     rowHeights.observe(fmtObserver)
     meta.observe(fmtObserver)
+    condArr.observe(fmtObserver)
     return () => {
       formats.unobserve(fmtObserver)
       merges.unobserve(fmtObserver)
       colWidths.unobserve(fmtObserver)
       rowHeights.unobserve(fmtObserver)
       meta.unobserve(fmtObserver)
+      condArr.unobserve(fmtObserver)
     }
-  }, [formats, merges, colWidths, rowHeights, meta])
+  }, [formats, merges, colWidths, rowHeights, meta, condArr])
 
   useEffect(() => {
     const manager = new Y.UndoManager([cells, formats, merges, colWidths, rowHeights], {
@@ -326,6 +338,62 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     setActiveId(id)
     setSel({ anchor: { r: 0, c: 0 }, focus: { r: 0, c: 0 } })
   }
+
+  const cfScaleStats = condFormats.map((rule) => {
+    if (rule.type !== "scale") return null
+    const b = rule.range
+    if ((b.r1 - b.r0 + 1) * (b.c1 - b.c0 + 1) > 5000) return null
+    let min = Infinity
+    let max = -Infinity
+    for (let r = b.r0; r <= b.r1; r += 1)
+      for (let c = b.c0; c <= b.c1; c += 1) {
+        const v = valueAt(r, c)
+        if (typeof v === "number" && Number.isFinite(v)) {
+          min = Math.min(min, v)
+          max = Math.max(max, v)
+        }
+      }
+    return min <= max ? { min, max } : null
+  })
+
+  const cfStyleAt = (r: number, c: number): Partial<CellFormat> | null => {
+    let result: Partial<CellFormat> | null = null
+    condFormats.forEach((rule, i) => {
+      if (!inBox(r, c, rule.range)) return
+      const v = valueAt(r, c)
+      if (rule.type === "scale") {
+        const stats = cfScaleStats[i]
+        const num = typeof v === "number" ? v : Number(v)
+        if (stats && Number.isFinite(num) && stats.max > stats.min) {
+          const t = (num - stats.min) / (stats.max - stats.min)
+          result = {
+            ...(result ?? {}),
+            bg: lerpHex(rule.minColor ?? "#fee2e2", rule.maxColor ?? "#bbf7d0", t),
+          }
+        }
+        return
+      }
+      let match = false
+      if (rule.type === "contains") {
+        const text = typeof v === "object" ? "" : String(v ?? "")
+        match = (rule.v1 ?? "") !== "" && text.toLowerCase().includes((rule.v1 ?? "").toLowerCase())
+      } else {
+        const num = typeof v === "number" ? v : Number(v)
+        const n1 = Number(rule.v1)
+        const n2 = Number(rule.v2)
+        if (Number.isFinite(num)) {
+          if (rule.type === "gt") match = num > n1
+          else if (rule.type === "lt") match = num < n1
+          else if (rule.type === "eq") match = num === n1
+          else if (rule.type === "between") match = num >= Math.min(n1, n2) && num <= Math.max(n1, n2)
+        }
+      }
+      if (match) result = { ...(result ?? {}), bg: rule.bg, color: rule.color, b: rule.b }
+    })
+    return result
+  }
+  const addCondFormat = (rule: CondRule) => condArr.push([rule])
+  const removeCondFormat = (index: number) => condArr.delete(index, 1)
 
   const cellStyle = (r: number, c: number): CSSProperties => {
     const f = fmtAt(r, c)
@@ -712,6 +780,10 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     freezeCols,
     setFreezeCols,
     functionNames,
+    condFormats,
+    cfStyleAt,
+    addCondFormat,
+    removeCondFormat,
     sheets,
     activeSheetId: activeId,
     setActiveSheet,
