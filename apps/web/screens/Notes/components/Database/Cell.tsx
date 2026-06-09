@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { IconCheck, IconPlus } from "@tabler/icons-react"
+import { IconArrowsLeftRight, IconCheck, IconPlus } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
 import { Input } from "@workspace/ui/components/input"
 import { colorValue, type Property, type SelectOption } from "./model"
+import { useRelationSources } from "./relations"
 
 const cellInput =
   "h-9 rounded-none border-0 bg-transparent px-2 text-sm shadow-none focus-visible:border-0 focus-visible:ring-0"
@@ -150,6 +151,103 @@ const SelectCell = ({
   )
 }
 
+export const RelationChip = ({ title }: { title: string }) => (
+  <span className="bg-muted inline-flex max-w-full items-center gap-1 rounded px-1.5 py-0.5 text-xs">
+    <IconArrowsLeftRight className="size-3 shrink-0" />
+    <span className="truncate">{title}</span>
+  </span>
+)
+
+const RelationCell = ({ property, value, onChange }: Omit<CellProps, "onAddOption">) => {
+  const sources = useRelationSources()
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState("")
+
+  if (!property.targetDb) {
+    return (
+      <div className="text-muted-foreground flex h-9 items-center px-2 text-sm">
+        Set a linked database
+      </div>
+    )
+  }
+
+  const snapshot = sources[property.targetDb]
+  const rows = snapshot?.rows ?? []
+  const selectedIds = Array.isArray(value) ? (value as string[]) : []
+  const titleOf = (id: string) => rows.find((row) => row.id === id)?.title ?? "…"
+  const filtered = rows.filter((row) =>
+    row.title.toLowerCase().includes(query.trim().toLowerCase()),
+  )
+
+  const toggle = (id: string) => {
+    onChange(
+      selectedIds.includes(id)
+        ? selectedIds.filter((existing) => existing !== id)
+        : [...selectedIds, id],
+    )
+  }
+
+  return (
+    <div className="relative h-9">
+      <Button
+        variant="ghost"
+        className="h-9 w-full justify-start gap-1 rounded-none px-2 font-normal hover:bg-accent/40"
+        onClick={() => setOpen((value) => !value)}
+      >
+        {selectedIds.length > 0 ? (
+          <span className="flex flex-wrap items-center gap-1">
+            {selectedIds.map((id) => (
+              <RelationChip key={id} title={titleOf(id)} />
+            ))}
+          </span>
+        ) : (
+          <span className="text-muted-foreground text-sm">Empty</span>
+        )}
+      </Button>
+
+      {open ? (
+        <>
+          <div className="fixed inset-0 z-40" onMouseDown={() => setOpen(false)} />
+          <div className="bg-popover absolute top-full left-0 z-50 mt-1 w-64 rounded-lg border p-1 shadow-lg">
+            <Input
+              autoFocus
+              value={query}
+              placeholder="Search rows…"
+              className="mb-1 h-8"
+              onChange={(event) => setQuery(event.target.value)}
+            />
+            <div className="max-h-48 overflow-y-auto">
+              {snapshot?.status === "loading" ? (
+                <p className="text-muted-foreground px-2 py-1.5 text-sm">Loading…</p>
+              ) : null}
+              {snapshot?.status === "locked" ? (
+                <p className="text-muted-foreground px-2 py-1.5 text-sm">Linked database is locked.</p>
+              ) : null}
+              {filtered.map((row) => (
+                <Button
+                  key={row.id}
+                  variant="ghost"
+                  className="h-8 w-full justify-start gap-2 rounded-md px-2 font-normal"
+                  onMouseDown={(event) => {
+                    event.preventDefault()
+                    toggle(row.id)
+                  }}
+                >
+                  <span className="truncate">{row.title}</span>
+                  {selectedIds.includes(row.id) ? <IconCheck className="ml-auto size-4" /> : null}
+                </Button>
+              ))}
+              {snapshot?.status === "ready" && filtered.length === 0 ? (
+                <p className="text-muted-foreground px-2 py-1.5 text-sm">No rows.</p>
+              ) : null}
+            </div>
+          </div>
+        </>
+      ) : null}
+    </div>
+  )
+}
+
 /** Renders and edits one database cell according to its property type. */
 export const Cell = ({ property, value, onChange, onAddOption }: CellProps) => {
   switch (property.type) {
@@ -208,6 +306,8 @@ export const Cell = ({ property, value, onChange, onAddOption }: CellProps) => {
           onAddOption={onAddOption}
         />
       )
+    case "relation":
+      return <RelationCell property={property} value={value} onChange={onChange} />
     default:
       return (
         <Input

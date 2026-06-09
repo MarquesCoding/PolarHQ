@@ -30,6 +30,7 @@ import BoardView from "./BoardView"
 import GalleryView from "./GalleryView"
 import type { ViewType } from "./model"
 import RecordPanel from "./RecordPanel"
+import { RelationProvider } from "./relations"
 import TableView from "./TableView"
 import { useDatabase } from "./useDatabase"
 import { FilterBar, SortBar } from "./ViewFilters"
@@ -62,6 +63,13 @@ const DatabaseCanvas = ({ collab }: { collab: CollabDocument }) => {
   const selectProps = properties.filter((property) => property.type === "select")
   const filterCount = active.filters?.length ?? 0
   const sortCount = active.sorts?.length ?? 0
+  const relationTargets = [
+    ...new Set(
+      properties
+        .filter((property) => property.type === "relation" && property.targetDb)
+        .map((property) => property.targetDb as string),
+    ),
+  ]
 
   const addView = (type: ViewType) => {
     const groupBy = type === "table" ? undefined : selectProps[0]?.id
@@ -69,7 +77,8 @@ const DatabaseCanvas = ({ collab }: { collab: CollabDocument }) => {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <RelationProvider targetIds={relationTargets}>
+      <div className="flex min-h-0 flex-1 flex-col">
       <div className="border-border flex items-center gap-1 border-b px-3">
         {views.map((view) => {
           const ViewIcon = VIEW_ICON[view.type]
@@ -223,7 +232,8 @@ const DatabaseCanvas = ({ collab }: { collab: CollabDocument }) => {
           onClose={() => setOpenRowId(null)}
         />
       ) : null}
-    </div>
+      </div>
+    </RelationProvider>
   )
 }
 

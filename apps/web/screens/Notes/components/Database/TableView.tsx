@@ -1,7 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { IconArrowsDiagonal, IconDots, IconPlus, IconTrash } from "@tabler/icons-react"
+import { fetchDocs } from "@lib/docs"
+import { IconArrowsDiagonal, IconCheck, IconDots, IconPlus, IconTrash } from "@tabler/icons-react"
+import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -19,7 +21,16 @@ import { applyView, PROP_LABELS, type Property, type PropType, type ViewDef } fr
 import { PropertyIcon } from "./PropertyIcon"
 import type { DatabaseState } from "./useDatabase"
 
-const PROP_TYPES: PropType[] = ["text", "number", "select", "multiSelect", "checkbox", "date", "url"]
+const PROP_TYPES: PropType[] = [
+  "text",
+  "number",
+  "select",
+  "multiSelect",
+  "checkbox",
+  "date",
+  "url",
+  "relation",
+]
 
 const colWidth = (index: number): number => (index === 0 ? 240 : 180)
 
@@ -35,6 +46,11 @@ const TableView = ({
   const { properties } = db
   const rows = applyView(db.rows, db.properties, view)
   const [editing, setEditing] = useState<string | null>(null)
+  const { data: dbList } = useQuery({
+    queryKey: ["docs", "database"],
+    queryFn: () => fetchDocs("database"),
+  })
+  const databases = [...(dbList?.documents ?? []), ...(dbList?.shared ?? [])]
 
   const header = (property: Property, index: number) => (
     <div
@@ -82,6 +98,28 @@ const TableView = ({
                 ))}
               </DropdownMenuSubContent>
             </DropdownMenuSub>
+            {property.type === "relation" ? (
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Linked database</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  {databases.length > 0 ? (
+                    databases.map((database) => (
+                      <DropdownMenuItem
+                        key={database.id}
+                        onClick={() => db.setRelationTarget(property.id, database.id)}
+                      >
+                        <span className="truncate">{database.name}</span>
+                        {database.id === property.targetDb ? (
+                          <IconCheck className="ml-auto size-3.5" />
+                        ) : null}
+                      </DropdownMenuItem>
+                    ))
+                  ) : (
+                    <DropdownMenuItem disabled>No databases</DropdownMenuItem>
+                  )}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            ) : null}
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive" onClick={() => db.deleteProperty(property.id)}>
               <IconTrash className="size-3.5" />

@@ -1,12 +1,25 @@
 "use client"
 
 import { IconCheck, IconX } from "@tabler/icons-react"
-import { Chip } from "./Cell"
+import { Chip, RelationChip } from "./Cell"
 import type { Property, Row, SelectOption } from "./model"
+import { useRelationSources } from "./relations"
 
 const ReadValue = ({ property, value }: { property: Property; value: unknown }) => {
+  const sources = useRelationSources()
   const options = property.options ?? []
   switch (property.type) {
+    case "relation": {
+      const ids = Array.isArray(value) ? (value as string[]) : []
+      const rows = (property.targetDb ? sources[property.targetDb]?.rows : undefined) ?? []
+      return (
+        <span className="flex flex-wrap gap-1">
+          {ids.map((id) => (
+            <RelationChip key={id} title={rows.find((row) => row.id === id)?.title ?? "…"} />
+          ))}
+        </span>
+      )
+    }
     case "checkbox":
       return value ? (
         <IconCheck className="size-3.5" />

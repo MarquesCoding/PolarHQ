@@ -1,4 +1,5 @@
 import {
+  IconArrowsLeftRight,
   IconCalendar,
   IconCheckbox,
   IconChevronDown,
@@ -24,6 +25,8 @@ export const PropertyIcon = ({ type, className }: { type: PropType; className?: 
       return <IconCalendar className={className} />
     case "url":
       return <IconLink className={className} />
+    case "relation":
+      return <IconArrowsLeftRight className={className} />
     default:
       return <IconLetterT className={className} />
   }
