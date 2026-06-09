@@ -50,6 +50,24 @@ export interface DataRule {
   spec: string
 }
 
+export interface ChartDef {
+  id: string
+  type: "bar" | "line" | "pie"
+  range: Box
+  title: string
+}
+
+export const CHART_COLORS = [
+  "#3b82f6",
+  "#ef4444",
+  "#22c55e",
+  "#f59e0b",
+  "#a855f7",
+  "#06b6d4",
+  "#ec4899",
+  "#84cc16",
+]
+
 export interface Pos {
   r: number
   c: number

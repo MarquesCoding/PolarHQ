@@ -7,6 +7,7 @@ import {
   type Box,
   type CellBorder,
   type CellFormat,
+  type ChartDef,
   type CondRule,
   type DataRule,
   type Pos,
@@ -59,6 +60,10 @@ export interface SheetController {
   validateCell: (r: number, c: number, value: string) => string | null
   addDataRule: (rule: DataRule) => void
   removeDataRule: (index: number) => void
+  charts: ChartDef[]
+  addChart: (def: Omit<ChartDef, "id">) => void
+  removeChart: (id: string) => void
+  updateChart: (id: string, patch: Partial<ChartDef>) => void
   sheets: Array<{ id: string; name: string }>
   activeSheetId: string
   setActiveSheet: (id: string) => void
@@ -160,6 +165,8 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
   const condFormats = condArr.toArray()
   const dataArr = ydoc.getArray<DataRule>(activeId === "0" ? "dataRule" : `dataRule:${activeId}`)
   const dataRules = dataArr.toArray()
+  const chartsArr = ydoc.getArray<ChartDef>(activeId === "0" ? "charts" : `charts:${activeId}`)
+  const charts = chartsArr.toArray()
 
   const sheets =
     sheetOrder.length > 0
@@ -246,6 +253,7 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     meta.observe(fmtObserver)
     condArr.observe(fmtObserver)
     dataArr.observe(fmtObserver)
+    chartsArr.observe(fmtObserver)
     return () => {
       formats.unobserve(fmtObserver)
       merges.unobserve(fmtObserver)
@@ -254,8 +262,9 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
       meta.unobserve(fmtObserver)
       condArr.unobserve(fmtObserver)
       dataArr.unobserve(fmtObserver)
+      chartsArr.unobserve(fmtObserver)
     }
-  }, [formats, merges, colWidths, rowHeights, meta, condArr, dataArr])
+  }, [formats, merges, colWidths, rowHeights, meta, condArr, dataArr, chartsArr])
 
   useEffect(() => {
     const manager = new Y.UndoManager([cells, formats, merges, colWidths, rowHeights], {
@@ -429,6 +438,21 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
   }
   const addDataRule = (rule: DataRule) => dataArr.push([rule])
   const removeDataRule = (index: number) => dataArr.delete(index, 1)
+
+  const addChart = (def: Omit<ChartDef, "id">) => chartsArr.push([{ ...def, id: String(Date.now()) }])
+  const removeChart = (id: string) => {
+    const idx = charts.findIndex((chart) => chart.id === id)
+    if (idx >= 0) chartsArr.delete(idx, 1)
+  }
+  const updateChart = (id: string, patch: Partial<ChartDef>) => {
+    const idx = charts.findIndex((chart) => chart.id === id)
+    if (idx < 0) return
+    const current = chartsArr.get(idx)
+    ydoc.transact(() => {
+      chartsArr.delete(idx, 1)
+      chartsArr.insert(idx, [{ ...current, ...patch }])
+    })
+  }
 
   const cellStyle = (r: number, c: number): CSSProperties => {
     const f = fmtAt(r, c)
@@ -825,6 +849,10 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     validateCell,
     addDataRule,
     removeDataRule,
+    charts,
+    addChart,
+    removeChart,
+    updateChart,
     sheets,
     activeSheetId: activeId,
     setActiveSheet,
