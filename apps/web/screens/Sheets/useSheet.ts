@@ -39,6 +39,9 @@ export interface SheetController {
   setZoom: (zoom: number) => void
   gridlines: boolean
   setGridlines: (on: boolean) => void
+  freezeCols: number
+  setFreezeCols: (n: number) => void
+  functionNames: string[]
   rows: number
   addRows: (n: number) => void
 
@@ -119,6 +122,7 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
   const merges = ydoc.getMap<Box>("merges")
   const colWidths = ydoc.getMap<number>("colW")
   const rowHeights = ydoc.getMap<number>("rowH")
+  const meta = ydoc.getMap<number>("meta")
 
   const [, force] = useState(0)
   const rerender = () => force((value) => value + 1)
@@ -166,16 +170,18 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     merges.observe(fmtObserver)
     colWidths.observe(fmtObserver)
     rowHeights.observe(fmtObserver)
+    meta.observe(fmtObserver)
     return () => {
       cells.unobserve(observer)
       formats.unobserve(fmtObserver)
       merges.unobserve(fmtObserver)
       colWidths.unobserve(fmtObserver)
       rowHeights.unobserve(fmtObserver)
+      meta.unobserve(fmtObserver)
       instance.destroy()
       setEngine(null)
     }
-  }, [cells, formats, merges, colWidths, rowHeights])
+  }, [cells, formats, merges, colWidths, rowHeights, meta])
 
   useEffect(() => {
     const manager = new Y.UndoManager([cells, formats, merges, colWidths, rowHeights], {
@@ -224,6 +230,18 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
 
   const valueAt = (r: number, c: number): unknown =>
     hf ? hf.getCellValue({ sheet, row: r, col: c }) : rawAt(r, c)
+
+  const freezeCols = meta.get("freezeCols") ?? 0
+  const setFreezeCols = (n: number) => meta.set("freezeCols", Math.max(0, Math.min(COLS - 1, n)))
+  const functionNames = useMemo(() => {
+    if (!hf) return []
+    try {
+      return hf.getRegisteredFunctionNames().slice().sort()
+    } catch {
+      return []
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hf])
 
   const cellStyle = (r: number, c: number): CSSProperties => {
     const f = fmtAt(r, c)
@@ -607,6 +625,9 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     setZoom,
     gridlines,
     setGridlines,
+    freezeCols,
+    setFreezeCols,
+    functionNames,
     rows: rowCount,
     addRows,
     rawAt,
