@@ -76,5 +76,22 @@ jobs:
             NEXT_PUBLIC_APP_NAME=PolarHQ
             NEXT_PUBLIC_APP_VERSION=${{ steps.vars.outputs.version }}
             NEXT_PUBLIC_APP_BUILD=${{ steps.vars.outputs.build }}
+            APP_VERSION=${{ steps.vars.outputs.version }}
+            APP_BUILD=${{ steps.vars.outputs.build }}
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+
+  release:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true

@@ -91,6 +91,16 @@ export interface AdminUserDetail extends AdminUser {
 export const fetchOverview = (): Promise<AdminOverview> =>
   apiFetch<{ overview: AdminOverview }>("/api/v1/admin/overview").then((r) => r.overview)
 
+export interface UpdateInfo {
+  current: string
+  latest: string
+  updateAvailable: boolean
+  url: string
+}
+
+export const fetchUpdateCheck = (): Promise<UpdateInfo> =>
+  apiFetch<{ update: UpdateInfo }>("/api/v1/admin/update-check").then((r) => r.update)
+
 export const fetchAdminUsers = (): Promise<AdminUser[]> =>
   apiFetch<{ users: AdminUser[] }>("/api/v1/admin/users").then((r) => r.users)
 

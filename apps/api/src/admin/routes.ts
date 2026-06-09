@@ -3,6 +3,7 @@ import { type Context, Hono } from "hono"
 import { createMiddleware } from "hono/factory"
 import { z } from "zod"
 import { getSessionUser } from "../context"
+import { checkForUpdate } from "../version/service"
 import * as adminService from "./service"
 
 type Variables = { userId: string }
@@ -22,6 +23,10 @@ const parse = async <T>(c: Context, schema: z.ZodType<T>) => {
   const body = await c.req.json().catch(() => null)
   return schema.safeParse(body)
 }
+
+adminRoutes.get("/update-check", guard("admin.instance.manage"), async (c) => {
+  return c.json({ update: await checkForUpdate() })
+})
 
 adminRoutes.get("/users", guard("admin.users.manage"), async (c) => {
   return c.json({ users: await adminService.listUsers() })

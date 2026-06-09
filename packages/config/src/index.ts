@@ -42,6 +42,10 @@ const EnvSchema = z
     S3_BUCKET: z.string().default("orbit-media"),
     S3_FORCE_PATH_STYLE: boolish(true),
     STORAGE_FS_ROOT: z.string().default("./.data/storage"),
+    APP_VERSION: z.string().default("0.0.0"),
+    APP_BUILD: z.string().default("dev"),
+    GITHUB_REPO: z.string().default("MarquesCoding/PolarHQ"),
+    UPDATE_CHECK: boolish(true),
   })
   .superRefine((env, ctx) => {
     if (env.STORAGE_DRIVER === "s3") {
@@ -74,6 +78,10 @@ export const config = {
   isProduction: env.NODE_ENV === "production",
   isTest: env.NODE_ENV === "test",
   appName: env.APP_NAME,
+  version: env.APP_VERSION,
+  build: env.APP_BUILD,
+  githubRepo: env.GITHUB_REPO,
+  updateCheck: env.UPDATE_CHECK,
   api: {
     port: env.API_PORT,
     url: env.API_URL,
