@@ -34,7 +34,7 @@ const EnvSchema = z
     AUTH_SECRET: z.string().min(16),
     DATABASE_URL: z.string().min(1),
     REDIS_URL: z.string().min(1).default("redis://localhost:6379"),
-    STORAGE_DRIVER: z.enum(["s3", "fs"]).default("s3"),
+    STORAGE_DRIVER: z.enum(["s3", "fs"]).default("fs"),
     S3_ENDPOINT: z.string().optional(),
     S3_REGION: z.string().default("us-east-1"),
     S3_ACCESS_KEY_ID: z.string().optional(),
