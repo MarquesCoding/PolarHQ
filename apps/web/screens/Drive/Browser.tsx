@@ -248,6 +248,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     active: selection.count > 0,
     onClear: selection.clear,
     confirm: trashConfirm,
+    onSelectAll: () => selection.selectAll(children.map((node) => node.id)),
   })
 
   return (

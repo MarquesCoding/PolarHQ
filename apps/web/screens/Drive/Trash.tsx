@@ -49,6 +49,7 @@ const TrashInner = () => {
     active: selection.count > 0,
     onClear: selection.clear,
     confirm: removeConfirm,
+    onSelectAll: () => selection.selectAll(nodes.map((node) => node.id)),
   })
 
   const open = (node: DriveNode) => {
