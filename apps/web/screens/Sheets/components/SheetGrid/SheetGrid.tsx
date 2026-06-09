@@ -19,9 +19,17 @@ import "@glideapps/glide-data-grid/dist/index.css"
 import { toast } from "sonner"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
-import { type CellFormat, COLS, colLabel, inBox, shiftFormula } from "@pages/Sheets/sheetModel"
+import {
+  type CellFormat,
+  COLS,
+  a1,
+  clamp,
+  colLabel,
+  inBox,
+  shiftFormula,
+} from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
-import { type FormulaCellData, createFormulaRenderer } from "./formulaCell"
+import InCellEditor, { type EditState } from "./InCellEditor"
 
 const FONT_FAMILY = "ui-sans-serif, system-ui, -apple-system, sans-serif"
 const BORDER_COLOR = "#64748b"
@@ -36,9 +44,9 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
   const ref = useRef<DataEditorRef>(null)
   const pointer = useRef({ x: 0, y: 0 })
   const prevRefCells = useRef<Item[]>([])
-  const sheetRef = useRef(sheet)
-  sheetRef.current = sheet
-  const customRenderers = useMemo(() => [createFormulaRenderer(sheetRef)], [])
+  const editInputRef = useRef<HTMLInputElement | null>(null)
+  const [edit, setEdit] = useState<EditState | null>(null)
+  const [, setBoundsTick] = useState(0)
   const [addN, setAddN] = useState(1000)
   const [overrides, setOverrides] = useState<Record<number, number>>({})
   const [menu, setMenu] = useState<{ x: number; y: number; actions: Array<Action | "sep"> } | null>(null)
@@ -137,10 +145,10 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
     if (bg) themeOverride.bgCell = bg
     const merge = sheet.mergeAnchorAt(r, c)
     return {
-      kind: GridCellKind.Custom,
-      data: { kind: "formula-cell", raw: sheet.rawAt(r, c), display: sheet.display(r, c) },
-      copyData: sheet.rawAt(r, c),
-      allowOverlay: true,
+      kind: GridCellKind.Text,
+      data: sheet.rawAt(r, c),
+      displayData: sheet.display(r, c),
+      allowOverlay: false,
       contentAlign: f.align,
       themeOverride: Object.keys(themeOverride).length > 0 ? themeOverride : undefined,
       span: merge && r === merge.r0 ? [merge.c0, merge.c1] : undefined,
@@ -251,10 +259,44 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
   }
 
   const extractRaw = (value: EditableGridCell): string | null => {
-    if (value.kind === GridCellKind.Custom) return String((value.data as FormulaCellData).raw ?? "")
     if (value.kind === GridCellKind.Text || value.kind === GridCellKind.Number)
       return String(value.data ?? "")
     return null
+  }
+
+  const openEdit = (col: number, row: number, initial?: string) => {
+    setEdit({ col, row, text: initial ?? sheet.rawAt(row, col) })
+    sheet.setSel({ anchor: { r: row, c: col }, focus: { r: row, c: col } })
+  }
+
+  const finishEdit = (state: EditState, movement: readonly [number, number]) => {
+    const trimmed = state.text.trim()
+    const error = sheet.validateCell(state.row, state.col, trimmed)
+    if (error) {
+      toast.error(error)
+      return false
+    }
+    sheet.setRaw(state.row, state.col, trimmed)
+    sheet.setEditingFormula(null)
+    const nc = clamp(state.col + movement[0], 0, COLS - 1)
+    const nr = clamp(state.row + movement[1], 0, sheet.rows - 1)
+    sheet.setSel({ anchor: { r: nr, c: nc }, focus: { r: nr, c: nc } })
+    return true
+  }
+
+  const commitEdit = (movement: readonly [number, number]) => {
+    if (edit && finishEdit(edit, movement)) setEdit(null)
+  }
+
+  const cancelEdit = () => {
+    sheet.setEditingFormula(null)
+    setEdit(null)
+  }
+
+  const isRefContext = (text: string): boolean => {
+    if (!text.startsWith("=")) return false
+    const last = text.replace(/\s+$/, "").slice(-1)
+    return last === "" || "(,=+-*/^&<>:".includes(last)
   }
 
   const onCellEdited = (item: Item, value: EditableGridCell) => {
@@ -303,6 +345,7 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
   }
 
   const onGridSelectionChange = (next: GridSelection) => {
+    if (edit) return
     setMenu(null)
     if (next.current) {
       const [col, row] = next.current.cell
@@ -340,6 +383,12 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
     } else if (mod && (event.key === "x" || event.key === "X")) {
       event.cancel()
       void sheet.cutSelection()
+    } else if (!mod && (event.key === "Backspace" || event.key === "Delete")) {
+      event.cancel()
+      sheet.clearContents()
+    } else if (!mod && !edit && event.key.length === 1) {
+      event.cancel()
+      openEdit(sheet.sel.focus.c, sheet.sel.focus.r, event.key)
     }
   }
 
@@ -432,7 +481,6 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
           headerHeight={Math.round(30 * z)}
           freezeColumns={sheet.freezeCols}
           getCellContent={getCellContent}
-          customRenderers={customRenderers}
           drawCell={drawCell}
           verticalBorder={sheet.gridlines}
           onCellEdited={onCellEdited}
@@ -449,6 +497,21 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
           smoothScrollY
           gridSelection={gridSelection}
           onGridSelectionChange={onGridSelectionChange}
+          onCellActivated={(cell) => openEdit(cell[0], cell[1])}
+          onCellClicked={(cell, event) => {
+            if (!edit) return
+            if (isRefContext(edit.text)) {
+              event.preventDefault()
+              setEdit((cur) => (cur ? { ...cur, text: cur.text + a1(cell[1], cell[0]) } : cur))
+              requestAnimationFrame(() => editInputRef.current?.focus())
+            } else {
+              commitEdit([0, 0])
+              sheet.setSel({ anchor: { r: cell[1], c: cell[0] }, focus: { r: cell[1], c: cell[0] } })
+            }
+          }}
+          onVisibleRegionChanged={() => {
+            if (edit) setBoundsTick((value) => value + 1)
+          }}
           onColumnResize={(_column, newSize, colIndex) =>
             setOverrides((current) => ({ ...current, [colIndex]: newSize / z }))
           }
@@ -473,6 +536,24 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
           height="100%"
         />
       </div>
+
+      {edit
+        ? (() => {
+            const b = ref.current?.getBounds(edit.col, edit.row)
+            if (!b) return null
+            return (
+              <InCellEditor
+                sheet={sheet}
+                edit={edit}
+                bounds={b}
+                inputRef={editInputRef}
+                onChange={(text) => setEdit((cur) => (cur ? { ...cur, text } : cur))}
+                onCommit={commitEdit}
+                onCancel={cancelEdit}
+              />
+            )
+          })()
+        : null}
 
       <div className="bg-card text-muted-foreground flex shrink-0 items-center gap-2 border-t px-3 py-1 text-sm">
         <Button variant="ghost" size="sm" className="text-primary" onClick={() => sheet.addRows(addN)}>
