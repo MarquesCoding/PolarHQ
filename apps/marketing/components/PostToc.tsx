@@ -28,14 +28,16 @@ const PostToc = () => {
   }, [])
 
   useEffect(() => {
-    const els = Array.from(document.querySelectorAll<HTMLElement>("article h2, article h3")).filter(
-      (el) => el.id,
-    )
+    const titleEl = document.getElementById("top")
+    const headingEls = Array.from(
+      document.querySelectorAll<HTMLElement>("article h2, article h3"),
+    ).filter((el) => el.id)
+    const els = [titleEl, ...headingEls].filter((el): el is HTMLElement => Boolean(el))
     setHeadings(
       els.map((el) => ({
         id: el.id,
         text: el.textContent ?? "",
-        level: el.tagName === "H2" ? 2 : 3,
+        level: el.tagName === "H3" ? 3 : 2,
       })),
     )
     if (!els.length) return

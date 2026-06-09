@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google"
+import Nav from "@components/Nav"
+import ContentHeroBackdrop from "@components/ContentHeroBackdrop"
+import PageTransition from "@components/PageTransition"
 import "./globals.css"
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" })
@@ -41,8 +44,12 @@ export const viewport: Viewport = {
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
   <html lang="en" className="dark">
-    <body className={`${geist.variable} ${geistMono.variable} ${serif.variable} antialiased`}>
-      {children}
+    <body
+      className={`${geist.variable} ${geistMono.variable} ${serif.variable} bg-background antialiased`}
+    >
+      <Nav />
+      <ContentHeroBackdrop />
+      <PageTransition>{children}</PageTransition>
     </body>
   </html>
 )
