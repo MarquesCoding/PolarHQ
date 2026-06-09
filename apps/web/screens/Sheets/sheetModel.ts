@@ -29,6 +29,27 @@ export interface CellFormat {
   bd?: CellBorder
 }
 
+export type CondType = "gt" | "lt" | "eq" | "between" | "contains" | "scale"
+
+export interface CondRule {
+  range: Box
+  type: CondType
+  v1?: string
+  v2?: string
+  bg?: string
+  color?: string
+  b?: boolean
+  minColor?: string
+  maxColor?: string
+}
+
+export interface DataRule {
+  range: Box
+  kind: "list" | "number"
+  /** Comma-separated allowed values for a list, or "min,max" bounds for a number. */
+  spec: string
+}
+
 export interface Pos {
   r: number
   c: number
@@ -105,6 +126,20 @@ export const shiftFormula = (formula: string, dr: number, dc: number): string =>
       return `${ad}${numToCol(c)}${ar}${r + 1}`
     },
   )
+
+/** Linear interpolate between two #rrggbb colors (t in 0..1). */
+export const lerpHex = (a: string, b: string, t: number): string => {
+  const parse = (hex: string): [number, number, number] => {
+    const h = hex.replace("#", "")
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]
+  }
+  const [ar, ag, ab] = parse(a)
+  const [br, bg, bb] = parse(b)
+  const clampT = Math.max(0, Math.min(1, t))
+  const mix = (x: number, y: number) => Math.round(x + (y - x) * clampT)
+  const hex = (n: number) => n.toString(16).padStart(2, "0")
+  return `#${hex(mix(ar, br))}${hex(mix(ag, bg))}${hex(mix(ab, bb))}`
+}
 
 export const formatValue = (value: unknown): string => {
   if (value === null || value === undefined) return ""

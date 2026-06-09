@@ -1,6 +1,6 @@
 "use client"
 
-import type { ReactNode } from "react"
+import { type ReactNode, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner"
 import { ZOOM_LEVELS } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
+import ConditionalFormatDialog from "@pages/Sheets/components/ConditionalFormatDialog/ConditionalFormatDialog"
 
 const Menu = ({ label, children }: { label: string; children: ReactNode }) => (
   <DropdownMenu>
@@ -36,6 +37,7 @@ const Menu = ({ label, children }: { label: string; children: ReactNode }) => (
 
 const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string }) => {
   const router = useRouter()
+  const [cfOpen, setCfOpen] = useState(false)
 
   const copy = async () => {
     const box = sheet.selBox
@@ -92,6 +94,7 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
   }
 
   return (
+    <>
     <div className="bg-card flex items-center gap-0.5 border-b px-1.5 py-0.5 text-sm">
       <Menu label="File">
         <DropdownMenuSub>
@@ -248,6 +251,7 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
             <DropdownMenuItem onClick={sheet.unmergeSelection}>Unmerge</DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+        <DropdownMenuItem onClick={() => setCfOpen(true)}>Conditional formatting…</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={sheet.clearFormatting}>Clear formatting</DropdownMenuItem>
       </Menu>
@@ -267,6 +271,8 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
         </DropdownMenuItem>
       </Menu>
     </div>
+      <ConditionalFormatDialog sheet={sheet} open={cfOpen} onOpenChange={setCfOpen} />
+    </>
   )
 }
 

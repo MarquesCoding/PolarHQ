@@ -103,14 +103,21 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
   const getCellContent = (item: Item): GridCell => {
     const [c, r] = item
     const f = sheet.fmtAt(r, c)
+    const cf = sheet.cfStyleAt(r, c)
+    const bold = f.b || cf?.b
+    const italic = f.i || cf?.i
     const themeOverride: Partial<Theme> = {}
-    if (f.b || f.i || f.fs) {
-      const parts = [f.i ? "italic" : "", f.b ? "bold" : "", `${(f.fs ?? 13) * z}px`].filter(Boolean)
+    if (bold || italic || f.fs) {
+      const parts = [italic ? "italic" : "", bold ? "bold" : "", `${(f.fs ?? 13) * z}px`].filter(
+        Boolean,
+      )
       themeOverride.baseFontStyle = parts.join(" ")
     }
     if (f.ff && f.ff !== "Default") themeOverride.fontFamily = f.ff
-    if (f.color) themeOverride.textDark = f.color
-    if (f.bg) themeOverride.bgCell = f.bg
+    const color = cf?.color ?? f.color
+    const bg = cf?.bg ?? f.bg
+    if (color) themeOverride.textDark = color
+    if (bg) themeOverride.bgCell = bg
     const merge = sheet.mergeAnchorAt(r, c)
     return {
       kind: GridCellKind.Text,
