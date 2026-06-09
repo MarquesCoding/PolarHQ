@@ -134,6 +134,40 @@ export const bounds = (a: Pos, b: Pos): Box => ({
 export const inBox = (r: number, c: number, b: Box): boolean =>
   r >= b.r0 && r <= b.r1 && c >= b.c0 && c <= b.c1
 
+export const REF_COLORS = ["#f59e0b", "#a855f7", "#2563eb", "#16a34a", "#db2777", "#0891b2"]
+
+export interface RefBox {
+  box: Box
+  color: string
+  /** Character span of the reference token within the formula, for token coloring. */
+  start: number
+  end: number
+}
+
+/** Parse cell/range references (e.g. A1, H9:I19) from a formula being edited, each
+ *  assigned a stable color. Single-letter columns + a token boundary avoid matching
+ *  function names like SUMX2MY2. */
+export const parseFormulaRefs = (formula: string): RefBox[] => {
+  if (!formula.startsWith("=")) return []
+  const re = /(?<![A-Za-z0-9$])\$?([A-Za-z])\$?(\d+)(?::\$?([A-Za-z])\$?(\d+))?/g
+  const out: RefBox[] = []
+  let match: RegExpExecArray | null
+  let i = 0
+  while ((match = re.exec(formula)) !== null) {
+    const start = { c: colToNum(match[1]!), r: parseInt(match[2]!, 10) - 1 }
+    const end = match[3] ? { c: colToNum(match[3]), r: parseInt(match[4]!, 10) - 1 } : start
+    if (start.c < 0 || start.c >= COLS || end.c < 0 || end.c >= COLS) continue
+    out.push({
+      box: bounds(start, end),
+      color: REF_COLORS[i % REF_COLORS.length]!,
+      start: match.index,
+      end: match.index + match[0].length,
+    })
+    i += 1
+  }
+  return out
+}
+
 /** Shift relative A1 references in a formula by (dr, dc); honors $ absolute markers. */
 export const shiftFormula = (formula: string, dr: number, dc: number): string =>
   formula.replace(
