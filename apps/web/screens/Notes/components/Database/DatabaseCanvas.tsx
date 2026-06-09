@@ -4,7 +4,9 @@ import type { ReactNode } from "react"
 import { useState } from "react"
 import type { CollabDocument } from "@lib/useCollabDocument"
 import {
+  IconArrowsSort,
   IconChevronDown,
+  IconFilter,
   IconLayoutGrid,
   IconLayoutKanban,
   IconPlus,
@@ -30,6 +32,7 @@ import type { ViewType } from "./model"
 import RecordPanel from "./RecordPanel"
 import TableView from "./TableView"
 import { useDatabase } from "./useDatabase"
+import { FilterBar, SortBar } from "./ViewFilters"
 
 const VIEW_ICON: Record<ViewType, (props: { className?: string }) => ReactNode> = {
   table: (p) => <IconTable {...p} />,
@@ -44,6 +47,7 @@ const DatabaseCanvas = ({ collab }: { collab: CollabDocument }) => {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [editing, setEditing] = useState<string | null>(null)
   const [openRowId, setOpenRowId] = useState<string | null>(null)
+  const [panel, setPanel] = useState<"filter" | "sort" | null>(null)
   const openRow = db.rows.find((row) => row.id === openRowId)
 
   if (views.length === 0) {
@@ -56,6 +60,8 @@ const DatabaseCanvas = ({ collab }: { collab: CollabDocument }) => {
 
   const active = views.find((view) => view.id === activeId) ?? views[0]!
   const selectProps = properties.filter((property) => property.type === "select")
+  const filterCount = active.filters?.length ?? 0
+  const sortCount = active.sorts?.length ?? 0
 
   const addView = (type: ViewType) => {
     const groupBy = type === "table" ? undefined : selectProps[0]?.id
@@ -131,6 +137,25 @@ const DatabaseCanvas = ({ collab }: { collab: CollabDocument }) => {
 
         <div className="flex-1" />
 
+        <Button
+          variant={panel === "filter" ? "secondary" : "ghost"}
+          size="sm"
+          className="text-muted-foreground gap-1.5"
+          onClick={() => setPanel((current) => (current === "filter" ? null : "filter"))}
+        >
+          <IconFilter className="size-3.5" />
+          Filter{filterCount > 0 ? ` · ${filterCount}` : ""}
+        </Button>
+        <Button
+          variant={panel === "sort" ? "secondary" : "ghost"}
+          size="sm"
+          className="text-muted-foreground gap-1.5"
+          onClick={() => setPanel((current) => (current === "sort" ? null : "sort"))}
+        >
+          <IconArrowsSort className="size-3.5" />
+          Sort{sortCount > 0 ? ` · ${sortCount}` : ""}
+        </Button>
+
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
@@ -176,13 +201,16 @@ const DatabaseCanvas = ({ collab }: { collab: CollabDocument }) => {
         </DropdownMenu>
       </div>
 
+      {panel === "filter" ? <FilterBar db={db} view={active} /> : null}
+      {panel === "sort" ? <SortBar db={db} view={active} /> : null}
+
       <div className="scrollbar-slim min-h-0 flex-1 overflow-auto">
         {active.type === "table" ? (
-          <TableView db={db} onOpenRow={setOpenRowId} />
+          <TableView db={db} view={active} onOpenRow={setOpenRowId} />
         ) : active.type === "board" ? (
           <BoardView db={db} view={active} onOpenRow={setOpenRowId} />
         ) : (
-          <GalleryView db={db} onOpenRow={setOpenRowId} />
+          <GalleryView db={db} view={active} onOpenRow={setOpenRowId} />
         )}
       </div>
 

@@ -2,17 +2,21 @@
 
 import { IconPlus } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
+import { applyView, type ViewDef } from "./model"
 import RecordCard from "./RecordCard"
 import type { DatabaseState } from "./useDatabase"
 
 const GalleryView = ({
   db,
+  view,
   onOpenRow,
 }: {
   db: DatabaseState
+  view: ViewDef
   onOpenRow: (rowId: string) => void
 }) => {
-  const { properties, rows } = db
+  const { properties } = db
+  const rows = applyView(db.rows, db.properties, view)
   const titleProp = properties[0]
   const fields = properties.filter((property) => property.id !== titleProp?.id).slice(0, 4)
 

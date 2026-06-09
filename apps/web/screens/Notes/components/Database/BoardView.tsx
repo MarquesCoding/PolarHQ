@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { IconPlus } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
-import { colorValue, type ViewDef } from "./model"
+import { applyView, colorValue, type ViewDef } from "./model"
 import RecordCard from "./RecordCard"
 import type { DatabaseState } from "./useDatabase"
 
@@ -16,7 +16,8 @@ const BoardView = ({
   view: ViewDef
   onOpenRow: (rowId: string) => void
 }) => {
-  const { properties, rows } = db
+  const { properties } = db
+  const rows = applyView(db.rows, db.properties, view)
   const selectProps = properties.filter((property) => property.type === "select")
   const groupProp =
     properties.find((property) => property.id === view.groupBy && property.type === "select") ??

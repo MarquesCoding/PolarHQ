@@ -15,7 +15,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 import { Input } from "@workspace/ui/components/input"
 import { Cell } from "./Cell"
-import { PROP_LABELS, type Property, type PropType } from "./model"
+import { applyView, PROP_LABELS, type Property, type PropType, type ViewDef } from "./model"
 import { PropertyIcon } from "./PropertyIcon"
 import type { DatabaseState } from "./useDatabase"
 
@@ -25,12 +25,15 @@ const colWidth = (index: number): number => (index === 0 ? 240 : 180)
 
 const TableView = ({
   db,
+  view,
   onOpenRow,
 }: {
   db: DatabaseState
+  view: ViewDef
   onOpenRow: (rowId: string) => void
 }) => {
-  const { properties, rows } = db
+  const { properties } = db
+  const rows = applyView(db.rows, db.properties, view)
   const [editing, setEditing] = useState<string | null>(null)
 
   const header = (property: Property, index: number) => (
