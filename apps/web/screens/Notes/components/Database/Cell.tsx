@@ -5,8 +5,15 @@ import { IconArrowsLeftRight, IconCheck, IconPlus } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
 import { Input } from "@workspace/ui/components/input"
-import { colorValue, type Property, type SelectOption } from "./model"
-import { useRelationSources } from "./relations"
+import {
+  colorValue,
+  type Property,
+  type RollupFn,
+  type Row,
+  rowTitle,
+  type SelectOption,
+} from "./model"
+import { snapshotTitle, useRelationSources } from "./relations"
 
 const cellInput =
   "h-9 rounded-none border-0 bg-transparent px-2 text-sm shadow-none focus-visible:border-0 focus-visible:ring-0"
@@ -28,6 +35,9 @@ interface CellProps {
   value: unknown
   onChange: (value: unknown) => void
   onAddOption: (name: string) => string | null
+  /** The full row and property list — only needed by computed (rollup) cells. */
+  row?: Row
+  properties?: Property[]
 }
 
 const SelectCell = ({
@@ -174,9 +184,11 @@ const RelationCell = ({ property, value, onChange }: Omit<CellProps, "onAddOptio
   const snapshot = sources[property.targetDb]
   const rows = snapshot?.rows ?? []
   const selectedIds = Array.isArray(value) ? (value as string[]) : []
-  const titleOf = (id: string) => rows.find((row) => row.id === id)?.title ?? "…"
+  const titleOf = (id: string) => snapshotTitle(snapshot, id)
   const filtered = rows.filter((row) =>
-    row.title.toLowerCase().includes(query.trim().toLowerCase()),
+    rowTitle(snapshot?.properties ?? [], row)
+      .toLowerCase()
+      .includes(query.trim().toLowerCase()),
   )
 
   const toggle = (id: string) => {
@@ -233,7 +245,7 @@ const RelationCell = ({ property, value, onChange }: Omit<CellProps, "onAddOptio
                     toggle(row.id)
                   }}
                 >
-                  <span className="truncate">{row.title}</span>
+                  <span className="truncate">{rowTitle(snapshot?.properties ?? [], row)}</span>
                   {selectedIds.includes(row.id) ? <IconCheck className="ml-auto size-4" /> : null}
                 </Button>
               ))}
@@ -248,8 +260,89 @@ const RelationCell = ({ property, value, onChange }: Omit<CellProps, "onAddOptio
   )
 }
 
+const resolveValue = (property: Property | undefined, value: unknown): string => {
+  if (!property) return value == null ? "" : String(value)
+  if (property.type === "select")
+    return property.options?.find((option) => option.id === value)?.name ?? ""
+  if (property.type === "multiSelect") {
+    const ids = Array.isArray(value) ? (value as string[]) : []
+    return ids
+      .map((id) => property.options?.find((option) => option.id === id)?.name)
+      .filter(Boolean)
+      .join(", ")
+  }
+  if (property.type === "checkbox") return value ? "Yes" : "No"
+  return value == null || value === "" ? "" : String(value)
+}
+
+const rollupDisplay = (
+  fn: RollupFn,
+  linkedIds: string[],
+  rowsById: Map<string, Row>,
+  targetProp: Property | undefined,
+): string => {
+  const values = linkedIds
+    .map((id) => rowsById.get(id))
+    .filter((row): row is Row => Boolean(row))
+    .map((row) => (targetProp ? row[targetProp.id] : undefined))
+  const numbers = values.map((value) => Number(value)).filter((n) => Number.isFinite(n))
+  const sum = numbers.reduce((total, n) => total + n, 0)
+  const checked = values.filter(Boolean).length
+  switch (fn) {
+    case "count":
+      return String(linkedIds.length)
+    case "values":
+      return values.map((value) => resolveValue(targetProp, value)).filter(Boolean).join(", ")
+    case "sum":
+      return String(sum)
+    case "average":
+      return numbers.length ? String(Math.round((sum / numbers.length) * 100) / 100) : "0"
+    case "min":
+      return numbers.length ? String(Math.min(...numbers)) : "—"
+    case "max":
+      return numbers.length ? String(Math.max(...numbers)) : "—"
+    case "checked":
+      return String(checked)
+    case "percentChecked":
+      return values.length ? `${Math.round((checked / values.length) * 100)}%` : "0%"
+    default:
+      return ""
+  }
+}
+
+export const RollupValue = ({
+  property,
+  row,
+  properties,
+}: {
+  property: Property
+  row?: Row
+  properties?: Property[]
+}) => {
+  const sources = useRelationSources()
+  const relationProp = (properties ?? []).find(
+    (candidate) => candidate.id === property.relationProp && candidate.type === "relation",
+  )
+  if (!relationProp?.targetDb || !property.rollupProp || !property.rollup) {
+    return <span className="text-muted-foreground">Configure rollup</span>
+  }
+  const linkedIds =
+    row && Array.isArray(row[relationProp.id]) ? (row[relationProp.id] as string[]) : []
+  const snapshot = sources[relationProp.targetDb]
+  if (snapshot?.status === "loading") return <span className="text-muted-foreground">…</span>
+  const rowsById = new Map((snapshot?.rows ?? []).map((target) => [target.id, target]))
+  const targetProp = snapshot?.properties.find((candidate) => candidate.id === property.rollupProp)
+  return <span className="truncate">{rollupDisplay(property.rollup, linkedIds, rowsById, targetProp)}</span>
+}
+
+const RollupCell = (props: { property: Property; row?: Row; properties?: Property[] }) => (
+  <div className="flex h-9 items-center px-2 text-sm">
+    <RollupValue {...props} />
+  </div>
+)
+
 /** Renders and edits one database cell according to its property type. */
-export const Cell = ({ property, value, onChange, onAddOption }: CellProps) => {
+export const Cell = ({ property, value, onChange, onAddOption, row, properties }: CellProps) => {
   switch (property.type) {
     case "checkbox":
       return (
@@ -308,6 +401,8 @@ export const Cell = ({ property, value, onChange, onAddOption }: CellProps) => {
       )
     case "relation":
       return <RelationCell property={property} value={value} onChange={onChange} />
+    case "rollup":
+      return <RollupCell property={property} row={row} properties={properties} />
     default:
       return (
         <Input

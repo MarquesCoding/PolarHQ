@@ -31,6 +31,7 @@ const GalleryView = ({
           row={row}
           titleProp={titleProp}
           fields={fields}
+          properties={properties}
           onOpen={() => onOpenRow(row.id)}
         />
       ))}

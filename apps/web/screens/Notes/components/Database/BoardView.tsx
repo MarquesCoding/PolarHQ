@@ -73,6 +73,7 @@ const BoardView = ({
                   row={row}
                   titleProp={titleProp}
                   fields={fields}
+                  properties={properties}
                   draggable
                   onDragStart={() => setDragId(row.id)}
                   onOpen={() => onOpenRow(row.id)}

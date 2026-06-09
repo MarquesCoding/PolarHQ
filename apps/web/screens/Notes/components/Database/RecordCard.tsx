@@ -1,9 +1,9 @@
 "use client"
 
 import { IconCheck, IconX } from "@tabler/icons-react"
-import { Chip, RelationChip } from "./Cell"
+import { Chip, RelationChip, RollupValue } from "./Cell"
 import type { Property, Row, SelectOption } from "./model"
-import { useRelationSources } from "./relations"
+import { snapshotTitle, useRelationSources } from "./relations"
 
 const ReadValue = ({ property, value }: { property: Property; value: unknown }) => {
   const sources = useRelationSources()
@@ -11,11 +11,11 @@ const ReadValue = ({ property, value }: { property: Property; value: unknown }) 
   switch (property.type) {
     case "relation": {
       const ids = Array.isArray(value) ? (value as string[]) : []
-      const rows = (property.targetDb ? sources[property.targetDb]?.rows : undefined) ?? []
+      const snapshot = property.targetDb ? sources[property.targetDb] : undefined
       return (
         <span className="flex flex-wrap gap-1">
           {ids.map((id) => (
-            <RelationChip key={id} title={rows.find((row) => row.id === id)?.title ?? "…"} />
+            <RelationChip key={id} title={snapshotTitle(snapshot, id)} />
           ))}
         </span>
       )
@@ -56,13 +56,23 @@ interface RecordCardProps {
   row: Row
   titleProp: Property | undefined
   fields: Property[]
+  /** The full property list, needed to resolve rollups. */
+  properties: Property[]
   draggable?: boolean
   onDragStart?: () => void
   onOpen?: () => void
 }
 
 /** A read-only summary card for one row, used by the board and gallery views. */
-const RecordCard = ({ row, titleProp, fields, draggable, onDragStart, onOpen }: RecordCardProps) => {
+const RecordCard = ({
+  row,
+  titleProp,
+  fields,
+  properties,
+  draggable,
+  onDragStart,
+  onOpen,
+}: RecordCardProps) => {
   const title = titleProp ? row[titleProp.id] : undefined
   return (
     <div
@@ -76,6 +86,14 @@ const RecordCard = ({ row, titleProp, fields, draggable, onDragStart, onOpen }: 
         {typeof title === "string" && title ? title : <span className="text-muted-foreground">Untitled</span>}
       </p>
       {fields.map((property) => {
+        if (property.type === "rollup") {
+          return (
+            <div key={property.id} className="flex items-center gap-1.5 text-xs">
+              <span className="text-muted-foreground w-20 shrink-0 truncate">{property.name}</span>
+              <RollupValue property={property} row={row} properties={properties} />
+            </div>
+          )
+        }
         const value = row[property.id]
         const empty =
           value == null ||

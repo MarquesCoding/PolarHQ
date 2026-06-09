@@ -50,6 +50,8 @@ const RecordPanel = ({ collab, db, row, onClose }: RecordPanelProps) => {
                     value={row[property.id]}
                     onChange={(value) => db.setCell(row.id, property.id, value)}
                     onAddOption={(name) => db.addOption(property.id, name)}
+                    row={row}
+                    properties={db.properties}
                   />
                 </div>
               </div>
