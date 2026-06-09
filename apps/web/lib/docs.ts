@@ -7,18 +7,28 @@ import { API_URL } from "@lib/env"
 export const DOC_MIME = "application/vnd.orbit.doc"
 export const SHEET_MIME = "application/vnd.orbit.sheet"
 export const SLIDES_MIME = "application/vnd.orbit.slides"
+export const NOTE_MIME = "application/vnd.orbit.note"
 
-export type DocType = "doc" | "sheet" | "slides"
+export type DocType = "doc" | "sheet" | "slides" | "note"
 
 /** Map a node mime to its app type (or null if it isn't an Orbit document). */
 export const docTypeOf = (mime: string | null): DocType | null =>
-  mime === DOC_MIME ? "doc" : mime === SHEET_MIME ? "sheet" : mime === SLIDES_MIME ? "slides" : null
+  mime === DOC_MIME
+    ? "doc"
+    : mime === SHEET_MIME
+      ? "sheet"
+      : mime === SLIDES_MIME
+        ? "slides"
+        : mime === NOTE_MIME
+          ? "note"
+          : null
 
 /** List/home route for each document type. */
 export const DOC_ROUTES: Record<DocType, string> = {
   doc: "/docs",
   sheet: "/sheets",
   slides: "/slides",
+  note: "/notes",
 }
 
 /** Dedicated fullscreen editor routes (singular), distinct from the list/home routes. */
@@ -26,6 +36,7 @@ export const EDITOR_ROUTES: Record<DocType, string> = {
   doc: "/document",
   sheet: "/sheet",
   slides: "/presentation",
+  note: "/notes",
 }
 
 /** The fullscreen editor URL for a document. */

@@ -78,7 +78,12 @@ const DriveTopActions = () => {
   const uploadFiles = (files: FileList) => {
     if (parentId) upload.upload(files, { kind: "drive", parentId })
   }
-  const routes: Record<DocType, string> = { doc: "/docs", sheet: "/sheets", slides: "/slides" }
+  const routes: Record<DocType, string> = {
+    doc: "/docs",
+    sheet: "/sheets",
+    slides: "/slides",
+    note: "/notes",
+  }
   const newDoc = async (type: DocType) => {
     try {
       const doc = await createEncryptedDoc(parentId, type)
