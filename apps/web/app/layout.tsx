@@ -20,9 +20,14 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", fontSans.variable)}
+      className={cn(
+        "overscroll-none antialiased",
+        fontMono.variable,
+        "font-sans",
+        fontSans.variable,
+      )}
     >
-      <body>
+      <body className="overscroll-none">
         <Providers>{children}</Providers>
         <div id="portal" style={{ position: "fixed", left: 0, top: 0, zIndex: 9999 }} />
       </body>
