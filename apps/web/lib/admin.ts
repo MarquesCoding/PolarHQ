@@ -277,15 +277,18 @@ export const fetchAdminAudit = (): Promise<AdminAuditEntry[]> =>
 
 export interface AdminBackupSettings {
   enabled: boolean
+  provider: "s3" | "gdrive"
   endpoint: string | null
   region: string | null
   bucket: string | null
   prefix: string | null
   accessKeyId: string | null
   forcePathStyle: boolean
+  gdriveFolderId: string | null
   frequencyHours: number
   lastRunAt: string | null
   hasSecretKey: boolean
+  gdriveConnected: boolean
 }
 
 export interface AdminBackupRun {
@@ -314,6 +317,9 @@ export const fetchBackupRuns = (): Promise<AdminBackupRun[]> =>
 
 export const triggerBackup = (): Promise<unknown> =>
   apiFetch("/api/v1/admin/backup/run", { method: "POST" })
+
+export const disconnectGdrive = (): Promise<unknown> =>
+  apiFetch("/api/v1/admin/backup/gdrive/disconnect", { method: "POST" })
 
 const UNITS = ["B", "KB", "MB", "GB", "TB"]
 

@@ -27,6 +27,11 @@ x-app-env: &app-env
   # e.g.:  storage-data: { driver_opts: { type: none, o: bind, device: /mnt/tank/polarhq } }
   STORAGE_DRIVER: fs
   STORAGE_FS_ROOT: /data/storage
+  # Optional: back up to Google Drive (Admin → Backup → Connect). Create a Google
+  # Cloud OAuth client (Web application) and add this redirect URI:
+  #   <API_URL>/api/v1/admin/backup/gdrive/callback
+  # GOOGLE_CLIENT_ID: your-client-id.apps.googleusercontent.com
+  # GOOGLE_CLIENT_SECRET: your-client-secret
 
 services:
   postgres:

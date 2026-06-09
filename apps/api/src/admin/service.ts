@@ -467,14 +467,41 @@ const ensureBackupSettings = async () => {
   return created[0]
 }
 
-/** Backup destination config with the secret key replaced by a `hasSecretKey` flag. */
+/** Backup destination config with secrets replaced by boolean flags. */
 export const getBackupSettings = async () => {
-  const { secretAccessKey, ...rest } = await ensureBackupSettings()
-  return { ...rest, hasSecretKey: Boolean(secretAccessKey) }
+  const { secretAccessKey, gdriveRefreshToken, ...rest } = await ensureBackupSettings()
+  return {
+    ...rest,
+    hasSecretKey: Boolean(secretAccessKey),
+    gdriveConnected: Boolean(gdriveRefreshToken),
+  }
+}
+
+/** Store the Google Drive refresh token (encrypted) and switch the provider to Drive. */
+export const setGdriveRefreshToken = async (refreshToken: string) => {
+  await ensureBackupSettings()
+  await db
+    .update(schema.backupSettings)
+    .set({
+      gdriveRefreshToken: encryptSecret(refreshToken),
+      provider: "gdrive",
+      updatedAt: new Date(),
+    })
+    .where(eq(schema.backupSettings.id, BACKUP_SINGLETON))
+}
+
+/** Disconnect Google Drive (clears the stored refresh token). */
+export const clearGdrive = async () => {
+  await db
+    .update(schema.backupSettings)
+    .set({ gdriveRefreshToken: null, updatedAt: new Date() })
+    .where(eq(schema.backupSettings.id, BACKUP_SINGLETON))
+  return getBackupSettings()
 }
 
 export interface BackupSettingsPatch {
   enabled?: boolean
+  provider?: "s3" | "gdrive"
   endpoint?: string | null
   region?: string | null
   bucket?: string | null
@@ -482,6 +509,7 @@ export interface BackupSettingsPatch {
   accessKeyId?: string | null
   secretAccessKey?: string | null
   forcePathStyle?: boolean
+  gdriveFolderId?: string | null
   frequencyHours?: number
 }
 
@@ -490,6 +518,8 @@ export const updateBackupSettings = async (patch: BackupSettingsPatch) => {
   await ensureBackupSettings()
   const set: Partial<typeof schema.backupSettings.$inferInsert> = { updatedAt: new Date() }
   if (patch.enabled !== undefined) set.enabled = patch.enabled
+  if (patch.provider !== undefined) set.provider = patch.provider
+  if (patch.gdriveFolderId !== undefined) set.gdriveFolderId = patch.gdriveFolderId
   if (patch.endpoint !== undefined) set.endpoint = patch.endpoint
   if (patch.region !== undefined) set.region = patch.region
   if (patch.bucket !== undefined) set.bucket = patch.bucket

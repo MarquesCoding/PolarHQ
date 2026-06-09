@@ -46,6 +46,8 @@ const EnvSchema = z
     APP_BUILD: z.string().default("dev"),
     GITHUB_REPO: z.string().default("MarquesCoding/PolarHQ"),
     UPDATE_CHECK: boolish(true),
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
   })
   .superRefine((env, ctx) => {
     if (env.STORAGE_DRIVER === "s3") {
@@ -82,6 +84,10 @@ export const config = {
   build: env.APP_BUILD,
   githubRepo: env.GITHUB_REPO,
   updateCheck: env.UPDATE_CHECK,
+  google: {
+    clientId: env.GOOGLE_CLIENT_ID,
+    clientSecret: env.GOOGLE_CLIENT_SECRET,
+  },
   api: {
     port: env.API_PORT,
     url: env.API_URL,
