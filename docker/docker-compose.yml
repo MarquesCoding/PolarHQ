@@ -7,8 +7,9 @@
 #   2. API_URL / WEB_URL           — how you'll reach it: http://<host>:8080
 #   3. caddy "8080:80"             — change 8080 to expose a different port
 #
-# Bundles Postgres (pgvector), Redis and MinIO, runs migrations once, then
-# starts the API, the media + backup workers, and the web app.
+# Bundles Postgres (pgvector) and Redis, runs migrations once, then starts the
+# API, the media + backup workers, and the web app. Files are stored on a local
+# drive mount (the `storage-data` volume) — no S3/MinIO required.
 name: polarhq
 
 x-app-env: &app-env
@@ -21,13 +22,11 @@ x-app-env: &app-env
   WEB_URL: http://localhost:8080
   DATABASE_URL: postgres://orbit:orbit@postgres:5432/orbit
   REDIS_URL: redis://redis:6379
-  STORAGE_DRIVER: s3
-  S3_ENDPOINT: http://minio:9000
-  S3_REGION: us-east-1
-  S3_ACCESS_KEY_ID: orbitadmin
-  S3_SECRET_ACCESS_KEY: orbitadmin
-  S3_BUCKET: orbit-media
-  S3_FORCE_PATH_STYLE: "true"
+  # Files live on a local drive mount. To use your own disk (e.g. a TrueNAS
+  # share), change the `storage-data` volume at the bottom to a host bind-mount,
+  # e.g.:  storage-data: { driver_opts: { type: none, o: bind, device: /mnt/tank/polarhq } }
+  STORAGE_DRIVER: fs
+  STORAGE_FS_ROOT: /data/storage
 
 services:
   postgres:
@@ -57,34 +56,6 @@ services:
       timeout: 5s
       retries: 10
 
-  minio:
-    image: minio/minio:latest
-    restart: unless-stopped
-    command: ["server", "/data", "--console-address", ":9001"]
-    environment:
-      MINIO_ROOT_USER: orbitadmin
-      MINIO_ROOT_PASSWORD: orbitadmin
-    volumes:
-      - minio-data:/data
-    healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-  minio-init:
-    image: minio/mc:latest
-    depends_on:
-      minio:
-        condition: service_healthy
-    entrypoint: >
-      /bin/sh -c "
-      mc alias set local http://minio:9000 orbitadmin orbitadmin;
-      mc mb --ignore-existing local/orbit-media;
-      mc anonymous set none local/orbit-media;
-      exit 0;
-      "
-
   migrate:
     image: ghcr.io/marquescoding/polarhq-app:latest
     command: ["pnpm", "--filter", "@workspace/db", "db:migrate"]
@@ -99,12 +70,12 @@ services:
     environment: *app-env
     expose:
       - "3001"
+    volumes:
+      - storage-data:/data/storage
     depends_on:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_healthy
-      minio:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
@@ -114,10 +85,10 @@ services:
     image: ghcr.io/marquescoding/polarhq-app:latest
     command: ["pnpm", "--filter", "@workspace/media", "start"]
     environment: *app-env
+    volumes:
+      - storage-data:/data/storage
     depends_on:
       redis:
-        condition: service_healthy
-      minio:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
@@ -127,6 +98,8 @@ services:
     image: ghcr.io/marquescoding/polarhq-app:latest
     command: ["pnpm", "--filter", "@workspace/backup", "start"]
     environment: *app-env
+    volumes:
+      - storage-data:/data/storage
     depends_on:
       redis:
         condition: service_healthy
@@ -181,6 +154,7 @@ configs:
 volumes:
   postgres-data:
   redis-data:
-  minio-data:
+  # App files (Photos/Drive). Replace with a host bind-mount to use your own disk.
+  storage-data:
   caddy-data:
   caddy-config:
