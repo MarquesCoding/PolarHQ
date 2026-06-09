@@ -1,11 +1,12 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import {
   CompactSelection,
   DataEditor,
   type DataEditorRef,
+  type DrawCellCallback,
   type EditableGridCell,
   type GridCell,
   GridCellKind,
@@ -17,10 +18,12 @@ import {
 import "@glideapps/glide-data-grid/dist/index.css"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
-import { COLS, colLabel } from "@pages/Sheets/sheetModel"
+import { type CellFormat, COLS, colLabel, shiftFormula } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
 
 const FONT_FAMILY = "ui-sans-serif, system-ui, -apple-system, sans-serif"
+const BORDER_COLOR = "#64748b"
+const numFmt = (n: number): string => n.toLocaleString(undefined, { maximumFractionDigits: 4 })
 
 interface Action {
   label: string
@@ -35,6 +38,13 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
   const [menu, setMenu] = useState<{ x: number; y: number; actions: Array<Action | "sep"> } | null>(null)
 
   const z = sheet.zoom / 100
+
+  const cellFont = (f: CellFormat): string => {
+    const style = `${f.i ? "italic " : ""}${f.b ? "bold " : ""}`
+    const size = (f.fs ?? 13) * z
+    const family = f.ff && f.ff !== "Default" ? f.ff : FONT_FAMILY
+    return `${style}${size}px ${family}`
+  }
 
   useEffect(() => {
     const repaint = (event: { keysChanged: Set<string> }) => {
@@ -73,7 +83,7 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
     bgBubble: "#1e293b",
     bgBubbleSelected: "#1e293b",
     bgSearchResult: "rgba(59, 130, 246, 0.25)",
-    borderColor: "rgba(148, 163, 184, 0.16)",
+    borderColor: sheet.gridlines ? "rgba(148, 163, 184, 0.16)" : "transparent",
     drilldownBorder: "rgba(148, 163, 184, 0.2)",
     linkColor: "#60a5fa",
     cellHorizontalPadding: 8,
@@ -93,11 +103,12 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
   const getCellContent = (item: Item): GridCell => {
     const [c, r] = item
     const f = sheet.fmtAt(r, c)
-    const fontParts: string[] = []
-    if (f.b) fontParts.push("bold")
-    if (f.i) fontParts.push("italic")
     const themeOverride: Partial<Theme> = {}
-    if (fontParts.length) themeOverride.baseFontStyle = `${fontParts.join(" ")} ${13 * z}px`
+    if (f.b || f.i || f.fs) {
+      const parts = [f.i ? "italic" : "", f.b ? "bold" : "", `${(f.fs ?? 13) * z}px`].filter(Boolean)
+      themeOverride.baseFontStyle = parts.join(" ")
+    }
+    if (f.ff && f.ff !== "Default") themeOverride.fontFamily = f.ff
     if (f.color) themeOverride.textDark = f.color
     if (f.bg) themeOverride.bgCell = f.bg
     const merge = sheet.mergeAnchorAt(r, c)
@@ -110,6 +121,70 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
       themeOverride: Object.keys(themeOverride).length > 0 ? themeOverride : undefined,
       span: merge && r === merge.r0 ? [merge.c0, merge.c1] : undefined,
     }
+  }
+
+  const drawCell: DrawCellCallback = (args, draw) => {
+    draw()
+    const { ctx, rect, col, row, theme: t } = args
+    const f = sheet.fmtAt(row, col)
+    if (!f.bd && !f.u && !f.s) return
+    ctx.save()
+    ctx.beginPath()
+    ctx.rect(rect.x, rect.y, rect.width, rect.height)
+    ctx.clip()
+    if (f.bd) {
+      ctx.strokeStyle = BORDER_COLOR
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      if (f.bd.t) {
+        ctx.moveTo(rect.x, rect.y + 0.5)
+        ctx.lineTo(rect.x + rect.width, rect.y + 0.5)
+      }
+      if (f.bd.b) {
+        ctx.moveTo(rect.x, rect.y + rect.height - 0.5)
+        ctx.lineTo(rect.x + rect.width, rect.y + rect.height - 0.5)
+      }
+      if (f.bd.l) {
+        ctx.moveTo(rect.x + 0.5, rect.y)
+        ctx.lineTo(rect.x + 0.5, rect.y + rect.height)
+      }
+      if (f.bd.r) {
+        ctx.moveTo(rect.x + rect.width - 0.5, rect.y)
+        ctx.lineTo(rect.x + rect.width - 0.5, rect.y + rect.height)
+      }
+      ctx.stroke()
+    }
+    if (f.u || f.s) {
+      const text = sheet.display(row, col)
+      if (text) {
+        ctx.font = cellFont(f)
+        const w = ctx.measureText(text).width
+        const pad = t.cellHorizontalPadding ?? 8
+        const align = f.align ?? "left"
+        let tx = rect.x + pad
+        if (align === "right") tx = rect.x + rect.width - pad - w
+        else if (align === "center") tx = rect.x + (rect.width - w) / 2
+        const size = (f.fs ?? 13) * z
+        const midY = rect.y + rect.height / 2
+        ctx.strokeStyle = f.color ?? t.textDark
+        ctx.lineWidth = Math.max(1, Math.round(z))
+        if (f.s) {
+          const y = Math.round(midY) + 0.5
+          ctx.beginPath()
+          ctx.moveTo(tx, y)
+          ctx.lineTo(tx + w, y)
+          ctx.stroke()
+        }
+        if (f.u) {
+          const y = Math.round(midY + size * 0.4) + 0.5
+          ctx.beginPath()
+          ctx.moveTo(tx, y)
+          ctx.lineTo(tx + w, y)
+          ctx.stroke()
+        }
+      }
+    }
+    ctx.restore()
   }
 
   const onCellEdited = (item: Item, value: EditableGridCell) => {
@@ -175,7 +250,29 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
     } else if (mod && (event.key === "y" || event.key === "Y")) {
       event.cancel()
       sheet.redo()
+    } else if (mod && (event.key === "c" || event.key === "C")) {
+      event.cancel()
+      void sheet.copySelection()
+    } else if (mod && (event.key === "x" || event.key === "X")) {
+      event.cancel()
+      void sheet.cutSelection()
     }
+  }
+
+  const onPaste = (target: Item, values: readonly (readonly string[])[]): boolean => {
+    const [tc, tr] = target
+    const src = sheet.copiedBox
+    const dr = src ? tr - src.r0 : 0
+    const dc = src ? tc - src.c0 : 0
+    sheet.transact(() => {
+      values.forEach((rowValues, i) =>
+        rowValues.forEach((value, j) => {
+          const shifted = src && value.startsWith("=") ? shiftFormula(value, dr, dc) : value
+          sheet.setRaw(tr + i, tc + j, shifted)
+        }),
+      )
+    })
+    return false
   }
 
   const colActions: Array<Action | "sep"> = [
@@ -206,6 +303,33 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
     { label: "Clear", run: () => sheet.clearContents() },
   ]
 
+  const stats = useMemo(() => {
+    const b = sheet.selBox
+    const area = (b.r1 - b.r0 + 1) * (b.c1 - b.c0 + 1)
+    if (area <= 1 || area > 100000) return null
+    let count = 0
+    let numCount = 0
+    let sum = 0
+    let min = Infinity
+    let max = -Infinity
+    for (let r = b.r0; r <= b.r1; r += 1) {
+      for (let c = b.c0; c <= b.c1; c += 1) {
+        const v = sheet.valueAt(r, c)
+        if (v === "" || v === null || v === undefined) continue
+        count += 1
+        if (typeof v === "number" && Number.isFinite(v)) {
+          numCount += 1
+          sum += v
+          min = Math.min(min, v)
+          max = Math.max(max, v)
+        }
+      }
+    }
+    if (count === 0) return null
+    return { count, numCount, sum, avg: numCount ? sum / numCount : 0, min, max }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sheet.selBox.r0, sheet.selBox.c0, sheet.selBox.r1, sheet.selBox.c1, sheet])
+
   return (
     <div
       className="flex min-h-0 flex-1 flex-col"
@@ -222,11 +346,13 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
           rowHeight={(row) => sheet.rowH(row) * z}
           headerHeight={Math.round(30 * z)}
           getCellContent={getCellContent}
+          drawCell={drawCell}
+          verticalBorder={sheet.gridlines}
           onCellEdited={onCellEdited}
           onCellsEdited={onCellsEdited}
           onKeyDown={onKeyDown}
           getCellsForSelection
-          onPaste
+          onPaste={onPaste}
           fillHandle
           rowMarkers="number"
           rangeSelect="multi-rect"
@@ -273,6 +399,19 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
           className="h-7 w-20"
         />
         more rows at the bottom
+        {stats ? (
+          <div className="ml-auto flex items-center gap-4 tabular-nums">
+            {stats.numCount > 0 ? (
+              <>
+                <span>Sum: {numFmt(stats.sum)}</span>
+                <span>Avg: {numFmt(stats.avg)}</span>
+                <span>Min: {numFmt(stats.min)}</span>
+                <span>Max: {numFmt(stats.max)}</span>
+              </>
+            ) : null}
+            <span>Count: {stats.count}</span>
+          </div>
+        ) : null}
       </div>
 
       {menu

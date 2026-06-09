@@ -45,6 +45,7 @@ export interface SheetController {
   rawAt: (r: number, c: number) => string
   fmtAt: (r: number, c: number) => CellFormat
   display: (r: number, c: number) => string
+  valueAt: (r: number, c: number) => unknown
   cellStyle: (r: number, c: number) => CSSProperties
   focusFmt: CellFormat
 
@@ -220,6 +221,9 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     if (typeof value === "number" && (f.fmt || f.dec != null)) return formatNumber(value, f.fmt, f.dec)
     return formatValue(value)
   }
+
+  const valueAt = (r: number, c: number): unknown =>
+    hf ? hf.getCellValue({ sheet, row: r, col: c }) : rawAt(r, c)
 
   const cellStyle = (r: number, c: number): CSSProperties => {
     const f = fmtAt(r, c)
@@ -466,7 +470,14 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
             map.set(cellKey(next.r, next.c), value)
         }
       }
+      const mergeEntries = Array.from(merges.values())
       merges.clear()
+      for (const box of mergeEntries) {
+        const tl = shift(box.r0, box.c0)
+        const br = shift(box.r1, box.c1)
+        if (tl && br && tl.r <= br.r && tl.c <= br.c && br.r < rowCount && br.c < COLS)
+          merges.set(cellKey(tl.r, tl.c), { r0: tl.r, c0: tl.c, r1: br.r, c1: br.c })
+      }
     })
   }
 
@@ -488,11 +499,15 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
   }
 
   const sortSelection = (dir: "asc" | "desc") => {
-    const rows: Array<{ values: string[]; key: string }> = []
+    const rows: Array<{ values: string[]; fmts: Array<CellFormat | undefined>; key: string }> = []
     for (let r = selBox.r0; r <= selBox.r1; r += 1) {
       const values: string[] = []
-      for (let c = selBox.c0; c <= selBox.c1; c += 1) values.push(rawAt(r, c))
-      rows.push({ values, key: values[0] ?? "" })
+      const fmts: Array<CellFormat | undefined> = []
+      for (let c = selBox.c0; c <= selBox.c1; c += 1) {
+        values.push(rawAt(r, c))
+        fmts.push(formats.get(cellKey(r, c)))
+      }
+      rows.push({ values, fmts, key: values[0] ?? "" })
     }
     const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" })
     rows.sort((a, b) => (dir === "asc" ? collator.compare(a.key, b.key) : collator.compare(b.key, a.key)))
@@ -500,6 +515,10 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
       rows.forEach((row, i) => {
         const r = selBox.r0 + i
         row.values.forEach((value, j) => setRaw(r, selBox.c0 + j, value))
+        row.fmts.forEach((fmt, j) => {
+          if (fmt) formats.set(cellKey(r, selBox.c0 + j), fmt)
+          else formats.delete(cellKey(r, selBox.c0 + j))
+        })
       })
     })
   }
@@ -593,6 +612,7 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     rawAt,
     fmtAt,
     display,
+    valueAt,
     cellStyle,
     focusFmt,
     colW,

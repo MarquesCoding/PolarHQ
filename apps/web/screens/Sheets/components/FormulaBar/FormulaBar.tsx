@@ -3,7 +3,7 @@
 import { type KeyboardEvent, useEffect, useRef, useState } from "react"
 import { IconChevronDown } from "@tabler/icons-react"
 import { Input } from "@workspace/ui/components/input"
-import { ROWS, a1Range, clamp } from "@pages/Sheets/sheetModel"
+import { a1Range, clamp } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
 
 /** The Name Box (A1 reference) plus the fx formula input, bound to the focused cell. */
@@ -20,7 +20,7 @@ const FormulaBar = ({ sheet }: { sheet: SheetController }) => {
   const commit = (move: boolean) => {
     sheet.setRaw(focus.r, focus.c, value.trim())
     editing.current = false
-    if (move) sheet.selectOnly({ r: clamp(focus.r + 1, 0, ROWS - 1), c: focus.c })
+    if (move) sheet.selectOnly({ r: clamp(focus.r + 1, 0, sheet.rows - 1), c: focus.c })
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
