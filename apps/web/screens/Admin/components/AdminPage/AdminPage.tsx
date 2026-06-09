@@ -1,6 +1,7 @@
 "use client"
 
 import { type ReactNode } from "react"
+import UpdateBanner from "@pages/Admin/components/UpdateBanner/UpdateBanner"
 
 interface AdminPageProps {
   title: string
@@ -12,6 +13,7 @@ interface AdminPageProps {
 /** Shared admin page frame: scrollable column with a consistent title row. */
 const AdminPage = ({ title, description, action, children }: AdminPageProps) => (
   <div className="scrollbar-slim flex flex-1 flex-col overflow-y-auto p-6">
+    <UpdateBanner />
     <div className="mb-6 flex items-start justify-between gap-4">
       <div className="min-w-0">
         <h1 className="text-xl font-semibold">{title}</h1>

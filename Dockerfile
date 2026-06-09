@@ -25,6 +25,12 @@ RUN NODE_ENV=development pnpm install --frozen-lockfile \
   --filter "@workspace/backup..." \
   --filter "@workspace/db..."
 
+# Stamp the running version so the API can report it (and the update check works).
+ARG APP_VERSION=0.0.0
+ARG APP_BUILD=docker
+ENV APP_VERSION=${APP_VERSION}
+ENV APP_BUILD=${APP_BUILD}
+
 ENV NODE_ENV=production
 EXPOSE 3001
 
