@@ -15,6 +15,7 @@ const ACCEPT: Record<DocType, string> = {
   doc: ".docx,.txt,.md,.markdown",
   slides: ".pptx",
   note: ".md,.markdown,.txt",
+  database: ".csv",
 }
 
 /** Imports an Office/Google file (.xlsx, .docx, .pptx, …) into a new document of `type`. */
