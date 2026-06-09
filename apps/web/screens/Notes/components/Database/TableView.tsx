@@ -1,17 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import {
-  IconCalendar,
-  IconCheckbox,
-  IconChevronDown,
-  IconHash,
-  IconLetterT,
-  IconLink,
-  IconList,
-  IconPlus,
-  IconTrash,
-} from "@tabler/icons-react"
+import { IconArrowsDiagonal, IconDots, IconPlus, IconTrash } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -26,32 +16,20 @@ import {
 import { Input } from "@workspace/ui/components/input"
 import { Cell } from "./Cell"
 import { PROP_LABELS, type Property, type PropType } from "./model"
+import { PropertyIcon } from "./PropertyIcon"
 import type { DatabaseState } from "./useDatabase"
 
 const PROP_TYPES: PropType[] = ["text", "number", "select", "multiSelect", "checkbox", "date", "url"]
 
-const PropertyIcon = ({ type, className }: { type: PropType; className?: string }) => {
-  switch (type) {
-    case "number":
-      return <IconHash className={className} />
-    case "select":
-      return <IconChevronDown className={className} />
-    case "multiSelect":
-      return <IconList className={className} />
-    case "checkbox":
-      return <IconCheckbox className={className} />
-    case "date":
-      return <IconCalendar className={className} />
-    case "url":
-      return <IconLink className={className} />
-    default:
-      return <IconLetterT className={className} />
-  }
-}
-
 const colWidth = (index: number): number => (index === 0 ? 240 : 180)
 
-const TableView = ({ db }: { db: DatabaseState }) => {
+const TableView = ({
+  db,
+  onOpenRow,
+}: {
+  db: DatabaseState
+  onOpenRow: (rowId: string) => void
+}) => {
   const { properties, rows } = db
   const [editing, setEditing] = useState<string | null>(null)
 
@@ -147,10 +125,11 @@ const TableView = ({ db }: { db: DatabaseState }) => {
             <Button
               variant="ghost"
               size="icon"
+              title="Open"
               className="text-muted-foreground size-7 opacity-0 group-hover:opacity-100"
-              onClick={() => db.deleteRow(row.id)}
+              onClick={() => onOpenRow(row.id)}
             >
-              <IconTrash className="size-3.5" />
+              <IconArrowsDiagonal className="size-3.5" />
             </Button>
           </div>
           {properties.map((property, index) => (
@@ -167,7 +146,31 @@ const TableView = ({ db }: { db: DatabaseState }) => {
               />
             </div>
           ))}
-          <div className="border-border w-11 shrink-0 border-l" />
+          <div className="border-border flex w-11 shrink-0 items-center justify-center border-l">
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-muted-foreground size-7 opacity-0 group-hover:opacity-100"
+                  >
+                    <IconDots className="size-4" />
+                  </Button>
+                }
+              />
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onOpenRow(row.id)}>
+                  <IconArrowsDiagonal className="size-3.5" />
+                  Open
+                </DropdownMenuItem>
+                <DropdownMenuItem variant="destructive" onClick={() => db.deleteRow(row.id)}>
+                  <IconTrash className="size-3.5" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       ))}
 

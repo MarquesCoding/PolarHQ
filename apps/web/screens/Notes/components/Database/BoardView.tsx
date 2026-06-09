@@ -7,7 +7,15 @@ import { colorValue, type ViewDef } from "./model"
 import RecordCard from "./RecordCard"
 import type { DatabaseState } from "./useDatabase"
 
-const BoardView = ({ db, view }: { db: DatabaseState; view: ViewDef }) => {
+const BoardView = ({
+  db,
+  view,
+  onOpenRow,
+}: {
+  db: DatabaseState
+  view: ViewDef
+  onOpenRow: (rowId: string) => void
+}) => {
   const { properties, rows } = db
   const selectProps = properties.filter((property) => property.type === "select")
   const groupProp =
@@ -66,6 +74,7 @@ const BoardView = ({ db, view }: { db: DatabaseState; view: ViewDef }) => {
                   fields={fields}
                   draggable
                   onDragStart={() => setDragId(row.id)}
+                  onOpen={() => onOpenRow(row.id)}
                 />
               ))}
               <Button

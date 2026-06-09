@@ -45,17 +45,19 @@ interface RecordCardProps {
   fields: Property[]
   draggable?: boolean
   onDragStart?: () => void
+  onOpen?: () => void
 }
 
 /** A read-only summary card for one row, used by the board and gallery views. */
-const RecordCard = ({ row, titleProp, fields, draggable, onDragStart }: RecordCardProps) => {
+const RecordCard = ({ row, titleProp, fields, draggable, onDragStart, onOpen }: RecordCardProps) => {
   const title = titleProp ? row[titleProp.id] : undefined
   return (
     <div
       draggable={draggable}
       onDragStart={onDragStart}
+      onClick={onOpen}
       className="bg-card flex flex-col gap-2 rounded-lg border p-2.5 shadow-sm transition-shadow hover:shadow-md"
-      style={{ cursor: draggable ? "grab" : "default" }}
+      style={{ cursor: draggable ? "grab" : "pointer" }}
     >
       <p className="text-sm font-medium">
         {typeof title === "string" && title ? title : <span className="text-muted-foreground">Untitled</span>}

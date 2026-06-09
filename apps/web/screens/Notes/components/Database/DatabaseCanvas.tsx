@@ -27,6 +27,7 @@ import { cn } from "@workspace/ui/lib/utils"
 import BoardView from "./BoardView"
 import GalleryView from "./GalleryView"
 import type { ViewType } from "./model"
+import RecordPanel from "./RecordPanel"
 import TableView from "./TableView"
 import { useDatabase } from "./useDatabase"
 
@@ -42,6 +43,8 @@ const DatabaseCanvas = ({ collab }: { collab: CollabDocument }) => {
   const { views, properties } = db
   const [activeId, setActiveId] = useState<string | null>(null)
   const [editing, setEditing] = useState<string | null>(null)
+  const [openRowId, setOpenRowId] = useState<string | null>(null)
+  const openRow = db.rows.find((row) => row.id === openRowId)
 
   if (views.length === 0) {
     return (
@@ -175,13 +178,23 @@ const DatabaseCanvas = ({ collab }: { collab: CollabDocument }) => {
 
       <div className="scrollbar-slim min-h-0 flex-1 overflow-auto">
         {active.type === "table" ? (
-          <TableView db={db} />
+          <TableView db={db} onOpenRow={setOpenRowId} />
         ) : active.type === "board" ? (
-          <BoardView db={db} view={active} />
+          <BoardView db={db} view={active} onOpenRow={setOpenRowId} />
         ) : (
-          <GalleryView db={db} />
+          <GalleryView db={db} onOpenRow={setOpenRowId} />
         )}
       </div>
+
+      {openRow ? (
+        <RecordPanel
+          key={openRow.id}
+          collab={collab}
+          db={db}
+          row={openRow}
+          onClose={() => setOpenRowId(null)}
+        />
+      ) : null}
     </div>
   )
 }
