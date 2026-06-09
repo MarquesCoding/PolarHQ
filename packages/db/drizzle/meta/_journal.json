@@ -22,6 +22,13 @@
       "when": 1780935903976,
       "tag": "0002_daily_sabra",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1781031687579,
+      "tag": "0003_brown_robin_chapel",
+      "breakpoints": true
     }
   ]
 }

@@ -182,9 +182,12 @@ export const backupStatus = core.enum("backup_status", ["running", "completed", 
  * Singleton config for scheduled off-site backups to an S3-compatible bucket. The secret access
  * key is stored here (plaintext, self-hosted) but never returned to clients.
  */
+export const backupProvider = core.enum("backup_provider", ["s3", "gdrive"])
+
 export const backupSettings = core.table("backup_settings", {
   id: text("id").primaryKey().default("singleton"),
   enabled: boolean("enabled").notNull().default(false),
+  provider: backupProvider("provider").notNull().default("s3"),
   endpoint: text("endpoint"),
   region: text("region"),
   bucket: text("bucket"),
@@ -192,6 +195,9 @@ export const backupSettings = core.table("backup_settings", {
   accessKeyId: text("access_key_id"),
   secretAccessKey: text("secret_access_key"),
   forcePathStyle: boolean("force_path_style").notNull().default(true),
+  // Google Drive destination: the OAuth refresh token (encrypted) and target folder.
+  gdriveRefreshToken: text("gdrive_refresh_token"),
+  gdriveFolderId: text("gdrive_folder_id"),
   frequencyHours: integer("frequency_hours").notNull().default(24),
   lastRunAt: timestamp("last_run_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

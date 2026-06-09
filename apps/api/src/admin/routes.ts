@@ -1,9 +1,12 @@
 import { can } from "@workspace/auth"
+import { config } from "@workspace/config"
 import { type Context, Hono } from "hono"
+import { deleteCookie, getCookie, setCookie } from "hono/cookie"
 import { createMiddleware } from "hono/factory"
 import { z } from "zod"
 import { getSessionUser } from "../context"
 import { checkForUpdate } from "../version/service"
+import { buildConsentUrl, exchangeCodeForRefreshToken } from "./gdrive"
 import * as adminService from "./service"
 
 type Variables = { userId: string }
@@ -78,6 +81,7 @@ adminRoutes.patch("/backup/settings", guard("admin.backup.manage"), async (c) =>
     c,
     z.object({
       enabled: z.boolean().optional(),
+      provider: z.enum(["s3", "gdrive"]).optional(),
       endpoint: z.string().nullable().optional(),
       region: z.string().nullable().optional(),
       bucket: z.string().nullable().optional(),
@@ -85,6 +89,7 @@ adminRoutes.patch("/backup/settings", guard("admin.backup.manage"), async (c) =>
       accessKeyId: z.string().nullable().optional(),
       secretAccessKey: z.string().nullable().optional(),
       forcePathStyle: z.boolean().optional(),
+      gdriveFolderId: z.string().nullable().optional(),
       frequencyHours: z.number().int().positive().optional(),
     }),
   )
@@ -107,6 +112,42 @@ adminRoutes.post("/backup/run", guard("admin.backup.manage"), async (c) => {
     targetId: run.id,
   })
   return c.json({ run }, 201)
+})
+
+adminRoutes.get("/backup/gdrive/auth", guard("admin.backup.manage"), (c) => {
+  if (!config.google.clientId || !config.google.clientSecret) {
+    return c.json({ error: "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET are not configured" }, 400)
+  }
+  const state = crypto.randomUUID()
+  setCookie(c, "gdrive_oauth_state", state, {
+    httpOnly: true,
+    sameSite: "Lax",
+    maxAge: 600,
+    path: "/",
+  })
+  return c.redirect(buildConsentUrl(state))
+})
+
+adminRoutes.get("/backup/gdrive/callback", guard("admin.backup.manage"), async (c) => {
+  const code = c.req.query("code")
+  const state = c.req.query("state")
+  const saved = getCookie(c, "gdrive_oauth_state")
+  deleteCookie(c, "gdrive_oauth_state", { path: "/" })
+  if (!code || !state || state !== saved) return c.json({ error: "invalid oauth state" }, 400)
+  try {
+    const refreshToken = await exchangeCodeForRefreshToken(code)
+    await adminService.setGdriveRefreshToken(refreshToken)
+    await adminService.recordAudit({ actorId: c.get("userId"), action: "backup.gdrive.connect" })
+  } catch (error) {
+    return c.json({ error: error instanceof Error ? error.message : "Connect failed" }, 400)
+  }
+  return c.redirect(`${config.web.url}/admin/backup`)
+})
+
+adminRoutes.post("/backup/gdrive/disconnect", guard("admin.backup.manage"), async (c) => {
+  const settings = await adminService.clearGdrive()
+  await adminService.recordAudit({ actorId: c.get("userId"), action: "backup.gdrive.disconnect" })
+  return c.json({ settings })
 })
 
 adminRoutes.get("/users/:id", guard("admin.users.manage"), async (c) => {
