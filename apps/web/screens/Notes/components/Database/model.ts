@@ -36,6 +36,8 @@ export interface Property {
   options?: SelectOption[]
   /** For relation properties: the linked database's Drive node id. */
   targetDb?: string
+  /** For relation properties: when true, show computed backlinks (rows in targetDb that link here) instead of an editable list. */
+  reverse?: boolean
   /** For rollup properties: the relation property to follow, the linked property to read, and the function. */
   relationProp?: string
   rollupProp?: string
@@ -373,6 +375,9 @@ export const databaseApi = (ydoc: Y.Doc) => {
     },
     setRelationTarget(id: string, targetDb: string): void {
       tx(() => mapById(roots.properties, id)?.set("targetDb", targetDb))
+    },
+    setRelationReverse(id: string, reverse: boolean): void {
+      tx(() => mapById(roots.properties, id)?.set("reverse", reverse))
     },
     setRollup(
       id: string,

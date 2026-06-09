@@ -13,7 +13,7 @@ import {
   rowTitle,
   type SelectOption,
 } from "./model"
-import { snapshotTitle, useRelationSources } from "./relations"
+import { backlinkRowIds, snapshotTitle, useCurrentDbId, useRelationSources } from "./relations"
 
 const cellInput =
   "h-9 rounded-none border-0 bg-transparent px-2 text-sm shadow-none focus-visible:border-0 focus-visible:ring-0"
@@ -168,7 +168,23 @@ export const RelationChip = ({ title }: { title: string }) => (
   </span>
 )
 
-const RelationCell = ({ property, value, onChange }: Omit<CellProps, "onAddOption">) => {
+/** Read-only computed backlinks: rows in the linked database that relate to this row. */
+export const BacklinkChips = ({ property, row }: { property: Property; row?: Row }) => {
+  const sources = useRelationSources()
+  const dbId = useCurrentDbId()
+  const snapshot = property.targetDb ? sources[property.targetDb] : undefined
+  const ids = backlinkRowIds(snapshot, dbId, row?.id)
+  if (ids.length === 0) return <span className="text-muted-foreground text-sm">Empty</span>
+  return (
+    <span className="flex flex-wrap items-center gap-1">
+      {ids.map((id) => (
+        <RelationChip key={id} title={snapshotTitle(snapshot, id)} />
+      ))}
+    </span>
+  )
+}
+
+const RelationCell = ({ property, value, onChange, row }: Omit<CellProps, "onAddOption">) => {
   const sources = useRelationSources()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
@@ -177,6 +193,14 @@ const RelationCell = ({ property, value, onChange }: Omit<CellProps, "onAddOptio
     return (
       <div className="text-muted-foreground flex h-9 items-center px-2 text-sm">
         Set a linked database
+      </div>
+    )
+  }
+
+  if (property.reverse) {
+    return (
+      <div className="flex min-h-9 items-center px-2 py-1">
+        <BacklinkChips property={property} row={row} />
       </div>
     )
   }
@@ -400,7 +424,7 @@ export const Cell = ({ property, value, onChange, onAddOption, row, properties }
         />
       )
     case "relation":
-      return <RelationCell property={property} value={value} onChange={onChange} />
+      return <RelationCell property={property} value={value} onChange={onChange} row={row} />
     case "rollup":
       return <RollupCell property={property} row={row} properties={properties} />
     default:

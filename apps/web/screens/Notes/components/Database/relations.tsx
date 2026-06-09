@@ -21,6 +21,30 @@ export const snapshotTitle = (snapshot: DbSnapshot | undefined, rowId: string): 
   return row && snapshot ? rowTitle(snapshot.properties, row) : "…"
 }
 
+/**
+ * Rows in `snapshot` (the linked database) whose forward relation properties — those pointing
+ * back at `ourDbId` — include `ourRowId`. This is the computed reverse of a relation.
+ */
+export const backlinkRowIds = (
+  snapshot: DbSnapshot | undefined,
+  ourDbId: string,
+  ourRowId: string | undefined,
+): string[] => {
+  if (!snapshot || !ourRowId || !ourDbId) return []
+  return snapshot.rows
+    .filter((row) =>
+      snapshot.properties.some(
+        (property) =>
+          property.type === "relation" &&
+          !property.reverse &&
+          property.targetDb === ourDbId &&
+          Array.isArray(row[property.id]) &&
+          (row[property.id] as string[]).includes(ourRowId),
+      ),
+    )
+    .map((row) => row.id)
+}
+
 /** Read-only load of another database's full rows, decrypting if E2E. No live relay. */
 const loadSnapshot = async (nodeId: string): Promise<DbSnapshot> => {
   await e2eReady()
@@ -62,9 +86,18 @@ export const useDatabaseSnapshot = (nodeId: string | null): DbSnapshot => {
   return snapshot
 }
 
-const RelationContext = createContext<Record<string, DbSnapshot>>({})
+interface RelationContextValue {
+  sources: Record<string, DbSnapshot>
+  dbId: string
+}
 
-export const useRelationSources = (): Record<string, DbSnapshot> => useContext(RelationContext)
+const RelationContext = createContext<RelationContextValue>({ sources: {}, dbId: "" })
+
+export const useRelationSources = (): Record<string, DbSnapshot> =>
+  useContext(RelationContext).sources
+
+/** The current database's own Drive node id (used to compute reverse relations). */
+export const useCurrentDbId = (): string => useContext(RelationContext).dbId
 
 const Source = ({
   id,
@@ -82,9 +115,11 @@ const Source = ({
 
 /** Loads each linked database once and exposes their row snapshots by node id via context. */
 export const RelationProvider = ({
+  dbId,
   targetIds,
   children,
 }: {
+  dbId: string
   targetIds: string[]
   children: ReactNode
 }) => {
@@ -93,7 +128,7 @@ export const RelationProvider = ({
     setMap((prev) => (prev[id] === snapshot ? prev : { ...prev, [id]: snapshot }))
   }, [])
   return (
-    <RelationContext.Provider value={map}>
+    <RelationContext.Provider value={{ sources: map, dbId }}>
       {targetIds.map((id) => (
         <Source key={id} id={id} onReady={onReady} />
       ))}
