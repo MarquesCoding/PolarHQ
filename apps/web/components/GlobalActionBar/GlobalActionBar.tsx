@@ -9,7 +9,6 @@ import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
 import { lockKeys } from "@lib/e2e"
 import { Icon } from "@lib/icons"
-import { SPLIT_APP_MIME } from "@lib/splitView"
 import { useTheme } from "next-themes"
 import {
   IconDeviceLaptop,
@@ -115,19 +114,6 @@ const GlobalActionBar = () => {
               active={active}
               disabled={!app.available}
               onClick={() => app.available && router.push(app.route)}
-              draggable={app.available}
-              onDragStart={(event) => {
-                event.dataTransfer.setData(
-                  SPLIT_APP_MIME,
-                  JSON.stringify({
-                    id: app.id,
-                    name: app.name,
-                    route: app.route,
-                    icon: app.icon,
-                  }),
-                )
-                event.dataTransfer.effectAllowed = "copy"
-              }}
             />
           )
         })}

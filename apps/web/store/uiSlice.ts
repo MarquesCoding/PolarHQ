@@ -1,4 +1,3 @@
-import type { SplitApp } from "@lib/splitView"
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 export type ViewMode = "grid" | "table"
@@ -9,9 +8,6 @@ export interface UiState {
   sidebarCollapsed: boolean
   viewMode: ViewMode
   driveDetailsOpen: boolean
-  splitApp: SplitApp | null
-  splitRatio: number
-  splitSide: "left" | "right"
 }
 
 const initialState: UiState = {
@@ -20,9 +16,6 @@ const initialState: UiState = {
   sidebarCollapsed: false,
   viewMode: "grid",
   driveDetailsOpen: false,
-  splitApp: null,
-  splitRatio: 0.5,
-  splitSide: "right",
 }
 
 const uiSlice = createSlice({
@@ -47,15 +40,6 @@ const uiSlice = createSlice({
     setDriveDetailsOpen: (state, action: PayloadAction<boolean>) => {
       state.driveDetailsOpen = action.payload
     },
-    setSplitApp: (state, action: PayloadAction<SplitApp | null>) => {
-      state.splitApp = action.payload
-    },
-    setSplitRatio: (state, action: PayloadAction<number>) => {
-      state.splitRatio = Math.min(0.75, Math.max(0.25, action.payload))
-    },
-    setSplitSide: (state, action: PayloadAction<"left" | "right">) => {
-      state.splitSide = action.payload
-    },
   },
 })
 
@@ -66,9 +50,6 @@ export const {
   setSidebarCollapsed,
   setViewMode,
   setDriveDetailsOpen,
-  setSplitApp,
-  setSplitRatio,
-  setSplitSide,
 } = uiSlice.actions
 
 export default uiSlice.reducer
