@@ -81,6 +81,17 @@ export const SUITE_APPS: AppManifest[] = [
     requiredPermission: "docs.document.read",
   },
   {
+    id: "notes",
+    name: "Notes",
+    description: "A Notion-style space for notes and pages",
+    icon: "document",
+    route: "/notes",
+    category: "productivity",
+    privacy: "e2e",
+    status: "available",
+    requiredPermission: "docs.document.read",
+  },
+  {
     id: "calendar",
     name: "Calendar",
     description: "Schedule and plan your time",
