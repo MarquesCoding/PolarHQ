@@ -10,6 +10,7 @@ interface SelectionHotkeysOptions {
   onAlbum?: () => void
   onTag?: () => void
   onDownload?: () => void
+  onSelectAll?: () => void
 }
 
 const isTypingTarget = (target: EventTarget | null): boolean => {
@@ -23,30 +24,40 @@ const isTypingTarget = (target: EventTarget | null): boolean => {
 }
 
 /**
- * Selection keyboard shortcuts: Shift+D arms the delete (second Shift+D confirms);
- * Esc first disarms a pending delete, and otherwise clears the selection.
+ * Selection keyboard shortcuts: Shift+A selects all (even with nothing selected);
+ * Shift+D arms the delete (second Shift+D confirms); Shift+L adds to an album; Esc
+ * first disarms a pending delete, and otherwise clears the selection.
  */
 export const useSelectionHotkeys = (options: SelectionHotkeysOptions): void => {
-  const { active, onClear } = options
   const optionsRef = useRef(options)
   optionsRef.current = options
 
   useEffect(() => {
-    if (!active) return
     const onKey = (event: KeyboardEvent) => {
       if (isTypingTarget(event.target)) return
       const current = optionsRef.current
-      if (event.key === "Escape") {
-        if (current.confirm.armed) current.confirm.disarm()
-        else onClear()
+      const mod = event.metaKey || event.ctrlKey || event.altKey
+
+      if (event.shiftKey && !mod && event.key.toLowerCase() === "a") {
+        if (current.onSelectAll) {
+          event.preventDefault()
+          current.onSelectAll()
+        }
         return
       }
-      if (!event.shiftKey || event.metaKey || event.ctrlKey || event.altKey) return
+
+      if (!current.active) return
+      if (event.key === "Escape") {
+        if (current.confirm.armed) current.confirm.disarm()
+        else current.onClear()
+        return
+      }
+      if (!event.shiftKey || mod) return
       const action: Record<string, (() => void) | undefined> = {
         d: () => current.confirm.trigger(),
         f: current.onFavourite,
         s: current.onShare,
-        a: current.onAlbum,
+        l: current.onAlbum,
         t: current.onTag,
         w: current.onDownload,
       }
@@ -58,5 +69,5 @@ export const useSelectionHotkeys = (options: SelectionHotkeysOptions): void => {
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [active, onClear])
+  }, [])
 }

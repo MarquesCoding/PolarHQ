@@ -61,6 +61,7 @@ const CollectionInner = ({
     active: selection.count > 0,
     onClear: selection.clear,
     confirm: deleteConfirm,
+    onSelectAll: () => selection.selectAll(assets.map((asset) => asset.id)),
   })
 
   return (

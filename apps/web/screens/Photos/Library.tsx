@@ -125,6 +125,7 @@ const LibraryInner = () => {
     onAlbum: () => setAlbumOpen(true),
     onTag: () => setTagOpen(true),
     onShare: one ? () => setShareOpen(true) : undefined,
+    onSelectAll: () => selection.selectAll(visible.map((asset) => asset.id)),
   })
 
   return (

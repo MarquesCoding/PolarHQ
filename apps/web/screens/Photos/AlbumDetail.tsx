@@ -71,6 +71,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
     active: selection.count > 0,
     onClear: selection.clear,
     confirm: trashConfirm,
+    onSelectAll: () => selection.selectAll(assets.map((asset) => asset.id)),
   })
 
   const removeAlbum = useMutation({

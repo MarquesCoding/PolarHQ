@@ -73,7 +73,7 @@ const AddToAlbumDialog = ({
       <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
         <Icon name="albums" className="size-4" />
         Album
-        <Kbd>⇧A</Kbd>
+        <Kbd>⇧L</Kbd>
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
