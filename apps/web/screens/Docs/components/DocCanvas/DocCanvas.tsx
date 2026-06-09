@@ -40,14 +40,13 @@ import {
   IconFileText,
   IconMessage,
   IconMessagePlus,
-  IconShieldLock,
   IconUserPlus,
 } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
-import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import * as Y from "yjs"
+import EncryptedBadge from "@components/EncryptedBadge/EncryptedBadge"
 import CommentsPanel from "@pages/Docs/components/CommentsPanel/CommentsPanel"
 import DocMenuBar from "@pages/Docs/components/DocMenuBar/DocMenuBar"
 import EditorToolbar from "@pages/Docs/components/EditorToolbar/EditorToolbar"
@@ -413,16 +412,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
             </div>
           ) : null}
           <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{status}</span>
-          {contentKey ? (
-            <Badge
-              variant="secondary"
-              title="Only you and people you share with can read this document"
-              className="shrink-0 gap-1 border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-            >
-              <IconShieldLock />
-              Encrypted
-            </Badge>
-          ) : null}
+          {contentKey ? <EncryptedBadge /> : null}
           {hasSelection ? (
             <Button
               variant="ghost"

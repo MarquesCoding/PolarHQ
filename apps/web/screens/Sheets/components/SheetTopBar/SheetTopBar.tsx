@@ -8,11 +8,11 @@ import { renameDriveNode } from "@lib/drive"
 import { encryptNameWith } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import type { RelayProvider } from "@lib/yjsProvider"
-import { IconShieldLock, IconUserPlus } from "@tabler/icons-react"
+import { IconUserPlus } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
-import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
+import EncryptedBadge from "@components/EncryptedBadge/EncryptedBadge"
 import ShareDocDialog from "@pages/Docs/components/ShareDocDialog/ShareDocDialog"
 import SheetMenuBar from "@pages/Sheets/components/SheetMenuBar/SheetMenuBar"
 import type { SheetController } from "@pages/Sheets/useSheet"
@@ -144,16 +144,7 @@ const SheetTopBar = ({
           </div>
         ) : null}
         <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{status}</span>
-        {encrypted ? (
-          <Badge
-            variant="secondary"
-            title="Only you and people you share with can read this"
-            className="shrink-0 gap-1 border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-          >
-            <IconShieldLock />
-            Encrypted
-          </Badge>
-        ) : null}
+        {encrypted ? <EncryptedBadge /> : null}
         {doc.owner ? (
           <Button size="sm" onClick={() => setShareOpen(true)}>
             <IconUserPlus className="size-4" />
