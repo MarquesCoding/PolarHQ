@@ -7,6 +7,7 @@ import {
   IconLetterT,
   IconLink,
   IconList,
+  IconSum,
 } from "@tabler/icons-react"
 import type { PropType } from "./model"
 
@@ -27,6 +28,8 @@ export const PropertyIcon = ({ type, className }: { type: PropType; className?: 
       return <IconLink className={className} />
     case "relation":
       return <IconArrowsLeftRight className={className} />
+    case "rollup":
+      return <IconSum className={className} />
     default:
       return <IconLetterT className={className} />
   }

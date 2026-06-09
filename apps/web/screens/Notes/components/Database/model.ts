@@ -10,6 +10,18 @@ export type PropType =
   | "date"
   | "url"
   | "relation"
+  | "rollup"
+
+/** How a rollup aggregates the target property across related rows. */
+export type RollupFn =
+  | "count"
+  | "values"
+  | "sum"
+  | "average"
+  | "min"
+  | "max"
+  | "checked"
+  | "percentChecked"
 
 export interface SelectOption {
   id: string
@@ -24,6 +36,10 @@ export interface Property {
   options?: SelectOption[]
   /** For relation properties: the linked database's Drive node id. */
   targetDb?: string
+  /** For rollup properties: the relation property to follow, the linked property to read, and the function. */
+  relationProp?: string
+  rollupProp?: string
+  rollup?: RollupFn
 }
 
 export type ViewType = "table" | "board" | "gallery"
@@ -101,6 +117,8 @@ export const operatorsFor = (type: PropType): FilterOp[] => {
       return ["contains", "notContains", "isEmpty", "isNotEmpty"]
     case "relation":
       return ["isEmpty", "isNotEmpty"]
+    case "rollup":
+      return []
     case "checkbox":
       return ["checked", "unchecked"]
     case "date":
@@ -235,6 +253,24 @@ export const PROP_LABELS: Record<PropType, string> = {
   date: "Date",
   url: "URL",
   relation: "Relation",
+  rollup: "Rollup",
+}
+
+export const ROLLUP_LABELS: Record<RollupFn, string> = {
+  count: "Count",
+  values: "Show values",
+  sum: "Sum",
+  average: "Average",
+  min: "Min",
+  max: "Max",
+  checked: "Count checked",
+  percentChecked: "Percent checked",
+}
+
+/** A row's display title: the value of its first property. */
+export const rowTitle = (properties: Property[], row: Row): string => {
+  const title = properties[0] ? row[properties[0].id] : undefined
+  return typeof title === "string" && title ? title : "Untitled"
 }
 
 const uid = (): string => crypto.randomUUID()
@@ -337,6 +373,16 @@ export const databaseApi = (ydoc: Y.Doc) => {
     },
     setRelationTarget(id: string, targetDb: string): void {
       tx(() => mapById(roots.properties, id)?.set("targetDb", targetDb))
+    },
+    setRollup(
+      id: string,
+      patch: { relationProp?: string; rollupProp?: string; rollup?: RollupFn },
+    ): void {
+      tx(() => {
+        const property = mapById(roots.properties, id)
+        if (!property) return
+        Object.entries(patch).forEach(([key, value]) => property.set(key, value))
+      })
     },
     deleteProperty(id: string): void {
       tx(() => {

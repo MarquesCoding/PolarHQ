@@ -5,29 +5,31 @@ import { secretboxOpen } from "@lib/crypto"
 import { fetchDocContent } from "@lib/docs"
 import { e2eReady, getDocContentKey, isDocEncrypted, isUnlocked } from "@lib/e2e"
 import * as Y from "yjs"
-import { getRoots, type Property, type Row } from "./model"
-
-export interface RelationRow {
-  id: string
-  title: string
-}
+import { getRoots, type Property, type Row, rowTitle } from "./model"
 
 export interface DbSnapshot {
   status: "loading" | "ready" | "error" | "locked"
-  rows: RelationRow[]
+  properties: Property[]
+  rows: Row[]
 }
 
-const EMPTY: DbSnapshot = { status: "loading", rows: [] }
+const EMPTY: DbSnapshot = { status: "loading", properties: [], rows: [] }
 
-/** Read-only load of another database's rows (id + title), decrypting if E2E. No live relay. */
+/** The display title of a row in a loaded snapshot. */
+export const snapshotTitle = (snapshot: DbSnapshot | undefined, rowId: string): string => {
+  const row = snapshot?.rows.find((candidate) => candidate.id === rowId)
+  return row && snapshot ? rowTitle(snapshot.properties, row) : "…"
+}
+
+/** Read-only load of another database's full rows, decrypting if E2E. No live relay. */
 const loadSnapshot = async (nodeId: string): Promise<DbSnapshot> => {
   await e2eReady()
   const encrypted = await isDocEncrypted(nodeId)
   let key: Uint8Array | null = null
   if (encrypted) {
-    if (!isUnlocked()) return { status: "locked", rows: [] }
+    if (!isUnlocked()) return { status: "locked", properties: [], rows: [] }
     key = await getDocContentKey(nodeId)
-    if (!key) return { status: "error", rows: [] }
+    if (!key) return { status: "error", properties: [], rows: [] }
   }
   const content = await fetchDocContent(nodeId)
   let bytes: Uint8Array = new Uint8Array(content)
@@ -37,13 +39,8 @@ const loadSnapshot = async (nodeId: string): Promise<DbSnapshot> => {
   const roots = getRoots(doc)
   const properties = roots.properties.toJSON() as Property[]
   const rows = roots.rows.toJSON() as Row[]
-  const titleProp = properties[0]
-  const result = rows.map((row) => {
-    const title = titleProp ? row[titleProp.id] : undefined
-    return { id: row.id, title: typeof title === "string" && title ? title : "Untitled" }
-  })
   doc.destroy()
-  return { status: "ready", rows: result }
+  return { status: "ready", properties, rows }
 }
 
 export const useDatabaseSnapshot = (nodeId: string | null): DbSnapshot => {
@@ -56,7 +53,7 @@ export const useDatabaseSnapshot = (nodeId: string | null): DbSnapshot => {
         if (!cancelled) setSnapshot(result)
       })
       .catch(() => {
-        if (!cancelled) setSnapshot({ status: "error", rows: [] })
+        if (!cancelled) setSnapshot({ status: "error", properties: [], rows: [] })
       })
     return () => {
       cancelled = true

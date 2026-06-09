@@ -17,9 +17,29 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 import { Input } from "@workspace/ui/components/input"
 import { Cell } from "./Cell"
-import { applyView, PROP_LABELS, type Property, type PropType, type ViewDef } from "./model"
+import {
+  applyView,
+  PROP_LABELS,
+  type Property,
+  type PropType,
+  ROLLUP_LABELS,
+  type RollupFn,
+  type ViewDef,
+} from "./model"
 import { PropertyIcon } from "./PropertyIcon"
+import { type DbSnapshot, useRelationSources } from "./relations"
 import type { DatabaseState } from "./useDatabase"
+
+const ROLLUP_FNS: RollupFn[] = [
+  "count",
+  "values",
+  "sum",
+  "average",
+  "min",
+  "max",
+  "checked",
+  "percentChecked",
+]
 
 const PROP_TYPES: PropType[] = [
   "text",
@@ -30,9 +50,75 @@ const PROP_TYPES: PropType[] = [
   "date",
   "url",
   "relation",
+  "rollup",
 ]
 
 const colWidth = (index: number): number => (index === 0 ? 240 : 180)
+
+const RollupConfig = ({
+  db,
+  property,
+  sources,
+}: {
+  db: DatabaseState
+  property: Property
+  sources: Record<string, DbSnapshot>
+}) => {
+  const relationProps = db.properties.filter((p) => p.type === "relation" && p.targetDb)
+  const linked = db.properties.find((p) => p.id === property.relationProp && p.type === "relation")
+  const targetProps = linked?.targetDb ? (sources[linked.targetDb]?.properties ?? []) : []
+  return (
+    <>
+      <DropdownMenuSub>
+        <DropdownMenuSubTrigger>Relation</DropdownMenuSubTrigger>
+        <DropdownMenuSubContent>
+          {relationProps.length > 0 ? (
+            relationProps.map((rp) => (
+              <DropdownMenuItem
+                key={rp.id}
+                onClick={() => db.setRollup(property.id, { relationProp: rp.id })}
+              >
+                <span className="truncate">{rp.name}</span>
+                {rp.id === property.relationProp ? <IconCheck className="ml-auto size-3.5" /> : null}
+              </DropdownMenuItem>
+            ))
+          ) : (
+            <DropdownMenuItem disabled>Add a relation first</DropdownMenuItem>
+          )}
+        </DropdownMenuSubContent>
+      </DropdownMenuSub>
+      <DropdownMenuSub>
+        <DropdownMenuSubTrigger>Property</DropdownMenuSubTrigger>
+        <DropdownMenuSubContent>
+          {targetProps.length > 0 ? (
+            targetProps.map((tp) => (
+              <DropdownMenuItem
+                key={tp.id}
+                onClick={() => db.setRollup(property.id, { rollupProp: tp.id })}
+              >
+                <span className="truncate">{tp.name}</span>
+                {tp.id === property.rollupProp ? <IconCheck className="ml-auto size-3.5" /> : null}
+              </DropdownMenuItem>
+            ))
+          ) : (
+            <DropdownMenuItem disabled>Pick a relation first</DropdownMenuItem>
+          )}
+        </DropdownMenuSubContent>
+      </DropdownMenuSub>
+      <DropdownMenuSub>
+        <DropdownMenuSubTrigger>Calculate</DropdownMenuSubTrigger>
+        <DropdownMenuSubContent>
+          {ROLLUP_FNS.map((fn) => (
+            <DropdownMenuItem key={fn} onClick={() => db.setRollup(property.id, { rollup: fn })}>
+              <span className="truncate">{ROLLUP_LABELS[fn]}</span>
+              {fn === property.rollup ? <IconCheck className="ml-auto size-3.5" /> : null}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuSubContent>
+      </DropdownMenuSub>
+    </>
+  )
+}
 
 const TableView = ({
   db,
@@ -45,6 +131,7 @@ const TableView = ({
 }) => {
   const { properties } = db
   const rows = applyView(db.rows, db.properties, view)
+  const sources = useRelationSources()
   const [editing, setEditing] = useState<string | null>(null)
   const { data: dbList } = useQuery({
     queryKey: ["docs", "database"],
@@ -120,6 +207,7 @@ const TableView = ({
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
             ) : null}
+            {property.type === "rollup" ? <RollupConfig db={db} property={property} sources={sources} /> : null}
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive" onClick={() => db.deleteProperty(property.id)}>
               <IconTrash className="size-3.5" />
@@ -184,6 +272,8 @@ const TableView = ({
                 value={row[property.id]}
                 onChange={(value) => db.setCell(row.id, property.id, value)}
                 onAddOption={(name) => db.addOption(property.id, name)}
+                row={row}
+                properties={properties}
               />
             </div>
           ))}

@@ -82,7 +82,7 @@ const ValueInput = ({
 }
 
 export const FilterBar = ({ db, view }: { db: DatabaseState; view: ViewDef }) => {
-  const { properties } = db
+  const properties = db.properties.filter((property) => property.type !== "rollup")
   const filters = view.filters ?? []
   const propFor = (id: string) => properties.find((property) => property.id === id)
 
@@ -185,7 +185,7 @@ export const FilterBar = ({ db, view }: { db: DatabaseState; view: ViewDef }) =>
 }
 
 export const SortBar = ({ db, view }: { db: DatabaseState; view: ViewDef }) => {
-  const { properties } = db
+  const properties = db.properties.filter((property) => property.type !== "rollup")
   const sorts = view.sorts ?? []
 
   const commit = (next: SortRule[]) => db.updateView(view.id, { sorts: next })
