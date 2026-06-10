@@ -179,5 +179,12 @@
   "sheetsList": {
     "createLabel": "New spreadsheet",
     "title": "Spreadsheets"
+  },
+  "shell": {
+    "mySpreadsheets": "My Spreadsheets",
+    "newSpreadsheet": "New spreadsheet",
+    "product": "Sheets",
+    "search": "Search Sheets",
+    "spreadsheets": "Spreadsheets"
   }
 }

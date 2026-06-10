@@ -1,26 +1,29 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { useTranslation } from "react-i18next"
 import { FlatShell, FlatSidebar, FlatTopBar, type TopBarTitle } from "@components/FlatShell"
 import DriveNav from "@pages/Drive/components/DriveNav/DriveNav"
 import DriveToolbar from "@pages/Drive/components/DriveToolbar/DriveToolbar"
 
-const TITLES: TopBarTitle[] = [
-  { match: (p) => p === "/drive/trash", label: "Trash", icon: "trash" },
-  { match: () => true, label: "My Drive", icon: "folder" },
-]
-
-const Layout = ({ children }: { children: ReactNode }) => (
-  <FlatShell
-    sidebar={
-      <FlatSidebar productName="Drive" beta searchPlaceholder="Search Drive">
-        <DriveNav />
-      </FlatSidebar>
-    }
-    topBar={<FlatTopBar titles={TITLES} extra={<DriveToolbar />} />}
-  >
-    {children}
-  </FlatShell>
-)
+const Layout = ({ children }: { children: ReactNode }) => {
+  const { t } = useTranslation("drive")
+  const titles: TopBarTitle[] = [
+    { match: (p) => p === "/drive/trash", label: t("driveNav.trash"), icon: "trash" },
+    { match: () => true, label: t("driveNav.myDrive"), icon: "folder" },
+  ]
+  return (
+    <FlatShell
+      sidebar={
+        <FlatSidebar productName={t("driveNav.drive")} beta searchPlaceholder={t("shell.search")}>
+          <DriveNav />
+        </FlatSidebar>
+      }
+      topBar={<FlatTopBar titles={titles} extra={<DriveToolbar />} />}
+    >
+      {children}
+    </FlatShell>
+  )
+}
 
 export default Layout

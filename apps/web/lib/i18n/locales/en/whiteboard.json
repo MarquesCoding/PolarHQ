@@ -17,6 +17,13 @@
     "stroke": "Stroke",
     "strokeWidth": "Stroke width"
   },
+  "shell": {
+    "myWhiteboards": "My Whiteboards",
+    "newWhiteboard": "New whiteboard",
+    "product": "Whiteboard",
+    "search": "Search Whiteboards",
+    "whiteboards": "Whiteboards"
+  },
   "toolbar": {
     "arrow": "Arrow",
     "diamond": "Diamond",

@@ -184,6 +184,10 @@
     "tag": "Tag",
     "trash": "Trash"
   },
+  "shell": {
+    "product": "Photos",
+    "search": "Search photos"
+  },
   "tagDialog": {
     "addATag": "Add a tag",
     "couldNotCreateTag": "Could not create tag",

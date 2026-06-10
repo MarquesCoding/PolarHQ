@@ -169,6 +169,9 @@
     "save": "Save",
     "title": "Rename"
   },
+  "shell": {
+    "search": "Search Drive"
+  },
   "trash": {
     "actionFailed": "Action failed",
     "deleteForever": "Delete forever",

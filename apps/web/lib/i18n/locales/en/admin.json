@@ -166,6 +166,10 @@
     "title": "Settings",
     "whoCanCreate": "Who can create accounts?"
   },
+  "shell": {
+    "product": "Admin",
+    "search": "Search"
+  },
   "updateBanner": {
     "available": "PolarHQ {{version}} is available.",
     "dismiss": "Dismiss",
