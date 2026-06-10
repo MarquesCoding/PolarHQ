@@ -108,7 +108,7 @@ const Changelog = ({ version, build }: { version: string; build: string }) => {
           </Button>
         }
       />
-      <DialogContent className="flex max-h-[85vh] w-[calc(100vw-2rem)] max-w-3xl flex-col gap-0 overflow-hidden p-0 sm:w-full">
+      <DialogContent className="flex max-h-[85vh] w-full max-w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl">
         <DialogHeader className="border-border border-b px-6 py-4">
           <DialogTitle>What&apos;s new</DialogTitle>
         </DialogHeader>
