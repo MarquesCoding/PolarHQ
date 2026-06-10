@@ -59,9 +59,14 @@ const Hero = () => {
               background: "radial-gradient(56% 48% at 50% 44%, rgba(0,0,0,0.34), transparent 72%)",
             }}
           />
-          <p className="text-foreground/35 absolute right-4 bottom-3 text-[11px] tracking-wide">
+          <a
+            href="https://store.steampowered.com/app/1608230/Planet_of_Lana/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-foreground/35 hover:text-foreground/60 absolute right-4 bottom-3 text-[11px] tracking-wide transition-colors"
+          >
             Artwork from Planet of Lana (2023)
-          </p>
+          </a>
         </motion.div>
       </div>
 
