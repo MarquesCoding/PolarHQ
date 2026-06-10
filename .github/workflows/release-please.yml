@@ -1,0 +1,27 @@
+name: release-please
+
+# Reads conventional commits on main and maintains a "Release PR" that bumps the version and
+# updates CHANGELOG.md. Merging that PR creates the git tag + GitHub Release, which the docker
+# workflow builds and deploys from. Polish the generated notes in the PR before merging.
+#
+# Optional: set a RELEASE_PLEASE_TOKEN secret (a PAT or GitHub App token with contents+workflow
+# scope) so the tag it creates can trigger the docker workflow. With only GITHUB_TOKEN the tag is
+# created but downstream workflows won't auto-run — re-run docker.yml manually or push the tag.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

@@ -77,14 +77,16 @@ const ReleaseEntry = ({ release }: { release: Release }) => (
       <Badge>v{release.version}</Badge>
       <span className="text-muted-foreground text-xs">{formatDate(release.date)}</span>
     </div>
-    <h3 className="text-base font-semibold">{release.title}</h3>
-    <div className="mt-1.5 mb-2 flex flex-wrap gap-1">
-      {release.tags.map((tag) => (
-        <Badge key={tag} variant="secondary">
-          {tag}
-        </Badge>
-      ))}
-    </div>
+    {release.title ? <h3 className="text-base font-semibold">{release.title}</h3> : null}
+    {release.tags && release.tags.length > 0 ? (
+      <div className="mt-1.5 mb-2 flex flex-wrap gap-1">
+        {release.tags.map((tag) => (
+          <Badge key={tag} variant="secondary">
+            {tag}
+          </Badge>
+        ))}
+      </div>
+    ) : null}
     <div className="text-muted-foreground text-sm leading-relaxed">
       {renderMarkdown(release.content)}
     </div>
@@ -106,7 +108,7 @@ const Changelog = ({ version, build }: { version: string; build: string }) => {
           </Button>
         }
       />
-      <DialogContent className="flex max-h-[80vh] max-w-2xl flex-col gap-0 overflow-hidden p-0">
+      <DialogContent className="flex max-h-[85vh] w-[calc(100vw-2rem)] max-w-3xl flex-col gap-0 overflow-hidden p-0 sm:w-full">
         <DialogHeader className="border-border border-b px-6 py-4">
           <DialogTitle>What&apos;s new</DialogTitle>
         </DialogHeader>
