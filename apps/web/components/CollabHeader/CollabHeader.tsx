@@ -119,7 +119,7 @@ const CollabHeader = ({
         onBlur={commitTitle}
         onKeyDown={(event) => event.key === "Enter" && event.currentTarget.blur()}
         aria-label="Title"
-        className="h-auto border-none bg-transparent px-0 text-2xl font-semibold shadow-none focus-visible:ring-0"
+        className="h-auto border-none bg-transparent px-0 text-2xl font-semibold shadow-none focus-visible:ring-0 dark:bg-transparent"
       />
       {peers.length > 0 ? (
         <div className="flex shrink-0 -space-x-1.5">
