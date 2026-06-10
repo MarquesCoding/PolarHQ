@@ -51,7 +51,10 @@ export const readUploadForm = async (c: Context, userId: string): Promise<FormDa
   if (maxBytes !== null) {
     const contentLength = Number(c.req.header("content-length") ?? "")
     if (Number.isFinite(contentLength) && contentLength > maxBytes + MULTIPART_OVERHEAD) {
-      return c.json({ error: `File exceeds the ${formatBytes(maxBytes)} upload limit` }, 413)
+      return c.json(
+        { error: "uploads.tooLarge", errorParams: { limit: formatBytes(maxBytes) } },
+        413,
+      )
     }
   }
 
@@ -69,7 +72,10 @@ export const readUploadForm = async (c: Context, userId: string): Promise<FormDa
   if (maxBytes !== null) {
     const file = form.get("file")
     if (file instanceof File && file.size > maxBytes) {
-      return c.json({ error: `File exceeds the ${formatBytes(maxBytes)} upload limit` }, 413)
+      return c.json(
+        { error: "uploads.tooLarge", errorParams: { limit: formatBytes(maxBytes) } },
+        413,
+      )
     }
   }
 

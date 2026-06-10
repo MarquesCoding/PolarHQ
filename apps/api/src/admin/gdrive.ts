@@ -36,11 +36,11 @@ export const exchangeCodeForRefreshToken = async (code: string): Promise<string>
     }),
   })
   if (!response.ok) {
-    throw new Error(`Google code exchange failed: ${response.status} ${await response.text()}`)
+    throw new Error("admin.gdriveCodeExchangeFailed")
   }
   const json = (await response.json()) as { refresh_token?: string }
   if (!json.refresh_token) {
-    throw new Error("Google did not return a refresh token (revoke prior access and retry)")
+    throw new Error("admin.gdriveNoRefreshToken")
   }
   return json.refresh_token
 }

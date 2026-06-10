@@ -18,7 +18,7 @@ setupRoutes.get("/status", async (c) => {
 setupRoutes.post("/", async (c) => {
   const parsed = CompleteSetupSchema.safeParse(await c.req.json().catch(() => null))
   if (!parsed.success) {
-    return c.json({ error: "invalid input", issues: parsed.error.issues }, 400)
+    return c.json({ error: "invalidInput", issues: parsed.error.issues }, 400)
   }
 
   try {

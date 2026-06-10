@@ -4,6 +4,7 @@ import { useState } from "react"
 import RecoveryCodeDialog from "@components/RecoveryCodeDialog"
 import { authClient } from "@lib/authClient"
 import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@lib/e2e"
+import { apiErrorMessage } from "@lib/i18n/apiError"
 import { type RegistrationMode, completeSetup } from "@lib/setup"
 import { useForm } from "@tanstack/react-form"
 import { Button } from "@workspace/ui/components/button"
@@ -85,7 +86,7 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
           onComplete()
         }
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : t("adminAccountStep.setupFailed"))
+        toast.error(apiErrorMessage(error))
       }
     },
   })

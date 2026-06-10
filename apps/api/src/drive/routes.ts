@@ -134,7 +134,7 @@ driveRoutes.post("/nodes/folder", async (c) => {
       encryptedName: z.string().nullish(),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const node = await createFolder(
     c.get("userId"),
     parsed.data.parentId ?? null,
@@ -150,7 +150,7 @@ driveRoutes.post("/nodes/upload", async (c) => {
   const form = await readUploadForm(c, userId)
   if (form instanceof Response) return form
   const file = form.get("file")
-  if (!(file instanceof File)) return c.json({ error: "file field is required" }, 400)
+  if (!(file instanceof File)) return c.json({ error: "drive.fileRequired" }, 400)
 
   const parentRaw = form.get("parentId")
   const { rootId, photosId } = await ensureUserRoots(userId)
@@ -183,7 +183,7 @@ driveRoutes.post("/nodes/upload", async (c) => {
 
   if (parentId === photosId) {
     if (!isMediaMime(mimeType)) {
-      return c.json({ error: "The Photos folder only accepts images, video, and audio" }, 400)
+      return c.json({ error: "drive.photosMediaOnly" }, 400)
     }
     const result = await ingestUpload({ ownerId: userId, filename, mimeType, bytes, clientModifiedAt })
     const node = await ensurePhotosDriveNode(userId, {
@@ -224,7 +224,7 @@ driveRoutes.post("/nodes/upload", async (c) => {
 driveRoutes.put("/nodes/:id/thumbnail", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
-  if (!node) return c.json({ error: "not found" }, 404)
+  if (!node) return c.json({ error: "notFound" }, 404)
   const bytes = Buffer.from(await c.req.arrayBuffer())
   await storage().put({
     key: `users/${userId}/.thumbnails/${node.id}`,
@@ -237,11 +237,11 @@ driveRoutes.put("/nodes/:id/thumbnail", async (c) => {
 driveRoutes.get("/nodes/:id/thumbnail", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
-  if (!node) return c.json({ error: "not found" }, 404)
+  if (!node) return c.json({ error: "notFound" }, 404)
   const stream = await storage()
     .getStream(`users/${userId}/.thumbnails/${node.id}`)
     .catch(() => null)
-  if (!stream) return c.json({ error: "not found" }, 404)
+  if (!stream) return c.json({ error: "notFound" }, 404)
   return new Response(Readable.toWeb(stream) as ReadableStream, {
     headers: { "Content-Type": "application/octet-stream", "Cache-Control": "no-store" },
   })
@@ -257,7 +257,7 @@ driveRoutes.post("/nodes/archive", async (c) => {
       archiveId: z.string().optional(),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const { rootId } = await ensureUserRoots(userId)
   const parentId =
     parsed.data.parentId && parsed.data.parentId !== "root" ? parsed.data.parentId : rootId
@@ -279,12 +279,12 @@ driveRoutes.post("/nodes/archive", async (c) => {
 driveRoutes.post("/nodes/:id/extract", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
-  if (!node) return c.json({ error: "not found" }, 404)
+  if (!node) return c.json({ error: "notFound" }, 404)
   try {
     const folder = await extractArchive(userId, node.id)
     return c.json({ node: serializeNode(folder) }, 201)
   } catch {
-    return c.json({ error: "could not extract archive" }, 400)
+    return c.json({ error: "drive.extractFailed" }, 400)
   }
 })
 
@@ -296,7 +296,7 @@ driveRoutes.get("/folders", async (c) => {
 driveRoutes.post("/nodes/:id/copy", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
-  if (!node) return c.json({ error: "not found" }, 404)
+  if (!node) return c.json({ error: "notFound" }, 404)
   const copy = await copyNode(userId, node.id)
   return c.json({ node: serializeNode(copy) }, 201)
 })
@@ -304,7 +304,7 @@ driveRoutes.post("/nodes/:id/copy", async (c) => {
 driveRoutes.post("/nodes/:id/share", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
-  if (!node) return c.json({ error: "not found" }, 404)
+  if (!node) return c.json({ error: "notFound" }, 404)
   const parsed = await parse(
     c,
     z.object({
@@ -333,13 +333,13 @@ driveRoutes.post("/nodes/:id/versions/:versionId/restore", async (c) => {
   const node = await restoreVersion(userId, c.req.param("id"), c.req.param("versionId")).catch(
     () => null,
   )
-  if (!node) return c.json({ error: "not found" }, 404)
+  if (!node) return c.json({ error: "notFound" }, 404)
   return c.json({ node: serializeNode(node) })
 })
 
 driveRoutes.get("/nodes/:id/versions/:versionId/download", async (c) => {
   const version = await getVersion(c.get("userId"), c.req.param("versionId"))
-  if (!version || version.nodeId !== c.req.param("id")) return c.json({ error: "not found" }, 404)
+  if (!version || version.nodeId !== c.req.param("id")) return c.json({ error: "notFound" }, 404)
   const stream = await storage().getStream(version.storageKey)
   return new Response(Readable.toWeb(stream) as ReadableStream, {
     headers: {
@@ -351,15 +351,15 @@ driveRoutes.get("/nodes/:id/versions/:versionId/download", async (c) => {
 
 driveRoutes.get("/nodes/:id/lock", async (c) => {
   const lock = await getNodeLock(c.get("userId"), c.req.param("id"))
-  if (!lock) return c.json({ error: "not found" }, 404)
+  if (!lock) return c.json({ error: "notFound" }, 404)
   return c.json(lock)
 })
 
 driveRoutes.post("/nodes/:id/lock", async (c) => {
   const parsed = await parse(c, z.object({ salt: z.string(), verifier: z.string() }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const ok = await setNodeLock(c.get("userId"), c.req.param("id"), parsed.data.salt, parsed.data.verifier)
-  if (!ok) return c.json({ error: "cannot lock this folder" }, 400)
+  if (!ok) return c.json({ error: "drive.cannotLockFolder" }, 400)
   return c.json({ ok: true })
 })
 
@@ -378,12 +378,12 @@ driveRoutes.patch("/nodes/:id", async (c) => {
       parentId: z.string().optional(),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const userId = c.get("userId")
   const id = c.req.param("id")
   const node = await getNode(userId, id)
-  if (!node) return c.json({ error: "not found" }, 404)
-  if (node.special) return c.json({ error: "cannot modify a system folder" }, 400)
+  if (!node) return c.json({ error: "notFound" }, 404)
+  if (node.special) return c.json({ error: "drive.cannotModifySystemFolder" }, 400)
   if (parsed.data.name)
     await renameNode(
       userId,
@@ -396,7 +396,7 @@ driveRoutes.patch("/nodes/:id", async (c) => {
     const { rootId, photosId } = await ensureUserRoots(userId)
     const targetId = parsed.data.parentId === "root" ? rootId : parsed.data.parentId
     if (targetId === photosId && node.kind === "file" && !isMediaMime(node.mimeType ?? "")) {
-      return c.json({ error: "The Photos folder only accepts media files" }, 400)
+      return c.json({ error: "drive.photosMediaFilesOnly" }, 400)
     }
     await moveNode(userId, id, parsed.data.parentId)
   }
@@ -422,8 +422,8 @@ driveRoutes.post("/trash/empty", async (c) => {
 driveRoutes.post("/nodes/:id/trash", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
-  if (!node) return c.json({ error: "not found" }, 404)
-  if (node.special) return c.json({ error: "cannot delete a system folder" }, 400)
+  if (!node) return c.json({ error: "notFound" }, 404)
+  if (node.special) return c.json({ error: "drive.cannotDeleteSystemFolder" }, 400)
   const { trashedAssetIds } = await trashNodeTree(userId, node.id)
   if (trashedAssetIds.length > 0) await trashAssets(userId, trashedAssetIds)
   await notify(userId)
@@ -433,7 +433,7 @@ driveRoutes.post("/nodes/:id/trash", async (c) => {
 driveRoutes.post("/nodes/:id/restore", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
-  if (!node) return c.json({ error: "not found" }, 404)
+  if (!node) return c.json({ error: "notFound" }, 404)
   const { restoredAssetIds } = await restoreNodeTree(userId, node.id)
   if (restoredAssetIds.length > 0) await restoreAssets(userId, restoredAssetIds)
   await notify(userId)
@@ -443,8 +443,8 @@ driveRoutes.post("/nodes/:id/restore", async (c) => {
 driveRoutes.delete("/nodes/:id", async (c) => {
   const userId = c.get("userId")
   const node = await getNode(userId, c.req.param("id"))
-  if (!node) return c.json({ error: "not found" }, 404)
-  if (node.special) return c.json({ error: "cannot delete a system folder" }, 400)
+  if (!node) return c.json({ error: "notFound" }, 404)
+  if (node.special) return c.json({ error: "drive.cannotDeleteSystemFolder" }, 400)
   const { removedAssetIds } = await deleteNode(userId, node.id)
   if (removedAssetIds.length > 0) await purgeAssets(userId, removedAssetIds)
   await notify(userId)
@@ -453,7 +453,7 @@ driveRoutes.delete("/nodes/:id", async (c) => {
 
 driveRoutes.get("/nodes/:id/download", async (c) => {
   const node = await getNode(c.get("userId"), c.req.param("id"))
-  if (!node || node.kind !== "file" || !node.storageKey) return c.json({ error: "not found" }, 404)
+  if (!node || node.kind !== "file" || !node.storageKey) return c.json({ error: "notFound" }, 404)
   const stream = await storage().getStream(node.storageKey)
   return new Response(Readable.toWeb(stream) as ReadableStream, {
     headers: {

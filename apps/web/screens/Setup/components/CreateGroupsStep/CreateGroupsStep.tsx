@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { apiErrorMessage } from "@lib/i18n/apiError"
 import { type Group, createGroup } from "@lib/setup"
 import { useForm } from "@tanstack/react-form"
 import { Button } from "@workspace/ui/components/button"
@@ -38,7 +39,7 @@ const CreateGroupsStep = ({ onFinish }: CreateGroupsStepProps) => {
         form.reset()
         toast.success(t("createGroupsStep.createdGroup", { name: group.name }))
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : t("createGroupsStep.couldNotCreate"))
+        toast.error(apiErrorMessage(error))
       }
     },
   })
