@@ -188,7 +188,7 @@ const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfi
   )
 }
 
-/** A grid of collaborative documents of one type (Sheets, Slides). */
+/** A grid of collaborative documents of one type (Docs, Sheets). */
 const CollabList = (config: CollabListConfig) => (
   <SelectionProvider>
     <CollabListInner {...config} />

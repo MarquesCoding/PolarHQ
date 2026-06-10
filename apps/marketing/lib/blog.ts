@@ -27,7 +27,7 @@ export const BLOG_POSTS: BlogPost[] = [
 
 - **Photos** — an Apple-Photos-grade library with a continuous-flow grid, HEIC and Live Photo support, EXIF metadata, and an on-map view of where every shot was taken.
 - **Drive** — folders, versioning, trash, and fast uploads, with every filename and byte encrypted before it leaves your browser.
-- **Docs, Sheets & Slides** — full-screen, Google-parity editors that open in their own tab.
+- **Docs & Sheets** — full-screen, Google-parity editors that open in their own tab.
 - **An admin console** — users, groups, per-user limits, branding, and an audit log.
 
 All of it ships in a single deployment you control.
@@ -188,22 +188,22 @@ This isn't just an efficiency win. It's what makes the suite feel *coherent* ins
 
 > The best architecture is the one you never have to think about. Files and photos are the same thing — so we made them the same thing.
 
-It also sets up everything that comes next. Documents are Drive files too. So are spreadsheets and presentations. Once "everything is a node in one encrypted tree," sharing, versioning, and sync only have to be built **once** — and every app in the suite inherits them.`,
+It also sets up everything that comes next. Documents are Drive files too. So are spreadsheets. Once "everything is a node in one encrypted tree," sharing, versioning, and sync only have to be built **once** — and every app in the suite inherits them.`,
   },
   {
     slug: "google-parity-office-editors",
-    title: "Bringing Google-parity Sheets, Docs & Slides to a self-hosted suite",
+    title: "Bringing Google-parity Sheets & Docs to a self-hosted suite",
     excerpt:
       "Full-screen editors, a canvas-fast spreadsheet grid, real Office import/export, and collaboration — without giving up end-to-end encryption.",
     author: "Marques",
     date: "2026-06-02",
     eyebrow: "Product",
-    tags: ["Docs", "Sheets", "Slides", "Product"],
+    tags: ["Docs", "Sheets", "Product"],
     content: `Documents were the test of whether PolarHQ could be a *real* suite or just a nice photo app. The answer had to be Google-parity editors — and they had to round-trip Microsoft and Google files, all while staying end-to-end encrypted.
 
 ## Full-screen, by design
 
-Sheets, Docs, and Slides each open in their **own full-screen tab** — no suite sidebar, no chrome stealing space. Each has a proper menu bar, a toolbar, and (for Sheets) a formula bar. They feel like applications, not widgets embedded in a dashboard.
+Sheets and Docs each open in their **own full-screen tab** — no suite sidebar, no chrome stealing space. Each has a proper menu bar, a toolbar, and (for Sheets) a formula bar. They feel like applications, not widgets embedded in a dashboard.
 
 A document is just a Drive file with a special type, so creating one from Drive or from the app puts it in the same encrypted tree as everything else. Open it and you're in the editor; everyone else keeps seeing a normal file.
 
@@ -226,7 +226,7 @@ Yjs doc  ──▶  HyperFormula engine  ──▶  Glide canvas grid
 
 ## It speaks Office
 
-You can **import** \`.xlsx\`, \`.docx\`, and \`.pptx\` and **export** back to them. We lazy-load the heavy libraries — SheetJS for spreadsheets, Mammoth for Word, a pptx pipeline for slides — so the editors stay light until you actually need interop. Got an \`.xls\` sitting in your Drive? Open it straight from the file browser; the right editor launches and the right icon shows on the node.
+You can **import** \`.xlsx\` and \`.docx\` and **export** back to them. We lazy-load the heavy libraries — SheetJS for spreadsheets, Mammoth for Word — so the editors stay light until you actually need interop. Got an \`.xls\` sitting in your Drive? Open it straight from the file browser; the right editor launches and the right icon shows on the node.
 
 ## Collaboration, encrypted
 

@@ -22,7 +22,7 @@ export const ROADMAP: RoadmapColumn[] = [
       { title: "Photos", description: "Continuous-flow grid, HEIC & Live Photos, EXIF maps, editor, stacks." },
       { title: "On-device semantic search", description: "CLIP embeddings computed locally, encrypted, ranked client-side." },
       { title: "Drive", description: "Folders, versioning, trash, shared storage with Photos." },
-      { title: "Docs, Sheets & Slides", description: "Full-screen editors with Office import/export." },
+      { title: "Docs & Sheets", description: "Full-screen editors with Office import/export." },
       { title: "Native iOS app", description: "SwiftUI client with byte-for-byte crypto parity." },
       { title: "Live sync", description: "Real-time updates across web and mobile." },
       { title: "Admin console", description: "Users, groups, limits, roles, branding, audit log." },
@@ -55,7 +55,6 @@ export const ROADMAP: RoadmapColumn[] = [
     blurb: "Ideas we're weighing for the suite.",
     items: [
       { title: "Calendar", description: "Rounding out the suite with the everyday essentials." },
-      { title: "Notes & Tasks", description: "Lightweight capture that lives in the same encrypted tree." },
       { title: "Federation", description: "Sharing across independently hosted PolarHQ servers." },
     ],
   },

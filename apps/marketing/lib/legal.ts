@@ -81,7 +81,7 @@ PolarHQ uses a Proton-style, single-password encryption model built on libsodium
 
 - Photo and video **originals** and every generated **thumbnail**.
 - **Filenames** and folder names.
-- Document, spreadsheet, and presentation **snapshots**, plus the real-time collaboration frames.
+- Document and spreadsheet **snapshots**, plus the real-time collaboration frames.
 - **EXIF** metadata, captions, and search **embeddings**.
 
 The server only ever stores and relays this ciphertext. Your private key is unwrapped in memory on your device and never transmitted.

@@ -3,7 +3,6 @@ import { type DriveNode, renameDriveNode } from "@lib/drive"
 import { fetchDecryptedFile } from "@lib/driveE2e"
 import { createEncryptedDoc, encryptNameWith } from "@lib/e2e"
 import type { ImportPayload } from "@lib/officeImport"
-import * as Y from "yjs"
 
 const IMPORT_PREFIX = "orbit:import:"
 
@@ -12,7 +11,6 @@ export const officeTypeForName = (name: string): DocType | null => {
   const ext = name.toLowerCase().split(".").pop() ?? ""
   if (["xlsx", "xls", "csv", "tsv", "ods"].includes(ext)) return "sheet"
   if (["docx", "txt", "md", "markdown"].includes(ext)) return "doc"
-  if (ext === "pptx") return "slides"
   return null
 }
 
@@ -20,7 +18,6 @@ export const officeTypeForName = (name: string): DocType | null => {
 const parseFor = async (file: File, type: DocType): Promise<ImportPayload> => {
   const parsers = await import("@lib/officeImport")
   if (type === "sheet") return parsers.parseSpreadsheet(file)
-  if (type === "slides") return parsers.parsePresentation(file)
   return parsers.parseDocument(file)
 }
 
@@ -95,36 +92,4 @@ export const applyImportName = (
   if (!name) return
   const sharedName = contentKey ? encryptNameWith(name, contentKey) : null
   void renameDriveNode(nodeId, name, sharedName)
-}
-
-/** Build slide elements + text boxes from a parsed presentation into the slides Yjs structures. */
-export const applySlidesImport = (
-  ydoc: Y.Doc,
-  slidesArray: Y.Array<string>,
-  slides: Array<{ texts: string[] }>,
-): void => {
-  ydoc.transact(() => {
-    for (const slide of slides) {
-      const slideId = crypto.randomUUID()
-      const elements = ydoc.getArray<string>(`slide:${slideId}:els`)
-      const texts = slide.texts.length ? slide.texts : [""]
-      texts.forEach((text, index) => {
-        const elId = crypto.randomUUID()
-        const element = ydoc.getMap<unknown>(`el:${elId}`)
-        element.set("type", "text")
-        element.set("x", 0.08)
-        element.set("y", 0.08 + index * 0.16)
-        element.set("w", 0.84)
-        element.set("h", 0.14)
-        const fragment = ydoc.getXmlFragment(`el:${elId}:text`)
-        const paragraph = new Y.XmlElement("paragraph")
-        const node = new Y.XmlText()
-        if (text) node.insert(0, text)
-        paragraph.insert(0, [node])
-        fragment.insert(0, [paragraph])
-        elements.push([elId])
-      })
-      slidesArray.push([slideId])
-    }
-  })
 }

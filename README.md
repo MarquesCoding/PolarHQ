@@ -29,7 +29,7 @@ that you run on your own server. One private home for everything.
 
 - **Photos** — an Apple-Photos-grade library: continuous-flow grid, HEIC & Live Photos, EXIF + location maps, a non-destructive editor, stacks, and on-device semantic search (CLIP, runs in your browser).
 - **Drive** — folders, versioning, trash and fast uploads, sharing one set of encrypted bytes with Photos (no duplication).
-- **Docs, Sheets & Slides** — full-screen, Google-parity editors with real Microsoft/Google file import & export and real-time collaboration.
+- **Docs & Sheets** — full-screen, Google-parity editors with real Microsoft/Google file import & export and real-time collaboration.
 - **End-to-end encrypted** — a Proton-style single-password model on libsodium; the server only ever stores ciphertext.
 - **Native iOS app** — SwiftUI client with byte-for-byte crypto parity and live sync.
 - **Admin console** — users, groups, per-user limits, roles, branding and an audit log.
@@ -89,7 +89,7 @@ Then open the web app, complete the first-run **setup** to create the admin acco
 
 ```
 apps/
-  web/         Main app — Photos, Drive, Docs, Sheets, Slides, Admin
+  web/         Main app — Photos, Drive, Docs, Sheets, Admin
   api/         Hono + tRPC API, auth, storage, collaboration relay
   marketing/   polarhq.app landing site (Next.js)
   ios/         Native SwiftUI client

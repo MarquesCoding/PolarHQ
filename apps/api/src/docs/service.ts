@@ -5,22 +5,13 @@ import { type DriveNode, ensureUserRoots, getNode, ingestDriveFile } from "../dr
 
 /**
  * Mimes that mark a Drive node as an Orbit collaborative document — a Yjs snapshot
- * stored as the file body. All three share the same storage, collaboration relay,
+ * stored as the file body. Both share the same storage, collaboration relay,
  * sharing, and E2E machinery; only the editor differs.
  */
 export const DOC_MIME = "application/vnd.orbit.doc"
 export const SHEET_MIME = "application/vnd.orbit.sheet"
-export const SLIDES_MIME = "application/vnd.orbit.slides"
-export const NOTE_MIME = "application/vnd.orbit.note"
-export const DATABASE_MIME = "application/vnd.orbit.database"
 
-export const ORBIT_DOC_MIMES = [
-  DOC_MIME,
-  SHEET_MIME,
-  SLIDES_MIME,
-  NOTE_MIME,
-  DATABASE_MIME,
-] as const
+export const ORBIT_DOC_MIMES = [DOC_MIME, SHEET_MIME] as const
 export type OrbitDocMime = (typeof ORBIT_DOC_MIMES)[number]
 
 export const isOrbitDoc = (mime: string | null): mime is OrbitDocMime =>
@@ -29,9 +20,6 @@ export const isOrbitDoc = (mime: string | null): mime is OrbitDocMime =>
 const DEFAULT_TITLE: Record<OrbitDocMime, string> = {
   [DOC_MIME]: "Untitled document",
   [SHEET_MIME]: "Untitled spreadsheet",
-  [SLIDES_MIME]: "Untitled presentation",
-  [NOTE_MIME]: "Untitled note",
-  [DATABASE_MIME]: "Untitled database",
 }
 
 /**

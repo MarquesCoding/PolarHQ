@@ -13,7 +13,6 @@ import {
   IconFilePlus,
   IconFolderPlus,
   IconInfoCircle,
-  IconPresentation,
   IconTable,
   IconTrashX,
   IconUpload,
@@ -81,9 +80,6 @@ const DriveTopActions = () => {
   const routes: Record<DocType, string> = {
     doc: "/docs",
     sheet: "/sheets",
-    slides: "/slides",
-    note: "/notes",
-    database: "/notes",
   }
   const newDoc = async (type: DocType) => {
     try {
@@ -131,10 +127,6 @@ const DriveTopActions = () => {
           <DropdownMenuItem onClick={() => void newDoc("sheet")}>
             <IconTable className="size-4" />
             New spreadsheet
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => void newDoc("slides")}>
-            <IconPresentation className="size-4" />
-            New presentation
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -27,7 +27,7 @@ export interface CollabDocument {
 
 /**
  * Loads a Drive-stored Yjs document (decrypting if E2E), connects the live relay, and
- * autosaves edits. Shared by the Docs, Sheets, and Slides editors — only the UI differs.
+ * autosaves edits. Shared by the Docs and Sheets editors — only the UI differs.
  */
 export const useCollabDocument = (nodeId: string): CollabDocument => {
   const [ydoc] = useState(() => new Y.Doc())

@@ -10,15 +10,15 @@ export const RELEASES: Release[] = [
   {
     version: "0.3.0",
     date: "2026-06-08",
-    title: "A full office suite — Sheets, Docs & Slides",
-    tags: ["Release", "Docs", "Sheets", "Slides"],
-    content: `The big one: PolarHQ is now a real office suite. Sheets, Docs, and Slides ship as full-screen, Google-parity editors, with genuine Microsoft and Google file interop.
+    title: "A full office suite — Sheets & Docs",
+    tags: ["Release", "Docs", "Sheets"],
+    content: `The big one: PolarHQ is now a real office suite. Sheets and Docs ship as full-screen, Google-parity editors, with genuine Microsoft and Google file interop.
 
 ### Added
-- **Full-screen editors** for Sheets, Docs, and Slides — each opens in its own tab with a menu bar, toolbar, and (for Sheets) a formula bar.
-- **Office import** — open \`.xlsx\`, \`.docx\`, and \`.pptx\` files directly.
+- **Full-screen editors** for Sheets and Docs — each opens in its own tab with a menu bar, toolbar, and (for Sheets) a formula bar.
+- **Office import** — open \`.xlsx\` and \`.docx\` files directly.
 - **Office export** — save documents back out to the Microsoft formats.
-- **Open Office files from Drive** — double-click an \`.xls\`/\`.docx\`/\`.pptx\` in the file browser and the right editor launches.
+- **Open Office files from Drive** — double-click an \`.xls\`/\`.docx\` in the file browser and the right editor launches.
 - Correct **file-type icons** per document type across Drive.
 
 ### Improved

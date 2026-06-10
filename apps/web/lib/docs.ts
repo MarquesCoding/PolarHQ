@@ -6,42 +6,23 @@ import { API_URL } from "@lib/env"
 /** Mimes that mark a Drive node as an Orbit collaborative document (body = Yjs snapshot). */
 export const DOC_MIME = "application/vnd.orbit.doc"
 export const SHEET_MIME = "application/vnd.orbit.sheet"
-export const SLIDES_MIME = "application/vnd.orbit.slides"
-export const NOTE_MIME = "application/vnd.orbit.note"
-export const DATABASE_MIME = "application/vnd.orbit.database"
 
-export type DocType = "doc" | "sheet" | "slides" | "note" | "database"
+export type DocType = "doc" | "sheet"
 
 /** Map a node mime to its app type (or null if it isn't an Orbit document). */
 export const docTypeOf = (mime: string | null): DocType | null =>
-  mime === DOC_MIME
-    ? "doc"
-    : mime === SHEET_MIME
-      ? "sheet"
-      : mime === SLIDES_MIME
-        ? "slides"
-        : mime === NOTE_MIME
-          ? "note"
-          : mime === DATABASE_MIME
-            ? "database"
-            : null
+  mime === DOC_MIME ? "doc" : mime === SHEET_MIME ? "sheet" : null
 
 /** List/home route for each document type. */
 export const DOC_ROUTES: Record<DocType, string> = {
   doc: "/docs",
   sheet: "/sheets",
-  slides: "/slides",
-  note: "/notes",
-  database: "/notes",
 }
 
 /** Dedicated fullscreen editor routes (singular), distinct from the list/home routes. */
 export const EDITOR_ROUTES: Record<DocType, string> = {
   doc: "/document",
   sheet: "/sheet",
-  slides: "/presentation",
-  note: "/notes",
-  database: "/notes",
 }
 
 /** The fullscreen editor URL for a document. */
@@ -49,7 +30,7 @@ export const editorHref = (type: DocType, id: string): string => `${EDITOR_ROUTE
 
 /** Documents open in their own fullscreen editor in a new browser tab. */
 export const editorOpensNewTab = (type: DocType): boolean =>
-  (["doc", "sheet", "slides"] as DocType[]).includes(type)
+  (["doc", "sheet"] as DocType[]).includes(type)
 
 /** Navigate to a document's editor, opening fullscreen apps in a new tab. */
 export const openEditor = (
@@ -64,8 +45,6 @@ export const openEditor = (
 
 export const isSheetNode = (node: Pick<DriveNode, "mimeType">): boolean =>
   node.mimeType === SHEET_MIME
-export const isSlidesNode = (node: Pick<DriveNode, "mimeType">): boolean =>
-  node.mimeType === SLIDES_MIME
 
 export interface DocMeta {
   id: string
