@@ -13,6 +13,7 @@ export interface SuiteApp {
   category: AppCategory
   privacy: AppPrivacy
   status: AppStatus
+  beta?: boolean
   available: boolean
 }
 

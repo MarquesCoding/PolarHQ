@@ -14,6 +14,7 @@ const Layout = ({ children }: { children: ReactNode }) => (
         icon="table"
         navLabel="My Spreadsheets"
         listLabel="Spreadsheets"
+        beta
       />
     }
     titleBar={
