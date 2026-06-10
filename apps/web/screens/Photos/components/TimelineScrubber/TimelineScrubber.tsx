@@ -52,7 +52,7 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
   return (
     <div
       ref={rootRef}
-      className="bg-sidebar/40 border-border absolute inset-y-0 left-0 z-40 w-6 touch-none border-r"
+      className="bg-sidebar/40 border-border sticky top-0 left-0 z-40 h-[calc(100svh-3.5rem)] w-6 touch-none border-r"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => {
         if (!scrubbing) setOpen(false)
@@ -62,9 +62,8 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
       onPointerUp={onUp}
       onPointerCancel={onUp}
     >
-      <div className="sticky top-0 h-svh w-full">
-        <div className="relative h-full w-full py-2">
-          {markers.map((marker, index) => {
+      <div className="relative h-full w-full py-2">
+        {markers.map((marker, index) => {
             const f = marker.y / totalHeight
             const distance = Math.abs(f - fraction)
             const width = active ? Math.max(6, 15 - distance * 200) : 7
@@ -101,7 +100,6 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
               </motion.div>
             ) : null}
           </AnimatePresence>
-        </div>
       </div>
     </div>
   )
