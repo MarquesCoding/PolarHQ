@@ -1,4 +1,43 @@
 {
   "actionFailed": "Action failed",
-  "generic": "Something went wrong"
+  "admin": {
+    "gdriveCodeExchangeFailed": "Google code exchange failed.",
+    "gdriveConnectFailed": "Failed to connect Google Drive.",
+    "gdriveNoRefreshToken": "Google did not return a refresh token (revoke prior access and retry).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET are not configured",
+    "invalidOauthState": "Invalid OAuth state."
+  },
+  "badRequest": "Bad request.",
+  "docs": {
+    "alreadyOwner": "Already the owner",
+    "emailRequired": "Email is required.",
+    "noPublicKey": "No public key.",
+    "userNotFound": "No such user"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "cannot delete a system folder",
+    "cannotLockFolder": "cannot lock this folder",
+    "cannotModifySystemFolder": "cannot modify a system folder",
+    "extractFailed": "could not extract archive",
+    "fileRequired": "file field is required",
+    "photosMediaFilesOnly": "The Photos folder only accepts media files",
+    "photosMediaOnly": "The Photos folder only accepts images, video, and audio"
+  },
+  "forbidden": "You don’t have permission to do that.",
+  "generic": "Something went wrong.",
+  "invalidInput": "Invalid input.",
+  "notFound": "Not found.",
+  "photos": {
+    "fileRequired": "A file is required.",
+    "stackNeedsTwoAssets": "Select at least two of your own photos to stack."
+  },
+  "rateLimited": "Too many requests. Please try again shortly.",
+  "setup": {
+    "alreadyComplete": "Setup has already been completed",
+    "registrationDisabled": "registration is disabled on this instance"
+  },
+  "unauthorized": "You need to sign in to do that.",
+  "uploads": {
+    "tooLarge": "File exceeds the {{limit}} upload limit"
+  }
 }

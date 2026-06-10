@@ -38,7 +38,7 @@ export interface CompleteSetupResult {
  */
 export const completeSetup = async (input: CompleteSetupInput): Promise<CompleteSetupResult> => {
   const settings = await getInstanceSettings()
-  if (settings.setupCompleted) throw new SetupError("Setup has already been completed")
+  if (settings.setupCompleted) throw new SetupError("setup.alreadyComplete")
 
   await seedSystemRoles()
 

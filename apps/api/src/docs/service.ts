@@ -196,7 +196,7 @@ export const addCollaborator = async (
   role: DocRole,
 ): Promise<CollaboratorView> => {
   const node = await getNode(ownerId, nodeId)
-  if (!node || !isOrbitDoc(node.mimeType)) throw new Error("not found")
+  if (!node || !isOrbitDoc(node.mimeType)) throw new Error("notFound")
   const target = (
     await db
       .select()
@@ -204,8 +204,8 @@ export const addCollaborator = async (
       .where(eq(schema.user.email, email.trim().toLowerCase()))
       .limit(1)
   )[0]
-  if (!target) throw new Error("no such user")
-  if (target.id === ownerId) throw new Error("already the owner")
+  if (!target) throw new Error("docs.userNotFound")
+  if (target.id === ownerId) throw new Error("docs.alreadyOwner")
   await db
     .insert(schema.collaborators)
     .values({ nodeId, ownerId, userId: target.id, role })

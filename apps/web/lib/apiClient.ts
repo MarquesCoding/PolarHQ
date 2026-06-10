@@ -2,10 +2,13 @@ import { API_URL } from "@lib/env"
 
 export class ApiError extends Error {
   readonly status: number
+  /** Optional interpolation values for the error key (the backend sends `errorParams`). */
+  readonly params?: Record<string, string | number>
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, params?: Record<string, string | number>) {
     super(message)
     this.status = status
+    this.params = params
   }
 }
 
@@ -22,11 +25,14 @@ export const apiFetch = async <T>(path: string, init?: RequestInit): Promise<T> 
 
   if (!response.ok) {
     const body = await response.json().catch(() => null)
+    const record = body && typeof body === "object" ? (body as Record<string, unknown>) : null
     const message =
-      body && typeof body === "object" && "error" in body
-        ? String((body as { error: unknown }).error)
-        : `Request failed (${response.status})`
-    throw new ApiError(response.status, message)
+      record && "error" in record ? String(record.error) : `Request failed (${response.status})`
+    const params =
+      record && record.errorParams && typeof record.errorParams === "object"
+        ? (record.errorParams as Record<string, string | number>)
+        : undefined
+    throw new ApiError(response.status, message, params)
   }
 
   return response.json() as Promise<T>

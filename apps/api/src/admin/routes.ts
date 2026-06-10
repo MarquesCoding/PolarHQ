@@ -50,7 +50,7 @@ adminRoutes.patch("/settings", guard("admin.registration.manage"), async (c) => 
       accentColor: z.string().nullable().optional(),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const settings = await adminService.updateSettings(parsed.data)
   await adminService.recordAudit({ actorId: c.get("userId"), action: "settings.update" })
   return c.json({ settings })
@@ -93,7 +93,7 @@ adminRoutes.patch("/backup/settings", guard("admin.backup.manage"), async (c) =>
       frequencyHours: z.number().int().positive().optional(),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const settings = await adminService.updateBackupSettings(parsed.data)
   await adminService.recordAudit({ actorId: c.get("userId"), action: "backup.settings" })
   return c.json({ settings })
@@ -116,7 +116,7 @@ adminRoutes.post("/backup/run", guard("admin.backup.manage"), async (c) => {
 
 adminRoutes.get("/backup/gdrive/auth", guard("admin.backup.manage"), (c) => {
   if (!config.google.clientId || !config.google.clientSecret) {
-    return c.json({ error: "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET are not configured" }, 400)
+    return c.json({ error: "admin.gdriveNotConfigured" }, 400)
   }
   const state = crypto.randomUUID()
   setCookie(c, "gdrive_oauth_state", state, {
@@ -133,13 +133,13 @@ adminRoutes.get("/backup/gdrive/callback", guard("admin.backup.manage"), async (
   const state = c.req.query("state")
   const saved = getCookie(c, "gdrive_oauth_state")
   deleteCookie(c, "gdrive_oauth_state", { path: "/" })
-  if (!code || !state || state !== saved) return c.json({ error: "invalid oauth state" }, 400)
+  if (!code || !state || state !== saved) return c.json({ error: "admin.invalidOauthState" }, 400)
   try {
     const refreshToken = await exchangeCodeForRefreshToken(code)
     await adminService.setGdriveRefreshToken(refreshToken)
     await adminService.recordAudit({ actorId: c.get("userId"), action: "backup.gdrive.connect" })
   } catch (error) {
-    return c.json({ error: error instanceof Error ? error.message : "Connect failed" }, 400)
+    return c.json({ error: error instanceof Error ? error.message : "admin.gdriveConnectFailed" }, 400)
   }
   return c.redirect(`${config.web.url}/admin/backup`)
 })
@@ -152,13 +152,13 @@ adminRoutes.post("/backup/gdrive/disconnect", guard("admin.backup.manage"), asyn
 
 adminRoutes.get("/users/:id", guard("admin.users.manage"), async (c) => {
   const detail = await adminService.getUserDetail(c.req.param("id"))
-  if (!detail) return c.json({ error: "not found" }, 404)
+  if (!detail) return c.json({ error: "notFound" }, 404)
   return c.json({ user: detail })
 })
 
 adminRoutes.post("/users/:id/ban", guard("admin.users.manage"), async (c) => {
   const parsed = await parse(c, z.object({ banned: z.boolean(), reason: z.string().optional() }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await adminService.setUserBanned(c.req.param("id"), parsed.data.banned, parsed.data.reason)
   await adminService.recordAudit({
     actorId: c.get("userId"),
@@ -171,7 +171,7 @@ adminRoutes.post("/users/:id/ban", guard("admin.users.manage"), async (c) => {
 
 adminRoutes.post("/users/:id/role", guard("admin.users.manage"), async (c) => {
   const parsed = await parse(c, z.object({ role: z.string().nullable() }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await adminService.setUserRole(c.req.param("id"), parsed.data.role)
   await adminService.recordAudit({
     actorId: c.get("userId"),
@@ -200,7 +200,7 @@ adminRoutes.post("/roles", guard("admin.roles.manage"), async (c) => {
       permissions: z.array(z.string()).default([]),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   return c.json({ role: await adminService.createRole(parsed.data) }, 201)
 })
 
@@ -214,7 +214,7 @@ adminRoutes.post("/role-assignments", guard("admin.roles.manage"), async (c) => 
       scopeValue: z.string().optional(),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const assignment = await adminService.assignRole(parsed.data)
   await adminService.recordAudit({
     actorId: c.get("userId"),
@@ -231,7 +231,7 @@ adminRoutes.delete("/role-assignments", guard("admin.roles.manage"), async (c) =
     c,
     z.object({ userId: z.string().min(1), roleId: z.string().min(1) }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await adminService.unassignRole(parsed.data.userId, parsed.data.roleId)
   await adminService.recordAudit({
     actorId: c.get("userId"),
@@ -249,7 +249,7 @@ adminRoutes.get("/groups", guard("admin.groups.manage"), async (c) => {
 
 adminRoutes.get("/groups/:id", guard("admin.groups.manage"), async (c) => {
   const detail = await adminService.getGroupDetail(c.req.param("id"))
-  if (!detail) return c.json({ error: "not found" }, 404)
+  if (!detail) return c.json({ error: "notFound" }, 404)
   return c.json({ group: detail })
 })
 
@@ -258,13 +258,13 @@ adminRoutes.post("/groups", guard("admin.groups.manage"), async (c) => {
     c,
     z.object({ name: z.string().min(1), description: z.string().optional() }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   return c.json({ group: await adminService.createGroup(parsed.data) }, 201)
 })
 
 adminRoutes.post("/groups/:id/members", guard("admin.groups.manage"), async (c) => {
   const parsed = await parse(c, z.object({ userId: z.string().min(1) }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await adminService.addGroupMember(c.req.param("id"), parsed.data.userId)
   return c.json({ ok: true }, 201)
 })
@@ -280,7 +280,7 @@ adminRoutes.get("/workgroups", guard("admin.workgroups.manage"), async (c) => {
 
 adminRoutes.get("/workgroups/:id", guard("admin.workgroups.manage"), async (c) => {
   const detail = await adminService.getWorkgroupDetail(c.req.param("id"))
-  if (!detail) return c.json({ error: "not found" }, 404)
+  if (!detail) return c.json({ error: "notFound" }, 404)
   return c.json({ workgroup: detail })
 })
 
@@ -289,7 +289,7 @@ adminRoutes.post("/workgroups", guard("admin.workgroups.manage"), async (c) => {
     c,
     z.object({ name: z.string().min(1), description: z.string().optional() }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const workgroup = await adminService.createWorkgroup(parsed.data)
   await adminService.recordAudit({
     actorId: c.get("userId"),
@@ -302,7 +302,7 @@ adminRoutes.post("/workgroups", guard("admin.workgroups.manage"), async (c) => {
 
 adminRoutes.post("/workgroups/:id/groups", guard("admin.workgroups.manage"), async (c) => {
   const parsed = await parse(c, z.object({ groupId: z.string().min(1) }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await adminService.addWorkgroupGroup(c.req.param("id"), parsed.data.groupId)
   return c.json({ ok: true }, 201)
 })
@@ -322,7 +322,7 @@ adminRoutes.put("/limits", guard("admin.limits.manage"), async (c) => {
       value: z.unknown(),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const limit = await adminService.setLimit(parsed.data)
   await adminService.recordAudit({
     actorId: c.get("userId"),
@@ -343,7 +343,7 @@ adminRoutes.delete("/limits", guard("admin.limits.manage"), async (c) => {
       key: z.string().min(1),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await adminService.clearLimit(parsed.data.subjectType, parsed.data.subjectId, parsed.data.key)
   await adminService.recordAudit({
     actorId: c.get("userId"),
@@ -364,7 +364,7 @@ adminRoutes.put("/apps/:appId", guard("admin.apps.manage"), async (c) => {
       enabled: z.boolean(),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const enablement = await adminService.setAppEnablement({
     appId: c.req.param("appId"),
     ...parsed.data,

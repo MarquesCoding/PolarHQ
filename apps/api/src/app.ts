@@ -109,7 +109,7 @@ app.route("/api/v1/setup", setupRoutes)
 app.post("/api/auth/sign-up/email", async (c, next) => {
   const settings = await getInstanceSettings()
   if (settings.setupCompleted && settings.registrationMode !== "open") {
-    return c.json({ error: "registration is disabled on this instance" }, 403)
+    return c.json({ error: "setup.registrationDisabled" }, 403)
   }
   await next()
 })

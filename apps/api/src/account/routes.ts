@@ -90,12 +90,12 @@ accountRoutes.get("/devices", async (c) => {
 
 accountRoutes.post("/devices/revoke", async (c) => {
   const body = (await c.req.json().catch(() => null)) as { id?: string } | null
-  if (!body?.id) return c.json({ error: "invalid input" }, 400)
+  if (!body?.id) return c.json({ error: "invalidInput" }, 400)
 
   const headers = c.req.raw.headers
   const sessions = await auth.api.listSessions({ headers })
   const target = sessions.find((session) => session.id === body.id)
-  if (!target) return c.json({ error: "not found" }, 404)
+  if (!target) return c.json({ error: "notFound" }, 404)
 
   await auth.api.revokeSession({ headers, body: { token: target.token } })
   return c.json({ ok: true })

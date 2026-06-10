@@ -87,7 +87,7 @@ docsRoutes.post("/documents", async (c) => {
       type: z.enum(["doc", "sheet", "board"]).optional(),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const userId = c.get("userId")
   const node = await createDoc(
     userId,
@@ -101,13 +101,13 @@ docsRoutes.post("/documents", async (c) => {
 docsRoutes.get("/documents/:id", async (c) => {
   const userId = c.get("userId")
   const result = await getDocForViewer(userId, c.req.param("id"))
-  if (!result) return c.json({ error: "not found" }, 404)
+  if (!result) return c.json({ error: "notFound" }, 404)
   return c.json({ document: serializeDoc(result.node, userId) })
 })
 
 docsRoutes.get("/documents/:id/content", async (c) => {
   const result = await getDocForViewer(c.get("userId"), c.req.param("id"))
-  if (!result) return c.json({ error: "not found" }, 404)
+  if (!result) return c.json({ error: "notFound" }, 404)
   return new Response(new Uint8Array(result.bytes), {
     headers: {
       "Content-Type": "application/octet-stream",
@@ -134,7 +134,7 @@ docsRoutes.post("/documents/:id/collaborators", async (c) => {
     c,
     z.object({ email: z.string().email(), role: z.enum(["editor", "viewer"]).default("editor") }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   try {
     const collaborator = await addCollaborator(
       c.get("userId"),
@@ -171,7 +171,7 @@ docsRoutes.post("/keys", async (c) => {
       wrappedMetaKey: z.string().nullish(),
     }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await setUserKeys(c.get("userId"), {
     publicKey: parsed.data.publicKey,
     wrappedPrivateKey: parsed.data.wrappedPrivateKey,
@@ -186,7 +186,7 @@ docsRoutes.post("/keys", async (c) => {
 
 docsRoutes.put("/keys/meta", async (c) => {
   const parsed = await parse(c, z.object({ wrappedMetaKey: z.string() }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await setMetaKey(c.get("userId"), parsed.data.wrappedMetaKey)
   return c.json({ ok: true })
 })
@@ -196,16 +196,16 @@ docsRoutes.put("/keys/kdf", async (c) => {
     c,
     z.object({ wrappedPrivateKey: z.string(), kdfSalt: z.string(), kdfParams: z.string() }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await updateKdf(c.get("userId"), parsed.data)
   return c.json({ ok: true })
 })
 
 docsRoutes.get("/keys/public", async (c) => {
   const email = c.req.query("email")
-  if (!email) return c.json({ error: "email required" }, 400)
+  if (!email) return c.json({ error: "docs.emailRequired" }, 400)
   const result = await getPublicKeyByEmail(email)
-  if (!result) return c.json({ error: "no public key" }, 404)
+  if (!result) return c.json({ error: "docs.noPublicKey" }, 404)
   return c.json(result)
 })
 
@@ -219,7 +219,7 @@ docsRoutes.post("/documents/:id/keys", async (c) => {
     c,
     z.object({ keys: z.array(z.object({ userId: z.string(), wrappedKey: z.string() })) }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   try {
     await setDocKeys(c.get("userId"), c.req.param("id"), parsed.data.keys)
     return c.json({ ok: true })
@@ -233,7 +233,7 @@ docsRoutes.post("/documents/:id/keys/rotate", async (c) => {
     c,
     z.object({ keys: z.array(z.object({ userId: z.string(), wrappedKey: z.string() })) }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   try {
     await replaceDocKeys(c.get("userId"), c.req.param("id"), parsed.data.keys)
     return c.json({ ok: true })
@@ -244,7 +244,7 @@ docsRoutes.post("/documents/:id/keys/rotate", async (c) => {
 
 docsRoutes.post("/documents/:id/self-key", async (c) => {
   const parsed = await parse(c, z.object({ wrappedKey: z.string() }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const userId = c.get("userId")
   try {
     await setDocKeys(userId, c.req.param("id"), [{ userId, wrappedKey: parsed.data.wrappedKey }])

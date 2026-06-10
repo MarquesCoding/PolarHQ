@@ -127,7 +127,7 @@ export const replaceDocKeys = async (
   nodeId: string,
   entries: { userId: string; wrappedKey: string }[],
 ): Promise<void> => {
-  if (!(await ownsKeyTarget(ownerId, nodeId))) throw new Error("not found")
+  if (!(await ownsKeyTarget(ownerId, nodeId))) throw new Error("notFound")
   await db.delete(schema.docKeys).where(eq(schema.docKeys.nodeId, nodeId))
   await setDocKeys(ownerId, nodeId, entries)
 }
@@ -138,7 +138,7 @@ export const setDocKeys = async (
   nodeId: string,
   entries: { userId: string; wrappedKey: string }[],
 ): Promise<void> => {
-  if (!(await ownsKeyTarget(ownerId, nodeId))) throw new Error("not found")
+  if (!(await ownsKeyTarget(ownerId, nodeId))) throw new Error("notFound")
   for (const entry of entries) {
     if (entry.userId !== ownerId) {
       const collab = (

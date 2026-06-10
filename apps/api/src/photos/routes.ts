@@ -75,7 +75,7 @@ photosRoutes.post("/assets", async (c) => {
   const form = await readUploadForm(c, c.get("userId"))
   if (form instanceof Response) return form
   const file = form.get("file")
-  if (!(file instanceof File)) return c.json({ error: "file field is required" }, 400)
+  if (!(file instanceof File)) return c.json({ error: "photos.fileRequired" }, 400)
 
   const bytes = Buffer.from(await file.arrayBuffer())
   const mtimeRaw = form.get("mtime")
@@ -154,9 +154,9 @@ photosRoutes.put("/assets/:id/embedding", async (c) => {
     c,
     z.object({ kind: z.string(), modelVersion: z.string(), vector: z.string() }),
   )
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const ok = await setEmbedding(c.get("userId"), c.req.param("id"), parsed.data)
-  if (!ok) return c.json({ error: "not found" }, 404)
+  if (!ok) return c.json({ error: "notFound" }, 404)
   return c.json({ ok: true })
 })
 
@@ -181,9 +181,9 @@ photosRoutes.get("/locations/missing", async (c) => {
 
 photosRoutes.put("/assets/:id/location", async (c) => {
   const parsed = await parse(c, z.object({ encryptedLocation: z.string() }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const ok = await setEncryptedLocation(c.get("userId"), c.req.param("id"), parsed.data.encryptedLocation)
-  if (!ok) return c.json({ error: "not found" }, 404)
+  if (!ok) return c.json({ error: "notFound" }, 404)
   return c.json({ ok: true })
 })
 
@@ -193,7 +193,7 @@ photosRoutes.get("/assets/processing", async (c) => {
 
 photosRoutes.post("/assets/actions/favorite", async (c) => {
   const parsed = await parse(c, assetIdsSchema.extend({ favorite: z.boolean() }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await setFavorite(c.get("userId"), parsed.data.assetIds, parsed.data.favorite)
   await notify(c.get("userId"))
   return c.json({ ok: true })
@@ -201,7 +201,7 @@ photosRoutes.post("/assets/actions/favorite", async (c) => {
 
 photosRoutes.post("/assets/actions/trash", async (c) => {
   const parsed = await parse(c, assetIdsSchema)
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await trashAssets(c.get("userId"), parsed.data.assetIds)
   await notify(c.get("userId"))
   return c.json({ ok: true })
@@ -209,7 +209,7 @@ photosRoutes.post("/assets/actions/trash", async (c) => {
 
 photosRoutes.post("/assets/actions/restore", async (c) => {
   const parsed = await parse(c, assetIdsSchema)
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await restoreAssets(c.get("userId"), parsed.data.assetIds)
   await notify(c.get("userId"))
   return c.json({ ok: true })
@@ -217,7 +217,7 @@ photosRoutes.post("/assets/actions/restore", async (c) => {
 
 photosRoutes.post("/assets/actions/delete", async (c) => {
   const parsed = await parse(c, assetIdsSchema)
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await purgeAssets(c.get("userId"), parsed.data.assetIds)
   await notify(c.get("userId"))
   return c.json({ ok: true })
@@ -231,16 +231,16 @@ photosRoutes.post("/assets/actions/empty-trash", async (c) => {
 
 photosRoutes.post("/assets/actions/stack", async (c) => {
   const parsed = await parse(c, z.object({ assetIds: z.array(z.string()).min(2) }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const result = await stackAssets(c.get("userId"), parsed.data.assetIds)
-  if (!result) return c.json({ error: "need at least two owned assets" }, 400)
+  if (!result) return c.json({ error: "photos.stackNeedsTwoAssets" }, 400)
   await notify(c.get("userId"))
   return c.json(result)
 })
 
 photosRoutes.post("/assets/actions/unstack", async (c) => {
   const parsed = await parse(c, z.object({ stackId: z.string().min(1) }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await unstackAssets(c.get("userId"), parsed.data.stackId)
   await notify(c.get("userId"))
   return c.json({ ok: true })
@@ -248,7 +248,7 @@ photosRoutes.post("/assets/actions/unstack", async (c) => {
 
 photosRoutes.post("/assets/actions/stack-cover", async (c) => {
   const parsed = await parse(c, z.object({ assetId: z.string().min(1) }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await setStackCover(c.get("userId"), parsed.data.assetId)
   await notify(c.get("userId"))
   return c.json({ ok: true })
@@ -275,7 +275,7 @@ photosRoutes.post("/assets/:id/share", async (c) => {
     expiresAt,
     maxDownloads: options.maxDownloads ?? null,
   })
-  if (!share) return c.json({ error: "not found" }, 404)
+  if (!share) return c.json({ error: "notFound" }, 404)
   return c.json({
     token: share.token,
     url: `${config.api.url}/s/${share.token}`,
@@ -287,7 +287,7 @@ photosRoutes.post("/assets/:id/share", async (c) => {
 
 photosRoutes.get("/assets/:id", async (c) => {
   const asset = await getAsset(c.get("userId"), c.req.param("id"))
-  if (!asset) return c.json({ error: "not found" }, 404)
+  if (!asset) return c.json({ error: "notFound" }, 404)
   return c.json({ asset: await serializeAsset(asset) })
 })
 
@@ -330,13 +330,13 @@ const uniqueName = (filename: string, used: Set<string>): string => {
 
 photosRoutes.get("/assets/:id/original", async (c) => {
   const asset = await getAsset(c.get("userId"), c.req.param("id"))
-  if (!asset) return c.json({ error: "not found" }, 404)
+  if (!asset) return c.json({ error: "notFound" }, 404)
   return streamObject(asset.storageKey, asset.mimeType)
 })
 
 photosRoutes.get("/assets/:id/download", async (c) => {
   const asset = await getAsset(c.get("userId"), c.req.param("id"))
-  if (!asset) return c.json({ error: "not found" }, 404)
+  if (!asset) return c.json({ error: "notFound" }, 404)
   const nodeStream = await storage().getStream(asset.storageKey)
   return new Response(Readable.toWeb(nodeStream) as ReadableStream, {
     headers: {
@@ -348,12 +348,12 @@ photosRoutes.get("/assets/:id/download", async (c) => {
 
 photosRoutes.post("/assets/actions/download", async (c) => {
   const parsed = await parse(c, assetIdsSchema)
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const userId = c.get("userId")
   const assets = (
     await Promise.all(parsed.data.assetIds.map((id) => getAsset(userId, id)))
   ).filter((asset): asset is NonNullable<typeof asset> => Boolean(asset))
-  if (assets.length === 0) return c.json({ error: "not found" }, 404)
+  if (assets.length === 0) return c.json({ error: "notFound" }, 404)
 
   const archive = createArchive("zip", { store: true })
   archive.on("error", (error: Error) => {
@@ -380,40 +380,40 @@ photosRoutes.post("/assets/actions/download", async (c) => {
 
 photosRoutes.get("/assets/:id/thumbnail", async (c) => {
   const asset = await getAsset(c.get("userId"), c.req.param("id"))
-  if (!asset?.thumbnailKey) return c.json({ error: "not found" }, 404)
+  if (!asset?.thumbnailKey) return c.json({ error: "notFound" }, 404)
   return streamObject(asset.thumbnailKey, "image/webp")
 })
 
 photosRoutes.put("/assets/:id/thumbnail", async (c) => {
   const bytes = Buffer.from(await c.req.arrayBuffer())
   const ok = await setEncryptedThumbnail(c.get("userId"), c.req.param("id"), bytes)
-  if (!ok) return c.json({ error: "not found" }, 404)
+  if (!ok) return c.json({ error: "notFound" }, 404)
   await notify(c.get("userId"))
   return c.json({ ok: true })
 })
 
 photosRoutes.get("/assets/:id/motion", async (c) => {
   const asset = await getAsset(c.get("userId"), c.req.param("id"))
-  if (!asset?.motionKey) return c.json({ error: "not found" }, 404)
+  if (!asset?.motionKey) return c.json({ error: "notFound" }, 404)
   return streamObject(asset.motionKey, "application/octet-stream")
 })
 
 photosRoutes.put("/assets/:id/motion", async (c) => {
   const bytes = Buffer.from(await c.req.arrayBuffer())
   const ok = await setMotionVideo(c.get("userId"), c.req.param("id"), bytes)
-  if (!ok) return c.json({ error: "not found" }, 404)
+  if (!ok) return c.json({ error: "notFound" }, 404)
   return c.json({ ok: true })
 })
 
 photosRoutes.get("/assets/:id/preview", async (c) => {
   const asset = await getAsset(c.get("userId"), c.req.param("id"))
-  if (!asset?.previewKey) return c.json({ error: "not found" }, 404)
+  if (!asset?.previewKey) return c.json({ error: "notFound" }, 404)
   return streamObject(asset.previewKey, "image/webp")
 })
 
 photosRoutes.get("/assets/:id/video", async (c) => {
   const asset = await getAsset(c.get("userId"), c.req.param("id"))
-  if (!asset || asset.type !== "video") return c.json({ error: "not found" }, 404)
+  if (!asset || asset.type !== "video") return c.json({ error: "notFound" }, 404)
   const playbackKey = assetObjectKeys(asset.ownerId, asset.id, "").video
   const stream = await storage()
     .getStream(playbackKey)
@@ -429,7 +429,7 @@ photosRoutes.get("/assets/:id/video", async (c) => {
 
 photosRoutes.delete("/assets/:id", async (c) => {
   const ok = await trashAsset(c.get("userId"), c.req.param("id"))
-  if (!ok) return c.json({ error: "not found" }, 404)
+  if (!ok) return c.json({ error: "notFound" }, 404)
   await notify(c.get("userId"))
   return c.json({ ok: true })
 })
@@ -440,14 +440,14 @@ photosRoutes.get("/albums", async (c) => {
 
 photosRoutes.post("/albums", async (c) => {
   const parsed = await parse(c, z.object({ name: z.string().min(1), description: z.string().optional() }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const album = await albums.createAlbum(c.get("userId"), parsed.data.name, parsed.data.description)
   return c.json({ album }, 201)
 })
 
 photosRoutes.get("/albums/:id", async (c) => {
   const result = await albums.getAlbumWithAssets(c.get("userId"), c.req.param("id"))
-  if (!result) return c.json({ error: "not found" }, 404)
+  if (!result) return c.json({ error: "notFound" }, 404)
   return c.json({ album: result.album, assets: serializeGridAssets(result.assets) })
 })
 
@@ -458,14 +458,14 @@ photosRoutes.delete("/albums/:id", async (c) => {
 
 photosRoutes.post("/albums/:id/assets", async (c) => {
   const parsed = await parse(c, assetIdsSchema)
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await albums.addAssetsToAlbum(c.get("userId"), c.req.param("id"), parsed.data.assetIds)
   return c.json({ ok: true })
 })
 
 photosRoutes.delete("/albums/:id/assets", async (c) => {
   const parsed = await parse(c, assetIdsSchema)
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await albums.removeAssetsFromAlbum(c.get("userId"), c.req.param("id"), parsed.data.assetIds)
   return c.json({ ok: true })
 })
@@ -476,7 +476,7 @@ photosRoutes.get("/tags", async (c) => {
 
 photosRoutes.post("/tags", async (c) => {
   const parsed = await parse(c, z.object({ name: z.string().min(1) }))
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   const tag = await tags.createTag(c.get("userId"), parsed.data.name)
   return c.json({ tag }, 201)
 })
@@ -488,14 +488,14 @@ photosRoutes.delete("/tags/:id", async (c) => {
 
 photosRoutes.post("/tags/:id/assets", async (c) => {
   const parsed = await parse(c, assetIdsSchema)
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await tags.tagAssets(c.get("userId"), c.req.param("id"), parsed.data.assetIds)
   return c.json({ ok: true })
 })
 
 photosRoutes.delete("/tags/:id/assets", async (c) => {
   const parsed = await parse(c, assetIdsSchema)
-  if (!parsed.success) return c.json({ error: "invalid input" }, 400)
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   await tags.untagAssets(c.get("userId"), c.req.param("id"), parsed.data.assetIds)
   return c.json({ ok: true })
 })
