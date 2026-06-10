@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Meine Ablage"
+  },
+  "browser": {
+    "archive": "Archiv",
+    "archiveExtracted": "Archiv extrahiert",
+    "archiveLabel_one": "Archiv ({{count}} Element)",
+    "archiveLabel_other": "Archiv ({{count}} Elemente)",
+    "copyCreated": "Kopie erstellt",
+    "couldNotCopy": "Kopieren nicht möglich",
+    "couldNotCreate": "Erstellen nicht möglich",
+    "couldNotDelete": "Löschen nicht möglich",
+    "couldNotExtract": "Extrahieren nicht möglich",
+    "couldNotMove": "Verschieben nicht möglich",
+    "couldNotOpenFile": "Diese Datei konnte nicht geöffnet werden",
+    "download": "Herunterladen",
+    "dragOrUpload": "Dateien hierher ziehen oder „Hochladen“ verwenden.",
+    "extract": "Extrahieren",
+    "linkCopied": "Link kopiert",
+    "move": "Verschieben",
+    "movedToFolder_one": "{{count}} Element nach {{name}} verschoben",
+    "movedToFolder_other": "{{count}} Elemente nach {{name}} verschoben",
+    "movedToTrash": "In den Papierkorb verschoben",
+    "noMatches": "Keine Treffer für deine Suche.",
+    "open": "Öffnen",
+    "opening": "Wird geöffnet…",
+    "rename": "Umbenennen",
+    "share": "Teilen",
+    "trash": "Papierkorb"
+  },
+  "detailsPanel": {
+    "closeDetails": "Details schließen",
+    "created": "Erstellt",
+    "empty": "Wähle ein Element aus, um seine Details zu sehen.",
+    "file": "Datei",
+    "files": "Dateien",
+    "folder": "Ordner",
+    "folders": "Ordner",
+    "itemsSelected_one": "{{count}} Element ausgewählt",
+    "itemsSelected_other": "{{count}} Elemente ausgewählt",
+    "modified": "Geändert",
+    "size": "Größe",
+    "title": "Details",
+    "totalSize": "Gesamtgröße",
+    "type": "Typ"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Neues Dokument",
+    "newFolder": "Neuer Ordner",
+    "newSpreadsheet": "Neue Tabelle",
+    "uploadFiles": "Dateien hochladen"
+  },
+  "driveNav": {
+    "drive": "Ablage",
+    "location": "Speicherort",
+    "myDrive": "Meine Ablage",
+    "trash": "Papierkorb"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Erstellen nicht möglich",
+    "emptyTrash": "Papierkorb leeren",
+    "emptyTrashConfirm": "Papierkorb leeren?",
+    "new": "Neu",
+    "newDocument": "Neues Dokument",
+    "newFolder": "Neuer Ordner",
+    "newSpreadsheet": "Neue Tabelle",
+    "toggleDetails": "Details ein-/ausblenden",
+    "trashEmptied": "Papierkorb geleert",
+    "uploadFiles": "Dateien hochladen"
+  },
+  "folderLockDialog": {
+    "cancel": "Abbrechen",
+    "confirmPasswordPlaceholder": "Passwort bestätigen",
+    "folderLocked": "Ordner gesperrt",
+    "folderPasswordPlaceholder": "Ordnerpasswort",
+    "incorrectPassword": "Falsches Passwort.",
+    "lock": "Sperren",
+    "lockDescription": "Lege ein Passwort fest, um diesen Ordner zu öffnen. Es schützt den Zugriff auf diesem Gerät – deine Dateien bleiben ohnehin Ende-zu-Ende-verschlüsselt.",
+    "lockFolderTitle": "Ordner sperren",
+    "lockRemoved": "Sperre entfernt",
+    "passwordsDontMatch": "Die Passwörter stimmen nicht überein.",
+    "removeDescription": "Gib das Ordnerpasswort ein, um die Sperre zu entfernen.",
+    "removeLock": "Sperre entfernen",
+    "removeLockTitle": "Sperre entfernen",
+    "somethingWentWrong": "Etwas ist schiefgelaufen."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Gib das Passwort ein, um den Inhalt anzuzeigen.",
+    "incorrectPassword": "Falsches Passwort.",
+    "locked": "„{{name}}“ ist gesperrt",
+    "passwordPlaceholder": "Ordnerpasswort",
+    "unlock": "Entsperren"
+  },
+  "imageViewer": {
+    "close": "Schließen",
+    "download": "Herunterladen",
+    "resetZoom": "Zoom zurücksetzen",
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern"
+  },
+  "modelViewer": {
+    "autoRotate": "Automatisch drehen",
+    "close": "Schließen",
+    "decryptError": "Modell konnte nicht entschlüsselt werden",
+    "loading": "Modell wird geladen…",
+    "normals": "Normalen",
+    "openError": "Diese 3D-Datei konnte nicht geöffnet werden.",
+    "shaded": "Schattiert",
+    "toggleGrid": "Raster ein-/ausblenden",
+    "toggleTextures": "Texturen ein-/ausblenden",
+    "wireframe": "Drahtgitter"
+  },
+  "moveDialog": {
+    "cancel": "Abbrechen",
+    "move": "Verschieben",
+    "moveFailed": "Verschieben nicht möglich",
+    "moved": "Verschoben",
+    "myDrive": "Meine Ablage",
+    "title": "In Ordner verschieben"
+  },
+  "newFolderDialog": {
+    "cancel": "Abbrechen",
+    "create": "Erstellen",
+    "createError": "Ordner konnte nicht erstellt werden",
+    "created": "Ordner erstellt",
+    "newFolder": "Neuer Ordner",
+    "placeholder": "Ordnername",
+    "title": "Neuer Ordner"
+  },
+  "nodeCard": {
+    "deselect": "Auswahl aufheben",
+    "folder": "Ordner",
+    "select": "Auswählen"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Link kopieren",
+    "details": "Details",
+    "download": "Herunterladen",
+    "extractHere": "Hier extrahieren",
+    "lockFolder": "Ordner sperren",
+    "makeCopy": "Kopie erstellen",
+    "moveToFolder": "In Ordner verschieben",
+    "moveToTrash": "In den Papierkorb verschieben",
+    "open": "Öffnen",
+    "openInPhotos": "In Fotos öffnen",
+    "removeLock": "Sperre entfernen",
+    "rename": "Umbenennen",
+    "share": "Teilen",
+    "versionHistory": "Versionsverlauf anzeigen",
+    "view": "Ansehen",
+    "viewIn3d": "In 3D ansehen"
+  },
+  "nodeTable": {
+    "deselect": "Auswahl aufheben",
+    "modified": "Geändert",
+    "name": "Name",
+    "select": "Auswählen",
+    "selectAll": "Alle auswählen",
+    "size": "Größe"
+  },
+  "parentCard": {
+    "parentFolder": "Übergeordneter Ordner"
+  },
+  "renameDialog": {
+    "cancel": "Abbrechen",
+    "couldNotRename": "Umbenennen nicht möglich",
+    "renamed": "Umbenannt",
+    "save": "Speichern",
+    "title": "Umbenennen"
+  },
+  "shell": {
+    "search": "Ablage durchsuchen"
+  },
+  "trash": {
+    "actionFailed": "Aktion fehlgeschlagen",
+    "deleteForever": "Endgültig löschen",
+    "empty": "Der Papierkorb ist leer.",
+    "permanentlyDeleted": "Endgültig gelöscht",
+    "restore": "Wiederherstellen",
+    "restored": "Wiederhergestellt",
+    "retentionNotice": "Elemente hier werden 30 Tage nach dem Löschen endgültig entfernt.",
+    "title": "Papierkorb"
+  },
+  "versionHistoryDialog": {
+    "close": "Schließen",
+    "download": "Version herunterladen",
+    "empty": "Keine vorherigen Versionen. Lade eine Datei mit demselben Namen erneut hoch, um eine zu erstellen.",
+    "loading": "Wird geladen…",
+    "restore": "Wiederherstellen",
+    "restoreFailed": "Wiederherstellen nicht möglich",
+    "restored": "Version wiederhergestellt",
+    "title": "Versionsverlauf",
+    "versionLabel": "Version {{number}}"
+  }
+}

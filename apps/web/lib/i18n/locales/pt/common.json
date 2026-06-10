@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "Voltar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "confirm": "Confirmar",
+    "create": "Criar",
+    "delete": "Eliminar",
+    "done": "Concluído",
+    "download": "Transferir",
+    "getStarted": "Começar",
+    "next": "Seguinte",
+    "open": "Abrir",
+    "remove": "Remover",
+    "rename": "Mudar o nome",
+    "retry": "Tentar novamente",
+    "save": "Guardar",
+    "share": "Partilhar",
+    "signOut": "Terminar sessão"
+  },
+  "appTile": {
+    "beta": "Beta",
+    "soon": "Em breve"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · compilação {{build}}",
+    "whatsNew": "Novidades"
+  },
+  "collabHeader": {
+    "anonymous": "Anónimo",
+    "notSavedYet": "Ainda não guardado",
+    "save": "Guardar",
+    "savedAt": "Guardado {{time}}",
+    "saving": "A guardar…",
+    "share": "Partilhar",
+    "title": "Título"
+  },
+  "confirmButton": {
+    "confirm": "Confirmar"
+  },
+  "devicesDialog": {
+    "activeNow": "Ativo agora",
+    "lastActive": "Última atividade {{time}}",
+    "signOut": "Terminar sessão",
+    "signOutError": "Não foi possível terminar a sessão nesse dispositivo",
+    "signedOut": "Sessão do dispositivo terminada",
+    "thisDevice": "Este dispositivo",
+    "title": "Dispositivos e sessões"
+  },
+  "dropZone": {
+    "dropToUpload": "Largue para carregar"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Todas as alterações que faz são guardadas automaticamente e em segurança no Drive.",
+    "encrypted": "Encriptado",
+    "endToEndEncrypted": "Encriptado de ponta a ponta"
+  },
+  "flatSidebar": {
+    "account": "Conta",
+    "apps": "Aplicações",
+    "beta": "Beta",
+    "devices": "Dispositivos",
+    "personalWorkspace": "Espaço de trabalho pessoal",
+    "replayIntro": "Rever introdução",
+    "settings": "Definições",
+    "signOut": "Terminar sessão",
+    "storage": "Armazenamento",
+    "toggleDarkMode": "Alternar modo escuro",
+    "unlimited": "Ilimitado"
+  },
+  "importButton": {
+    "import": "Importar",
+    "importFailed": "Não foi possível importar este ficheiro"
+  },
+  "launcher": {
+    "loadingApps": "A carregar aplicações…",
+    "ofQuota": "de {{quota}}",
+    "signOut": "Terminar sessão",
+    "storage": "Armazenamento",
+    "versionBuild": "v{{version}} · compilação {{build}}",
+    "yourApps": "As suas aplicações"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Já o guardei — continuar",
+    "copied": "Código de recuperação copiado",
+    "copyAriaLabel": "Copiar código de recuperação",
+    "description": "A sua conta está agora encriptada de ponta a ponta. Este código de recuperação é a única forma de recuperar os seus dados se esquecer a palavra-passe — guarde-o num local seguro. Não o poderemos mostrar novamente.",
+    "title": "Guarde o seu código de recuperação"
+  },
+  "selectionBar": {
+    "clearSelection": "Limpar seleção",
+    "download": "Transferir",
+    "downloadAllFrames": "Transferir todos os fotogramas ({{count}})",
+    "downloadCover": "Transferir capa",
+    "downloadCovers": "Transferir capas ({{count}})",
+    "photoFilename": "Foto",
+    "photosZipFilename": "{{count}} fotos.zip",
+    "share": "Partilhar",
+    "shareNameFallback": "foto"
+  },
+  "shareDialog": {
+    "cancel": "Cancelar",
+    "copyLink": "Copiar ligação",
+    "descriptionEncrypted": "Encriptado de ponta a ponta: a chave vive na ligação e nunca chega ao servidor, por isso só quem tiver a ligação a consegue desencriptar.",
+    "descriptionPublic": "Qualquer pessoa com esta ligação pode transferir o ficheiro.",
+    "directDownload": "Transferência direta",
+    "directDownloadHint": "Ignorar a página de destino e transferir imediatamente",
+    "expiresAfter": "Expira após",
+    "expiry1Day": "1 dia",
+    "expiry1Hour": "1 hora",
+    "expiry30Days": "30 dias",
+    "expiry7Days": "7 dias",
+    "generatingLink": "A gerar ligação…",
+    "limitDownloads": "Limitar transferências",
+    "limitDownloadsHint": "Desativar a ligação após um número de transferências",
+    "linkCopied": "Ligação copiada",
+    "maximumDownloads": "Transferências máximas",
+    "permanentLink": "Ligação permanente",
+    "permanentLinkHint": "Manter esta ligação ativa até a eliminar",
+    "title": "Partilhar “{{name}}”"
+  },
+  "state": {
+    "empty": "Ainda não há nada aqui",
+    "error": "Algo correu mal",
+    "loading": "A carregar…",
+    "saving": "A guardar…"
+  },
+  "units": {
+    "items_one": "{{count}} item",
+    "items_other": "{{count}} itens"
+  },
+  "uploadManager": {
+    "archiveFailed": "Falha ao arquivar",
+    "downloadFailed": "Falha na transferência",
+    "taskFailed": "Falhou",
+    "unsupportedFileType": "Tipo de ficheiro não suportado",
+    "unsupportedFileTypeToast": "{{name}} é um tipo de ficheiro não suportado"
+  },
+  "uploadPanel": {
+    "activity": "Atividade",
+    "alreadyInLibrary": "Já está na biblioteca",
+    "archiving": "A arquivar…",
+    "archivingItems_one": "A arquivar {{count}} item",
+    "archivingItems_other": "A arquivar {{count}} itens",
+    "archivingProgress": "A arquivar {{loaded}} de {{size}}",
+    "bytesProgress": "{{loaded}} de {{size}}",
+    "clear": "Limpar",
+    "collapse": "Recolher",
+    "compressing": "A comprimir…",
+    "dismiss": "Dispensar",
+    "done": "Concluído",
+    "downloadFailed": "Falha na transferência",
+    "downloaded": "Transferido",
+    "downloading": "A transferir…",
+    "downloadingItems_one": "A transferir {{count}} item",
+    "downloadingItems_other": "A transferir {{count}} itens",
+    "expand": "Expandir",
+    "failed": "Falhou",
+    "processing": "A processar…",
+    "processingItems_one": "A processar {{count}} item",
+    "processingItems_other": "A processar {{count}} itens",
+    "speed": "{{speed}}/s",
+    "transcoding": "A transcodificar…",
+    "uploading": "A carregar…",
+    "uploadingItems_one": "A carregar {{count}} item",
+    "uploadingItems_other": "A carregar {{count}} itens"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} já na sua biblioteca",
+    "alreadyInLibrary_other": "{{count}} já na sua biblioteca",
+    "uploadFailed": "Falha ao carregar {{name}}",
+    "uploaded_one": "{{count}} foto carregada",
+    "uploaded_other": "{{count}} fotos carregadas"
+  },
+  "viewToggle": {
+    "gridView": "Vista de grelha",
+    "tableView": "Vista de tabela"
+  }
+}

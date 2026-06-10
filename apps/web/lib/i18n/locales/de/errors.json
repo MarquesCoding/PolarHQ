@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "Aktion fehlgeschlagen",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Austausch des Google-Codes fehlgeschlagen.",
+    "gdriveConnectFailed": "Verbindung mit Google Drive fehlgeschlagen.",
+    "gdriveNoRefreshToken": "Google hat kein Aktualisierungstoken zurückgegeben (vorherigen Zugriff widerrufen und erneut versuchen).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET sind nicht konfiguriert",
+    "invalidOauthState": "Ungültiger OAuth-Status."
+  },
+  "badRequest": "Ungültige Anfrage.",
+  "docs": {
+    "alreadyOwner": "Bereits Eigentümer",
+    "emailRequired": "E-Mail-Adresse ist erforderlich.",
+    "noPublicKey": "Kein öffentlicher Schlüssel.",
+    "userNotFound": "Benutzer nicht gefunden"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "Ein Systemordner kann nicht gelöscht werden",
+    "cannotLockFolder": "Dieser Ordner kann nicht gesperrt werden",
+    "cannotModifySystemFolder": "Ein Systemordner kann nicht geändert werden",
+    "extractFailed": "Archiv konnte nicht entpackt werden",
+    "fileRequired": "Das Feld „file“ ist erforderlich",
+    "photosMediaFilesOnly": "Der Fotos-Ordner akzeptiert nur Mediendateien",
+    "photosMediaOnly": "Der Fotos-Ordner akzeptiert nur Bilder, Videos und Audiodateien"
+  },
+  "forbidden": "Dazu hast du keine Berechtigung.",
+  "generic": "Etwas ist schiefgelaufen.",
+  "invalidInput": "Ungültige Eingabe.",
+  "notFound": "Nicht gefunden.",
+  "photos": {
+    "fileRequired": "Eine Datei ist erforderlich.",
+    "stackNeedsTwoAssets": "Wähle mindestens zwei eigene Fotos aus, um sie zu stapeln."
+  },
+  "rateLimited": "Zu viele Anfragen. Bitte versuche es in Kürze erneut.",
+  "setup": {
+    "alreadyComplete": "Die Einrichtung wurde bereits abgeschlossen",
+    "registrationDisabled": "Die Registrierung ist auf dieser Instanz deaktiviert"
+  },
+  "unauthorized": "Du musst dich anmelden, um das zu tun.",
+  "uploads": {
+    "tooLarge": "Die Datei überschreitet das Upload-Limit von {{limit}}"
+  }
+}

@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 Elemente",
+    "albumName": "Italien '24",
+    "albumsBody": "Fasse Fotos in Alben zusammen und teile dann einen privaten Link – zum Ansehen ist kein Konto erforderlich.",
+    "albumsTitle": "Alben & teilbare Links.",
+    "back": "Zurück",
+    "dismiss": "Schließen",
+    "getStarted": "Los geht's",
+    "linkCopied": "Link kopiert",
+    "next": "Weiter",
+    "privateBody": "Jedes Foto, Dokument und jede Datei ist Ende-zu-Ende-verschlüsselt. Nur du besitzt die Schlüssel – der Server sieht ausschließlich verschlüsselte Daten.",
+    "privateTitle": "Standardmäßig privat.",
+    "share": "Teilen",
+    "uploadBody": "Ziehe Fotos einfach irgendwohin, um sie hochzuladen. Live Photos werden zusammengeführt und Serienaufnahmen automatisch zu einem aufklappbaren Stapel zusammengefasst.",
+    "uploadTitle": "Einfach hineinziehen."
+  }
+}

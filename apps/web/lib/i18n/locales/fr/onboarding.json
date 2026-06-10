@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 éléments",
+    "albumName": "Italie '24",
+    "albumsBody": "Regroupez vos photos dans des albums, puis partagez un lien privé — aucun compte requis pour les consulter.",
+    "albumsTitle": "Albums et liens partageables.",
+    "back": "Retour",
+    "dismiss": "Ignorer",
+    "getStarted": "Commencer",
+    "linkCopied": "Lien copié",
+    "next": "Suivant",
+    "privateBody": "Chaque photo, document et fichier est chiffré de bout en bout. Vous seul détenez les clés — le serveur ne voit jamais que du texte chiffré.",
+    "privateTitle": "Privé par défaut.",
+    "share": "Partager",
+    "uploadBody": "Glissez vos photos n'importe où pour les importer. Les Live Photos s'associent et les rafales se regroupent automatiquement en une pile dépliable.",
+    "uploadTitle": "Déposez-les, tout simplement."
+  }
+}

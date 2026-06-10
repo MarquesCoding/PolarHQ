@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "La acción ha fallado",
+  "admin": {
+    "gdriveCodeExchangeFailed": "El intercambio del código de Google ha fallado.",
+    "gdriveConnectFailed": "No se ha podido conectar Google Drive.",
+    "gdriveNoRefreshToken": "Google no ha devuelto un token de actualización (revoca el acceso anterior y vuelve a intentarlo).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET no están configurados",
+    "invalidOauthState": "Estado de OAuth no válido."
+  },
+  "badRequest": "Solicitud incorrecta.",
+  "docs": {
+    "alreadyOwner": "Ya es el propietario",
+    "emailRequired": "El correo electrónico es obligatorio.",
+    "noPublicKey": "No hay clave pública.",
+    "userNotFound": "No existe ese usuario"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "no se puede eliminar una carpeta del sistema",
+    "cannotLockFolder": "no se puede bloquear esta carpeta",
+    "cannotModifySystemFolder": "no se puede modificar una carpeta del sistema",
+    "extractFailed": "no se ha podido extraer el archivo comprimido",
+    "fileRequired": "el campo de archivo es obligatorio",
+    "photosMediaFilesOnly": "La carpeta Fotos solo admite archivos multimedia",
+    "photosMediaOnly": "La carpeta Fotos solo admite imágenes, vídeo y audio"
+  },
+  "forbidden": "No tienes permiso para hacer eso.",
+  "generic": "Algo ha salido mal.",
+  "invalidInput": "Entrada no válida.",
+  "notFound": "No encontrado.",
+  "photos": {
+    "fileRequired": "Se requiere un archivo.",
+    "stackNeedsTwoAssets": "Selecciona al menos dos fotos tuyas para apilarlas."
+  },
+  "rateLimited": "Demasiadas solicitudes. Inténtalo de nuevo en breve.",
+  "setup": {
+    "alreadyComplete": "La configuración ya se ha completado",
+    "registrationDisabled": "el registro está deshabilitado en esta instancia"
+  },
+  "unauthorized": "Tienes que iniciar sesión para hacer eso.",
+  "uploads": {
+    "tooLarge": "El archivo supera el límite de subida de {{limit}}"
+  }
+}

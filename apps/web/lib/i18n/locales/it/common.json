@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "Indietro",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "confirm": "Conferma",
+    "create": "Crea",
+    "delete": "Elimina",
+    "done": "Fatto",
+    "download": "Scarica",
+    "getStarted": "Inizia",
+    "next": "Avanti",
+    "open": "Apri",
+    "remove": "Rimuovi",
+    "rename": "Rinomina",
+    "retry": "Riprova",
+    "save": "Salva",
+    "share": "Condividi",
+    "signOut": "Esci"
+  },
+  "appTile": {
+    "beta": "Beta",
+    "soon": "Presto"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · build {{build}}",
+    "whatsNew": "Novità"
+  },
+  "collabHeader": {
+    "anonymous": "Anonimo",
+    "notSavedYet": "Non ancora salvato",
+    "save": "Salva",
+    "savedAt": "Salvato {{time}}",
+    "saving": "Salvataggio…",
+    "share": "Condividi",
+    "title": "Titolo"
+  },
+  "confirmButton": {
+    "confirm": "Conferma"
+  },
+  "devicesDialog": {
+    "activeNow": "Attivo ora",
+    "lastActive": "Ultima attività {{time}}",
+    "signOut": "Esci",
+    "signOutError": "Impossibile disconnettere quel dispositivo",
+    "signedOut": "Dispositivo disconnesso",
+    "thisDevice": "Questo dispositivo",
+    "title": "Dispositivi e sessioni"
+  },
+  "dropZone": {
+    "dropToUpload": "Rilascia per caricare"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Ogni modifica viene salvata automaticamente e in modo sicuro su Drive.",
+    "encrypted": "Crittografato",
+    "endToEndEncrypted": "Crittografia end-to-end"
+  },
+  "flatSidebar": {
+    "account": "Account",
+    "apps": "App",
+    "beta": "Beta",
+    "devices": "Dispositivi",
+    "personalWorkspace": "Spazio personale",
+    "replayIntro": "Rivedi l'introduzione",
+    "settings": "Impostazioni",
+    "signOut": "Esci",
+    "storage": "Spazio di archiviazione",
+    "toggleDarkMode": "Attiva/disattiva modalità scura",
+    "unlimited": "Illimitato"
+  },
+  "importButton": {
+    "import": "Importa",
+    "importFailed": "Impossibile importare questo file"
+  },
+  "launcher": {
+    "loadingApps": "Caricamento app…",
+    "ofQuota": "di {{quota}}",
+    "signOut": "Esci",
+    "storage": "Spazio di archiviazione",
+    "versionBuild": "v{{version}} · build {{build}}",
+    "yourApps": "Le tue app"
+  },
+  "recoveryCodeDialog": {
+    "continue": "L'ho salvato — continua",
+    "copied": "Codice di recupero copiato",
+    "copyAriaLabel": "Copia codice di recupero",
+    "description": "Il tuo account è ora protetto con crittografia end-to-end. Questo codice di recupero è l'unico modo per recuperare i tuoi dati se dimentichi la password — conservalo in un luogo sicuro. Non potremo mostrartelo di nuovo.",
+    "title": "Salva il tuo codice di recupero"
+  },
+  "selectionBar": {
+    "clearSelection": "Deseleziona tutto",
+    "download": "Scarica",
+    "downloadAllFrames": "Scarica tutti i fotogrammi ({{count}})",
+    "downloadCover": "Scarica copertina",
+    "downloadCovers": "Scarica copertine ({{count}})",
+    "photoFilename": "Foto",
+    "photosZipFilename": "{{count}} foto.zip",
+    "share": "Condividi",
+    "shareNameFallback": "foto"
+  },
+  "shareDialog": {
+    "cancel": "Annulla",
+    "copyLink": "Copia link",
+    "descriptionEncrypted": "Crittografia end-to-end: la chiave si trova nel link e non raggiunge mai il server, quindi solo chi ha il link può decifrarlo.",
+    "descriptionPublic": "Chiunque abbia questo link può scaricare il file.",
+    "directDownload": "Download diretto",
+    "directDownloadHint": "Salta la pagina di destinazione e scarica subito",
+    "expiresAfter": "Scade dopo",
+    "expiry1Day": "1 giorno",
+    "expiry1Hour": "1 ora",
+    "expiry30Days": "30 giorni",
+    "expiry7Days": "7 giorni",
+    "generatingLink": "Generazione link…",
+    "limitDownloads": "Limita i download",
+    "limitDownloadsHint": "Disabilita il link dopo un certo numero di download",
+    "linkCopied": "Link copiato",
+    "maximumDownloads": "Download massimi",
+    "permanentLink": "Link permanente",
+    "permanentLinkHint": "Mantieni questo link attivo finché non lo elimini",
+    "title": "Condividi “{{name}}”"
+  },
+  "state": {
+    "empty": "Ancora niente qui",
+    "error": "Qualcosa è andato storto",
+    "loading": "Caricamento…",
+    "saving": "Salvataggio…"
+  },
+  "units": {
+    "items_one": "{{count}} elemento",
+    "items_other": "{{count}} elementi"
+  },
+  "uploadManager": {
+    "archiveFailed": "Archiviazione non riuscita",
+    "downloadFailed": "Download non riuscito",
+    "taskFailed": "Non riuscito",
+    "unsupportedFileType": "Tipo di file non supportato",
+    "unsupportedFileTypeToast": "{{name}} è un tipo di file non supportato"
+  },
+  "uploadPanel": {
+    "activity": "Attività",
+    "alreadyInLibrary": "Già nella libreria",
+    "archiving": "Archiviazione…",
+    "archivingItems_one": "Archiviazione di {{count}} elemento",
+    "archivingItems_other": "Archiviazione di {{count}} elementi",
+    "archivingProgress": "Archiviazione {{loaded}} di {{size}}",
+    "bytesProgress": "{{loaded}} di {{size}}",
+    "clear": "Cancella",
+    "collapse": "Comprimi",
+    "compressing": "Compressione…",
+    "dismiss": "Ignora",
+    "done": "Fatto",
+    "downloadFailed": "Download non riuscito",
+    "downloaded": "Scaricato",
+    "downloading": "Download…",
+    "downloadingItems_one": "Download di {{count}} elemento",
+    "downloadingItems_other": "Download di {{count}} elementi",
+    "expand": "Espandi",
+    "failed": "Non riuscito",
+    "processing": "Elaborazione…",
+    "processingItems_one": "Elaborazione di {{count}} elemento",
+    "processingItems_other": "Elaborazione di {{count}} elementi",
+    "speed": "{{speed}}/s",
+    "transcoding": "Transcodifica…",
+    "uploading": "Caricamento…",
+    "uploadingItems_one": "Caricamento di {{count}} elemento",
+    "uploadingItems_other": "Caricamento di {{count}} elementi"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} già nella tua libreria",
+    "alreadyInLibrary_other": "{{count}} già nella tua libreria",
+    "uploadFailed": "Caricamento di {{name}} non riuscito",
+    "uploaded_one": "{{count}} foto caricata",
+    "uploaded_other": "{{count}} foto caricate"
+  },
+  "viewToggle": {
+    "gridView": "Vista a griglia",
+    "tableView": "Vista a tabella"
+  }
+}

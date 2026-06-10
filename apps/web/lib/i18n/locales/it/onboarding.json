@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 elementi",
+    "albumName": "Italia '24",
+    "albumsBody": "Raggruppa le foto in album, poi condividi un link privato — non serve un account per visualizzarle.",
+    "albumsTitle": "Album e link condivisibili.",
+    "back": "Indietro",
+    "dismiss": "Ignora",
+    "getStarted": "Inizia",
+    "linkCopied": "Link copiato",
+    "next": "Avanti",
+    "privateBody": "Ogni foto, documento e file è crittografato end-to-end. Solo tu possiedi le chiavi — il server vede sempre e soltanto testo cifrato.",
+    "privateTitle": "Privato per impostazione predefinita.",
+    "share": "Condividi",
+    "uploadBody": "Trascina le foto ovunque per caricarle. Le Live Photos si abbinano e le raffiche si raggruppano automaticamente in un'unica pila espandibile.",
+    "uploadTitle": "Trascinale e basta."
+  }
+}

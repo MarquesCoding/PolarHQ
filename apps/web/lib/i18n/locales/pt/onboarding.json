@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 itens",
+    "albumName": "Itália '24",
+    "albumsBody": "Agrupe fotografias em álbuns e partilhe uma ligação privada — não é necessária conta para visualizar.",
+    "albumsTitle": "Álbuns e ligações partilháveis.",
+    "back": "Anterior",
+    "dismiss": "Ignorar",
+    "getStarted": "Começar",
+    "linkCopied": "Ligação copiada",
+    "next": "Seguinte",
+    "privateBody": "Todas as fotografias, documentos e ficheiros têm encriptação ponto a ponto. Só você detém as chaves — o servidor vê apenas texto cifrado.",
+    "privateTitle": "Privado por predefinição.",
+    "share": "Partilhar",
+    "uploadBody": "Arraste fotografias para qualquer ponto para as carregar. As Live Photos são emparelhadas e as rajadas reúnem-se automaticamente numa única pilha expansível.",
+    "uploadTitle": "Basta largá-las aqui."
+  }
+}

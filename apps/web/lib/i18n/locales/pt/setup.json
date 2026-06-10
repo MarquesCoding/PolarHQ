@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Conta de administrador criada",
+    "closedLabel": "Fechado — sem novas contas",
+    "creating": "A criar…",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "admin@exemplo.com",
+    "invalidEmail": "Introduza um e-mail válido",
+    "inviteOnlyLabel": "Apenas por convite — os administradores criam as contas",
+    "nameLabel": "O seu nome",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "O nome é obrigatório",
+    "openLabel": "Aberto — qualquer pessoa se pode registar",
+    "passwordLabel": "Palavra-passe",
+    "passwordMin": "Utilize pelo menos 8 caracteres",
+    "passwordPlaceholder": "Pelo menos 8 caracteres",
+    "registrationModeLabel": "Quem pode criar contas?",
+    "setupFailed": "A configuração falhou",
+    "signInFailed": "O início de sessão falhou",
+    "submit": "Criar administrador e continuar"
+  },
+  "createGroupsStep": {
+    "addGroup": "Adicionar grupo",
+    "adding": "A adicionar…",
+    "couldNotCreate": "Não foi possível criar o grupo",
+    "createdGroup": "Grupo “{{name}}” criado",
+    "descriptionLabel": "Descrição (opcional)",
+    "descriptionPlaceholder": "Quota maior, funcionalidades antecipadas",
+    "finishSetup": "Concluir configuração",
+    "groupNameLabel": "Nome do grupo",
+    "groupNamePlaceholder": "Utilizadores avançados",
+    "intro": "Os grupos permitem-lhe atribuir funções e limites partilhados (como quotas de armazenamento) a vários utilizadores de uma só vez. Crie alguns agora ou ignore e faça-o mais tarde nas definições de administração.",
+    "nameRequired": "O nome do grupo é obrigatório",
+    "skipFinish": "Ignorar e concluir"
+  },
+  "setup": {
+    "adminDescription": "Crie a primeira conta de administrador para começar.",
+    "groupsDescription": "Configure grupos para os seus utilizadores (opcional).",
+    "loading": "A carregar…",
+    "welcome": "Bem-vindo ao {{name}}"
+  }
+}

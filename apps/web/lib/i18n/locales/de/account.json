@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Konto",
+  "subtitle": "Verwalte dein Profil und deine Einstellungen.",
+  "back": "Zurück",
+  "profile": "Profil",
+  "name": "Name",
+  "email": "E-Mail",
+  "preferences": "Einstellungen",
+  "language": "Sprache",
+  "languageHint": "Wähle die Sprache für die gesamte Oberfläche.",
+  "appearance": "Darstellung",
+  "appearanceHint": "Zwischen hellem und dunklem Modus wechseln.",
+  "light": "Hell",
+  "dark": "Dunkel",
+  "system": "System",
+  "security": "Sicherheit",
+  "devices": "Geräte & Sitzungen",
+  "devicesHint": "Angemeldete Geräte überprüfen und abmelden.",
+  "manageDevices": "Geräte verwalten",
+  "signOut": "Abmelden",
+  "languageChanged": "Sprache aktualisiert"
+}

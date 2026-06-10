@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "Azione non riuscita",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Scambio del codice Google non riuscito.",
+    "gdriveConnectFailed": "Impossibile connettere Google Drive.",
+    "gdriveNoRefreshToken": "Google non ha restituito un token di aggiornamento (revoca l'accesso precedente e riprova).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET non sono configurati",
+    "invalidOauthState": "Stato OAuth non valido."
+  },
+  "badRequest": "Richiesta non valida.",
+  "docs": {
+    "alreadyOwner": "È già il proprietario",
+    "emailRequired": "L'email è obbligatoria.",
+    "noPublicKey": "Nessuna chiave pubblica.",
+    "userNotFound": "Utente inesistente"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "impossibile eliminare una cartella di sistema",
+    "cannotLockFolder": "impossibile bloccare questa cartella",
+    "cannotModifySystemFolder": "impossibile modificare una cartella di sistema",
+    "extractFailed": "impossibile estrarre l'archivio",
+    "fileRequired": "il campo file è obbligatorio",
+    "photosMediaFilesOnly": "La cartella Foto accetta solo file multimediali",
+    "photosMediaOnly": "La cartella Foto accetta solo immagini, video e audio"
+  },
+  "forbidden": "Non hai l'autorizzazione per farlo.",
+  "generic": "Qualcosa è andato storto.",
+  "invalidInput": "Input non valido.",
+  "notFound": "Non trovato.",
+  "photos": {
+    "fileRequired": "È richiesto un file.",
+    "stackNeedsTwoAssets": "Seleziona almeno due delle tue foto da raggruppare."
+  },
+  "rateLimited": "Troppe richieste. Riprova tra poco.",
+  "setup": {
+    "alreadyComplete": "La configurazione è già stata completata",
+    "registrationDisabled": "la registrazione è disabilitata su questa istanza"
+  },
+  "unauthorized": "Devi accedere per farlo.",
+  "uploads": {
+    "tooLarge": "Il file supera il limite di caricamento di {{limit}}"
+  }
+}

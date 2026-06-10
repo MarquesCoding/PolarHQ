@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Compte",
+  "subtitle": "Gérez votre profil et vos préférences.",
+  "back": "Retour",
+  "profile": "Profil",
+  "name": "Nom",
+  "email": "E-mail",
+  "preferences": "Préférences",
+  "language": "Langue",
+  "languageHint": "Choisissez la langue utilisée dans l'interface.",
+  "appearance": "Apparence",
+  "appearanceHint": "Basculez entre le mode clair et le mode sombre.",
+  "light": "Clair",
+  "dark": "Sombre",
+  "system": "Système",
+  "security": "Sécurité",
+  "devices": "Appareils et sessions",
+  "devicesHint": "Consultez les appareils connectés et déconnectez-les.",
+  "manageDevices": "Gérer les appareils",
+  "signOut": "Se déconnecter",
+  "languageChanged": "Langue mise à jour"
+}

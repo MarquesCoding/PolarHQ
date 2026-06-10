@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Cuenta de administrador creada",
+    "closedLabel": "Cerrado: sin cuentas nuevas",
+    "creating": "Creando…",
+    "emailLabel": "Correo electrónico",
+    "emailPlaceholder": "admin@ejemplo.com",
+    "invalidEmail": "Introduce un correo electrónico válido",
+    "inviteOnlyLabel": "Solo por invitación: los administradores crean las cuentas",
+    "nameLabel": "Tu nombre",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "El nombre es obligatorio",
+    "openLabel": "Abierto: cualquiera puede registrarse",
+    "passwordLabel": "Contraseña",
+    "passwordMin": "Usa al menos 8 caracteres",
+    "passwordPlaceholder": "Al menos 8 caracteres",
+    "registrationModeLabel": "¿Quién puede crear cuentas?",
+    "setupFailed": "Error en la configuración",
+    "signInFailed": "Error al iniciar sesión",
+    "submit": "Crear administrador y continuar"
+  },
+  "createGroupsStep": {
+    "addGroup": "Añadir grupo",
+    "adding": "Añadiendo…",
+    "couldNotCreate": "No se pudo crear el grupo",
+    "createdGroup": "Grupo «{{name}}» creado",
+    "descriptionLabel": "Descripción (opcional)",
+    "descriptionPlaceholder": "Mayor cuota, funciones anticipadas",
+    "finishSetup": "Finalizar configuración",
+    "groupNameLabel": "Nombre del grupo",
+    "groupNamePlaceholder": "Usuarios avanzados",
+    "intro": "Los grupos te permiten asignar roles y límites compartidos (como cuotas de almacenamiento) a varios usuarios a la vez. Crea algunos ahora o sáltatelo y hazlo más tarde en los ajustes de administración.",
+    "nameRequired": "El nombre del grupo es obligatorio",
+    "skipFinish": "Saltar y finalizar"
+  },
+  "setup": {
+    "adminDescription": "Crea la primera cuenta de administrador para empezar.",
+    "groupsDescription": "Configura grupos para tus usuarios (opcional).",
+    "loading": "Cargando…",
+    "welcome": "Te damos la bienvenida a {{name}}"
+  }
+}

@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Wiederherstellen",
+    "resetZoom": "Zoom zurücksetzen",
+    "undo": "Rückgängig",
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern"
+  },
+  "propertiesPanel": {
+    "background": "Hintergrund",
+    "bringForward": "Nach vorne",
+    "bringToFront": "In den Vordergrund",
+    "layers": "Ebenen",
+    "opacity": "Deckkraft",
+    "sendBackward": "Nach hinten",
+    "sendToBack": "In den Hintergrund",
+    "stroke": "Kontur",
+    "strokeWidth": "Konturstärke"
+  },
+  "shell": {
+    "myWhiteboards": "Meine Whiteboards",
+    "newWhiteboard": "Neues Whiteboard",
+    "product": "Whiteboard",
+    "search": "Whiteboards durchsuchen",
+    "whiteboards": "Whiteboards"
+  },
+  "toolbar": {
+    "arrow": "Pfeil",
+    "diamond": "Raute",
+    "draw": "Zeichnen",
+    "ellipse": "Ellipse",
+    "eraser": "Radierer",
+    "line": "Linie",
+    "pan": "Verschieben",
+    "rectangle": "Rechteck",
+    "select": "Auswählen",
+    "text": "Text"
+  },
+  "whiteboardList": {
+    "createLabel": "Neues Whiteboard",
+    "title": "Whiteboards"
+  }
+}

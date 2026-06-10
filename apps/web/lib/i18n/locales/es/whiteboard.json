@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Rehacer",
+    "resetZoom": "Restablecer zoom",
+    "undo": "Deshacer",
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar"
+  },
+  "propertiesPanel": {
+    "background": "Fondo",
+    "bringForward": "Traer adelante",
+    "bringToFront": "Traer al frente",
+    "layers": "Capas",
+    "opacity": "Opacidad",
+    "sendBackward": "Enviar atrás",
+    "sendToBack": "Enviar al fondo",
+    "stroke": "Trazo",
+    "strokeWidth": "Grosor del trazo"
+  },
+  "shell": {
+    "myWhiteboards": "Mis pizarras",
+    "newWhiteboard": "Nueva pizarra",
+    "product": "Pizarra",
+    "search": "Buscar pizarras",
+    "whiteboards": "Pizarras"
+  },
+  "toolbar": {
+    "arrow": "Flecha",
+    "diamond": "Rombo",
+    "draw": "Dibujar",
+    "ellipse": "Elipse",
+    "eraser": "Borrador",
+    "line": "Línea",
+    "pan": "Mover lienzo",
+    "rectangle": "Rectángulo",
+    "select": "Seleccionar",
+    "text": "Texto"
+  },
+  "whiteboardList": {
+    "createLabel": "Nueva pizarra",
+    "title": "Pizarras"
+  }
+}

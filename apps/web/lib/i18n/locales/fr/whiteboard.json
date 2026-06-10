@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Rétablir",
+    "resetZoom": "Réinitialiser le zoom",
+    "undo": "Annuler",
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière"
+  },
+  "propertiesPanel": {
+    "background": "Arrière-plan",
+    "bringForward": "Avancer",
+    "bringToFront": "Mettre au premier plan",
+    "layers": "Calques",
+    "opacity": "Opacité",
+    "sendBackward": "Reculer",
+    "sendToBack": "Mettre à l'arrière-plan",
+    "stroke": "Contour",
+    "strokeWidth": "Épaisseur du contour"
+  },
+  "shell": {
+    "myWhiteboards": "Mes tableaux blancs",
+    "newWhiteboard": "Nouveau tableau blanc",
+    "product": "Tableau blanc",
+    "search": "Rechercher des tableaux blancs",
+    "whiteboards": "Tableaux blancs"
+  },
+  "toolbar": {
+    "arrow": "Flèche",
+    "diamond": "Losange",
+    "draw": "Dessiner",
+    "ellipse": "Ellipse",
+    "eraser": "Gomme",
+    "line": "Ligne",
+    "pan": "Déplacer",
+    "rectangle": "Rectangle",
+    "select": "Sélectionner",
+    "text": "Texte"
+  },
+  "whiteboardList": {
+    "createLabel": "Nouveau tableau blanc",
+    "title": "Tableaux blancs"
+  }
+}

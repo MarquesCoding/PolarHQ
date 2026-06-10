@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Account amministratore creato",
+    "closedLabel": "Chiuso — nessun nuovo account",
+    "creating": "Creazione…",
+    "emailLabel": "Email",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "Inserisci un'email valida",
+    "inviteOnlyLabel": "Solo su invito — gli amministratori creano gli account",
+    "nameLabel": "Il tuo nome",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "Il nome è obbligatorio",
+    "openLabel": "Aperto — chiunque può registrarsi",
+    "passwordLabel": "Password",
+    "passwordMin": "Usa almeno 8 caratteri",
+    "passwordPlaceholder": "Almeno 8 caratteri",
+    "registrationModeLabel": "Chi può creare gli account?",
+    "setupFailed": "Configurazione non riuscita",
+    "signInFailed": "Accesso non riuscito",
+    "submit": "Crea amministratore e continua"
+  },
+  "createGroupsStep": {
+    "addGroup": "Aggiungi gruppo",
+    "adding": "Aggiunta…",
+    "couldNotCreate": "Impossibile creare il gruppo",
+    "createdGroup": "Gruppo “{{name}}” creato",
+    "descriptionLabel": "Descrizione (facoltativa)",
+    "descriptionPlaceholder": "Quota maggiore, funzionalità in anteprima",
+    "finishSetup": "Completa la configurazione",
+    "groupNameLabel": "Nome del gruppo",
+    "groupNamePlaceholder": "Utenti avanzati",
+    "intro": "I gruppi ti permettono di assegnare ruoli e limiti condivisi (come le quote di archiviazione) a più utenti contemporaneamente. Creane alcuni ora oppure salta questo passaggio e fallo in seguito nelle impostazioni di amministrazione.",
+    "nameRequired": "Il nome del gruppo è obbligatorio",
+    "skipFinish": "Salta e completa"
+  },
+  "setup": {
+    "adminDescription": "Crea il primo account amministratore per iniziare.",
+    "groupsDescription": "Configura i gruppi per i tuoi utenti (facoltativo).",
+    "loading": "Caricamento…",
+    "welcome": "Ti diamo il benvenuto in {{name}}"
+  }
+}
