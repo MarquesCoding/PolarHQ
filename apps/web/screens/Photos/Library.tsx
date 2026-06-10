@@ -12,7 +12,7 @@ import {
   trashAssets,
   unstackAssets,
 } from "@lib/photos"
-import { downloadItemFor } from "@lib/photosE2e"
+import { downloadItemFor, expandStacksToDownloadItems } from "@lib/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useAssetFeed } from "@lib/useAssetFeed"
@@ -66,7 +66,16 @@ const LibraryInner = () => {
   const ids = [...selection.selected]
   const one = ids.length === 1 ? visible.find((asset) => asset.id === ids[0]) : undefined
   const selectedSet = new Set(ids)
-  const downloadItems = assets.filter((asset) => selectedSet.has(asset.id)).map(downloadItemFor)
+  const selectedAssets = assets.filter((asset) => selectedSet.has(asset.id))
+  const downloadItems = selectedAssets.map(downloadItemFor)
+  const burstFrames = selectedAssets.reduce(
+    (total, asset) => total + (asset.stackId && asset.stackCount > 1 ? asset.stackCount : 1),
+    0,
+  )
+  const downloadAllFrames =
+    burstFrames > selectedAssets.length
+      ? { count: burstFrames, resolve: () => expandStacksToDownloadItems(selectedAssets) }
+      : undefined
   const afterAction = () => {
     invalidate()
     selection.clear()
@@ -157,6 +166,7 @@ const LibraryInner = () => {
 
       <SelectionBar
         downloadItems={downloadItems}
+        downloadAllFrames={downloadAllFrames}
         shareAssetId={one?.id}
         shareName={one ? nameOf(one) : undefined}
         shareEncrypted={one?.encrypted}

@@ -7,6 +7,12 @@ import { useSelection } from "@lib/selection"
 import { type DownloadItem, useUploadManager } from "@lib/uploadManager"
 import NumberFlow from "@number-flow/react"
 import { Button } from "@workspace/ui/components/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
 import { Kbd } from "@workspace/ui/components/kbd"
 import { Separator } from "@workspace/ui/components/separator"
 import { AnimatePresence, motion } from "motion/react"
@@ -16,6 +22,9 @@ interface SelectionBarProps {
   children: ReactNode
   /** When provided, renders a Download action for these Photos (encrypted ones decrypt client-side). */
   downloadItems?: DownloadItem[]
+  /** When the selection contains stacks (e.g. bursts), offer downloading every frame instead of
+   *  just the covers. `count` is the total frame count; `resolve` expands to per-frame items. */
+  downloadAllFrames?: { count: number; resolve: () => Promise<DownloadItem[]> }
   /** When provided (single selection), renders a Share action for this photo. */
   shareAssetId?: string
   shareName?: string
@@ -29,6 +38,7 @@ interface SelectionBarProps {
 const SelectionBar = ({
   children,
   downloadItems,
+  downloadAllFrames,
   shareAssetId,
   shareName,
   shareEncrypted,
@@ -46,6 +56,21 @@ const SelectionBar = ({
     const name = downloadItems.length === 1 ? "Photo" : `${downloadItems.length} photos.zip`
     upload.download(name, downloadItems)
   }
+
+  const downloadAll = async () => {
+    if (!downloadAllFrames) return
+    const items = await downloadAllFrames.resolve()
+    if (items.length === 0) return
+    upload.download(items.length === 1 ? "Photo" : `${items.length} photos.zip`, items)
+  }
+
+  const downloadButton = downloadItems ? (
+    <Button variant="ghost" size="sm" onClick={download}>
+      <Icon name="download" className="size-4" />
+      Download
+      <Kbd>⇧W</Kbd>
+    </Button>
+  ) : null
 
   return (
     <>
@@ -71,13 +96,23 @@ const SelectionBar = ({
               </Button>
               <NumberFlow value={selection.count} className="text-sm font-semibold tabular-nums" />
               <Separator orientation="vertical" className="mx-1 h-5" />
-              {downloadItems ? (
-                <Button variant="ghost" size="sm" onClick={download}>
-                  <Icon name="download" className="size-4" />
-                  Download
-                  <Kbd>⇧W</Kbd>
-                </Button>
-              ) : null}
+              {downloadItems && downloadAllFrames ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger render={downloadButton ?? <span />} />
+                  <DropdownMenuContent align="center" side="top">
+                    <DropdownMenuItem onClick={download}>
+                      <Icon name="download" className="size-4" />
+                      Download {downloadItems.length === 1 ? "cover" : `covers (${downloadItems.length})`}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => void downloadAll()}>
+                      <Icon name="albums" className="size-4" />
+                      Download all frames ({downloadAllFrames.count})
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                downloadButton
+              )}
               {shareAssetId ? (
                 <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
                   <Icon name="share" className="size-4" />

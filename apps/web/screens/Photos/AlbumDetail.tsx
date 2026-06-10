@@ -9,7 +9,7 @@ import {
   removeFromAlbum,
   trashAssets,
 } from "@lib/photos"
-import { downloadItemFor } from "@lib/photosE2e"
+import { downloadItemFor, expandStacksToDownloadItems } from "@lib/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
@@ -51,7 +51,16 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
   const ids = [...selection.selected]
   const one = ids.length === 1 ? assets.find((asset) => asset.id === ids[0]) : undefined
   const selectedSet = new Set(ids)
-  const downloadItems = assets.filter((asset) => selectedSet.has(asset.id)).map(downloadItemFor)
+  const selectedAssets = assets.filter((asset) => selectedSet.has(asset.id))
+  const downloadItems = selectedAssets.map(downloadItemFor)
+  const burstFrames = selectedAssets.reduce(
+    (total, asset) => total + (asset.stackId && asset.stackCount > 1 ? asset.stackCount : 1),
+    0,
+  )
+  const downloadAllFrames =
+    burstFrames > selectedAssets.length
+      ? { count: burstFrames, resolve: () => expandStacksToDownloadItems(selectedAssets) }
+      : undefined
   const afterAction = () => {
     invalidate()
     selection.clear()
@@ -119,6 +128,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
 
       <SelectionBar
         downloadItems={downloadItems}
+        downloadAllFrames={downloadAllFrames}
         shareAssetId={one?.id}
         shareName={one ? downloadItemFor(one).name : undefined}
         shareEncrypted={one?.encrypted}
