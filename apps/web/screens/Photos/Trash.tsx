@@ -1,7 +1,6 @@
 "use client"
 
 import { deleteAssets, emptyTrash, fetchAssets, restoreAssets } from "@lib/photos"
-import { Icon } from "@lib/icons"
 import CollectionView from "@pages/Photos/components/CollectionView/CollectionView"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import EmptyState from "@components/EmptyState/EmptyState"
@@ -43,12 +42,6 @@ const Trash = () => {
         queryKey={["photos", "trash"]}
         fetcher={(cursor) => fetchAssets({ view: "trash", cursor })}
         emptyText="Trash is empty."
-        notice={
-          <div className="border-border/60 bg-sidebar-accent/40 text-muted-foreground flex items-center gap-2 rounded-lg border px-3 py-2 text-xs">
-            <Icon name="info" className="size-3.5 shrink-0" />
-            Items in trash are permanently deleted after 30 days.
-          </div>
-        }
         emptyState={
           <EmptyState
             icon="trash"
