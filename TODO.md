@@ -25,7 +25,7 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 - [ ] **Picture book / collage**: canvas to position + rotate photos, slide-in sheet of all photos, shareable link.
 - [ ] **Facial recognition** on upload → group photos by face.
 - [ ] **Suggestive albums** on the albums page.
-- [ ] **S3 / MinIO** option for docker-compose (one or the other).
+- [x] **S3 / MinIO** option for docker-compose — prod compose gains an opt-in `minio` profile (+ bucket init) and a commented S3 env block; fs stays default. Backend already supported `STORAGE_DRIVER=s3`. Pick one: disk / bundled MinIO / external S3.
 
 ## Infra
 - [ ] release-please: confirm workflow declares `contents`/`pull-requests: write` (or switch to a PAT) so the release PR opens.
