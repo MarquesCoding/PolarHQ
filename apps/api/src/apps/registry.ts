@@ -70,6 +70,17 @@ export const SUITE_APPS: AppManifest[] = [
     requiredPermission: "docs.document.read",
   },
   {
+    id: "whiteboard",
+    name: "Whiteboard",
+    description: "An infinite collaborative canvas for sketches and diagrams",
+    icon: "palette",
+    route: "/whiteboards",
+    category: "productivity",
+    privacy: "e2e",
+    status: "available",
+    requiredPermission: "docs.document.read",
+  },
+  {
     id: "calendar",
     name: "Calendar",
     description: "Schedule and plan your time",

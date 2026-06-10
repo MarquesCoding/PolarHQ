@@ -10,8 +10,9 @@ import { type DriveNode, ensureUserRoots, getNode, ingestDriveFile } from "../dr
  */
 export const DOC_MIME = "application/vnd.orbit.doc"
 export const SHEET_MIME = "application/vnd.orbit.sheet"
+export const BOARD_MIME = "application/vnd.orbit.board"
 
-export const ORBIT_DOC_MIMES = [DOC_MIME, SHEET_MIME] as const
+export const ORBIT_DOC_MIMES = [DOC_MIME, SHEET_MIME, BOARD_MIME] as const
 export type OrbitDocMime = (typeof ORBIT_DOC_MIMES)[number]
 
 export const isOrbitDoc = (mime: string | null): mime is OrbitDocMime =>
@@ -20,6 +21,7 @@ export const isOrbitDoc = (mime: string | null): mime is OrbitDocMime =>
 const DEFAULT_TITLE: Record<OrbitDocMime, string> = {
   [DOC_MIME]: "Untitled document",
   [SHEET_MIME]: "Untitled spreadsheet",
+  [BOARD_MIME]: "Untitled whiteboard",
 }
 
 /**

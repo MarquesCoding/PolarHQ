@@ -39,6 +39,7 @@ const iconFor = (node: DriveNode): string => {
   const mime = node.mimeType ?? ""
   if (mime === "application/vnd.orbit.doc") return "document"
   if (mime === "application/vnd.orbit.sheet") return "table"
+  if (mime === "application/vnd.orbit.board") return "palette"
   if (/\.(xlsx|xls|csv|tsv|ods)$/i.test(name)) return "table"
   if (/\.docx$/i.test(name)) return "document"
   if (/\.pptx$/i.test(name)) return "presentation"

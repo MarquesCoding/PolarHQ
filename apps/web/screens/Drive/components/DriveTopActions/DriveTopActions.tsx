@@ -80,6 +80,7 @@ const DriveTopActions = () => {
   const routes: Record<DocType, string> = {
     doc: "/docs",
     sheet: "/sheets",
+    board: "/whiteboards",
   }
   const newDoc = async (type: DocType) => {
     try {
