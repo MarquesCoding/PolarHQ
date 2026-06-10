@@ -107,12 +107,25 @@ const OnboardingCard = () => {
       {visible ? (
         <motion.div
           key="onboarding"
-          initial={{ opacity: 0, y: 24, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 24, scale: 0.96 }}
-          transition={{ type: "spring", stiffness: 320, damping: 30 }}
-          className="panel fixed right-4 bottom-4 z-50 w-[340px] overflow-hidden rounded-2xl shadow-2xl select-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 z-50"
         >
+          <button
+            type="button"
+            aria-label="Dismiss"
+            onClick={dismiss}
+            className="bg-background/70 absolute inset-0 backdrop-blur-sm"
+          />
+          <motion.div
+            initial={{ opacity: 0, y: 24, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 24, scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 320, damping: 30 }}
+            className="panel absolute right-4 bottom-4 w-[340px] overflow-hidden rounded-2xl shadow-2xl select-none"
+          >
           <button
             type="button"
             aria-label="Dismiss"
@@ -193,6 +206,7 @@ const OnboardingCard = () => {
               )}
             </div>
           </div>
+          </motion.div>
         </motion.div>
       ) : null}
     </AnimatePresence>
