@@ -3,7 +3,7 @@
 import { type ReactNode, useEffect, useState } from "react"
 import Link from "next/link"
 import { type CollabDocument, useCollabDocument } from "@lib/useCollabDocument"
-import { IconShieldLock } from "@tabler/icons-react"
+import { IconShieldLock, IconTrash } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import DecryptingState from "@pages/Docs/components/DecryptingState/DecryptingState"
@@ -29,6 +29,19 @@ const CollabBoundary = ({ nodeId, backHref, render }: CollabBoundaryProps) => {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
         <p className="text-muted-foreground text-sm">This couldn’t be opened.</p>
+        <Button variant="secondary" size="sm" render={<Link href={backHref}>Go back</Link>} />
+      </div>
+    )
+  }
+
+  if (collab.status === "deleted") {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
+        <IconTrash className="text-muted-foreground size-8" />
+        <p className="text-muted-foreground text-sm">
+          This was deleted{collab.doc ? ` — “${collab.doc.name}”` : ""}. Your changes can’t be
+          saved.
+        </p>
         <Button variant="secondary" size="sm" render={<Link href={backHref}>Go back</Link>} />
       </div>
     )

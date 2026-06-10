@@ -4,10 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { secretboxOpen, secretboxSeal } from "@lib/crypto"
 import { type DocMeta, fetchDoc, fetchDocContent, saveDocContent } from "@lib/docs"
 import { e2eReady, getDocContentKey, isDocEncrypted, isUnlocked } from "@lib/e2e"
+import { useLiveEvents } from "@lib/useLiveEvents"
 import { RelayProvider } from "@lib/yjsProvider"
 import * as Y from "yjs"
 
-type Status = "loading" | "ready" | "error" | "locked"
+type Status = "loading" | "ready" | "error" | "locked" | "deleted"
 type SaveState = "saved" | "saving" | "dirty"
 
 export interface CollabDocument {
@@ -141,6 +142,14 @@ export const useCollabDocument = (nodeId: string): CollabDocument => {
     setStatus("loading")
     setReload((value) => value + 1)
   }, [])
+
+  // If the document is trashed/deleted (in another tab or by a collaborator), the user's
+  // tabs get a generic "drive changed" event — re-validate and flip to a deleted state so the
+  // open editor can warn instead of silently editing a ghost.
+  useLiveEvents((event) => {
+    if (event.type !== "drive.node.changed" || status !== "ready") return
+    void fetchDoc(nodeId).catch(() => setStatus("deleted"))
+  })
 
   return {
     status,
