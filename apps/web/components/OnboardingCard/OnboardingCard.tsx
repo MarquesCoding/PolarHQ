@@ -4,9 +4,11 @@ import { type ReactNode, useEffect, useState } from "react"
 import { Icon } from "@lib/icons"
 import type { GridAsset } from "@lib/photos"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
+import { t } from "@lib/i18n/config"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
+import { useTranslation } from "react-i18next"
 
 const STORAGE_KEY = "polarhq.onboarded.v1"
 const LOOP = 4.2
@@ -133,18 +135,20 @@ const UploadDemo = () => {
 }
 
 /** Make an album, then share a private link. */
-const ShareDemo = () => (
+const ShareDemo = () => {
+  const { t } = useTranslation("onboarding")
+  return (
   <div className="relative flex h-full w-full items-center justify-center gap-3">
     <div className="flex items-center gap-2.5">
       <div className="ring-border size-[60px] overflow-hidden rounded-lg ring-1">
         <img src={grad("#a5b4fc", "#6366f1")} alt="" className="size-full object-cover" />
       </div>
       <div className="flex flex-col gap-1">
-        <span className="text-foreground text-xs font-semibold">Italy '24</span>
-        <span className="text-muted-foreground text-[11px]">128 items</span>
+        <span className="text-foreground text-xs font-semibold">{t("onboardingCard.albumName")}</span>
+        <span className="text-muted-foreground text-[11px]">{t("onboardingCard.albumItems")}</span>
         <Button size="xs" className="mt-1 w-fit">
           <Icon name="open-external" className="size-3" />
-          Share
+          {t("onboardingCard.share")}
         </Button>
       </div>
     </div>
@@ -154,12 +158,13 @@ const ShareDemo = () => (
       transition={{ duration: LOOP, times: [0, 0.52, 0.6, 0.9, 1], repeat: Infinity }}
     >
       <Icon name="circle-check" className="size-2.5" />
-      Link copied
+      {t("onboardingCard.linkCopied")}
     </motion.div>
     <Tap at={[150, 70]} tapAt={0.5} />
     <DemoCursor from={[60, 96]} to={[150, 70]} tapAt={0.5} />
   </div>
-)
+  )
+}
 
 /** Everything is end-to-end encrypted — a lock closes over the library. */
 const PrivacyDemo = () => {
@@ -210,28 +215,29 @@ const SLIDES: Slide[] = [
   {
     icon: "shield-lock",
     accent: "from-emerald-500/15 to-emerald-500/5",
-    title: "Private by default.",
-    body: "Every photo, document and file is end-to-end encrypted. Only you hold the keys — the server only ever sees ciphertext.",
+    title: t("onboarding:onboardingCard.privateTitle"),
+    body: t("onboarding:onboardingCard.privateBody"),
     Demo: PrivacyDemo,
   },
   {
     icon: "photo",
     accent: "from-primary/15 to-primary/5",
-    title: "Just drop them in.",
-    body: "Drag photos anywhere to upload. Live Photos pair up and bursts collapse into one expandable stack automatically.",
+    title: t("onboarding:onboardingCard.uploadTitle"),
+    body: t("onboarding:onboardingCard.uploadBody"),
     Demo: UploadDemo,
   },
   {
     icon: "albums",
     accent: "from-violet-500/15 to-violet-500/5",
-    title: "Albums & shareable links.",
-    body: "Group photos into albums, then share a private link — no account required to view.",
+    title: t("onboarding:onboardingCard.albumsTitle"),
+    body: t("onboarding:onboardingCard.albumsBody"),
     Demo: ShareDemo,
   },
 ]
 
 /** First-run suite intro: a dismissible card that demos key flows with the real UI. */
 const OnboardingCard = () => {
+  const { t } = useTranslation("onboarding")
   const [visible, setVisible] = useState(false)
   const [index, setIndex] = useState(0)
 
@@ -269,7 +275,7 @@ const OnboardingCard = () => {
         >
           <button
             type="button"
-            aria-label="Dismiss"
+            aria-label={t("onboardingCard.dismiss")}
             onClick={dismiss}
             className="bg-background/70 absolute inset-0 backdrop-blur-sm"
           />
@@ -282,7 +288,7 @@ const OnboardingCard = () => {
           >
             <button
               type="button"
-              aria-label="Dismiss"
+              aria-label={t("onboardingCard.dismiss")}
               onClick={dismiss}
               className="text-muted-foreground hover:bg-muted hover:text-foreground absolute top-3 right-3 z-40 flex size-7 items-center justify-center rounded-full transition"
             >
@@ -346,16 +352,16 @@ const OnboardingCard = () => {
               <div className="flex items-center gap-1">
                 {index > 0 ? (
                   <Button variant="ghost" size="sm" onClick={() => setIndex((i) => i - 1)}>
-                    Back
+                    {t("onboardingCard.back")}
                   </Button>
                 ) : null}
                 {last ? (
                   <Button size="sm" onClick={dismiss}>
-                    Get started
+                    {t("onboardingCard.getStarted")}
                   </Button>
                 ) : (
                   <Button size="sm" onClick={() => setIndex((i) => i + 1)}>
-                    Next
+                    {t("onboardingCard.next")}
                   </Button>
                 )}
               </div>

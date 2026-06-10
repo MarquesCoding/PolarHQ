@@ -3,6 +3,7 @@
 import { fetchOverview, formatBytes } from "@lib/admin"
 import { Icon } from "@lib/icons"
 import { useQuery } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 import { Card, CardContent } from "@workspace/ui/components/card"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
@@ -14,21 +15,22 @@ interface Stat {
 }
 
 const Overview = () => {
+  const { t } = useTranslation("admin")
   const { data, isLoading } = useQuery({ queryKey: ["admin", "overview"], queryFn: fetchOverview })
 
   const stats: Stat[] = data
     ? [
-        { label: "Users", value: String(data.users), icon: "users" },
-        { label: "Banned", value: String(data.bannedUsers), icon: "ban" },
-        { label: "Groups", value: String(data.groups), icon: "users-group" },
-        { label: "Roles", value: String(data.roles), icon: "user-shield" },
-        { label: "Storage used", value: formatBytes(data.storageBytes), icon: "gauge" },
-        { label: "Apps live", value: String(data.appsAvailable), icon: "apps" },
+        { label: t("overview.users"), value: String(data.users), icon: "users" },
+        { label: t("overview.banned"), value: String(data.bannedUsers), icon: "ban" },
+        { label: t("overview.groups"), value: String(data.groups), icon: "users-group" },
+        { label: t("overview.roles"), value: String(data.roles), icon: "user-shield" },
+        { label: t("overview.storageUsed"), value: formatBytes(data.storageBytes), icon: "gauge" },
+        { label: t("overview.appsLive"), value: String(data.appsAvailable), icon: "apps" },
       ]
     : []
 
   return (
-    <AdminPage title="Overview" description="At-a-glance health of this instance.">
+    <AdminPage title={t("overview.title")} description={t("overview.description")}>
       {isLoading ? (
         <PageSpinner />
       ) : (

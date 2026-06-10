@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Admin account created",
+    "closedLabel": "Closed — no new accounts",
+    "creating": "Creating…",
+    "emailLabel": "Email",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "Enter a valid email",
+    "inviteOnlyLabel": "Invite only — admins create accounts",
+    "nameLabel": "Your name",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "Name is required",
+    "openLabel": "Open — anyone can register",
+    "passwordLabel": "Password",
+    "passwordMin": "Use at least 8 characters",
+    "passwordPlaceholder": "At least 8 characters",
+    "registrationModeLabel": "Who can create accounts?",
+    "setupFailed": "Setup failed",
+    "signInFailed": "Sign-in failed",
+    "submit": "Create admin & continue"
+  },
+  "createGroupsStep": {
+    "addGroup": "Add group",
+    "adding": "Adding…",
+    "couldNotCreate": "Could not create group",
+    "createdGroup": "Created group “{{name}}”",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "Larger quota, early features",
+    "finishSetup": "Finish setup",
+    "groupNameLabel": "Group name",
+    "groupNamePlaceholder": "Power Users",
+    "intro": "Groups let you assign shared roles and limits (like storage quotas) to many users at once. Create a few now, or skip and do this later in admin settings.",
+    "nameRequired": "Group name is required",
+    "skipFinish": "Skip & finish"
+  },
+  "setup": {
+    "adminDescription": "Create the first administrator account to get started.",
+    "groupsDescription": "Set up groups for your users (optional).",
+    "loading": "Loading…",
+    "welcome": "Welcome to {{name}}"
+  }
+}

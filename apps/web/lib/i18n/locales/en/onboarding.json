@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 items",
+    "albumName": "Italy '24",
+    "albumsBody": "Group photos into albums, then share a private link — no account required to view.",
+    "albumsTitle": "Albums & shareable links.",
+    "back": "Back",
+    "dismiss": "Dismiss",
+    "getStarted": "Get started",
+    "linkCopied": "Link copied",
+    "next": "Next",
+    "privateBody": "Every photo, document and file is end-to-end encrypted. Only you hold the keys — the server only ever sees ciphertext.",
+    "privateTitle": "Private by default.",
+    "share": "Share",
+    "uploadBody": "Drag photos anywhere to upload. Live Photos pair up and bursts collapse into one expandable stack automatically.",
+    "uploadTitle": "Just drop them in."
+  }
+}

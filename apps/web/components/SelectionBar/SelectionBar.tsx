@@ -1,6 +1,7 @@
 "use client"
 
 import { type ReactNode, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Icon } from "@lib/icons"
 import { sharePhoto } from "@lib/photos"
 import { useSelection } from "@lib/selection"
@@ -45,6 +46,7 @@ const SelectionBar = ({
   shareOpen: shareOpenProp,
   onShareOpenChange,
 }: SelectionBarProps) => {
+  const { t } = useTranslation("common")
   const selection = useSelection()
   const upload = useUploadManager()
   const [internalShareOpen, setInternalShareOpen] = useState(false)
@@ -53,7 +55,10 @@ const SelectionBar = ({
 
   const download = () => {
     if (!downloadItems || downloadItems.length === 0) return
-    const name = downloadItems.length === 1 ? "Photo" : `${downloadItems.length} photos.zip`
+    const name =
+      downloadItems.length === 1
+        ? t("selectionBar.photoFilename")
+        : t("selectionBar.photosZipFilename", { count: downloadItems.length })
     upload.download(name, downloadItems)
   }
 
@@ -61,13 +66,18 @@ const SelectionBar = ({
     if (!downloadAllFrames) return
     const items = await downloadAllFrames.resolve()
     if (items.length === 0) return
-    upload.download(items.length === 1 ? "Photo" : `${items.length} photos.zip`, items)
+    upload.download(
+      items.length === 1
+        ? t("selectionBar.photoFilename")
+        : t("selectionBar.photosZipFilename", { count: items.length }),
+      items,
+    )
   }
 
   const downloadButton = downloadItems ? (
     <Button variant="ghost" size="sm" onClick={download}>
       <Icon name="download" className="size-4" />
-      Download
+      {t("selectionBar.download")}
       <Kbd>⇧W</Kbd>
     </Button>
   ) : null
@@ -88,7 +98,7 @@ const SelectionBar = ({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Clear selection"
+                aria-label={t("selectionBar.clearSelection")}
                 onClick={selection.clear}
                 className="rounded-full"
               >
@@ -102,11 +112,13 @@ const SelectionBar = ({
                   <DropdownMenuContent align="center" side="top">
                     <DropdownMenuItem onClick={download}>
                       <Icon name="download" className="size-4" />
-                      Download {downloadItems.length === 1 ? "cover" : `covers (${downloadItems.length})`}
+                      {downloadItems.length === 1
+                        ? t("selectionBar.downloadCover")
+                        : t("selectionBar.downloadCovers", { count: downloadItems.length })}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => void downloadAll()}>
                       <Icon name="albums" className="size-4" />
-                      Download all frames ({downloadAllFrames.count})
+                      {t("selectionBar.downloadAllFrames", { count: downloadAllFrames.count })}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -116,7 +128,7 @@ const SelectionBar = ({
               {shareAssetId ? (
                 <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
                   <Icon name="share" className="size-4" />
-                  Share
+                  {t("selectionBar.share")}
                   <Kbd>⇧S</Kbd>
                 </Button>
               ) : null}
@@ -128,7 +140,7 @@ const SelectionBar = ({
 
       {shareAssetId ? (
         <ShareDialog
-          name={shareName ?? "photo"}
+          name={shareName ?? t("selectionBar.shareNameFallback")}
           open={shareOpen}
           onOpenChange={setShareOpen}
           createLink={(options) => sharePhoto(shareAssetId, options)}

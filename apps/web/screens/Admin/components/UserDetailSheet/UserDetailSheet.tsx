@@ -25,6 +25,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@workspace/ui/comp
 import { IconX } from "@tabler/icons-react"
 import Spinner from "@components/Spinner/Spinner"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const MB = 1024 * 1024
 
@@ -40,6 +41,7 @@ const LimitOverrideRow = ({
   limit: UserLimit
   onChanged: () => void
 }) => {
+  const { t } = useTranslation("admin")
   const [draft, setDraft] = useState(() => overrideDisplay(limit))
 
   const save = useMutation({
@@ -49,23 +51,26 @@ const LimitOverrideRow = ({
       return setLimitFor("user", userId, limit.key, value)
     },
     onSuccess: () => {
-      toast.success(`${limit.label} override saved`)
+      toast.success(t("limitOverrideRow.overrideSaved", { label: limit.label }))
       onChanged()
     },
-    onError: () => toast.error("Could not save the override"),
+    onError: () => toast.error(t("limitOverrideRow.saveError")),
   })
 
   const clear = useMutation({
     mutationFn: () => clearLimitFor("user", userId, limit.key),
     onSuccess: () => {
-      toast.success("Override removed")
+      toast.success(t("limitOverrideRow.overrideRemoved"))
       setDraft("")
       onChanged()
     },
-    onError: () => toast.error("Could not remove the override"),
+    onError: () => toast.error(t("limitOverrideRow.clearError")),
   })
 
-  const inherited = limit.value == null ? "unlimited" : `${Math.round(Number(limit.value) / MB)} MB`
+  const inherited =
+    limit.value == null
+      ? t("limitOverrideRow.unlimited")
+      : `${Math.round(Number(limit.value) / MB)} MB`
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -75,7 +80,7 @@ const LimitOverrideRow = ({
           type="number"
           min={0}
           value={draft}
-          placeholder={`Inherited: ${inherited}`}
+          placeholder={t("limitOverrideRow.inheritedPlaceholder", { inherited })}
           onChange={(event) => setDraft(event.target.value)}
           className="w-32"
         />
@@ -86,11 +91,11 @@ const LimitOverrideRow = ({
           disabled={save.isPending || draft === overrideDisplay(limit)}
           onClick={() => save.mutate()}
         >
-          Save
+          {t("limitOverrideRow.save")}
         </Button>
         {limit.hasOverride ? (
           <Button size="sm" variant="ghost" disabled={clear.isPending} onClick={() => clear.mutate()}>
-            Reset
+            {t("limitOverrideRow.reset")}
           </Button>
         ) : null}
       </div>
@@ -104,6 +109,7 @@ interface UserDetailSheetProps {
 }
 
 const UserDetailSheet = ({ userId, onOpenChange }: UserDetailSheetProps) => {
+  const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
   const open = userId != null
 
@@ -125,20 +131,20 @@ const UserDetailSheet = ({ userId, onOpenChange }: UserDetailSheetProps) => {
   const assign = useMutation({
     mutationFn: () => assignRole(userId as string, roleToAdd),
     onSuccess: () => {
-      toast.success("Role assigned")
+      toast.success(t("userDetailSheet.roleAssigned"))
       setRoleToAdd("")
       refresh()
     },
-    onError: () => toast.error("Could not assign the role"),
+    onError: () => toast.error(t("userDetailSheet.assignError")),
   })
 
   const unassign = useMutation({
     mutationFn: (roleId: string) => unassignRole(userId as string, roleId),
     onSuccess: () => {
-      toast.success("Role removed")
+      toast.success(t("userDetailSheet.roleRemoved"))
       refresh()
     },
-    onError: () => toast.error("Could not remove the role"),
+    onError: () => toast.error(t("userDetailSheet.unassignError")),
   })
 
   const assignedIds = new Set((detail?.roles ?? []).map((role) => role.id))
@@ -159,7 +165,9 @@ const UserDetailSheet = ({ userId, onOpenChange }: UserDetailSheetProps) => {
             </SheetHeader>
 
             <section className="flex flex-col gap-2">
-              <h3 className="text-xs font-semibold tracking-wide uppercase">Roles</h3>
+              <h3 className="text-xs font-semibold tracking-wide uppercase">
+                {t("userDetailSheet.roles")}
+              </h3>
               <div className="flex flex-wrap gap-1.5">
                 {detail.roles.length > 0 ? (
                   detail.roles.map((role) => (
@@ -168,7 +176,7 @@ const UserDetailSheet = ({ userId, onOpenChange }: UserDetailSheetProps) => {
                       <Button
                         variant="ghost"
                         size="icon-xs"
-                        aria-label={`Remove ${role.name}`}
+                        aria-label={t("userDetailSheet.removeRole", { name: role.name })}
                         className="size-4"
                         onClick={() => unassign.mutate(role.id)}
                       >
@@ -177,14 +185,16 @@ const UserDetailSheet = ({ userId, onOpenChange }: UserDetailSheetProps) => {
                     </Badge>
                   ))
                 ) : (
-                  <span className="text-muted-foreground text-sm">No roles assigned.</span>
+                  <span className="text-muted-foreground text-sm">
+                    {t("userDetailSheet.noRoles")}
+                  </span>
                 )}
               </div>
               {assignable.length > 0 ? (
                 <div className="mt-1 flex items-center gap-2">
                   <Select value={roleToAdd} onValueChange={(value) => setRoleToAdd(value ?? "")}>
                     <SelectTrigger className="w-48">
-                      <SelectValue placeholder="Assign a role…" />
+                      <SelectValue placeholder={t("userDetailSheet.assignRolePlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {assignable.map((role) => (
@@ -200,14 +210,16 @@ const UserDetailSheet = ({ userId, onOpenChange }: UserDetailSheetProps) => {
                     disabled={!roleToAdd || assign.isPending}
                     onClick={() => assign.mutate()}
                   >
-                    Assign
+                    {t("userDetailSheet.assign")}
                   </Button>
                 </div>
               ) : null}
             </section>
 
             <section className="flex flex-col gap-2">
-              <h3 className="text-xs font-semibold tracking-wide uppercase">Groups</h3>
+              <h3 className="text-xs font-semibold tracking-wide uppercase">
+                {t("userDetailSheet.groups")}
+              </h3>
               <div className="flex flex-wrap gap-1.5">
                 {detail.groups.length > 0 ? (
                   detail.groups.map((group) => (
@@ -216,13 +228,17 @@ const UserDetailSheet = ({ userId, onOpenChange }: UserDetailSheetProps) => {
                     </Badge>
                   ))
                 ) : (
-                  <span className="text-muted-foreground text-sm">Not in any group.</span>
+                  <span className="text-muted-foreground text-sm">
+                    {t("userDetailSheet.noGroups")}
+                  </span>
                 )}
               </div>
             </section>
 
             <section className="flex flex-col gap-4">
-              <h3 className="text-xs font-semibold tracking-wide uppercase">Limit overrides</h3>
+              <h3 className="text-xs font-semibold tracking-wide uppercase">
+                {t("userDetailSheet.limitOverrides")}
+              </h3>
               {detail.limits.map((limit) => (
                 <LimitOverrideRow
                   key={limit.key}

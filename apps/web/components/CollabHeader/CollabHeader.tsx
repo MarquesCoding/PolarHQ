@@ -8,6 +8,7 @@ import { encryptNameWith } from "@lib/e2e"
 import type { RelayProvider } from "@lib/yjsProvider"
 import { IconDeviceFloppy, IconUserPlus } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import EncryptedBadge from "@components/EncryptedBadge/EncryptedBadge"
@@ -67,6 +68,7 @@ const CollabHeader = ({
   contentKey,
   tools,
 }: CollabHeaderProps) => {
+  const { t } = useTranslation("common")
   const queryClient = useQueryClient()
   const { data: session } = authClient.useSession()
   const [title, setTitle] = useState(doc.name)
@@ -75,7 +77,7 @@ const CollabHeader = ({
 
   useEffect(() => {
     const me: Peer = {
-      name: session?.user?.name || "Anonymous",
+      name: session?.user?.name || t("collabHeader.anonymous"),
       color: colorFor(session?.user?.id || session?.user?.email || "anon"),
     }
     provider.awareness.setLocalStateField("user", me)
@@ -106,10 +108,12 @@ const CollabHeader = ({
 
   const status =
     saveState === "saving"
-      ? "Saving…"
+      ? t("collabHeader.saving")
       : lastSavedAt
-        ? `Saved ${new Date(lastSavedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
-        : "Not saved yet"
+        ? t("collabHeader.savedAt", {
+            time: new Date(lastSavedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          })
+        : t("collabHeader.notSavedYet")
 
   return (
     <div className="mx-auto flex w-full max-w-[1180px] items-center gap-3">
@@ -118,7 +122,7 @@ const CollabHeader = ({
         onChange={(event) => setTitle(event.target.value)}
         onBlur={commitTitle}
         onKeyDown={(event) => event.key === "Enter" && event.currentTarget.blur()}
-        aria-label="Title"
+        aria-label={t("collabHeader.title")}
         className="h-auto border-none bg-transparent px-0 text-2xl font-semibold shadow-none focus-visible:ring-0 dark:bg-transparent"
       />
       {peers.length > 0 ? (
@@ -141,7 +145,7 @@ const CollabHeader = ({
       {doc.owner ? (
         <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
           <IconUserPlus className="size-4" />
-          Share
+          {t("collabHeader.share")}
         </Button>
       ) : null}
       <Button
@@ -151,7 +155,7 @@ const CollabHeader = ({
         onClick={onSave}
       >
         <IconDeviceFloppy className="size-4" />
-        Save
+        {t("collabHeader.save")}
       </Button>
 
       <ShareDocDialog nodeId={nodeId} name={doc.name} open={shareOpen} onOpenChange={setShareOpen} />

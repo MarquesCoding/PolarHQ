@@ -26,6 +26,7 @@ import {
 import { Switch } from "@workspace/ui/components/switch"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 const STATUS_VARIANT: Record<AdminBackupRun["status"], "secondary" | "default" | "destructive"> = {
@@ -35,6 +36,7 @@ const STATUS_VARIANT: Record<AdminBackupRun["status"], "secondary" | "default" |
 }
 
 const Backup = () => {
+  const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
   const { data: settings, isLoading } = useQuery({
     queryKey: ["admin", "backup", "settings"],
@@ -92,20 +94,20 @@ const Backup = () => {
           : { gdriveFolderId: gdriveFolderId.trim() || null }),
       }),
     onSuccess: () => {
-      toast.success("Backup settings saved")
+      toast.success(t("backup.settingsSaved"))
       setSecretAccessKey("")
       void queryClient.invalidateQueries({ queryKey: ["admin", "backup", "settings"] })
     },
-    onError: () => toast.error("Could not save backup settings"),
+    onError: () => toast.error(t("backup.settingsSaveError")),
   })
 
   const disconnect = useMutation({
     mutationFn: disconnectGdrive,
     onSuccess: () => {
-      toast.success("Google Drive disconnected")
+      toast.success(t("backup.gdriveDisconnected"))
       void queryClient.invalidateQueries({ queryKey: ["admin", "backup", "settings"] })
     },
-    onError: () => toast.error("Could not disconnect"),
+    onError: () => toast.error(t("backup.disconnectError")),
   })
 
   const ready = provider === "gdrive" ? settings?.gdriveConnected : Boolean(settings?.bucket)
@@ -113,19 +115,19 @@ const Backup = () => {
   const run = useMutation({
     mutationFn: triggerBackup,
     onSuccess: () => {
-      toast.success("Backup started")
+      toast.success(t("backup.backupStarted"))
       void queryClient.invalidateQueries({ queryKey: ["admin", "backup", "runs"] })
     },
-    onError: () => toast.error("Could not start the backup"),
+    onError: () => toast.error(t("backup.backupStartError")),
   })
 
   return (
     <AdminPage
-      title="Backup"
-      description="Scheduled off-site backups of all stored objects to an S3 bucket or Google Drive."
+      title={t("backup.title")}
+      description={t("backup.description")}
       action={
         <Button variant="secondary" disabled={!ready || run.isPending} onClick={() => run.mutate()}>
-          Run backup now
+          {t("backup.runNow")}
         </Button>
       }
     >
@@ -136,16 +138,16 @@ const Backup = () => {
           <div className="panel flex flex-col gap-5 rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
-                <span className="text-sm font-medium">Scheduled backups</span>
+                <span className="text-sm font-medium">{t("backup.scheduledBackups")}</span>
                 <span className="text-muted-foreground text-xs">
-                  Run automatically every {frequencyHours || "24"} hours.
+                  {t("backup.runEvery", { hours: frequencyHours || "24" })}
                 </span>
               </div>
               <Switch checked={enabled} onCheckedChange={setEnabled} />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="bk-provider">Destination</Label>
+              <Label htmlFor="bk-provider">{t("backup.destination")}</Label>
               <Select
                 value={provider}
                 onValueChange={(value) => setProvider(value as "s3" | "gdrive")}
@@ -154,8 +156,8 @@ const Backup = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="s3">S3-compatible bucket</SelectItem>
-                  <SelectItem value="gdrive">Google Drive</SelectItem>
+                  <SelectItem value="s3">{t("backup.s3Bucket")}</SelectItem>
+                  <SelectItem value="gdrive">{t("backup.googleDrive")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -164,7 +166,7 @@ const Backup = () => {
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="bk-bucket">Bucket</Label>
+                    <Label htmlFor="bk-bucket">{t("backup.bucket")}</Label>
                     <Input
                       id="bk-bucket"
                       value={bucket}
@@ -172,7 +174,7 @@ const Backup = () => {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="bk-region">Region</Label>
+                    <Label htmlFor="bk-region">{t("backup.region")}</Label>
                     <Input
                       id="bk-region"
                       value={region}
@@ -181,7 +183,7 @@ const Backup = () => {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="bk-endpoint">Endpoint</Label>
+                    <Label htmlFor="bk-endpoint">{t("backup.endpoint")}</Label>
                     <Input
                       id="bk-endpoint"
                       value={endpoint}
@@ -190,7 +192,7 @@ const Backup = () => {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="bk-prefix">Prefix</Label>
+                    <Label htmlFor="bk-prefix">{t("backup.prefix")}</Label>
                     <Input
                       id="bk-prefix"
                       value={prefix}
@@ -199,7 +201,7 @@ const Backup = () => {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="bk-access">Access key ID</Label>
+                    <Label htmlFor="bk-access">{t("backup.accessKeyId")}</Label>
                     <Input
                       id="bk-access"
                       value={accessKeyId}
@@ -207,12 +209,12 @@ const Backup = () => {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="bk-secret">Secret access key</Label>
+                    <Label htmlFor="bk-secret">{t("backup.secretAccessKey")}</Label>
                     <Input
                       id="bk-secret"
                       type="password"
                       value={secretAccessKey}
-                      placeholder={settings?.hasSecretKey ? "•••••••• (unchanged)" : ""}
+                      placeholder={settings?.hasSecretKey ? t("backup.secretUnchanged") : ""}
                       onChange={(event) => setSecretAccessKey(event.target.value)}
                     />
                   </div>
@@ -220,9 +222,9 @@ const Backup = () => {
 
                 <div className="flex items-center justify-between">
                   <Label htmlFor="bk-pathstyle" className="flex flex-col items-start gap-0.5">
-                    <span className="text-sm font-medium">Force path-style URLs</span>
+                    <span className="text-sm font-medium">{t("backup.forcePathStyle")}</span>
                     <span className="text-muted-foreground text-xs font-normal">
-                      Required for MinIO and most self-hosted S3.
+                      {t("backup.forcePathStyleHint")}
                     </span>
                   </Label>
                   <Switch
@@ -236,11 +238,11 @@ const Backup = () => {
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex min-w-0 flex-col">
-                    <span className="text-sm font-medium">Google Drive connection</span>
+                    <span className="text-sm font-medium">{t("backup.gdriveConnection")}</span>
                     <span className="text-muted-foreground text-xs">
                       {settings?.gdriveConnected
-                        ? "Connected — backups upload to your Drive."
-                        : "Authorize PolarHQ to upload backups to your Google Drive."}
+                        ? t("backup.gdriveConnected")
+                        : t("backup.gdriveAuthorize")}
                     </span>
                   </div>
                   <div className="flex shrink-0 gap-2">
@@ -251,7 +253,7 @@ const Backup = () => {
                         disabled={disconnect.isPending}
                         onClick={() => disconnect.mutate()}
                       >
-                        Disconnect
+                        {t("backup.disconnect")}
                       </Button>
                     ) : null}
                     <Button
@@ -260,16 +262,16 @@ const Backup = () => {
                         window.location.href = `${API_URL}/api/v1/admin/backup/gdrive/auth`
                       }}
                     >
-                      {settings?.gdriveConnected ? "Reconnect" : "Connect Google Drive"}
+                      {settings?.gdriveConnected ? t("backup.reconnect") : t("backup.connectGdrive")}
                     </Button>
                   </div>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="bk-folder">Target folder ID (optional)</Label>
+                  <Label htmlFor="bk-folder">{t("backup.targetFolderId")}</Label>
                   <Input
                     id="bk-folder"
                     value={gdriveFolderId}
-                    placeholder="Drive folder ID, or blank for My Drive"
+                    placeholder={t("backup.targetFolderPlaceholder")}
                     onChange={(event) => setGdriveFolderId(event.target.value)}
                   />
                 </div>
@@ -277,7 +279,7 @@ const Backup = () => {
             )}
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="bk-frequency">Frequency (hours)</Label>
+              <Label htmlFor="bk-frequency">{t("backup.frequencyHours")}</Label>
               <Input
                 id="bk-frequency"
                 type="number"
@@ -290,13 +292,13 @@ const Backup = () => {
 
             <div>
               <Button onClick={() => save.mutate()} disabled={save.isPending}>
-                Save settings
+                {t("backup.saveSettings")}
               </Button>
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-            <h2 className="text-sm font-semibold">Recent runs</h2>
+            <h2 className="text-sm font-semibold">{t("backup.recentRuns")}</h2>
             {runs && runs.length > 0 ? (
               <div className="panel divide-border/60 divide-y overflow-hidden rounded-xl">
                 {runs.map((entry) => (
@@ -314,7 +316,7 @@ const Backup = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-muted-foreground text-sm">No backups have run yet.</p>
+              <p className="text-muted-foreground text-sm">{t("backup.noRuns")}</p>
             )}
           </div>
         </div>

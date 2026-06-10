@@ -20,6 +20,7 @@ import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@lib/do
 import { deleteAssets, fetchProcessing, stackAssets } from "@lib/photos"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
 import { useQueryClient } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 export type UploadStatus = "uploading" | "processing" | "done" | "deduped" | "error"
@@ -177,6 +178,7 @@ const xhrUpload = (
   })
 
 export const UploadProvider = ({ children }: { children: ReactNode }) => {
+  const { t } = useTranslation("common")
   const [items, setItems] = useState<UploadItem[]>([])
   const readyAssets = useRef<Set<string>>(new Set())
   const itemsRef = useRef<UploadItem[]>([])
@@ -271,11 +273,11 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
               loaded: 0,
               speed: 0,
               status: "error",
-              error: "Unsupported file type",
+              error: t("uploadManager.unsupportedFileType"),
             },
             ...previous,
           ])
-          toast.error(`${file.name} is an unsupported file type`)
+          toast.error(t("uploadManager.unsupportedFileTypeToast", { name: file.name }))
           continue
         }
         setItems((previous) => [
@@ -403,7 +405,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
       }
       void run()
         .then(() => update(id, { status: "done" }))
-        .catch(() => update(id, { status: "error", error: "Download failed" }))
+        .catch(() => update(id, { status: "error", error: t("uploadManager.downloadFailed") }))
     },
     [update],
   )
@@ -420,7 +422,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
           update(id, { status: "done" })
           invalidate()
         })
-        .catch(() => update(id, { status: "error", error: "Archive failed" }))
+        .catch(() => update(id, { status: "error", error: t("uploadManager.archiveFailed") }))
     },
     [update, invalidate],
   )
@@ -441,7 +443,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
           update(id, { status: "done", loaded: total })
           invalidate()
         })
-        .catch(() => update(id, { status: "error", error: "Failed" }))
+        .catch(() => update(id, { status: "error", error: t("uploadManager.taskFailed") }))
     },
     [update, invalidate],
   )

@@ -1,31 +1,178 @@
 {
   "actions": {
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "create": "Create",
-    "close": "Close",
     "back": "Back",
-    "next": "Next",
+    "cancel": "Cancel",
+    "close": "Close",
     "confirm": "Confirm",
-    "download": "Download",
-    "share": "Share",
-    "rename": "Rename",
-    "remove": "Remove",
-    "open": "Open",
+    "create": "Create",
+    "delete": "Delete",
     "done": "Done",
-    "retry": "Retry",
+    "download": "Download",
     "getStarted": "Get started",
+    "next": "Next",
+    "open": "Open",
+    "remove": "Remove",
+    "rename": "Rename",
+    "retry": "Retry",
+    "save": "Save",
+    "share": "Share",
     "signOut": "Sign out"
   },
-  "state": {
-    "loading": "Loading…",
+  "appTile": {
+    "beta": "Beta",
+    "soon": "Soon"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · build {{build}}",
+    "whatsNew": "What's new"
+  },
+  "collabHeader": {
+    "anonymous": "Anonymous",
+    "notSavedYet": "Not saved yet",
+    "save": "Save",
+    "savedAt": "Saved {{time}}",
     "saving": "Saving…",
+    "share": "Share",
+    "title": "Title"
+  },
+  "confirmButton": {
+    "confirm": "Confirm"
+  },
+  "devicesDialog": {
+    "activeNow": "Active now",
+    "lastActive": "Last active {{time}}",
+    "signOut": "Sign out",
+    "signOutError": "Couldn't sign out that device",
+    "signedOut": "Device signed out",
+    "thisDevice": "This device",
+    "title": "Devices & sessions"
+  },
+  "dropZone": {
+    "dropToUpload": "Drop to upload"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Every change you make is automatically and securely saved to Drive.",
+    "encrypted": "Encrypted",
+    "endToEndEncrypted": "End-to-end encrypted"
+  },
+  "flatSidebar": {
+    "account": "Account",
+    "apps": "Apps",
+    "beta": "Beta",
+    "devices": "Devices",
+    "personalWorkspace": "Personal workspace",
+    "replayIntro": "Replay intro",
+    "settings": "Settings",
+    "signOut": "Sign out",
+    "storage": "Storage",
+    "toggleDarkMode": "Toggle dark mode",
+    "unlimited": "Unlimited"
+  },
+  "importButton": {
+    "import": "Import",
+    "importFailed": "Could not import this file"
+  },
+  "launcher": {
+    "loadingApps": "Loading apps…",
+    "ofQuota": "of {{quota}}",
+    "signOut": "Sign out",
+    "storage": "Storage",
+    "yourApps": "Your apps"
+  },
+  "recoveryCodeDialog": {
+    "continue": "I've saved it — continue",
+    "copied": "Recovery code copied",
+    "copyAriaLabel": "Copy recovery code",
+    "description": "Your account is now end-to-end encrypted. This recovery code is the only way to recover your data if you forget your password — store it somewhere safe. We can't show it again.",
+    "title": "Save your recovery code"
+  },
+  "selectionBar": {
+    "clearSelection": "Clear selection",
+    "download": "Download",
+    "downloadAllFrames": "Download all frames ({{count}})",
+    "downloadCover": "Download cover",
+    "downloadCovers": "Download covers ({{count}})",
+    "photoFilename": "Photo",
+    "photosZipFilename": "{{count}} photos.zip",
+    "share": "Share",
+    "shareNameFallback": "photo"
+  },
+  "shareDialog": {
+    "cancel": "Cancel",
+    "copyLink": "Copy link",
+    "descriptionEncrypted": "End-to-end encrypted: the key lives in the link and never reaches the server, so only people with the link can decrypt it.",
+    "descriptionPublic": "Anyone with this link can download the file.",
+    "directDownload": "Direct download",
+    "directDownloadHint": "Skip the landing page and download immediately",
+    "expiresAfter": "Expires after",
+    "expiry1Day": "1 day",
+    "expiry1Hour": "1 hour",
+    "expiry30Days": "30 days",
+    "expiry7Days": "7 days",
+    "generatingLink": "Generating link…",
+    "limitDownloads": "Limit downloads",
+    "limitDownloadsHint": "Disable the link after a number of downloads",
+    "linkCopied": "Link copied",
+    "maximumDownloads": "Maximum downloads",
+    "permanentLink": "Permanent link",
+    "permanentLinkHint": "Keep this link active until you delete it",
+    "title": "Share “{{name}}”"
+  },
+  "state": {
     "empty": "Nothing here yet",
-    "error": "Something went wrong"
+    "error": "Something went wrong",
+    "loading": "Loading…",
+    "saving": "Saving…"
   },
   "units": {
     "items_one": "{{count}} item",
     "items_other": "{{count}} items"
+  },
+  "uploadManager": {
+    "archiveFailed": "Archive failed",
+    "downloadFailed": "Download failed",
+    "taskFailed": "Failed",
+    "unsupportedFileType": "Unsupported file type",
+    "unsupportedFileTypeToast": "{{name}} is an unsupported file type"
+  },
+  "uploadPanel": {
+    "activity": "Activity",
+    "alreadyInLibrary": "Already in library",
+    "archiving": "Archiving…",
+    "archivingItems_one": "Archiving {{count}} item",
+    "archivingItems_other": "Archiving {{count}} items",
+    "archivingProgress": "Archiving {{loaded}} of {{size}}",
+    "bytesProgress": "{{loaded}} of {{size}}",
+    "clear": "Clear",
+    "collapse": "Collapse",
+    "compressing": "Compressing…",
+    "dismiss": "Dismiss",
+    "done": "Done",
+    "downloadFailed": "Download failed",
+    "downloaded": "Downloaded",
+    "downloading": "Downloading…",
+    "downloadingItems_one": "Downloading {{count}} item",
+    "downloadingItems_other": "Downloading {{count}} items",
+    "expand": "Expand",
+    "failed": "Failed",
+    "processing": "Processing…",
+    "processingItems_one": "Processing {{count}} item",
+    "processingItems_other": "Processing {{count}} items",
+    "speed": "{{speed}}/s",
+    "transcoding": "Transcoding…",
+    "uploading": "Uploading…",
+    "uploadingItems_one": "Uploading {{count}} item",
+    "uploadingItems_other": "Uploading {{count}} items"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} already in your library",
+    "alreadyInLibrary_other": "{{count}} already in your library",
+    "uploadFailed": "Failed to upload {{name}}",
+    "uploaded_one": "Uploaded {{count}} photo",
+    "uploaded_other": "Uploaded {{count}} photos"
+  },
+  "viewToggle": {
+    "gridView": "Grid view",
+    "tableView": "Table view"
   }
 }

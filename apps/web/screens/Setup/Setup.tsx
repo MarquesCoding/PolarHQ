@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "react-i18next"
 import { APP_NAME } from "@lib/env"
 import { fetchSetupStatus } from "@lib/setup"
 import AdminAccountStep from "@pages/Setup/components/AdminAccountStep/AdminAccountStep"
@@ -18,6 +19,7 @@ import {
 type Step = "admin" | "groups"
 
 const Setup = () => {
+  const { t } = useTranslation("setup")
   const router = useRouter()
   const [step, setStep] = useState<Step>("admin")
   const { data, isLoading } = useQuery({ queryKey: ["setup-status"], queryFn: fetchSetupStatus })
@@ -30,16 +32,16 @@ const Setup = () => {
     <main className="flex min-h-svh items-center justify-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Welcome to {APP_NAME}</CardTitle>
+          <CardTitle>{t("setup.welcome", { name: APP_NAME })}</CardTitle>
           <CardDescription>
             {step === "admin"
-              ? "Create the first administrator account to get started."
-              : "Set up groups for your users (optional)."}
+              ? t("setup.adminDescription")
+              : t("setup.groupsDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-muted-foreground text-sm">Loading…</p>
+            <p className="text-muted-foreground text-sm">{t("setup.loading")}</p>
           ) : step === "admin" ? (
             <AdminAccountStep onComplete={() => setStep("groups")} />
           ) : (

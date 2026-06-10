@@ -8,8 +8,10 @@ import { Switch } from "@workspace/ui/components/switch"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const Apps = () => {
+  const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
   const { data: apps, isLoading } = useQuery({
     queryKey: ["admin", "apps"],
@@ -22,13 +24,13 @@ const Apps = () => {
       void queryClient.invalidateQueries({ queryKey: ["admin", "apps"] })
       void queryClient.invalidateQueries({ queryKey: ["admin", "overview"] })
     },
-    onError: () => toast.error("Could not update the app"),
+    onError: () => toast.error(t("apps.updateError")),
   })
 
   return (
     <AdminPage
-      title="Apps"
-      description="Turn suite apps on or off for everyone on this instance."
+      title={t("apps.title")}
+      description={t("apps.description")}
     >
       {isLoading ? (
         <PageSpinner />
@@ -43,7 +45,7 @@ const Apps = () => {
                 <span className="flex items-center gap-2 text-sm font-medium">
                   {app.name}
                   {app.status === "coming_soon" ? (
-                    <Badge variant="secondary">Coming soon</Badge>
+                    <Badge variant="secondary">{t("apps.comingSoon")}</Badge>
                   ) : null}
                 </span>
                 <span className="text-muted-foreground truncate text-xs">{app.description}</span>

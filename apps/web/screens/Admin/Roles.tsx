@@ -26,6 +26,7 @@ import { Label } from "@workspace/ui/components/label"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const appOf = (key: string): string => key.split(".")[0] ?? "other"
 
@@ -48,6 +49,7 @@ const groupPermissions = (permissions: AdminPermission[]): PermissionGroup[] => 
 }
 
 const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
+  const { t } = useTranslation("admin")
   const [open, setOpen] = useState(false)
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -81,30 +83,30 @@ const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
   const create = useMutation({
     mutationFn: () => createAdminRole(name.trim(), description.trim(), [...selected]),
     onSuccess: () => {
-      toast.success("Role created")
+      toast.success(t("createRoleDialog.created"))
       setName("")
       setDescription("")
       setSelected(new Set())
       setOpen(false)
       onCreated()
     },
-    onError: () => toast.error("Could not create the role"),
+    onError: () => toast.error(t("createRoleDialog.createError")),
   })
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button>New role</Button>} />
+      <DialogTrigger render={<Button>{t("createRoleDialog.newRole")}</Button>} />
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>New role</DialogTitle>
+          <DialogTitle>{t("createRoleDialog.newRole")}</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="role-name">Name</Label>
+            <Label htmlFor="role-name">{t("createRoleDialog.name")}</Label>
             <Input id="role-name" value={name} onChange={(event) => setName(event.target.value)} />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="role-desc">Description</Label>
+            <Label htmlFor="role-desc">{t("createRoleDialog.description")}</Label>
             <Input
               id="role-desc"
               value={description}
@@ -113,7 +115,7 @@ const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
           </div>
           <div className="flex flex-col gap-1.5">
             <span className="text-sm font-medium">
-              Permissions
+              {t("createRoleDialog.permissions")}
               <span className="text-muted-foreground ml-1.5 font-normal">{selected.size}</span>
             </span>
             <div className="scrollbar-slim border-border/60 flex max-h-72 flex-col gap-4 overflow-y-auto rounded-lg border p-3">
@@ -158,9 +160,9 @@ const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
           </div>
         </div>
         <DialogFooter>
-          <DialogClose render={<Button variant="ghost">Cancel</Button>} />
+          <DialogClose render={<Button variant="ghost">{t("createRoleDialog.cancel")}</Button>} />
           <Button disabled={!name.trim() || create.isPending} onClick={() => create.mutate()}>
-            Create role
+            {t("createRoleDialog.createRole")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -169,6 +171,7 @@ const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
 }
 
 const Roles = () => {
+  const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
   const { data: roles, isLoading } = useQuery({
     queryKey: ["admin", "roles"],
@@ -184,7 +187,7 @@ const Roles = () => {
       <div className="flex min-w-0 flex-1 flex-col">
         <span className="flex items-center gap-2 text-sm font-medium">
           {role.name}
-          {role.isSystem ? <Badge variant="secondary">System</Badge> : null}
+          {role.isSystem ? <Badge variant="secondary">{t("roles.system")}</Badge> : null}
         </span>
         {role.description ? (
           <span className="text-muted-foreground truncate text-xs">{role.description}</span>
@@ -195,8 +198,8 @@ const Roles = () => {
 
   return (
     <AdminPage
-      title="Roles"
-      description="Permission sets you can assign to users and groups."
+      title={t("roles.title")}
+      description={t("roles.description")}
       action={<CreateRoleDialog onCreated={onCreated} />}
     >
       {isLoading ? (

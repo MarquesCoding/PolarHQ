@@ -2,6 +2,7 @@
 
 import { type ReactNode, useRef, useState } from "react"
 import { IconUpload } from "@tabler/icons-react"
+import { useTranslation } from "react-i18next"
 
 interface DropZoneProps {
   onFiles: (files: FileList) => void
@@ -11,6 +12,7 @@ interface DropZoneProps {
 
 /** A drag-and-drop file target with a "Drop to upload" overlay, shared by Photos + Drive. */
 const DropZone = ({ onFiles, className, children }: DropZoneProps) => {
+  const { t } = useTranslation("common")
   const depth = useRef(0)
   const [dragging, setDragging] = useState(false)
 
@@ -41,7 +43,7 @@ const DropZone = ({ onFiles, className, children }: DropZoneProps) => {
       {dragging ? (
         <div className="bg-background/80 border-primary pointer-events-none fixed inset-4 z-50 flex flex-col items-center justify-center gap-3 rounded-xl border-2 backdrop-blur-sm">
           <IconUpload className="text-primary size-10" />
-          <p className="text-lg font-medium">Drop to upload</p>
+          <p className="text-lg font-medium">{t("dropZone.dropToUpload")}</p>
         </div>
       ) : null}
     </div>

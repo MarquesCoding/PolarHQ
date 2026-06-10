@@ -5,9 +5,11 @@ import { setViewMode } from "@store/uiSlice"
 import { IconLayoutGrid, IconList } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
+import { useTranslation } from "react-i18next"
 
 /** Grid ↔ table view switch for the app toolbar. */
 const ViewToggle = () => {
+  const { t } = useTranslation("common")
   const dispatch = useAppDispatch()
   const view = useAppSelector((state) => state.ui.viewMode)
 
@@ -16,7 +18,7 @@ const ViewToggle = () => {
       <Button
         variant="ghost"
         size="icon-sm"
-        aria-label="Grid view"
+        aria-label={t("viewToggle.gridView")}
         aria-pressed={view === "grid"}
         onClick={() => dispatch(setViewMode("grid"))}
         className={cn("rounded-md", view === "grid" && "bg-background shadow-sm")}
@@ -26,7 +28,7 @@ const ViewToggle = () => {
       <Button
         variant="ghost"
         size="icon-sm"
-        aria-label="Table view"
+        aria-label={t("viewToggle.tableView")}
         aria-pressed={view === "table"}
         onClick={() => dispatch(setViewMode("table"))}
         className={cn("rounded-md", view === "table" && "bg-background shadow-sm")}

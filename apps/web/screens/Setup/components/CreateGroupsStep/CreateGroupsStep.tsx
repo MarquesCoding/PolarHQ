@@ -9,9 +9,11 @@ import { Label } from "@workspace/ui/components/label"
 import { IconUsersGroup } from "@tabler/icons-react"
 import { toast } from "sonner"
 import { z } from "zod"
+import { useTranslation } from "react-i18next"
+import { t } from "@lib/i18n/config"
 
 const schema = z.object({
-  name: z.string().min(1, "Group name is required"),
+  name: z.string().min(1, t("setup:createGroupsStep.nameRequired")),
   description: z.string(),
 })
 
@@ -20,6 +22,7 @@ interface CreateGroupsStepProps {
 }
 
 const CreateGroupsStep = ({ onFinish }: CreateGroupsStepProps) => {
+  const { t } = useTranslation("setup")
   const [groups, setGroups] = useState<Group[]>([])
 
   const form = useForm({
@@ -33,19 +36,16 @@ const CreateGroupsStep = ({ onFinish }: CreateGroupsStepProps) => {
         })
         setGroups((previous) => [...previous, group])
         form.reset()
-        toast.success(`Created group “${group.name}”`)
+        toast.success(t("createGroupsStep.createdGroup", { name: group.name }))
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : "Could not create group")
+        toast.error(error instanceof Error ? error.message : t("createGroupsStep.couldNotCreate"))
       }
     },
   })
 
   return (
     <div className="flex flex-col gap-5">
-      <p className="text-muted-foreground text-sm">
-        Groups let you assign shared roles and limits (like storage quotas) to many users at once.
-        Create a few now, or skip and do this later in admin settings.
-      </p>
+      <p className="text-muted-foreground text-sm">{t("createGroupsStep.intro")}</p>
 
       <form
         className="flex flex-col gap-3"
@@ -58,13 +58,13 @@ const CreateGroupsStep = ({ onFinish }: CreateGroupsStepProps) => {
         <form.Field name="name">
           {(field) => (
             <div className="flex flex-col gap-2">
-              <Label htmlFor={field.name}>Group name</Label>
+              <Label htmlFor={field.name}>{t("createGroupsStep.groupNameLabel")}</Label>
               <Input
                 id={field.name}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(event) => field.handleChange(event.target.value)}
-                placeholder="Power Users"
+                placeholder={t("createGroupsStep.groupNamePlaceholder")}
               />
             </div>
           )}
@@ -73,13 +73,13 @@ const CreateGroupsStep = ({ onFinish }: CreateGroupsStepProps) => {
         <form.Field name="description">
           {(field) => (
             <div className="flex flex-col gap-2">
-              <Label htmlFor={field.name}>Description (optional)</Label>
+              <Label htmlFor={field.name}>{t("createGroupsStep.descriptionLabel")}</Label>
               <Input
                 id={field.name}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(event) => field.handleChange(event.target.value)}
-                placeholder="Larger quota, early features"
+                placeholder={t("createGroupsStep.descriptionPlaceholder")}
               />
             </div>
           )}
@@ -88,7 +88,7 @@ const CreateGroupsStep = ({ onFinish }: CreateGroupsStepProps) => {
         <form.Subscribe selector={(state) => state.isSubmitting}>
           {(isSubmitting) => (
             <Button type="submit" variant="secondary" disabled={isSubmitting}>
-              {isSubmitting ? "Adding…" : "Add group"}
+              {isSubmitting ? t("createGroupsStep.adding") : t("createGroupsStep.addGroup")}
             </Button>
           )}
         </form.Subscribe>
@@ -112,7 +112,7 @@ const CreateGroupsStep = ({ onFinish }: CreateGroupsStepProps) => {
       ) : null}
 
       <Button onClick={onFinish} className="mt-1">
-        {groups.length > 0 ? "Finish setup" : "Skip & finish"}
+        {groups.length > 0 ? t("createGroupsStep.finishSetup") : t("createGroupsStep.skipFinish")}
       </Button>
     </div>
   )

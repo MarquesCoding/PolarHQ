@@ -10,8 +10,10 @@ import AppTile from "@pages/Launcher/components/AppTile/AppTile"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { motion } from "motion/react"
+import { useTranslation } from "react-i18next"
 
 const Launcher = () => {
+  const { t } = useTranslation("common")
   const router = useRouter()
   const { data: apps, isLoading } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
   const { data: usage } = useQuery({ queryKey: ["photos", "usage"], queryFn: fetchUsage })
@@ -37,15 +39,15 @@ const Launcher = () => {
             </span>
           ) : null}
           <Button variant="outline" size="sm" onClick={signOut}>
-            Sign out
+            {t("launcher.signOut")}
           </Button>
         </div>
       </header>
 
       <section className="flex flex-col gap-4">
-        <h2 className="text-muted-foreground text-sm font-medium">Your apps</h2>
+        <h2 className="text-muted-foreground text-sm font-medium">{t("launcher.yourApps")}</h2>
         {isLoading ? (
-          <p className="text-muted-foreground text-sm">Loading apps…</p>
+          <p className="text-muted-foreground text-sm">{t("launcher.loadingApps")}</p>
         ) : (
           <motion.div
             className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
@@ -64,10 +66,12 @@ const Launcher = () => {
         {usage ? (
           <div className="flex w-full max-w-xs flex-col gap-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground font-medium">Storage</span>
+              <span className="text-muted-foreground font-medium">{t("launcher.storage")}</span>
               <span className="text-muted-foreground">
                 {formatBytes(usage.usedBytes)}
-                {usage.quotaBytes ? ` of ${formatBytes(usage.quotaBytes)}` : ""}
+                {usage.quotaBytes
+                  ? ` ${t("launcher.ofQuota", { quota: formatBytes(usage.quotaBytes) })}`
+                  : ""}
               </span>
             </div>
             <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">

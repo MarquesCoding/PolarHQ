@@ -8,6 +8,7 @@ import { setActiveApp } from "@store/uiSlice"
 import { Card } from "@workspace/ui/components/card"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
+import { useTranslation } from "react-i18next"
 
 export const tileVariants = {
   hidden: { opacity: 0, y: 8 },
@@ -19,6 +20,7 @@ interface AppTileProps {
 }
 
 const AppTile = ({ app }: AppTileProps) => {
+  const { t } = useTranslation("common")
   const router = useRouter()
   const dispatch = useAppDispatch()
 
@@ -56,11 +58,11 @@ const AppTile = ({ app }: AppTileProps) => {
       >
         {app.status === "coming_soon" ? (
           <span className="bg-muted text-muted-foreground absolute top-2 right-2 rounded-full px-2 py-0.5 text-[10px] font-medium">
-            Soon
+            {t("appTile.soon")}
           </span>
         ) : app.beta ? (
           <span className="bg-primary/15 text-primary absolute top-2 right-2 rounded-full px-2 py-0.5 text-[10px] font-medium">
-            Beta
+            {t("appTile.beta")}
           </span>
         ) : null}
         <Icon name={app.icon} className="size-8" />

@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { type Release, RELEASES } from "@workspace/changelog"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
@@ -95,6 +96,7 @@ const ReleaseEntry = ({ release }: { release: Release }) => (
 
 /** Clickable app-version footer that opens an in-app "What's new" changelog. */
 const Changelog = ({ version, build }: { version: string; build: string }) => {
+  const { t } = useTranslation("common")
   const [open, setOpen] = useState(false)
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -104,13 +106,13 @@ const Changelog = ({ version, build }: { version: string; build: string }) => {
             variant="link"
             className="text-muted-foreground/60 hover:text-muted-foreground h-auto p-0 font-mono text-[10px] font-normal tracking-tight"
           >
-            v{version} · build {build}
+            {t("changelog.versionBuild", { version, build })}
           </Button>
         }
       />
       <DialogContent className="flex max-h-[85vh] w-full max-w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl">
         <DialogHeader className="border-border border-b px-6 py-4">
-          <DialogTitle>What&apos;s new</DialogTitle>
+          <DialogTitle>{t("changelog.whatsNew")}</DialogTitle>
         </DialogHeader>
         <div className="scrollbar-slim flex flex-1 flex-col gap-6 overflow-y-auto px-6 py-5">
           {RELEASES.map((release) => (
