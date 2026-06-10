@@ -17,8 +17,8 @@ export const registerPhotosModule = (): void => {
   registerLimit({
     key: "storage.quota.bytes",
     type: "bytes",
-    strategy: "override",
-    systemDefault: 50_000_000_000,
+    strategy: "max",
+    systemDefault: null,
   })
   registerLimit({
     key: "photos.upload.maxFileBytes",
