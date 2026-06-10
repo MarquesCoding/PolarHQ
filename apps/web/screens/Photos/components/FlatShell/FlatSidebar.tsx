@@ -311,30 +311,6 @@ const FlatSidebar = () => {
           </div>
         </div>
 
-        <div className="flex justify-center py-0.5">
-          <button
-            type="button"
-            role="switch"
-            aria-checked={dark}
-            aria-label="Toggle dark mode"
-            onClick={() => setTheme(dark ? "light" : "dark")}
-            className="bg-sidebar-accent relative h-5 w-9 shrink-0 rounded-full transition-colors"
-          >
-            <span
-              className={cn(
-                "bg-background absolute top-0.5 left-0.5 flex size-4 items-center justify-center rounded-full shadow transition-transform",
-                dark && "translate-x-4",
-              )}
-            >
-              {dark ? (
-                <IconMoon className="size-2.5" />
-              ) : (
-                <IconSun className="text-amber-500 size-2.5" />
-              )}
-            </span>
-          </button>
-        </div>
-
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
@@ -376,6 +352,30 @@ const FlatSidebar = () => {
 
         <div className="px-1 pt-0.5 text-center">
           <Changelog version={APP_VERSION} build={APP_BUILD} />
+        </div>
+
+        <div className="flex justify-center">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={dark}
+            aria-label="Toggle dark mode"
+            onClick={() => setTheme(dark ? "light" : "dark")}
+            className="bg-sidebar-accent relative h-4 w-7 shrink-0 rounded-full transition-colors"
+          >
+            <span
+              className={cn(
+                "bg-background absolute top-0.5 left-0.5 flex size-3 items-center justify-center rounded-full shadow transition-transform",
+                dark && "translate-x-3",
+              )}
+            >
+              {dark ? (
+                <IconMoon className="size-2" />
+              ) : (
+                <IconSun className="text-amber-500 size-2" />
+              )}
+            </span>
+          </button>
         </div>
       </div>
 
