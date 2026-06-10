@@ -24,12 +24,33 @@ export interface BoardElement {
   text?: string
   /** For image elements: a data URL. */
   src?: string
+  /** Rotation in radians, about the element's bounding-box center. */
+  angle?: number
   stroke: string
   fill: string
   strokeWidth: number
   /** 0–100. */
   opacity: number
   fontSize?: number
+}
+
+/** Rotate a point around a pivot by `angle` radians. */
+export const rotatePoint = (
+  p: { x: number; y: number },
+  pivot: { x: number; y: number },
+  angle: number,
+): { x: number; y: number } => {
+  const s = Math.sin(angle)
+  const c = Math.cos(angle)
+  const dx = p.x - pivot.x
+  const dy = p.y - pivot.y
+  return { x: pivot.x + dx * c - dy * s, y: pivot.y + dx * s + dy * c }
+}
+
+/** The element's bounding-box center (rotation pivot). */
+export const centerOf = (el: BoardElement): { x: number; y: number } => {
+  const b = bounds(el)
+  return { x: b.x + b.w / 2, y: b.y + b.h / 2 }
 }
 
 export interface Style {
