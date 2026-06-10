@@ -1,31 +1,34 @@
+"use client"
+
 import type { ReactNode } from "react"
-import AppShell from "@components/AppShell/AppShell"
-import SuiteTitleBar from "@components/SuiteTitleBar/SuiteTitleBar"
-import CollabSidebar from "@pages/Collab/CollabSidebar"
+import { FlatShell, FlatSidebar, FlatTopBar, type TopBarTitle } from "@components/FlatShell"
+import CollabNav from "@pages/Collab/CollabNav"
 import CollabToolbar from "@pages/Collab/CollabToolbar"
 
+const TITLES: TopBarTitle[] = [{ match: () => true, label: "Whiteboards", icon: "palette" }]
+
 const Layout = ({ children }: { children: ReactNode }) => (
-  <AppShell
+  <FlatShell
     sidebar={
-      <CollabSidebar
-        type="board"
-        route="/whiteboards"
-        productName="Whiteboard"
-        icon="palette"
-        navLabel="My Whiteboards"
-        listLabel="Whiteboards"
-        beta
-      />
+      <FlatSidebar productName="Whiteboard" beta searchPlaceholder="Search Whiteboards">
+        <CollabNav
+          type="board"
+          route="/whiteboards"
+          icon="palette"
+          navLabel="My Whiteboards"
+          listLabel="Whiteboards"
+        />
+      </FlatSidebar>
     }
-    titleBar={
-      <SuiteTitleBar
-        searchPlaceholder="Search Whiteboards"
+    topBar={
+      <FlatTopBar
+        titles={TITLES}
         extra={<CollabToolbar type="board" route="/whiteboards" createLabel="New whiteboard" />}
       />
     }
   >
     {children}
-  </AppShell>
+  </FlatShell>
 )
 
 export default Layout

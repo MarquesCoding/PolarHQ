@@ -1,31 +1,35 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { authClient } from "@lib/authClient"
 import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@lib/e2e"
 import { UploadProvider } from "@lib/uploadManager"
-import GlobalActionBar from "@components/GlobalActionBar/GlobalActionBar"
 import Spinner from "@components/Spinner/Spinner"
 import UploadPanel from "@components/UploadPanel/UploadPanel"
 import UnlockDialog from "@pages/Docs/components/UnlockDialog/UnlockDialog"
-import { cn } from "@workspace/ui/lib/utils"
-import { motion } from "motion/react"
 
-const scrollClasses = "overflow-y-auto overscroll-none scrollbar-slim"
+/** Stationary overlay slot id — content that must not scroll (e.g. the Photos timeline rail)
+ *  portals into here; it sits below the top bar and over the scrolling main column. */
+export const CONTENT_OVERLAY_ID = "app-content-overlay"
 
-interface AppShellProps {
+interface FlatShellProps {
+  /** The configured `FlatSidebar`. */
   sidebar: ReactNode
-  titleBar: ReactNode
+  /** The configured `FlatTopBar`. */
+  topBar: ReactNode
   children: ReactNode
 }
 
-/** Shared suite chrome: action rail, sidebar slot, title-bar slot, upload manager + panel. */
-const AppShell = ({ sidebar, titleBar, children }: AppShellProps) => {
+/**
+ * Shared "flat" app chrome: a single full-height sidebar and an edge-to-edge content column
+ * (top bar + scrolling main + a stationary overlay slot) — no app rail, no floating panels.
+ * Handles auth redirect, the encryption-unlock prompt, the upload manager, and iframe-embedded
+ * mode (sidebar hidden). Every app shares this; apps differ only in the sidebar/top-bar content.
+ */
+const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
   const router = useRouter()
-  const pathname = usePathname()
   const { data: session, isPending } = authClient.useSession()
-
   const [embedded, setEmbedded] = useState(false)
   const [unlockOpen, setUnlockOpen] = useState(false)
 
@@ -41,8 +45,6 @@ const AppShell = ({ sidebar, titleBar, children }: AppShellProps) => {
     if (!isPending && !session?.user) router.replace("/sign-in")
   }, [isPending, session, router])
 
-  // Logged in but keys not loaded (e.g. an older session): prompt to set up / unlock
-  // encryption once, so documents are actually encrypted by default.
   useEffect(() => {
     if (embedded || !session?.user) return
     let cancelled = false
@@ -66,29 +68,25 @@ const AppShell = ({ sidebar, titleBar, children }: AppShellProps) => {
     )
   }
 
-  const contentColumn = (
-    <div className="flex min-w-0 flex-1 flex-col gap-2 overflow-hidden">
-      {titleBar}
-      <main className={cn("panel min-w-0 flex-1 rounded-xl", scrollClasses)}>
-        <motion.div
-          key={pathname}
-          className="flex min-h-full flex-col"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-        >
+  const content = (
+    <div className="flex min-h-0 flex-1 flex-col">
+      {topBar}
+      <div className="relative flex min-h-0 flex-1 flex-col">
+        <main className="scrollbar-slim min-h-0 flex-1 overflow-y-auto overscroll-none">
           {children}
-        </motion.div>
-      </main>
+        </main>
+        <div
+          id={CONTENT_OVERLAY_ID}
+          className="pointer-events-none absolute inset-0 z-40"
+        />
+      </div>
     </div>
   )
 
   if (embedded) {
     return (
       <UploadProvider>
-        <div className="bg-background flex h-svh gap-2 overflow-hidden select-none">
-          {contentColumn}
-        </div>
+        <div className="bg-background flex h-svh overflow-hidden select-none">{content}</div>
         <UploadPanel />
       </UploadProvider>
     )
@@ -96,12 +94,9 @@ const AppShell = ({ sidebar, titleBar, children }: AppShellProps) => {
 
   return (
     <UploadProvider>
-      <div className="bg-background flex h-svh gap-2 overflow-hidden p-2 select-none">
-        <GlobalActionBar />
-        <div className="relative flex min-w-0 flex-1 gap-2">
-          {sidebar}
-          {contentColumn}
-        </div>
+      <div className="bg-background flex h-svh overflow-hidden select-none">
+        {sidebar}
+        <div className="border-border flex min-w-0 flex-1 flex-col border-l">{content}</div>
       </div>
       <UploadPanel />
       <UnlockDialog
@@ -113,4 +108,4 @@ const AppShell = ({ sidebar, titleBar, children }: AppShellProps) => {
   )
 }
 
-export default AppShell
+export default FlatShell
