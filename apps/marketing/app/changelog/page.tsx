@@ -37,21 +37,25 @@ const ChangelogPage = () => (
               v{release.version}
             </span>
             <span className="text-muted-foreground text-sm">{formatDate(release.date)}</span>
-            <div className="flex flex-wrap gap-2">
-              {release.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="border-border/60 text-muted-foreground rounded-md border px-2 py-0.5 text-[11px]"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+            {release.tags && release.tags.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {release.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="border-border/60 text-muted-foreground rounded-md border px-2 py-0.5 text-[11px]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            ) : null}
           </div>
 
-          <h2 className="text-foreground mb-6 text-2xl font-semibold tracking-tight">
-            {release.title}
-          </h2>
+          {release.title ? (
+            <h2 className="text-foreground mb-6 text-2xl font-semibold tracking-tight">
+              {release.title}
+            </h2>
+          ) : null}
 
           <Markdown>{release.content}</Markdown>
         </section>
