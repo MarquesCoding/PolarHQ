@@ -129,7 +129,7 @@ const FlatSidebar = ({
               Apps
             </p>
             {(apps ?? [])
-              .filter((app) => app.available && app.route !== "/")
+              .filter((app) => app.available && app.route !== "/" && app.id !== "admin")
               .map((app) => {
                 const current = pathname.startsWith(app.route)
                 return (

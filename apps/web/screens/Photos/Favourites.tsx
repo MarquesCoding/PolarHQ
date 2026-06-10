@@ -4,6 +4,7 @@ import { favoriteAssets, fetchAssets, trashAssets } from "@lib/photos"
 import { Icon } from "@lib/icons"
 import CollectionView from "@pages/Photos/components/CollectionView/CollectionView"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
+import EmptyState from "@components/EmptyState/EmptyState"
 import { IconHeartOff } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
@@ -23,7 +24,14 @@ const Favourites = () => (
     title="Favourites"
     queryKey={["photos", "favourites"]}
     fetcher={(cursor) => fetchAssets({ view: "favourites", cursor })}
-    emptyText="No favourites yet. Select photos and mark them as favourites."
+    emptyText="No favourites yet."
+    emptyState={
+      <EmptyState
+        icon="favourites"
+        title="No favourites yet"
+        hint="Tap the heart on any photo to keep your best shots one click away."
+      />
+    }
     onDeleteSelected={trashAssets}
     actions={(ids, after, deleteConfirm) => (
       <>

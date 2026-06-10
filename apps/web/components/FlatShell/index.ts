@@ -1,4 +1,5 @@
 export { default as FlatShell, CONTENT_OVERLAY_ID } from "./FlatShell"
 export { default as FlatSidebar } from "./FlatSidebar"
-export { default as FlatTopBar, type TopBarTitle } from "./FlatTopBar"
+export { default as FlatTopBar, type TopBarTitle, TOPBAR_SLOT_ID } from "./FlatTopBar"
+export { default as TopBarActions } from "./TopBarActions"
 export { ActiveBg, NAV_LAYOUT_ID, NavRow, SectionLabel, navRowClass } from "./nav"

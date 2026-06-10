@@ -18,7 +18,10 @@ export interface CollectionViewProps {
   queryKey: unknown[]
   fetcher: (cursor?: string) => Promise<TimelinePage>
   emptyText: string
-  headerExtra?: ReactNode
+  /** Optional rich empty state (icon + copy); falls back to `emptyText` when omitted. */
+  emptyState?: ReactNode
+  /** Optional subtle banner shown above the grid (e.g. the trash auto-delete notice). */
+  notice?: ReactNode
   actions: (ids: string[], afterAction: () => void, deleteConfirm: ArmedConfirm) => ReactNode
   onDeleteSelected?: (ids: string[]) => Promise<unknown>
   deleteMessage?: string
@@ -28,7 +31,8 @@ const CollectionInner = ({
   queryKey,
   fetcher,
   emptyText,
-  headerExtra,
+  emptyState,
+  notice,
   actions,
   onDeleteSelected,
   deleteMessage,
@@ -74,17 +78,17 @@ const CollectionInner = ({
   })
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-6">
-      {headerExtra ? (
-        <div className="flex items-center justify-end gap-3">{headerExtra}</div>
-      ) : null}
+    <div className="flex flex-1 flex-col p-6">
+      {notice ? <div className="mb-4">{notice}</div> : null}
 
       {query.isLoading ? (
         <PageSpinner />
       ) : visible.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          {search ? "No photos match your search." : emptyText}
-        </p>
+        search ? (
+          <p className="text-muted-foreground text-sm">No photos match your search.</p>
+        ) : (
+          (emptyState ?? <p className="text-muted-foreground text-sm">{emptyText}</p>)
+        )
       ) : (
         <PhotoGrid
           assets={visible}

@@ -1,8 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { createAlbum, fetchAlbums } from "@lib/photos"
+import { type Album, createAlbum, fetchAlbums } from "@lib/photos"
+import { fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
+import EmptyState from "@components/EmptyState/EmptyState"
+import { TopBarActions } from "@components/FlatShell"
+import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
 import { IconPlus, IconStack2 } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
@@ -15,6 +19,51 @@ import {
 import { Input } from "@workspace/ui/components/input"
 import { motion } from "motion/react"
 import { toast } from "sonner"
+
+/** Album cover thumbnail — decrypts the cover client-side for E2E albums (it's ciphertext at rest). */
+const AlbumCover = ({ album }: { album: Album }) => {
+  const [src, setSrc] = useState<string | null>(() =>
+    album.coverEncrypted
+      ? (album.coverAssetId ? (decryptedThumbnails.get(album.coverAssetId) ?? null) : null)
+      : album.coverThumbnailUrl,
+  )
+  useEffect(() => {
+    if (!album.coverEncrypted) {
+      setSrc(album.coverThumbnailUrl)
+      return
+    }
+    if (!album.coverAssetId) return
+    const cached = decryptedThumbnails.get(album.coverAssetId)
+    if (cached) {
+      setSrc(cached)
+      return
+    }
+    let on = true
+    void fetchDecryptedPhotoThumbnail(album.coverAssetId).then((result) => {
+      if (!result) return
+      decryptedThumbnails.set(album.coverAssetId as string, result)
+      if (on) setSrc(result)
+    })
+    return () => {
+      on = false
+    }
+  }, [album.coverAssetId, album.coverEncrypted, album.coverThumbnailUrl])
+
+  if (!src) {
+    return (
+      <div className="text-muted-foreground flex h-full w-full items-center justify-center">
+        <IconStack2 className="size-6" />
+      </div>
+    )
+  }
+  return (
+    <img
+      src={src}
+      alt={album.name}
+      className="h-full w-full object-cover transition group-hover:brightness-95"
+    />
+  )
+}
 
 const Albums = () => {
   const queryClient = useQueryClient()
@@ -34,13 +83,13 @@ const Albums = () => {
   })
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-6">
-      <header className="flex items-center justify-end">
-        <Button onClick={() => setOpen(true)}>
+    <div className="flex flex-1 flex-col p-6">
+      <TopBarActions>
+        <Button size="sm" onClick={() => setOpen(true)}>
           <IconPlus className="size-4" />
           New album
         </Button>
-      </header>
+      </TopBarActions>
 
       {isLoading ? (
         <p className="text-muted-foreground text-sm">Loading albums…</p>
@@ -54,17 +103,7 @@ const Albums = () => {
                 whileTap={{ scale: 0.99 }}
                 transition={{ type: "spring", stiffness: 400, damping: 28 }}
               >
-                {album.coverThumbnailUrl ? (
-                  <img
-                    src={album.coverThumbnailUrl}
-                    alt={album.name}
-                    className="h-full w-full object-cover transition group-hover:brightness-95"
-                  />
-                ) : (
-                  <div className="text-muted-foreground flex h-full w-full items-center justify-center">
-                    <IconStack2 className="size-6" />
-                  </div>
-                )}
+                <AlbumCover album={album} />
               </motion.div>
               <div>
                 <p className="truncate text-sm font-medium">{album.name}</p>
@@ -76,9 +115,16 @@ const Albums = () => {
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground text-sm">
-          No albums yet. Create one to organise your photos.
-        </p>
+        <EmptyState
+          icon="albums"
+          title="No albums yet"
+          hint="Group your photos into albums for trips, people and events."
+        >
+          <Button size="sm" onClick={() => setOpen(true)}>
+            <IconPlus className="size-4" />
+            New album
+          </Button>
+        </EmptyState>
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>

@@ -1,5 +1,8 @@
-import Home from "@pages/Home/Home"
+import { redirect } from "next/navigation"
 
-const Page = () => <Home />
+/** The suite opens straight into Photos — no app-grid launcher. */
+const Page = () => {
+  redirect("/photos")
+}
 
 export default Page
