@@ -3,6 +3,7 @@
 import { type PointerEvent as ReactPointerEvent, type RefObject, useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { AnimatePresence, motion } from "motion/react"
+import { CONTENT_OVERLAY_ID } from "@components/FlatShell"
 
 export interface TimelineMarker {
   y: number
@@ -26,7 +27,7 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
   const [slot, setSlot] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
-    setSlot(document.getElementById("photos-rail-root"))
+    setSlot(document.getElementById(CONTENT_OVERLAY_ID))
   }, [])
 
   if (markers.length === 0 || totalHeight <= 0 || !slot) return null

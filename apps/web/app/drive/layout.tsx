@@ -1,16 +1,26 @@
+"use client"
+
 import type { ReactNode } from "react"
-import AppShell from "@components/AppShell/AppShell"
-import SuiteTitleBar from "@components/SuiteTitleBar/SuiteTitleBar"
-import DriveSidebar from "@pages/Drive/components/DriveSidebar/DriveSidebar"
+import { FlatShell, FlatSidebar, FlatTopBar, type TopBarTitle } from "@components/FlatShell"
+import DriveNav from "@pages/Drive/components/DriveNav/DriveNav"
 import DriveToolbar from "@pages/Drive/components/DriveToolbar/DriveToolbar"
 
+const TITLES: TopBarTitle[] = [
+  { match: (p) => p === "/drive/trash", label: "Trash", icon: "trash" },
+  { match: () => true, label: "My Drive", icon: "folder" },
+]
+
 const Layout = ({ children }: { children: ReactNode }) => (
-  <AppShell
-    sidebar={<DriveSidebar />}
-    titleBar={<SuiteTitleBar searchPlaceholder="Search Drive" extra={<DriveToolbar />} />}
+  <FlatShell
+    sidebar={
+      <FlatSidebar productName="Drive" beta searchPlaceholder="Search Drive">
+        <DriveNav />
+      </FlatSidebar>
+    }
+    topBar={<FlatTopBar titles={TITLES} extra={<DriveToolbar />} />}
   >
     {children}
-  </AppShell>
+  </FlatShell>
 )
 
 export default Layout
