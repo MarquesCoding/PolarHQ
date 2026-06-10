@@ -11,6 +11,9 @@ export interface TopBarTitle {
   icon: string
 }
 
+/** Portal target id for page-injected top-bar controls (see TopBarActions). */
+export const TOPBAR_SLOT_ID = "flat-topbar-slot"
+
 interface FlatTopBarProps {
   /** Ordered title entries; the first match (falling back to the first entry) is shown. */
   titles: TopBarTitle[]
@@ -18,7 +21,8 @@ interface FlatTopBarProps {
   extra?: ReactNode
 }
 
-/** Shared flat top bar: a route-aware icon + title on the left, app controls on the right. */
+/** Shared flat top bar: a route-aware icon + title on the left, app controls on the right.
+ *  Pages can also teleport their own controls in via <TopBarActions> (the slot div below). */
 const FlatTopBar = ({ titles, extra }: FlatTopBarProps) => {
   const pathname = usePathname()
   const current = titles.find((entry) => entry.match(pathname)) ?? titles[0]
@@ -31,7 +35,10 @@ const FlatTopBar = ({ titles, extra }: FlatTopBarProps) => {
           <span className="text-sm font-medium">{current.label}</span>
         </>
       ) : null}
-      {extra ? <div className="ml-auto">{extra}</div> : null}
+      <div className="ml-auto flex items-center gap-2">
+        <div id={TOPBAR_SLOT_ID} className="flex items-center gap-2 empty:hidden" />
+        {extra}
+      </div>
     </header>
   )
 }

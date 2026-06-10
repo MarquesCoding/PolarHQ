@@ -131,6 +131,8 @@ export interface Album {
   description: string | null
   assetCount: number
   coverThumbnailUrl: string | null
+  coverAssetId: string | null
+  coverEncrypted: boolean
   createdAt: string
   updatedAt: string
 }

@@ -14,7 +14,7 @@ interface ConfirmButtonProps {
   children: ReactNode
   confirmLabel?: string
   icon?: ReactNode
-  idleVariant?: "ghost" | "outline" | "secondary"
+  idleVariant?: "ghost" | "outline" | "secondary" | "destructive-solid"
 }
 
 const ConfirmButton = ({
@@ -58,7 +58,14 @@ const ConfirmButton = ({
       transition={{ layout: { duration: 0.2, ease: "easeOut" } }}
       onClick={handleClick}
       className={cn(
-        buttonVariants({ variant: armed ? "destructive" : idleVariant, size: "sm" }),
+        buttonVariants({
+          variant: armed
+            ? idleVariant === "destructive-solid"
+              ? "destructive-solid"
+              : "destructive"
+            : idleVariant,
+          size: "sm",
+        }),
         "overflow-hidden",
       )}
     >

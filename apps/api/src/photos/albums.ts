@@ -9,6 +9,8 @@ export interface AlbumDto {
   description: string | null
   assetCount: number
   coverThumbnailUrl: string | null
+  coverAssetId: string | null
+  coverEncrypted: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -19,23 +21,37 @@ const presign = async (key: string | null): Promise<string | null> => {
   return driver.supportsPresign ? driver.presignGet(key, 3600) : null
 }
 
-const coverKeyFor = async (albumId: string, coverAssetId: string | null): Promise<string | null> => {
+interface CoverInfo {
+  key: string
+  assetId: string
+  encrypted: boolean
+}
+
+const coverInfoFor = async (
+  albumId: string,
+  coverAssetId: string | null,
+): Promise<CoverInfo | null> => {
   if (coverAssetId) {
     const rows = await db
-      .select({ key: schema.assets.thumbnailKey })
+      .select({ key: schema.assets.thumbnailKey, encrypted: schema.assets.encrypted })
       .from(schema.assets)
       .where(eq(schema.assets.id, coverAssetId))
       .limit(1)
-    if (rows[0]?.key) return rows[0].key
+    if (rows[0]?.key) return { key: rows[0].key, assetId: coverAssetId, encrypted: rows[0].encrypted }
   }
   const fallback = await db
-    .select({ key: schema.assets.thumbnailKey })
+    .select({
+      id: schema.assets.id,
+      key: schema.assets.thumbnailKey,
+      encrypted: schema.assets.encrypted,
+    })
     .from(schema.assets)
     .innerJoin(schema.albumAssets, eq(schema.albumAssets.assetId, schema.assets.id))
     .where(eq(schema.albumAssets.albumId, albumId))
     .orderBy(desc(schema.albumAssets.addedAt))
     .limit(1)
-  return fallback[0]?.key ?? null
+  const row = fallback[0]
+  return row?.key ? { key: row.key, assetId: row.id, encrypted: row.encrypted } : null
 }
 
 export const listAlbums = async (ownerId: string): Promise<AlbumDto[]> => {
@@ -51,13 +67,16 @@ export const listAlbums = async (ownerId: string): Promise<AlbumDto[]> => {
       .select({ count: sql<number>`count(*)::int` })
       .from(schema.albumAssets)
       .where(eq(schema.albumAssets.albumId, album.id))
-    const coverThumbnailUrl = await presign(await coverKeyFor(album.id, album.coverAssetId))
+    const cover = await coverInfoFor(album.id, album.coverAssetId)
+    const coverThumbnailUrl = await presign(cover?.key ?? null)
     result.push({
       id: album.id,
       name: album.name,
       description: album.description,
       assetCount: countRows[0]?.count ?? 0,
       coverThumbnailUrl,
+      coverAssetId: cover?.assetId ?? null,
+      coverEncrypted: cover?.encrypted ?? false,
       createdAt: album.createdAt,
       updatedAt: album.updatedAt,
     })
