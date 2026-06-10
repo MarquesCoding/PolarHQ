@@ -15,6 +15,7 @@ import {
 import { Input } from "@workspace/ui/components/input"
 import { Kbd } from "@workspace/ui/components/kbd"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 interface AddToAlbumDialogProps {
   assetIds: string[]
@@ -29,6 +30,7 @@ const AddToAlbumDialog = ({
   open: openProp,
   onOpenChange,
 }: AddToAlbumDialogProps) => {
+  const { t } = useTranslation("photos")
   const queryClient = useQueryClient()
   const [internalOpen, setInternalOpen] = useState(false)
   const open = openProp ?? internalOpen
@@ -49,10 +51,10 @@ const AddToAlbumDialog = ({
   const add = useMutation({
     mutationFn: (albumId: string) => addToAlbum(albumId, assetIds),
     onSuccess: () => {
-      toast.success("Added to album")
+      toast.success(t("addToAlbumDialog.addedToast"))
       finish()
     },
-    onError: () => toast.error("Could not add to album"),
+    onError: () => toast.error(t("addToAlbumDialog.addErrorToast")),
   })
 
   const create = useMutation({
@@ -61,37 +63,37 @@ const AddToAlbumDialog = ({
       await addToAlbum(album.id, assetIds)
     },
     onSuccess: () => {
-      toast.success("Album created")
+      toast.success(t("addToAlbumDialog.createdToast"))
       setName("")
       finish()
     },
-    onError: () => toast.error("Could not create album"),
+    onError: () => toast.error(t("addToAlbumDialog.createErrorToast")),
   })
 
   return (
     <>
       <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
         <Icon name="albums" className="size-4" />
-        Album
+        {t("addToAlbumDialog.albumButton")}
         <Kbd>⇧L</Kbd>
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add to album</DialogTitle>
+            <DialogTitle>{t("addToAlbumDialog.title")}</DialogTitle>
           </DialogHeader>
           <div className="flex items-center gap-2">
             <Input
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="New album name"
+              placeholder={t("addToAlbumDialog.namePlaceholder")}
               onKeyDown={(event) => {
                 if (event.key === "Enter" && name.trim()) create.mutate()
               }}
             />
             <Button onClick={() => create.mutate()} disabled={!name.trim() || create.isPending}>
               <IconPlus className="size-4" />
-              Create
+              {t("addToAlbumDialog.create")}
             </Button>
           </div>
           <div className="flex max-h-72 flex-col gap-1 overflow-y-auto">
@@ -107,7 +109,7 @@ const AddToAlbumDialog = ({
               </Button>
             ))}
             {albums && albums.length === 0 ? (
-              <p className="text-muted-foreground p-2 text-sm">No albums yet. Create one above.</p>
+              <p className="text-muted-foreground p-2 text-sm">{t("addToAlbumDialog.empty")}</p>
             ) : null}
           </div>
         </DialogContent>

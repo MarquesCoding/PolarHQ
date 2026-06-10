@@ -24,6 +24,7 @@ import ShareDialog from "@components/ShareDialog/ShareDialog"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 interface LightboxProps {
   assets: GridAsset[]
@@ -87,6 +88,7 @@ const FilmstripThumb = ({ asset, active }: { asset: GridAsset; active: boolean }
 }
 
 const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: LightboxProps) => {
+  const { t } = useTranslation("photos")
   const queryClient = useQueryClient()
   const upload = useUploadManager()
   const [infoPref, setInfoPref] = usePersistentNumber("photos.lightboxDetails", 0)
@@ -124,7 +126,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
         })
       } else {
         deleteArmed.current = true
-        toast("Press Shift+D again to move to trash")
+        toast(t("lightbox.confirmTrashHint"))
         window.setTimeout(() => {
           deleteArmed.current = false
         }, 3000)
@@ -189,9 +191,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
     }
     try {
       await navigator.clipboard.write([new ClipboardItem({ "image/png": toPng() })])
-      toast.success("Image copied to clipboard")
+      toast.success(t("lightbox.imageCopied"))
     } catch {
-      toast.error("Couldn't copy image")
+      toast.error(t("lightbox.imageCopyFailed"))
     }
   }
 
@@ -259,7 +261,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Close"
+            aria-label={t("lightbox.close")}
             onClick={onClose}
             className="rounded-full"
           >
@@ -277,7 +279,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Zoom out"
+              aria-label={t("lightbox.zoomOut")}
               onClick={zoom.zoomOut}
               className="rounded-full"
             >
@@ -289,7 +291,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Zoom in"
+              aria-label={t("lightbox.zoomIn")}
               onClick={zoom.zoomIn}
               className="rounded-full"
             >
@@ -299,7 +301,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Reset zoom"
+              aria-label={t("lightbox.resetZoom")}
               onClick={zoom.reset}
               className="rounded-full"
             >
@@ -312,18 +314,18 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Play motion"
+              aria-label={t("lightbox.playMotion")}
               onClick={() => setPlayMotion((value) => !value)}
               className={cn("rounded-full", playMotion && "bg-muted")}
             >
               <IconLivePhoto className="size-5" />
             </Button>
           ) : null}
-          <Tip label="Favourite">
+          <Tip label={t("lightbox.favourite")}>
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Favourite"
+              aria-label={t("lightbox.favourite")}
               onClick={toggleFavourite}
               className="rounded-full"
             >
@@ -331,14 +333,14 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             </Button>
           </Tip>
           {asset.type === "image" ? (
-            <Tip label="Edit">
+            <Tip label={t("lightbox.edit")}>
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Edit image"
+                aria-label={t("lightbox.editImage")}
                 onClick={() => {
                   if (asset.encrypted && !decryptedSrc) {
-                    toast("Decrypting…")
+                    toast(t("lightbox.decrypting"))
                     return
                   }
                   setEditing(true)
@@ -350,11 +352,11 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             </Tip>
           ) : null}
           {asset.type === "image" ? (
-            <Tip label="Copy">
+            <Tip label={t("lightbox.copy")}>
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Copy image"
+                aria-label={t("lightbox.copyImage")}
                 onClick={copyImage}
                 className="rounded-full"
               >
@@ -362,33 +364,33 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               </Button>
             </Tip>
           ) : null}
-          <Tip label="Share">
+          <Tip label={t("lightbox.share")}>
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Share"
+              aria-label={t("lightbox.share")}
               onClick={() => setShareOpen(true)}
               className="rounded-full"
             >
               <Icon name="open-external" className="size-5" />
             </Button>
           </Tip>
-          <Tip label="Download">
+          <Tip label={t("lightbox.download")}>
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Download"
+              aria-label={t("lightbox.download")}
               onClick={download}
               className="rounded-full"
             >
               <Icon name="download" className="size-5" />
             </Button>
           </Tip>
-          <Tip label="Move to trash">
+          <Tip label={t("lightbox.moveToTrash")}>
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Move to trash"
+              aria-label={t("lightbox.moveToTrash")}
               onClick={moveToTrash}
               className="rounded-full"
             >
@@ -396,11 +398,11 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             </Button>
           </Tip>
           <span className="bg-border mx-0.5 h-5 w-px" />
-          <Tip label="Info">
+          <Tip label={t("lightbox.info")}>
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Info"
+              aria-label={t("lightbox.info")}
               onClick={toggleInfo}
               className={cn("rounded-full", info && "bg-muted")}
             >
@@ -427,7 +429,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Previous"
+              aria-label={t("lightbox.previous")}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => onIndexChange(index - 1)}
               className="panel hover:bg-muted absolute left-4 z-10 size-10 rounded-full shadow-lg"
@@ -475,7 +477,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               />
             </motion.div>
           ) : (
-            <p className="text-muted-foreground text-sm">Still processing…</p>
+            <p className="text-muted-foreground text-sm">{t("lightbox.stillProcessing")}</p>
           )}
 
           {asset.type === "image" && playMotion && motionSrc ? (
@@ -495,7 +497,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Next"
+              aria-label={t("lightbox.next")}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => onIndexChange(index + 1)}
               className="panel hover:bg-muted absolute right-4 z-10 size-10 rounded-full shadow-lg"
@@ -513,7 +515,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
                   key={member.id}
                   ref={position === index ? activeThumbRef : undefined}
                   type="button"
-                  aria-label={`Frame ${position + 1} of ${assets.length}`}
+                  aria-label={t("lightbox.frame", { position: position + 1, total: assets.length })}
                   aria-current={position === index}
                   onPointerDown={(event) => event.stopPropagation()}
                   onClick={() => onIndexChange(position)}

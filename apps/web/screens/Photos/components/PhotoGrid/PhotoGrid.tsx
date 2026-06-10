@@ -2,6 +2,7 @@
 
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
+import { t } from "@lib/i18n/config"
 import { type GridAsset, fetchStackMembers } from "@lib/photos"
 import { fetchDecryptedPhotoOriginal, fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
 import { useSelection } from "@lib/selection"
@@ -47,8 +48,8 @@ const dayLabel = (date: Date): string => {
   const day = new Date(date)
   day.setHours(0, 0, 0, 0)
   const diff = Math.round((today.getTime() - day.getTime()) / 86_400_000)
-  if (diff <= 0) return "Today"
-  if (diff === 1) return "Yesterday"
+  if (diff <= 0) return t("photoGrid.today")
+  if (diff === 1) return t("photoGrid.yesterday")
   if (diff < 7) return date.toLocaleDateString(undefined, { weekday: "long" })
   return date.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
 }

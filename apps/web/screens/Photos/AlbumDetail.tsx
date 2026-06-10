@@ -23,8 +23,10 @@ import { IconArrowLeft, IconCircleMinus } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
+  const { t } = useTranslation("photos")
   const router = useRouter()
   const queryClient = useQueryClient()
   const selection = useSelection()
@@ -71,11 +73,13 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
       toast.success(message)
       afterAction()
     } catch {
-      toast.error("Action failed")
+      toast.error(t("albumDetailInner.actionFailed"))
     }
   }
 
-  const trashConfirm = useArmedConfirm(() => void run(() => trashAssets(ids), "Moved to trash"))
+  const trashConfirm = useArmedConfirm(() =>
+    void run(() => trashAssets(ids), t("albumDetailInner.movedToTrash")),
+  )
   useSelectionHotkeys({
     active: selection.count > 0,
     onClear: selection.clear,
@@ -86,11 +90,11 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
   const removeAlbum = useMutation({
     mutationFn: () => deleteAlbum(albumId),
     onSuccess: () => {
-      toast.success("Album deleted")
+      toast.success(t("albumDetailInner.albumDeleted"))
       void queryClient.invalidateQueries({ queryKey: ["photos", "albums"] })
       router.push("/photos/albums")
     },
-    onError: () => toast.error("Could not delete album"),
+    onError: () => toast.error(t("albumDetailInner.couldNotDeleteAlbum")),
   })
 
   return (
@@ -100,19 +104,21 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
           <Button
             variant="ghost"
             size="sm"
-            aria-label="Back to albums"
+            aria-label={t("albumDetailInner.backToAlbums")}
             onClick={() => router.push("/photos/albums")}
           >
             <IconArrowLeft className="size-4" />
           </Button>
-          <h1 className="truncate text-xl font-semibold">{data?.album.name ?? "Album"}</h1>
+          <h1 className="truncate text-xl font-semibold">
+            {data?.album.name ?? t("albumDetailInner.albumFallback")}
+          </h1>
         </div>
         <ConfirmButton
           idleVariant="outline"
           icon={<Icon name="trash" className="size-4" />}
           onConfirm={() => removeAlbum.mutate()}
         >
-          Delete album
+          {t("albumDetailInner.deleteAlbum")}
         </ConfirmButton>
       </header>
 
@@ -120,7 +126,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
         <PageSpinner />
       ) : assets.length === 0 ? (
         <p className="text-muted-foreground text-sm">
-          This album is empty. Add photos from your library.
+          {t("albumDetailInner.emptyAlbum")}
         </p>
       ) : (
         <PhotoGrid assets={assets} />
@@ -136,25 +142,29 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => run(() => favoriteAssets(ids, true), "Added to favourites")}
+          onClick={() =>
+            run(() => favoriteAssets(ids, true), t("albumDetailInner.addedToFavourites"))
+          }
         >
           <Icon name="favourites" className="size-4" />
-          Favourite
+          {t("albumDetailInner.favourite")}
         </Button>
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => run(() => removeFromAlbum(albumId, ids), "Removed from album")}
+          onClick={() =>
+            run(() => removeFromAlbum(albumId, ids), t("albumDetailInner.removedFromAlbum"))
+          }
         >
           <IconCircleMinus className="size-4" />
-          Remove
+          {t("albumDetailInner.remove")}
         </Button>
         <ConfirmButton
           icon={<Icon name="trash" className="size-4" />}
           armed={trashConfirm.armed}
           onTrigger={trashConfirm.trigger}
         >
-          Trash
+          {t("albumDetailInner.trash")}
         </ConfirmButton>
       </SelectionBar>
     </div>

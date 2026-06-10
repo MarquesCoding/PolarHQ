@@ -18,6 +18,7 @@ import {
 import { IconCircle, IconHeartFilled, IconLivePhoto, IconPhoto, IconStack2 } from "@tabler/icons-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
+import { useTranslation } from "react-i18next"
 
 /**
  * Thumbnails that have decoded at least once this session. Virtualization
@@ -73,6 +74,7 @@ const PhotoTile = ({
   onPreviewStart,
   onPreviewEnd,
 }: PhotoTileProps) => {
+  const { t } = useTranslation("photos")
   const [loaded, setLoaded] = useState(() => loadedThumbnails.has(asset.id))
   const [decryptedThumb, setDecryptedThumb] = useState<string | null>(() =>
     asset.encrypted ? (decryptedThumbnails.get(asset.id) ?? null) : null,
@@ -233,9 +235,9 @@ const PhotoTile = ({
         <div className="text-muted-foreground flex h-full w-full flex-col items-center justify-center gap-1">
           <IconPhoto className="size-5" />
           {asset.status === "failed" ? (
-            <span className="text-[10px]">Failed</span>
+            <span className="text-[10px]">{t("photoTile.failed")}</span>
           ) : asset.status === "processing" || asset.status === "uploading" ? (
-            <span className="text-[10px]">Processing…</span>
+            <span className="text-[10px]">{t("photoTile.processing")}</span>
           ) : null}
         </div>
       )}
@@ -296,7 +298,7 @@ const PhotoTile = ({
       <span
         role="button"
         tabIndex={-1}
-        aria-label={selected ? "Deselect" : "Select"}
+        aria-label={selected ? t("photoTile.deselect") : t("photoTile.select")}
         onClick={(event) => {
           event.stopPropagation()
           onToggle(event.shiftKey)

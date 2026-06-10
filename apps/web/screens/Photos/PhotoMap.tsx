@@ -1,12 +1,14 @@
 "use client"
 
 import { useEffect, useMemo, useRef } from "react"
+import { useTranslation } from "react-i18next"
 import { fetchPhotoPoints, runLocationBackfill } from "@lib/photoMap"
 import { useQuery } from "@tanstack/react-query"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import { Map, MapClusterLayer, MapControls, type MapRef } from "@workspace/ui/components/map"
 
 const PhotoMap = () => {
+  const { t } = useTranslation("photos")
   const mapRef = useRef<MapRef | null>(null)
 
   const { data: points, isLoading } = useQuery({
@@ -68,7 +70,7 @@ const PhotoMap = () => {
         </div>
       ) : points && points.length === 0 ? (
         <div className="text-muted-foreground absolute inset-0 z-10 flex items-center justify-center text-sm">
-          No photos with location data yet.
+          {t("photoMap.noLocationData")}
         </div>
       ) : null}
     </div>

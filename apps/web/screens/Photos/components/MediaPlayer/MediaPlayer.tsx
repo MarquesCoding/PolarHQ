@@ -4,6 +4,7 @@ import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } f
 import { Icon } from "@lib/icons"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
+import { useTranslation } from "react-i18next"
 
 const clamp = (value: number, low: number, high: number): number =>
   Math.max(low, Math.min(high, value))
@@ -68,6 +69,7 @@ interface MediaPlayerProps {
 }
 
 const MediaPlayer = ({ kind, src, poster, name }: MediaPlayerProps) => {
+  const { t } = useTranslation("photos")
   const mediaRef = useRef<HTMLVideoElement & HTMLAudioElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const hideTimer = useRef<number | null>(null)
@@ -155,7 +157,7 @@ const MediaPlayer = ({ kind, src, poster, name }: MediaPlayerProps) => {
     >
       <button
         type="button"
-        aria-label={playing ? "Pause" : "Play"}
+        aria-label={playing ? t("mediaPlayer.pause") : t("mediaPlayer.play")}
         onClick={togglePlay}
         className="hover:bg-muted flex size-8 shrink-0 items-center justify-center rounded-full transition"
       >
@@ -171,7 +173,7 @@ const MediaPlayer = ({ kind, src, poster, name }: MediaPlayerProps) => {
       <div className="group flex shrink-0 items-center gap-1.5">
         <button
           type="button"
-          aria-label={muted ? "Unmute" : "Mute"}
+          aria-label={muted ? t("mediaPlayer.unmute") : t("mediaPlayer.mute")}
           onClick={toggleMute}
           className="hover:bg-muted flex size-8 items-center justify-center rounded-full transition"
         >
@@ -186,7 +188,7 @@ const MediaPlayer = ({ kind, src, poster, name }: MediaPlayerProps) => {
       {kind === "video" ? (
         <button
           type="button"
-          aria-label="Fullscreen"
+          aria-label={t("mediaPlayer.fullscreen")}
           onClick={toggleFullscreen}
           className="hover:bg-muted flex size-8 shrink-0 items-center justify-center rounded-full transition"
         >

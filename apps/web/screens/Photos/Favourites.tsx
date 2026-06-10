@@ -8,6 +8,8 @@ import EmptyState from "@components/EmptyState/EmptyState"
 import { IconHeartOff } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import { t } from "@lib/i18n/config"
+import { useTranslation } from "react-i18next"
 
 const run = async (action: () => Promise<unknown>, message: string, after: () => void) => {
   try {
@@ -15,44 +17,47 @@ const run = async (action: () => Promise<unknown>, message: string, after: () =>
     toast.success(message)
     after()
   } catch {
-    toast.error("Action failed")
+    toast.error(t("errors:actionFailed"))
   }
 }
 
-const Favourites = () => (
-  <CollectionView
-    title="Favourites"
-    queryKey={["photos", "favourites"]}
-    fetcher={(cursor) => fetchAssets({ view: "favourites", cursor })}
-    emptyText="No favourites yet."
-    emptyState={
-      <EmptyState
-        icon="favourites"
-        title="No favourites yet"
-        hint="Tap the heart on any photo to keep your best shots one click away."
-      />
-    }
-    onDeleteSelected={trashAssets}
-    actions={(ids, after, deleteConfirm) => (
-      <>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => run(() => favoriteAssets(ids, false), "Removed from favourites", after)}
-        >
-          <IconHeartOff className="size-4" />
-          Unfavourite
-        </Button>
-        <ConfirmButton
-          icon={<Icon name="trash" className="size-4" />}
-          armed={deleteConfirm.armed}
-          onTrigger={deleteConfirm.trigger}
-        >
-          Trash
-        </ConfirmButton>
-      </>
-    )}
-  />
-)
+const Favourites = () => {
+  const { t } = useTranslation("photos")
+  return (
+    <CollectionView
+      title={t("favourites.title")}
+      queryKey={["photos", "favourites"]}
+      fetcher={(cursor) => fetchAssets({ view: "favourites", cursor })}
+      emptyText={t("favourites.emptyText")}
+      emptyState={
+        <EmptyState
+          icon="favourites"
+          title={t("favourites.emptyTitle")}
+          hint={t("favourites.emptyHint")}
+        />
+      }
+      onDeleteSelected={trashAssets}
+      actions={(ids, after, deleteConfirm) => (
+        <>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => run(() => favoriteAssets(ids, false), t("favourites.removed"), after)}
+          >
+            <IconHeartOff className="size-4" />
+            {t("favourites.unfavourite")}
+          </Button>
+          <ConfirmButton
+            icon={<Icon name="trash" className="size-4" />}
+            armed={deleteConfirm.armed}
+            onTrigger={deleteConfirm.trigger}
+          >
+            {t("favourites.trash")}
+          </ConfirmButton>
+        </>
+      )}
+    />
+  )
+}
 
 export default Favourites

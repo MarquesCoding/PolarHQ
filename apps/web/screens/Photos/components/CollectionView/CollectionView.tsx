@@ -8,6 +8,7 @@ import { useAssetFeed } from "@lib/useAssetFeed"
 import { type ArmedConfirm, useArmedConfirm } from "@lib/useArmedConfirm"
 import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 import { useAppSelector } from "@store/hooks"
 import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
@@ -37,6 +38,7 @@ const CollectionInner = ({
   onDeleteSelected,
   deleteMessage,
 }: CollectionViewProps) => {
+  const { t } = useTranslation("photos")
   const selection = useSelection()
   const { query, assets, invalidate } = useAssetFeed(queryKey, fetcher)
   const search = useAppSelector((state) => state.ui.searchQuery).trim().toLowerCase()
@@ -65,10 +67,10 @@ const CollectionInner = ({
     if (!onDeleteSelected) return
     void onDeleteSelected(ids)
       .then(() => {
-        toast.success(deleteMessage ?? "Moved to trash")
+        toast.success(deleteMessage ?? t("collectionView.movedToTrash"))
         afterAction()
       })
-      .catch(() => toast.error("Action failed"))
+      .catch(() => toast.error(t("errors:actionFailed")))
   })
   useSelectionHotkeys({
     active: selection.count > 0,
@@ -85,7 +87,7 @@ const CollectionInner = ({
         <PageSpinner />
       ) : visible.length === 0 ? (
         search ? (
-          <p className="text-muted-foreground text-sm">No photos match your search.</p>
+          <p className="text-muted-foreground text-sm">{t("collectionView.noSearchMatch")}</p>
         ) : (
           (emptyState ?? <p className="text-muted-foreground text-sm">{emptyText}</p>)
         )
