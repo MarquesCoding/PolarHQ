@@ -34,16 +34,18 @@ const BoardWorkspace = ({ nodeId, collab }: { nodeId: string; collab: CollabDocu
 
   return (
     <div className="flex h-svh flex-col">
-      <CollabHeader
-        nodeId={nodeId}
-        doc={collab.doc!}
-        provider={collab.provider!}
-        encrypted={collab.encrypted}
-        saveState={collab.saveState}
-        lastSavedAt={collab.lastSavedAt}
-        onSave={() => void collab.save()}
-        contentKey={collab.contentKey}
-      />
+      <header className="border-border flex h-14 shrink-0 items-center border-b px-4">
+        <CollabHeader
+          nodeId={nodeId}
+          doc={collab.doc!}
+          provider={collab.provider!}
+          encrypted={collab.encrypted}
+          saveState={collab.saveState}
+          lastSavedAt={collab.lastSavedAt}
+          onSave={() => void collab.save()}
+          contentKey={collab.contentKey}
+        />
+      </header>
       <div className="relative min-h-0 flex-1">
         <Toolbar tool={tool} setTool={setTool} />
         {showPanel ? (

@@ -1,8 +1,16 @@
 import { useEffect, useMemo, useReducer } from "react"
 import * as Y from "yjs"
 
-export type Shape = "rectangle" | "diamond" | "ellipse" | "line" | "arrow" | "draw" | "text"
-export type Tool = "select" | "pan" | Shape | "eraser"
+export type Shape =
+  | "rectangle"
+  | "diamond"
+  | "ellipse"
+  | "line"
+  | "arrow"
+  | "draw"
+  | "text"
+  | "image"
+export type Tool = "select" | "pan" | "rectangle" | "diamond" | "ellipse" | "arrow" | "line" | "draw" | "text" | "eraser"
 
 export interface BoardElement {
   id: string
@@ -14,6 +22,8 @@ export interface BoardElement {
   /** For draw/line/arrow: flattened points [x0,y0,x1,y1,…] relative to (x,y). */
   points?: number[]
   text?: string
+  /** For image elements: a data URL. */
+  src?: string
   stroke: string
   fill: string
   strokeWidth: number
@@ -65,12 +75,38 @@ export const newElement = (type: Shape, x: number, y: number, style: Style): Boa
 })
 
 /** The element's axis-aligned bounds with positive width/height. */
-export const bounds = (el: BoardElement): { x: number; y: number; w: number; h: number } => ({
-  x: el.w < 0 ? el.x + el.w : el.x,
-  y: el.h < 0 ? el.y + el.h : el.y,
-  w: Math.abs(el.w),
-  h: Math.abs(el.h),
-})
+export const bounds = (el: BoardElement): { x: number; y: number; w: number; h: number } => {
+  const pts = el.points
+  if (pts && pts.length >= 2) {
+    let minX = Infinity
+    let minY = Infinity
+    let maxX = -Infinity
+    let maxY = -Infinity
+    for (let i = 0; i < pts.length - 1; i += 2) {
+      const px = el.x + pts[i]!
+      const py = el.y + pts[i + 1]!
+      minX = Math.min(minX, px)
+      minY = Math.min(minY, py)
+      maxX = Math.max(maxX, px)
+      maxY = Math.max(maxY, py)
+    }
+    return { x: minX, y: minY, w: maxX - minX, h: maxY - minY }
+  }
+  return {
+    x: el.w < 0 ? el.x + el.w : el.x,
+    y: el.h < 0 ? el.y + el.h : el.y,
+    w: Math.abs(el.w),
+    h: Math.abs(el.h),
+  }
+}
+
+/** Absolute endpoint/mid handle positions for a line/arrow element. */
+export const linePoints = (el: BoardElement): { x: number; y: number }[] => {
+  const pts = el.points ?? []
+  const result: { x: number; y: number }[] = []
+  for (let i = 0; i < pts.length - 1; i += 2) result.push({ x: el.x + pts[i]!, y: el.y + pts[i + 1]! })
+  return result
+}
 
 const elementsArray = (ydoc: Y.Doc) => ydoc.getArray<Y.Map<unknown>>("wb:elements")
 

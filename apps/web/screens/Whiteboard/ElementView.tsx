@@ -8,6 +8,26 @@ const pointsToPath = (el: BoardElement): string => {
   return d
 }
 
+/** Path for a line/arrow: straight for 2 points, smoothly curved through any midpoints. */
+const linePath = (el: BoardElement): string => {
+  const pts = el.points ?? []
+  if (pts.length < 4) return ""
+  const ax = el.x
+  const ay = el.y
+  if (pts.length === 4)
+    return `M ${ax + pts[0]!} ${ay + pts[1]!} L ${ax + pts[2]!} ${ay + pts[3]!}`
+  let d = `M ${ax + pts[0]!} ${ay + pts[1]!}`
+  for (let i = 2; i < pts.length - 2; i += 2) {
+    const cx = ax + pts[i]!
+    const cy = ay + pts[i + 1]!
+    const mx = (cx + ax + pts[i + 2]!) / 2
+    const my = (cy + ay + pts[i + 3]!) / 2
+    d += ` Q ${cx} ${cy} ${mx} ${my}`
+  }
+  d += ` L ${ax + pts[pts.length - 2]!} ${ay + pts[pts.length - 1]!}`
+  return d
+}
+
 const ArrowHead = ({
   x1,
   y1,
@@ -70,21 +90,28 @@ const ElementView = ({ el }: { el: BoardElement }) => {
     case "line":
     case "arrow": {
       const pts = el.points ?? [0, 0, 0, 0]
-      const x1 = el.x + (pts[0] ?? 0)
-      const y1 = el.y + (pts[1] ?? 0)
-      const x2 = el.x + (pts[pts.length - 2] ?? 0)
-      const y2 = el.y + (pts[pts.length - 1] ?? 0)
+      const n = pts.length
+      const px = el.x + (pts[n - 4] ?? 0)
+      const py = el.y + (pts[n - 3] ?? 0)
+      const x2 = el.x + (pts[n - 2] ?? 0)
+      const y2 = el.y + (pts[n - 1] ?? 0)
       return (
         <g fill="none" {...stroke}>
-          <line x1={x1} y1={y1} x2={x2} y2={y2} />
+          <path d={linePath(el)} />
           {el.type === "arrow" ? (
-            <ArrowHead x1={x1} y1={y1} x2={x2} y2={y2} strokeWidth={el.strokeWidth} />
+            <ArrowHead x1={px} y1={py} x2={x2} y2={y2} strokeWidth={el.strokeWidth} />
           ) : null}
         </g>
       )
     }
     case "draw":
       return <path d={pointsToPath(el)} fill="none" {...stroke} />
+    case "image": {
+      const b = bounds(el)
+      return el.src ? (
+        <image href={el.src} x={b.x} y={b.y} width={b.w} height={b.h} opacity={el.opacity / 100} />
+      ) : null
+    }
     case "text": {
       const size = el.fontSize ?? 24
       return (
