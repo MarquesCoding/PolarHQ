@@ -47,6 +47,12 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
   const asset = assets[index]
   const zoom = useZoomPan(asset?.id)
 
+  // If the open photo is removed (trashed in another tab or by a collaborator), the feed
+  // refetches and this index falls off the end — close rather than show a blank viewer.
+  useEffect(() => {
+    if (!asset) onClose()
+  }, [asset, onClose])
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (!asset || !event.shiftKey || event.key.toLowerCase() !== "d") return
