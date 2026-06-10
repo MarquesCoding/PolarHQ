@@ -1,6 +1,7 @@
 "use client"
 
 import { usePathname } from "next/navigation"
+import { useTranslation } from "react-i18next"
 import { type DocType, editorHref, editorOpensNewTab, fetchDocs } from "@lib/docs"
 import { useQuery } from "@tanstack/react-query"
 import { NavRow, SectionLabel } from "@components/FlatShell"
@@ -16,13 +17,14 @@ export interface CollabNavConfig {
 /** Shared nav for the collaborative apps (Docs / Sheets / Whiteboards): a home row plus the
  *  user's document list. Differs from app to app only by the config props. */
 const CollabNav = ({ type, route, icon, navLabel, listLabel }: CollabNavConfig) => {
+  const { t } = useTranslation("collab")
   const pathname = usePathname()
   const { data } = useQuery({ queryKey: ["docs", type], queryFn: () => fetchDocs(type) })
   const items = [...(data?.documents ?? []), ...(data?.shared ?? [])]
 
   return (
     <>
-      <SectionLabel>Library</SectionLabel>
+      <SectionLabel>{t("collabNav.library")}</SectionLabel>
       <NavRow href={route} icon={icon} label={navLabel} active={pathname === route} />
 
       {items.length > 0 ? (

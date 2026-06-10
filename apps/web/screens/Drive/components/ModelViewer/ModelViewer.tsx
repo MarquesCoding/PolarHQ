@@ -25,6 +25,8 @@ import { Canvas } from "@react-three/fiber"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
+import { useTranslation } from "react-i18next"
+import { t } from "@lib/i18n/config"
 import type * as THREE from "three"
 
 interface ModelViewerProps {
@@ -35,7 +37,7 @@ interface ModelViewerProps {
 const fetchModelBuffer = async (node: DriveNode): Promise<ArrayBuffer> => {
   if (node.encrypted && node.downloadUrl) {
     const url = await fetchDecryptedFile(node.id, node.downloadUrl, node.mimeType)
-    if (!url) throw new Error("Could not decrypt model")
+    if (!url) throw new Error(t("drive:modelViewer.decryptError"))
     try {
       return await fetch(url).then((r) => r.arrayBuffer())
     } finally {
@@ -74,6 +76,7 @@ const Scene = ({
 
 /** Full-screen 3D viewer for Drive models (STL/OBJ/FBX/PLY/glTF), with shading + texture toggles. */
 const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
+  const { t } = useTranslation("drive")
   const [object, setObject] = useState<THREE.Object3D | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [mode, setMode] = useState<ShadeMode>("shaded")
@@ -103,7 +106,7 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
         loaded = result
         setObject(result)
       } catch {
-        if (!cancelled) setError("Could not open this 3D file.")
+        if (!cancelled) setError(t("modelViewer.openError"))
       }
     })()
     return () => {
@@ -115,9 +118,9 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
   const textured = object ? hasTextures(object) : false
 
   const modes: { key: ShadeMode; label: string; icon: typeof IconBox }[] = [
-    { key: "shaded", label: "Shaded", icon: IconBox },
-    { key: "wireframe", label: "Wireframe", icon: IconVectorTriangle },
-    { key: "normals", label: "Normals", icon: IconTexture },
+    { key: "shaded", label: t("modelViewer.shaded"), icon: IconBox },
+    { key: "wireframe", label: t("modelViewer.wireframe"), icon: IconVectorTriangle },
+    { key: "normals", label: t("modelViewer.normals"), icon: IconTexture },
   ]
 
   return (
@@ -133,7 +136,7 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Close"
+            aria-label={t("modelViewer.close")}
             onClick={onClose}
             className="rounded-full"
           >
@@ -160,7 +163,7 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Toggle textures"
+              aria-label={t("modelViewer.toggleTextures")}
               onClick={() => setShowTextures((value) => !value)}
               className={cn("rounded-full", showTextures && "bg-muted")}
             >
@@ -170,7 +173,7 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Toggle grid"
+            aria-label={t("modelViewer.toggleGrid")}
             onClick={() => setShowGrid((value) => !value)}
             className={cn("rounded-full", showGrid && "bg-muted")}
           >
@@ -179,7 +182,7 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Auto-rotate"
+            aria-label={t("modelViewer.autoRotate")}
             onClick={() => setAutoRotate((value) => !value)}
             className={cn("rounded-full", autoRotate && "bg-muted")}
           >
@@ -218,7 +221,7 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
         )}
         {!object && !error ? (
           <div className="text-muted-foreground absolute inset-0 flex items-center justify-center text-sm">
-            Loading model…
+            {t("modelViewer.loading")}
           </div>
         ) : null}
       </div>

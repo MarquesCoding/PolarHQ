@@ -1,8 +1,10 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import { authClient } from "@lib/authClient"
+import { t } from "@lib/i18n/config"
 import {
   CommentMark,
   type CommentThread,
@@ -107,7 +109,7 @@ const withAlpha = (hex: string, alpha: number): string => {
 /** A thin colored caret with a floating name badge above it (Google-Docs style). */
 const buildCaret = (user: Record<string, unknown>): HTMLElement => {
   const color = typeof user.color === "string" ? user.color : "#3b82f6"
-  const name = typeof user.name === "string" ? user.name : "Anonymous"
+  const name = typeof user.name === "string" ? user.name : t("docs:docCanvas.anonymous")
   const caret = document.createElement("span")
   caret.className = "doc-caret"
   caret.style.borderColor = color
@@ -121,10 +123,11 @@ const buildCaret = (user: Record<string, unknown>): HTMLElement => {
 
 /** The TipTap editing surface for a single document, bound to a (already loaded) Yjs document. */
 const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) => {
+  const { t } = useTranslation("docs")
   const queryClient = useQueryClient()
   const { data: session } = authClient.useSession()
   const [me] = useState<CollaboratorIdentity>(() => ({
-    name: session?.user?.name || "Anonymous",
+    name: session?.user?.name || t("docCanvas.anonymous"),
     color: colorFor(session?.user?.id || session?.user?.email || "anon"),
   }))
   const [peers, setPeers] = useState<CollaboratorIdentity[]>([])
@@ -178,7 +181,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
       Highlight.configure({ multicolor: true }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Image,
-      Placeholder.configure({ placeholder: "Write something…" }),
+      Placeholder.configure({ placeholder: t("docCanvas.placeholder") }),
       TaskList,
       TaskItem.configure({ nested: true }),
       Table.configure({ resizable: true }),
@@ -368,10 +371,10 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
 
   const status =
     saveState === "saving"
-      ? "Saving…"
+      ? t("docCanvas.saving")
       : lastSavedAt
-        ? `Saved ${formatTime(lastSavedAt)}`
-        : "Not saved yet"
+        ? t("docCanvas.savedAt", { time: formatTime(lastSavedAt) })
+        : t("docCanvas.notSavedYet")
 
   return (
     <div className="bg-background flex h-svh flex-col overflow-hidden">
@@ -379,7 +382,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
         <div className="flex items-center gap-2">
           <Link
             href="/docs"
-            aria-label="Back to Docs"
+            aria-label={t("docCanvas.backToDocs")}
             className="flex size-9 shrink-0 items-center justify-center rounded-md bg-blue-600/15 text-blue-600 dark:text-blue-400"
           >
             <IconFileText className="size-5" />
@@ -389,7 +392,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
             onChange={(event) => setTitle(event.target.value)}
             onBlur={commitTitle}
             onKeyDown={(event) => event.key === "Enter" && event.currentTarget.blur()}
-            aria-label="Document title"
+            aria-label={t("docCanvas.documentTitle")}
             className="h-auto w-auto min-w-0 flex-1 border-none bg-transparent px-0 py-0 text-base font-medium shadow-none focus-visible:ring-0"
           />
           {peers.length > 0 ? (
@@ -417,8 +420,8 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Add comment"
-              title="Add comment"
+              aria-label={t("docCanvas.addComment")}
+              title={t("docCanvas.addComment")}
               onClick={addComment}
             >
               <IconMessagePlus className="size-4" />
@@ -430,12 +433,12 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
             onClick={() => setCommentsOpen((value) => !value)}
           >
             <IconMessage className="size-4" />
-            {openThreadCount > 0 ? openThreadCount : "Comments"}
+            {openThreadCount > 0 ? openThreadCount : t("docCanvas.comments")}
           </Button>
           {doc.owner ? (
             <Button size="sm" onClick={() => setShareOpen(true)}>
               <IconUserPlus className="size-4" />
-              Share
+              {t("docCanvas.share")}
             </Button>
           ) : null}
           <Button
@@ -445,7 +448,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
             onClick={() => void manualSave()}
           >
             <IconDeviceFloppy className="size-4" />
-            Save
+            {t("docCanvas.save")}
           </Button>
         </div>
         {editor ? (

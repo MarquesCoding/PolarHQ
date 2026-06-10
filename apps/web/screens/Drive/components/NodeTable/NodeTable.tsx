@@ -1,6 +1,7 @@
 "use client"
 
 import { type MouseEvent, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@lib/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
@@ -52,12 +53,6 @@ const iconFor = (node: DriveNode): string => {
   return "file-text"
 }
 
-const columns: ColumnDef<DriveNode>[] = [
-  { id: "name", header: "Name", accessorFn: (node) => node.name.toLowerCase() },
-  { id: "size", header: "Size", accessorFn: (node) => node.sizeBytes ?? 0 },
-  { id: "modified", header: "Modified", accessorFn: (node) => new Date(node.updatedAt).getTime() },
-]
-
 const COLS = "grid grid-cols-[1.5rem_1fr_7rem_11rem] items-center gap-2"
 
 const NodeTable = ({
@@ -70,6 +65,16 @@ const NodeTable = ({
   onParentDrop,
   actions,
 }: NodeTableProps) => {
+  const { t } = useTranslation("drive")
+  const columns: ColumnDef<DriveNode>[] = [
+    { id: "name", header: t("nodeTable.name"), accessorFn: (node) => node.name.toLowerCase() },
+    { id: "size", header: t("nodeTable.size"), accessorFn: (node) => node.sizeBytes ?? 0 },
+    {
+      id: "modified",
+      header: t("nodeTable.modified"),
+      accessorFn: (node) => new Date(node.updatedAt).getTime(),
+    },
+  ]
   const [sorting, setSorting] = useState<SortingState>([])
   const [over, setOver] = useState<string | null>(null)
   const [parentOver, setParentOver] = useState(false)
@@ -124,7 +129,7 @@ const NodeTable = ({
     <div className="flex flex-col">
       <div className={cn(COLS, "text-muted-foreground border-border/60 border-b px-2 pb-1.5 text-xs")}>
         <Checkbox
-          aria-label="Select all"
+          aria-label={t("nodeTable.selectAll")}
           checked={allSelected}
           indeterminate={someSelected && !allSelected}
           onCheckedChange={() => (allSelected ? selection.clear() : selection.selectAll(ordered))}
@@ -257,7 +262,7 @@ const NodeTable = ({
             )}
           >
             <Checkbox
-              aria-label={selected ? "Deselect" : "Select"}
+              aria-label={selected ? t("nodeTable.deselect") : t("nodeTable.select")}
               checked={selected}
               onCheckedChange={() => selection.toggle(node.id, ordered)}
               onClick={(event) => event.stopPropagation()}

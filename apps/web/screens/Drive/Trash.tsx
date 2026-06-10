@@ -9,6 +9,7 @@ import { IconRestore, IconTrashX } from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
@@ -16,6 +17,7 @@ import NodeGrid from "@pages/Drive/components/NodeGrid/NodeGrid"
 import NodeTable from "@pages/Drive/components/NodeTable/NodeTable"
 
 const TrashInner = () => {
+  const { t } = useTranslation("drive")
   const queryClient = useQueryClient()
   const selection = useSelection()
   const viewMode = useAppSelector((state) => state.ui.viewMode)
@@ -33,16 +35,16 @@ const TrashInner = () => {
       selection.clear()
       invalidate()
     } catch {
-      toast.error("Action failed")
+      toast.error(t("trash.actionFailed"))
     }
   }
 
   const nodes = data?.children ?? []
   const ids = [...selection.selected]
   const restore = (list: string[]) =>
-    run(() => Promise.all(list.map((id) => restoreDriveNode(id))), "Restored")
+    run(() => Promise.all(list.map((id) => restoreDriveNode(id))), t("trash.restored"))
   const remove = (list: string[]) =>
-    run(() => Promise.all(list.map((id) => deleteDriveNode(id))), "Permanently deleted")
+    run(() => Promise.all(list.map((id) => deleteDriveNode(id))), t("trash.permanentlyDeleted"))
 
   const removeConfirm = useArmedConfirm(() => void remove(ids))
   useSelectionHotkeys({
@@ -59,16 +61,16 @@ const TrashInner = () => {
   return (
     <div className="flex flex-1 flex-col gap-4 p-6">
       <div className="flex items-baseline gap-2">
-        <h1 className="text-foreground text-sm font-medium">Trash</h1>
+        <h1 className="text-foreground text-sm font-medium">{t("trash.title")}</h1>
         <p className="text-muted-foreground text-xs">
-          Items here are permanently deleted 30 days after being trashed.
+          {t("trash.retentionNotice")}
         </p>
       </div>
 
       {isLoading ? (
         <PageSpinner />
       ) : nodes.length === 0 ? (
-        <p className="text-muted-foreground text-sm">Trash is empty.</p>
+        <p className="text-muted-foreground text-sm">{t("trash.empty")}</p>
       ) : viewMode === "table" ? (
         <NodeTable nodes={nodes} selection={selection} onOpen={open} />
       ) : (
@@ -78,14 +80,14 @@ const TrashInner = () => {
       <SelectionBar>
         <Button variant="ghost" size="sm" onClick={() => void restore(ids)}>
           <IconRestore className="size-4" />
-          Restore
+          {t("trash.restore")}
         </Button>
         <ConfirmButton
           icon={<IconTrashX className="size-4" />}
           armed={removeConfirm.armed}
           onTrigger={removeConfirm.trigger}
         >
-          Delete forever
+          {t("trash.deleteForever")}
         </ConfirmButton>
       </SelectionBar>
     </div>

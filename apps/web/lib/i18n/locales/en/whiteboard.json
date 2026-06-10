@@ -1,1 +1,17 @@
-{}
+{
+  "propertiesPanel": {
+    "background": "Background",
+    "bringForward": "Bring forward",
+    "bringToFront": "Bring to front",
+    "layers": "Layers",
+    "opacity": "Opacity",
+    "sendBackward": "Send backward",
+    "sendToBack": "Send to back",
+    "stroke": "Stroke",
+    "strokeWidth": "Stroke width"
+  },
+  "whiteboardList": {
+    "createLabel": "New whiteboard",
+    "title": "Whiteboards"
+  }
+}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useReducer, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useRouter } from "next/navigation"
 import {
   type DriveNode,
@@ -65,6 +66,7 @@ interface BrowserProps {
 }
 
 const BrowserInner = ({ folderId }: BrowserProps) => {
+  const { t } = useTranslation("drive")
   const router = useRouter()
   const queryClient = useQueryClient()
   const selection = useSelection()
@@ -135,8 +137,10 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     const office = officeTypeForName(node.name)
     if (type) openEditor(type, node.id, router)
     else if (office) {
-      toast.info("Opening…")
-      void importDriveFile(node, office, router).catch(() => toast.error("Could not open this file"))
+      toast.info(t("browser.opening"))
+      void importDriveFile(node, office, router).catch(() =>
+        toast.error(t("browser.couldNotOpenFile")),
+      )
     } else if (node.mimeType?.startsWith("image/")) setViewingNode(node)
     else if (is3DModelName(node.name)) setViewingModel(node)
     else downloadIds([node.id])
@@ -148,7 +152,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
       invalidate()
       openEditor(type, doc.id, router)
     } catch {
-      toast.error("Could not create")
+      toast.error(t("browser.couldNotCreate"))
     }
   }
 
@@ -158,11 +162,11 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     if (toMove.length === 0) return
     try {
       await Promise.all(toMove.map((id) => moveDriveNode(id, folder.id)))
-      toast.success(`Moved ${toMove.length} item${toMove.length > 1 ? "s" : ""} to ${folder.name}`)
+      toast.success(t("browser.movedToFolder", { count: toMove.length, name: folder.name }))
       selection.clear()
       invalidate()
     } catch {
-      toast.error("Could not move")
+      toast.error(t("browser.couldNotMove"))
     }
   }
 
@@ -170,38 +174,38 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     if (ids.length === 0) return
     try {
       await Promise.all(ids.map((id) => trashDriveNode(id)))
-      toast.success("Moved to trash")
+      toast.success(t("browser.movedToTrash"))
       selection.clear()
       invalidate()
     } catch {
-      toast.error("Could not delete")
+      toast.error(t("browser.couldNotDelete"))
     }
   }
 
   const copy = async (id: string) => {
     try {
       await copyDriveNode(id)
-      toast.success("Copy created")
+      toast.success(t("browser.copyCreated"))
       invalidate()
     } catch {
-      toast.error("Could not copy")
+      toast.error(t("browser.couldNotCopy"))
     }
   }
 
   const archive = (ids: string[]) => {
     if (!parentId || ids.length === 0) return
-    upload.archive(`Archive (${ids.length} item${ids.length > 1 ? "s" : ""})`, ids, parentId)
+    upload.archive(t("browser.archiveLabel", { count: ids.length }), ids, parentId)
     selection.clear()
   }
 
   const extract = async (id: string) => {
     try {
       await extractDriveNode(id)
-      toast.success("Archive extracted")
+      toast.success(t("browser.archiveExtracted"))
       selection.clear()
       invalidate()
     } catch {
-      toast.error("Could not extract")
+      toast.error(t("browser.couldNotExtract"))
     }
   }
 
@@ -222,7 +226,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     copyLink: (node) => {
       if (!node.downloadUrl) return
       void navigator.clipboard.writeText(node.downloadUrl)
-      toast.success("Link copied")
+      toast.success(t("browser.linkCopied"))
     },
     share: (node) => setShareNode(node),
     move: (node) => setMoving([node.id]),
@@ -281,7 +285,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
           <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 text-center">
             <Icon name="folder-open" className="size-8" />
             <p className="text-sm">
-              {search ? "Nothing matches your search." : "Drag files here or use Upload."}
+              {search ? t("browser.noMatches") : t("browser.dragOrUpload")}
             </p>
           </div>
         ) : viewMode === "table" ? (
@@ -329,40 +333,40 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
         {single && docTypeOf(single.mimeType) ? (
           <Button variant="ghost" size="sm" onClick={() => open(single)}>
             <IconExternalLink className="size-4" />
-            Open
+            {t("browser.open")}
           </Button>
         ) : null}
         <Button variant="ghost" size="sm" onClick={() => downloadIds(ids)}>
           <Icon name="download" className="size-4" />
-          Download
+          {t("browser.download")}
         </Button>
         {single && !single.special ? (
           <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
             <IconPencil className="size-4" />
-            Rename
+            {t("browser.rename")}
           </Button>
         ) : null}
         {single?.kind === "file" ? (
           <Button variant="ghost" size="sm" onClick={() => setShareNode(single)}>
             <IconUserPlus className="size-4" />
-            Share
+            {t("browser.share")}
           </Button>
         ) : null}
         {hasSpecial ? null : (
           <Button variant="ghost" size="sm" onClick={() => setMoving(ids)}>
             <Icon name="folder" className="size-4" />
-            Move
+            {t("browser.move")}
           </Button>
         )}
         {canExtract ? (
           <Button variant="ghost" size="sm" onClick={() => void extract(single!.id)}>
             <IconFileExport className="size-4" />
-            Extract
+            {t("browser.extract")}
           </Button>
         ) : null}
         <Button variant="ghost" size="sm" onClick={() => archive(ids)}>
           <IconArchive className="size-4" />
-          Archive
+          {t("browser.archive")}
         </Button>
         {hasSpecial ? null : (
           <ConfirmButton
@@ -370,7 +374,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
             armed={trashConfirm.armed}
             onTrigger={trashConfirm.trigger}
           >
-            Trash
+            {t("browser.trash")}
           </ConfirmButton>
         )}
       </SelectionBar>

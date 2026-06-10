@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { driveFolderIdFromPath, fetchNodes } from "@lib/drive"
 import { Icon } from "@lib/icons"
 import { useQuery } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 import { cn } from "@workspace/ui/lib/utils"
 import { NavRow, SectionLabel } from "@components/FlatShell"
 
@@ -13,6 +14,7 @@ const isMyDrive = (pathname: string): boolean =>
 
 /** Drive nav: My Drive / Trash plus the current folder's location trail. */
 const DriveNav = () => {
+  const { t } = useTranslation("drive")
   const pathname = usePathname()
   const folderId = driveFolderIdFromPath(pathname)
   const { data } = useQuery({
@@ -25,13 +27,13 @@ const DriveNav = () => {
 
   return (
     <>
-      <SectionLabel>Drive</SectionLabel>
-      <NavRow href="/drive" icon="folder" label="My Drive" active={isMyDrive(pathname)} />
-      <NavRow href="/drive/trash" icon="trash" label="Trash" active={pathname === "/drive/trash"} />
+      <SectionLabel>{t("driveNav.drive")}</SectionLabel>
+      <NavRow href="/drive" icon="folder" label={t("driveNav.myDrive")} active={isMyDrive(pathname)} />
+      <NavRow href="/drive/trash" icon="trash" label={t("driveNav.trash")} active={pathname === "/drive/trash"} />
 
       {showLocation ? (
         <>
-          <SectionLabel>Location</SectionLabel>
+          <SectionLabel>{t("driveNav.location")}</SectionLabel>
           {trail.map((node, index) => (
             <Link
               key={node.id}
@@ -45,7 +47,7 @@ const DriveNav = () => {
               )}
             >
               <Icon name="folder" className="size-3.5 shrink-0" />
-              <span className="truncate">{index === 0 ? "My Drive" : node.name}</span>
+              <span className="truncate">{index === 0 ? t("driveNav.myDrive") : node.name}</span>
             </Link>
           ))}
         </>

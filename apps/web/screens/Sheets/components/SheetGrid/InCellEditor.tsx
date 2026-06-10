@@ -1,6 +1,7 @@
 "use client"
 
 import { type KeyboardEvent as ReactKeyboardEvent, type RefObject, useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@workspace/ui/lib/utils"
 import { FUNCTION_DOCS } from "@pages/Sheets/functionDocs"
 import type { SheetController } from "@pages/Sheets/useSheet"
@@ -40,6 +41,7 @@ const InCellEditor = ({
   onCommit,
   onCancel,
 }: InCellEditorProps) => {
+  const { t } = useTranslation("sheets")
   const [active, setActive] = useState(0)
   const text = edit.text
   const isFormula = text.startsWith("=")
@@ -137,7 +139,7 @@ const InCellEditor = ({
             </button>
           ))}
           <div className="text-muted-foreground border-t px-2.5 py-1 text-[11px]">
-            Tab to accept · click a cell to insert a reference
+            {t("inCellEditor.hint")}
           </div>
         </div>
       ) : null}

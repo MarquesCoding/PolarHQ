@@ -8,11 +8,13 @@ import { IconFilePlus } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 import ImportButton from "@components/ImportButton/ImportButton"
 import SizeControl from "@pages/Photos/components/SizeControl/SizeControl"
 
 /** Docs title-bar controls: a tile-size slider and create-document, shown only on the list page. */
 const DocsToolbar = () => {
+  const { t } = useTranslation("docs")
   const pathname = usePathname()
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -26,7 +28,7 @@ const DocsToolbar = () => {
       void queryClient.invalidateQueries({ queryKey: ["docs"] })
       openEditor("doc", doc.id, router)
     } catch {
-      toast.error("Could not create document")
+      toast.error(t("docsToolbar.createError"))
     }
   }
 
@@ -36,7 +38,7 @@ const DocsToolbar = () => {
       <ImportButton type="doc" />
       <Button size="sm" onClick={() => void newDocument()}>
         <IconFilePlus className="size-4" />
-        New document
+        {t("docsToolbar.newDocument")}
       </Button>
     </div>
   )

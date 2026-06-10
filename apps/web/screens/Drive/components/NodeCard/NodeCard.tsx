@@ -1,6 +1,7 @@
 "use client"
 
 import { type MouseEvent, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@lib/drive"
 import { fetchDecryptedThumbnail } from "@lib/driveE2e"
 import { formatBytes } from "@lib/format"
@@ -63,6 +64,7 @@ const NodeCard = ({
   onDropNodes,
   onSpringInto,
 }: NodeCardProps) => {
+  const { t } = useTranslation("drive")
   const isFolder = node.kind === "folder"
   const canDrop = isFolder && Boolean(onDropNodes)
   const [over, setOver] = useState(false)
@@ -160,7 +162,7 @@ const NodeCard = ({
     >
       <button
         type="button"
-        aria-label={selected ? "Deselect" : "Select"}
+        aria-label={selected ? t("nodeCard.deselect") : t("nodeCard.select")}
         onClick={(event) => {
           event.stopPropagation()
           onToggle(node)
@@ -224,7 +226,7 @@ const NodeCard = ({
           {node.name}
         </span>
         <span className="text-muted-foreground text-xs">
-          {isFolder ? "Folder" : formatBytes(node.sizeBytes ?? 0)}
+          {isFolder ? t("nodeCard.folder") : formatBytes(node.sizeBytes ?? 0)}
         </span>
       </div>
     </div>

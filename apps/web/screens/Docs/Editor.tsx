@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import { secretboxOpen } from "@lib/crypto"
 import { type DocMeta, fetchDoc, fetchDocContent } from "@lib/docs"
@@ -18,6 +19,7 @@ type Status = "loading" | "ready" | "error" | "locked"
 
 /** Loads a document's snapshot into a Yjs doc, connects the live relay, then mounts the editor. */
 const Editor = ({ nodeId }: { nodeId: string }) => {
+  const { t } = useTranslation("docs")
   const [ydoc] = useState(() => new Y.Doc())
   const [provider, setProvider] = useState<RelayProvider | null>(null)
   const [doc, setDoc] = useState<DocMeta | null>(null)
@@ -83,8 +85,8 @@ const Editor = ({ nodeId }: { nodeId: string }) => {
   if (status === "error") {
     return (
       <div className="flex min-h-svh flex-1 flex-col items-center justify-center gap-3 text-center">
-        <p className="text-muted-foreground text-sm">This document could not be opened.</p>
-        <Button variant="secondary" size="sm" render={<Link href="/docs">Back to Docs</Link>} />
+        <p className="text-muted-foreground text-sm">{t("editor.openError")}</p>
+        <Button variant="secondary" size="sm" render={<Link href="/docs">{t("editor.backToDocs")}</Link>} />
       </div>
     )
   }
@@ -93,9 +95,9 @@ const Editor = ({ nodeId }: { nodeId: string }) => {
     return (
       <div className="flex min-h-svh flex-1 flex-col items-center justify-center gap-3 text-center">
         <IconShieldLock className="text-muted-foreground size-8" />
-        <p className="text-muted-foreground text-sm">This document is encrypted.</p>
+        <p className="text-muted-foreground text-sm">{t("editor.encrypted")}</p>
         <Button size="sm" onClick={() => setUnlockOpen(true)}>
-          Unlock
+          {t("editor.unlock")}
         </Button>
         <UnlockDialog
           open={unlockOpen}

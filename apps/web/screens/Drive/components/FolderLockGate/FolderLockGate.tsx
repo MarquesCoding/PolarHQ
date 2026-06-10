@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@lib/drive"
 import { unlockFolder } from "@lib/folderLock"
 import { IconLock } from "@tabler/icons-react"
@@ -13,6 +14,7 @@ interface FolderLockGateProps {
 }
 
 const FolderLockGate = ({ node, onUnlocked }: FolderLockGateProps) => {
+  const { t } = useTranslation("drive")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -23,7 +25,7 @@ const FolderLockGate = ({ node, onUnlocked }: FolderLockGateProps) => {
     setError(null)
     if (await unlockFolder(node.id, password)) onUnlocked()
     else {
-      setError("Incorrect password.")
+      setError(t("folderLockGate.incorrectPassword"))
       setBusy(false)
     }
   }
@@ -34,8 +36,8 @@ const FolderLockGate = ({ node, onUnlocked }: FolderLockGateProps) => {
         <IconLock className="size-7" />
       </div>
       <div>
-        <p className="text-sm font-medium">“{node.name}” is locked</p>
-        <p className="text-muted-foreground text-xs">Enter its password to view the contents.</p>
+        <p className="text-sm font-medium">{t("folderLockGate.locked", { name: node.name })}</p>
+        <p className="text-muted-foreground text-xs">{t("folderLockGate.enterPasswordHint")}</p>
       </div>
       <div className="flex w-full max-w-xs flex-col gap-2">
         <Input
@@ -43,14 +45,14 @@ const FolderLockGate = ({ node, onUnlocked }: FolderLockGateProps) => {
           type="password"
           name="orbit-folder-unlock"
           autoComplete="off"
-          placeholder="Folder password"
+          placeholder={t("folderLockGate.passwordPlaceholder")}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           onKeyDown={(event) => event.key === "Enter" && void submit()}
         />
         {error ? <p className="text-destructive text-sm">{error}</p> : null}
         <Button disabled={busy || !password} onClick={() => void submit()}>
-          Unlock
+          {t("folderLockGate.unlock")}
         </Button>
       </div>
     </div>

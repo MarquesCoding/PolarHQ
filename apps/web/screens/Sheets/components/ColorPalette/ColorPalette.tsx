@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { IconBan, IconPlus } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -29,6 +30,7 @@ interface ColorPaletteProps {
 
 /** Google-Sheets-style color picker: a swatch palette, a reset, and a custom picker. */
 const ColorPalette = ({ kind, value, onChange }: ColorPaletteProps) => {
+  const { t } = useTranslation("sheets")
   const [open, setOpen] = useState(false)
   const customRef = useRef<HTMLInputElement>(null)
 
@@ -44,8 +46,8 @@ const ColorPalette = ({ kind, value, onChange }: ColorPaletteProps) => {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={kind === "text" ? "Text color" : "Fill color"}
-            title={kind === "text" ? "Text color" : "Fill color"}
+            aria-label={kind === "text" ? t("colorPalette.textColor") : t("colorPalette.fillColor")}
+            title={kind === "text" ? t("colorPalette.textColor") : t("colorPalette.fillColor")}
             onMouseDown={(event) => event.preventDefault()}
           >
             {kind === "text" ? (
@@ -66,7 +68,7 @@ const ColorPalette = ({ kind, value, onChange }: ColorPaletteProps) => {
           className="hover:bg-accent text-muted-foreground mb-1.5 flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-sm"
         >
           <IconBan className="size-4" />
-          Reset
+          {t("colorPalette.reset")}
         </button>
         <div className="flex flex-col gap-1">
           {PALETTE.map((row, ri) => (
@@ -93,7 +95,7 @@ const ColorPalette = ({ kind, value, onChange }: ColorPaletteProps) => {
           className="hover:bg-accent text-muted-foreground mt-2 flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-sm"
         >
           <IconPlus className="size-4" />
-          Custom
+          {t("colorPalette.custom")}
           <input
             ref={customRef}
             type="color"

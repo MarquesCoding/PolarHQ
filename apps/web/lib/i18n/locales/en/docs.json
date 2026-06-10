@@ -1,1 +1,102 @@
-{}
+{
+  "commentsPanel": {
+    "addCommentPlaceholder": "Add a comment…",
+    "closeComments": "Close comments",
+    "empty": "No comments yet. Select text and add one.",
+    "justNow": "just now",
+    "newComment": "New comment",
+    "replyPlaceholder": "Reply…",
+    "resolve": "Resolve",
+    "resolveThread": "Resolve thread",
+    "send": "Send",
+    "title": "Comments"
+  },
+  "decryptingState": {
+    "decrypting": "Decrypting your document…"
+  },
+  "docCanvas": {
+    "addComment": "Add comment",
+    "anonymous": "Anonymous",
+    "backToDocs": "Back to Docs",
+    "comments": "Comments",
+    "documentTitle": "Document title",
+    "notSavedYet": "Not saved yet",
+    "placeholder": "Write something…",
+    "save": "Save",
+    "savedAt": "Saved {{time}}",
+    "saving": "Saving…",
+    "share": "Share"
+  },
+  "docCard": {
+    "deselect": "Deselect",
+    "select": "Select"
+  },
+  "docContextMenu": {
+    "download": "Download",
+    "moveToTrash": "Move to trash",
+    "open": "Open",
+    "rename": "Rename"
+  },
+  "docsList": {
+    "createFailed": "Could not create document",
+    "deleteFailed": "Could not delete",
+    "download": "Download",
+    "emptyNew": "No documents yet — create one to start.",
+    "emptySearch": "No documents match your search.",
+    "movedToTrash": "Moved to trash",
+    "newDocument": "New document",
+    "rename": "Rename",
+    "sharedWithMe": "Shared with me",
+    "title": "Documents",
+    "trash": "Trash"
+  },
+  "docsToolbar": {
+    "createError": "Could not create document",
+    "newDocument": "New document"
+  },
+  "editor": {
+    "backToDocs": "Back to Docs",
+    "encrypted": "This document is encrypted.",
+    "openError": "This document could not be opened.",
+    "unlock": "Unlock"
+  },
+  "shareDocDialog": {
+    "accessGranted": "Access granted",
+    "accessGrantedVerify": "Access granted. Verify their key: {{fingerprint}}",
+    "accessRevoked": "Access revoked",
+    "add": "Add",
+    "couldNotRemove": "Could not remove",
+    "couldNotShare": "Could not share",
+    "done": "Done",
+    "emailPlaceholder": "Add people by email",
+    "keyChanged": "Their encryption key changed — not shared. Verify their key ({{fingerprint}}) out of band before sharing.",
+    "noRecipient": "Added — they haven’t set up encryption yet. Re-share once they have.",
+    "onlyYou": "Only you have access.",
+    "remove": "Remove {{name}}",
+    "roleEditor": "Editor",
+    "roleViewer": "Viewer",
+    "title": "Share “{{name}}”"
+  },
+  "unlockDialog": {
+    "cancel": "Cancel",
+    "checkingKeys": "Checking your keys…",
+    "copyRecoveryCode": "Copy recovery code",
+    "enterPasswordSetup": "Enter your account password to protect your documents — then it unlocks automatically when you sign in. Only you can decrypt them, not even the server.",
+    "enterPasswordUnlock": "Enter your account password to decrypt your documents on this device.",
+    "incorrectPassword": "Incorrect password.",
+    "invalidRecoveryCode": "Invalid recovery code.",
+    "passwordPlaceholder": "Password",
+    "recoveryCodeCopied": "Recovery code copied",
+    "recoveryCodeDescription": "This is the only way to recover your encrypted documents if you forget your password. Store it somewhere safe — we can’t show it again.",
+    "recoveryCodePlaceholder": "Recovery code",
+    "saveRecoveryCode": "Save your recovery code",
+    "savedIt": "I’ve saved it",
+    "setUp": "Set up",
+    "setUpEncryption": "Set up encryption",
+    "somethingWentWrong": "Something went wrong. Try again.",
+    "unlock": "Unlock",
+    "unlockEncryption": "Unlock encryption",
+    "usePasswordInstead": "Use password instead",
+    "useRecoveryCode": "Use a recovery code"
+  }
+}

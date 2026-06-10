@@ -8,6 +8,7 @@ import { IconPlus } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 import ImportButton from "@components/ImportButton/ImportButton"
 import SizeControl from "@pages/Photos/components/SizeControl/SizeControl"
 
@@ -19,6 +20,7 @@ export interface CollabToolbarConfig {
 
 /** Title-bar controls for a collaborative-doc list page: tile-size slider + create. */
 const CollabToolbar = ({ type, route, createLabel }: CollabToolbarConfig) => {
+  const { t } = useTranslation("collab")
   const pathname = usePathname()
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -32,7 +34,7 @@ const CollabToolbar = ({ type, route, createLabel }: CollabToolbarConfig) => {
       void queryClient.invalidateQueries({ queryKey: ["docs"] })
       router.push(`${route}/${doc.id}`)
     } catch {
-      toast.error("Could not create")
+      toast.error(t("collabToolbar.createFailed"))
     }
   }
 

@@ -13,6 +13,7 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 interface UnlockDialogProps {
   open: boolean
@@ -22,6 +23,7 @@ interface UnlockDialogProps {
 
 /** Sets up or unlocks the user's encryption keys (Proton-style: one password unlocks the keypair). */
 const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => {
+  const { t } = useTranslation("docs")
   const [enrolled, setEnrolled] = useState<boolean | null>(null)
   const [password, setPassword] = useState("")
   const [recoveryInput, setRecoveryInput] = useState("")
@@ -55,24 +57,24 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
         setRecoveryCode(result.recoveryCode)
       } else if (mode === "recovery") {
         if (await unlockWithRecovery(recoveryInput)) finish()
-        else setError("Invalid recovery code.")
+        else setError(t("unlockDialog.invalidRecoveryCode"))
       } else if (await unlockKeys(password)) {
         finish()
       } else {
-        setError("Incorrect password.")
+        setError(t("unlockDialog.incorrectPassword"))
       }
     } catch {
-      setError("Something went wrong. Try again.")
+      setError(t("unlockDialog.somethingWentWrong"))
     } finally {
       setBusy(false)
     }
   }
 
   const title = recoveryCode
-    ? "Save your recovery code"
+    ? t("unlockDialog.saveRecoveryCode")
     : enrolled === false
-      ? "Set up encryption"
-      : "Unlock encryption"
+      ? t("unlockDialog.setUpEncryption")
+      : t("unlockDialog.unlockEncryption")
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -87,8 +89,7 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
         {recoveryCode ? (
           <div className="flex flex-col gap-3">
             <p className="text-muted-foreground text-sm">
-              This is the only way to recover your encrypted documents if you forget your password.
-              Store it somewhere safe — we can’t show it again.
+              {t("unlockDialog.recoveryCodeDescription")}
             </p>
             <div className="flex items-center gap-2">
               <code className="bg-muted flex-1 rounded-md px-2 py-1.5 font-mono text-xs break-all">
@@ -97,10 +98,10 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
               <Button
                 variant="outline"
                 size="icon-sm"
-                aria-label="Copy recovery code"
+                aria-label={t("unlockDialog.copyRecoveryCode")}
                 onClick={() => {
                   void navigator.clipboard.writeText(recoveryCode)
-                  toast.success("Recovery code copied")
+                  toast.success(t("unlockDialog.recoveryCodeCopied"))
                 }}
               >
                 <IconCopy className="size-4" />
@@ -108,20 +109,20 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
             </div>
           </div>
         ) : enrolled === null ? (
-          <p className="text-muted-foreground py-4 text-sm">Checking your keys…</p>
+          <p className="text-muted-foreground py-4 text-sm">{t("unlockDialog.checkingKeys")}</p>
         ) : (
           <div className="flex flex-col gap-3">
             <p className="text-muted-foreground text-sm">
               {enrolled
-                ? "Enter your account password to decrypt your documents on this device."
-                : "Enter your account password to protect your documents — then it unlocks automatically when you sign in. Only you can decrypt them, not even the server."}
+                ? t("unlockDialog.enterPasswordUnlock")
+                : t("unlockDialog.enterPasswordSetup")}
             </p>
             {mode === "recovery" ? (
               <Input
                 autoFocus
                 name="orbit-recovery-code"
                 autoComplete="off"
-                placeholder="Recovery code"
+                placeholder={t("unlockDialog.recoveryCodePlaceholder")}
                 value={recoveryInput}
                 onChange={(event) => setRecoveryInput(event.target.value)}
                 onKeyDown={(event) => event.key === "Enter" && void submit()}
@@ -132,7 +133,7 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
                 type="password"
                 name="orbit-unlock-key"
                 autoComplete="off"
-                placeholder="Password"
+                placeholder={t("unlockDialog.passwordPlaceholder")}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 onKeyDown={(event) => event.key === "Enter" && password && void submit()}
@@ -149,7 +150,9 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
                   setMode((value) => (value === "recovery" ? "password" : "recovery"))
                 }}
               >
-                {mode === "recovery" ? "Use password instead" : "Use a recovery code"}
+                {mode === "recovery"
+                  ? t("unlockDialog.usePasswordInstead")
+                  : t("unlockDialog.useRecoveryCode")}
               </Button>
             ) : null}
           </div>
@@ -157,17 +160,17 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
 
         <DialogFooter>
           {recoveryCode ? (
-            <Button onClick={finish}>I’ve saved it</Button>
+            <Button onClick={finish}>{t("unlockDialog.savedIt")}</Button>
           ) : enrolled !== null ? (
             <>
               <Button variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
+                {t("unlockDialog.cancel")}
               </Button>
               <Button
                 disabled={busy || (mode === "recovery" ? !recoveryInput.trim() : !password)}
                 onClick={() => void submit()}
               >
-                {enrolled === false ? "Set up" : "Unlock"}
+                {enrolled === false ? t("unlockDialog.setUp") : t("unlockDialog.unlock")}
               </Button>
             </>
           ) : null}

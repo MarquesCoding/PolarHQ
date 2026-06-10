@@ -13,6 +13,7 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 interface RenameDialogProps {
   node: { id: string; name: string } | null
@@ -21,6 +22,7 @@ interface RenameDialogProps {
 }
 
 const RenameDialog = ({ node, onOpenChange, onDone }: RenameDialogProps) => {
+  const { t } = useTranslation("drive")
   const [name, setName] = useState("")
 
   useEffect(() => {
@@ -30,18 +32,18 @@ const RenameDialog = ({ node, onOpenChange, onDone }: RenameDialogProps) => {
   const rename = useMutation({
     mutationFn: () => renameDriveNode(node!.id, name.trim()),
     onSuccess: () => {
-      toast.success("Renamed")
+      toast.success(t("renameDialog.renamed"))
       onOpenChange(false)
       onDone()
     },
-    onError: () => toast.error("Could not rename"),
+    onError: () => toast.error(t("renameDialog.couldNotRename")),
   })
 
   return (
     <Dialog open={Boolean(node)} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>Rename</DialogTitle>
+          <DialogTitle>{t("renameDialog.title")}</DialogTitle>
         </DialogHeader>
         <Input
           autoFocus
@@ -53,10 +55,10 @@ const RenameDialog = ({ node, onOpenChange, onDone }: RenameDialogProps) => {
         />
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("renameDialog.cancel")}
           </Button>
           <Button disabled={!name.trim() || rename.isPending} onClick={() => rename.mutate()}>
-            Save
+            {t("renameDialog.save")}
           </Button>
         </DialogFooter>
       </DialogContent>
