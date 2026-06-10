@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@workspace/ui/components/dialog"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 interface VersionHistoryDialogProps {
   node: DriveNode | null
@@ -22,6 +23,7 @@ interface VersionHistoryDialogProps {
 }
 
 const VersionHistoryDialog = ({ node, open, onOpenChange, onDone }: VersionHistoryDialogProps) => {
+  const { t } = useTranslation("drive")
   const queryClient = useQueryClient()
   const { data, isLoading } = useQuery({
     queryKey: ["drive", "versions", node?.id],
@@ -32,12 +34,12 @@ const VersionHistoryDialog = ({ node, open, onOpenChange, onDone }: VersionHisto
   const restore = useMutation({
     mutationFn: (versionId: string) => restoreDriveVersion(node!.id, versionId),
     onSuccess: () => {
-      toast.success("Version restored")
+      toast.success(t("versionHistoryDialog.restored"))
       void queryClient.invalidateQueries({ queryKey: ["drive"] })
       onDone()
       onOpenChange(false)
     },
-    onError: () => toast.error("Could not restore"),
+    onError: () => toast.error(t("versionHistoryDialog.restoreFailed")),
   })
 
   const versions = data?.versions ?? []
@@ -46,13 +48,13 @@ const VersionHistoryDialog = ({ node, open, onOpenChange, onDone }: VersionHisto
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>Version history</DialogTitle>
+          <DialogTitle>{t("versionHistoryDialog.title")}</DialogTitle>
         </DialogHeader>
         {isLoading ? (
-          <p className="text-muted-foreground text-sm">Loading…</p>
+          <p className="text-muted-foreground text-sm">{t("versionHistoryDialog.loading")}</p>
         ) : versions.length === 0 ? (
           <p className="text-muted-foreground text-sm">
-            No previous versions. Re-upload a file with the same name to create one.
+            {t("versionHistoryDialog.empty")}
           </p>
         ) : (
           <ul className="scrollbar-slim flex max-h-80 flex-col gap-1 overflow-y-auto">
@@ -62,7 +64,7 @@ const VersionHistoryDialog = ({ node, open, onOpenChange, onDone }: VersionHisto
                 className="border-border/60 flex items-center gap-2 rounded-md border px-3 py-2"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">Version {versions.length - index}</p>
+                  <p className="truncate text-sm font-medium">{t("versionHistoryDialog.versionLabel", { number: versions.length - index })}</p>
                   <p className="text-muted-foreground text-xs">
                     {new Date(version.createdAt).toLocaleString()} · {formatBytes(version.sizeBytes ?? 0)}
                   </p>
@@ -70,7 +72,7 @@ const VersionHistoryDialog = ({ node, open, onOpenChange, onDone }: VersionHisto
                 <a
                   href={version.downloadUrl}
                   download={version.name}
-                  aria-label="Download version"
+                  aria-label={t("versionHistoryDialog.download")}
                   className={buttonVariants({ variant: "ghost", size: "icon-sm" })}
                 >
                   <Icon name="download" className="size-4" />
@@ -81,7 +83,7 @@ const VersionHistoryDialog = ({ node, open, onOpenChange, onDone }: VersionHisto
                   disabled={restore.isPending}
                   onClick={() => restore.mutate(version.id)}
                 >
-                  Restore
+                  {t("versionHistoryDialog.restore")}
                 </Button>
               </li>
             ))}
@@ -89,7 +91,7 @@ const VersionHistoryDialog = ({ node, open, onOpenChange, onDone }: VersionHisto
         )}
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Close
+            {t("versionHistoryDialog.close")}
           </Button>
         </DialogFooter>
       </DialogContent>

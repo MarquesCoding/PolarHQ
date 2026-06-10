@@ -1,1 +1,193 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "My Drive"
+  },
+  "browser": {
+    "archive": "Archive",
+    "archiveExtracted": "Archive extracted",
+    "archiveLabel_one": "Archive ({{count}} item)",
+    "archiveLabel_other": "Archive ({{count}} items)",
+    "copyCreated": "Copy created",
+    "couldNotCopy": "Could not copy",
+    "couldNotCreate": "Could not create",
+    "couldNotDelete": "Could not delete",
+    "couldNotExtract": "Could not extract",
+    "couldNotMove": "Could not move",
+    "couldNotOpenFile": "Could not open this file",
+    "download": "Download",
+    "dragOrUpload": "Drag files here or use Upload.",
+    "extract": "Extract",
+    "linkCopied": "Link copied",
+    "move": "Move",
+    "movedToFolder_one": "Moved {{count}} item to {{name}}",
+    "movedToFolder_other": "Moved {{count}} items to {{name}}",
+    "movedToTrash": "Moved to trash",
+    "noMatches": "Nothing matches your search.",
+    "open": "Open",
+    "opening": "Opening…",
+    "rename": "Rename",
+    "share": "Share",
+    "trash": "Trash"
+  },
+  "detailsPanel": {
+    "closeDetails": "Close details",
+    "created": "Created",
+    "empty": "Select an item to see its details.",
+    "file": "File",
+    "files": "Files",
+    "folder": "Folder",
+    "folders": "Folders",
+    "itemsSelected_one": "{{count}} item selected",
+    "itemsSelected_other": "{{count}} items selected",
+    "modified": "Modified",
+    "size": "Size",
+    "title": "Details",
+    "totalSize": "Total size",
+    "type": "Type"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "New document",
+    "newFolder": "New folder",
+    "newSpreadsheet": "New spreadsheet",
+    "uploadFiles": "Upload files"
+  },
+  "driveNav": {
+    "drive": "Drive",
+    "location": "Location",
+    "myDrive": "My Drive",
+    "trash": "Trash"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Could not create",
+    "emptyTrash": "Empty trash",
+    "emptyTrashConfirm": "Empty trash?",
+    "new": "New",
+    "newDocument": "New document",
+    "newFolder": "New folder",
+    "newSpreadsheet": "New spreadsheet",
+    "toggleDetails": "Toggle details",
+    "trashEmptied": "Trash emptied",
+    "uploadFiles": "Upload files"
+  },
+  "folderLockDialog": {
+    "cancel": "Cancel",
+    "confirmPasswordPlaceholder": "Confirm password",
+    "folderLocked": "Folder locked",
+    "folderPasswordPlaceholder": "Folder password",
+    "incorrectPassword": "Incorrect password.",
+    "lock": "Lock",
+    "lockDescription": "Set a password to open this folder. It gates access on this device — your files stay end-to-end encrypted regardless.",
+    "lockFolderTitle": "Lock folder",
+    "lockRemoved": "Lock removed",
+    "passwordsDontMatch": "Passwords don’t match.",
+    "removeDescription": "Enter the folder password to remove its lock.",
+    "removeLock": "Remove lock",
+    "removeLockTitle": "Remove lock",
+    "somethingWentWrong": "Something went wrong."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Enter its password to view the contents.",
+    "incorrectPassword": "Incorrect password.",
+    "locked": "“{{name}}” is locked",
+    "passwordPlaceholder": "Folder password",
+    "unlock": "Unlock"
+  },
+  "imageViewer": {
+    "close": "Close",
+    "download": "Download",
+    "resetZoom": "Reset zoom",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
+  },
+  "modelViewer": {
+    "autoRotate": "Auto-rotate",
+    "close": "Close",
+    "decryptError": "Could not decrypt model",
+    "loading": "Loading model…",
+    "normals": "Normals",
+    "openError": "Could not open this 3D file.",
+    "shaded": "Shaded",
+    "toggleGrid": "Toggle grid",
+    "toggleTextures": "Toggle textures",
+    "wireframe": "Wireframe"
+  },
+  "moveDialog": {
+    "cancel": "Cancel",
+    "move": "Move",
+    "moveFailed": "Could not move",
+    "moved": "Moved",
+    "myDrive": "My Drive",
+    "title": "Move to folder"
+  },
+  "newFolderDialog": {
+    "cancel": "Cancel",
+    "create": "Create",
+    "createError": "Could not create folder",
+    "created": "Folder created",
+    "newFolder": "New folder",
+    "placeholder": "Folder name",
+    "title": "New folder"
+  },
+  "nodeCard": {
+    "deselect": "Deselect",
+    "folder": "Folder",
+    "select": "Select"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Copy link",
+    "details": "Details",
+    "download": "Download",
+    "extractHere": "Extract here",
+    "lockFolder": "Lock folder",
+    "makeCopy": "Make a copy",
+    "moveToFolder": "Move to folder",
+    "moveToTrash": "Move to trash",
+    "open": "Open",
+    "openInPhotos": "Open in Photos",
+    "removeLock": "Remove lock",
+    "rename": "Rename",
+    "share": "Share",
+    "versionHistory": "See version history",
+    "view": "View",
+    "viewIn3d": "View in 3D"
+  },
+  "nodeTable": {
+    "deselect": "Deselect",
+    "modified": "Modified",
+    "name": "Name",
+    "select": "Select",
+    "selectAll": "Select all",
+    "size": "Size"
+  },
+  "parentCard": {
+    "parentFolder": "Parent folder"
+  },
+  "renameDialog": {
+    "cancel": "Cancel",
+    "couldNotRename": "Could not rename",
+    "renamed": "Renamed",
+    "save": "Save",
+    "title": "Rename"
+  },
+  "trash": {
+    "actionFailed": "Action failed",
+    "deleteForever": "Delete forever",
+    "empty": "Trash is empty.",
+    "permanentlyDeleted": "Permanently deleted",
+    "restore": "Restore",
+    "restored": "Restored",
+    "retentionNotice": "Items here are permanently deleted 30 days after being trashed.",
+    "title": "Trash"
+  },
+  "versionHistoryDialog": {
+    "close": "Close",
+    "download": "Download version",
+    "empty": "No previous versions. Re-upload a file with the same name to create one.",
+    "loading": "Loading…",
+    "restore": "Restore",
+    "restoreFailed": "Could not restore",
+    "restored": "Version restored",
+    "title": "Version history",
+    "versionLabel": "Version {{number}}"
+  }
+}

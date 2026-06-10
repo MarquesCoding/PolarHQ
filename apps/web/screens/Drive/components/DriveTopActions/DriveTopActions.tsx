@@ -28,10 +28,12 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 import NewFolderDialog from "@pages/Drive/components/NewFolderDialog/NewFolderDialog"
 
 /** Drive title-bar actions: details toggle and a create/upload menu. Resolves the folder from the URL. */
 const DriveTopActions = () => {
+  const { t } = useTranslation("drive")
   const pathname = usePathname()
   const router = useRouter()
   const dispatch = useAppDispatch()
@@ -53,19 +55,19 @@ const DriveTopActions = () => {
     return (
       <ConfirmButton
         icon={<IconTrashX className="size-4" />}
-        confirmLabel="Empty trash?"
+        confirmLabel={t("driveTopActions.emptyTrashConfirm")}
         onConfirm={async () => {
           try {
             await emptyDriveTrash()
-            toast.success("Trash emptied")
+            toast.success(t("driveTopActions.trashEmptied"))
             void queryClient.invalidateQueries({ queryKey: ["drive"] })
             void queryClient.invalidateQueries({ queryKey: ["photos"] })
           } catch {
-            toast.error("Action failed")
+            toast.error(t("errors:actionFailed"))
           }
         }}
       >
-        Empty trash
+        {t("driveTopActions.emptyTrash")}
       </ConfirmButton>
     )
   }
@@ -88,7 +90,7 @@ const DriveTopActions = () => {
       void queryClient.invalidateQueries({ queryKey: ["docs"] })
       router.push(`${routes[type]}/${doc.id}`)
     } catch {
-      toast.error("Could not create")
+      toast.error(t("driveTopActions.couldNotCreate"))
     }
   }
 
@@ -97,7 +99,7 @@ const DriveTopActions = () => {
       <Button
         variant={detailsOpen ? "secondary" : "ghost"}
         size="icon-sm"
-        aria-label="Toggle details"
+        aria-label={t("driveTopActions.toggleDetails")}
         onClick={() => dispatch(setDriveDetailsOpen(!detailsOpen))}
       >
         <IconInfoCircle className="size-4" />
@@ -106,7 +108,7 @@ const DriveTopActions = () => {
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <Button variant="ghost" size="icon-sm" aria-label="New" disabled={!parentId}>
+            <Button variant="ghost" size="icon-sm" aria-label={t("driveTopActions.new")} disabled={!parentId}>
               <IconDots className="size-4" />
             </Button>
           }
@@ -114,20 +116,20 @@ const DriveTopActions = () => {
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => fileInput.current?.click()}>
             <IconUpload className="size-4" />
-            Upload files
+            {t("driveTopActions.uploadFiles")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setNewFolderOpen(true)}>
             <IconFolderPlus className="size-4" />
-            New folder
+            {t("driveTopActions.newFolder")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => void newDoc("doc")}>
             <IconFilePlus className="size-4" />
-            New document
+            {t("driveTopActions.newDocument")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => void newDoc("sheet")}>
             <IconTable className="size-4" />
-            New spreadsheet
+            {t("driveTopActions.newSpreadsheet")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

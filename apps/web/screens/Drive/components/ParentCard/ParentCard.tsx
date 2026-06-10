@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Icon } from "@lib/icons"
 import { cn } from "@workspace/ui/lib/utils"
 import { DRIVE_NODES_MIME } from "@pages/Drive/components/NodeCard/NodeCard"
@@ -12,6 +13,7 @@ interface ParentCardProps {
 
 /** The ".." entry — navigates up a level (spring-loads on hover), and accepts drops to move up. */
 const ParentCard = ({ onOpen, onDrop }: ParentCardProps) => {
+  const { t } = useTranslation("drive")
   const [over, setOver] = useState(false)
   const [blink, setBlink] = useState(false)
   const springTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -75,7 +77,7 @@ const ParentCard = ({ onOpen, onDrop }: ParentCardProps) => {
       </div>
       <div className="flex w-full flex-col items-center gap-0.5">
         <span className="truncate text-sm font-medium">..</span>
-        <span className="text-muted-foreground text-xs">Parent folder</span>
+        <span className="text-muted-foreground text-xs">{t("parentCard.parentFolder")}</span>
       </div>
     </div>
   )

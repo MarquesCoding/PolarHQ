@@ -6,6 +6,8 @@ import { IconCheck, IconMessageOff, IconX } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { cn } from "@workspace/ui/lib/utils"
+import { t } from "@lib/i18n/config"
+import { useTranslation } from "react-i18next"
 
 interface Draft {
   threadId: string
@@ -35,7 +37,7 @@ const initials = (name: string): string =>
 
 const timeAgo = (ms: number): string => {
   const seconds = Math.floor((Date.now() - ms) / 1000)
-  if (seconds < 60) return "just now"
+  if (seconds < 60) return t("docs:commentsPanel.justNow")
   const minutes = Math.floor(seconds / 60)
   if (minutes < 60) return `${minutes}m`
   const hours = Math.floor(minutes / 60)
@@ -54,6 +56,7 @@ const Composer = ({
   onSubmit: (body: string) => void
   onCancel?: () => void
 }) => {
+  const { t } = useTranslation("docs")
   const [value, setValue] = useState("")
   const submit = () => {
     const body = value.trim()
@@ -75,7 +78,7 @@ const Composer = ({
         className="h-8"
       />
       <Button size="sm" disabled={!value.trim()} onClick={submit}>
-        Send
+        {t("commentsPanel.send")}
       </Button>
     </div>
   )
@@ -94,6 +97,7 @@ const CommentsPanel = ({
   onResolve,
   onCancelDraft,
 }: CommentsPanelProps) => {
+  const { t } = useTranslation("docs")
   const open = threads
     .filter((thread) => !thread.resolved)
     .sort((a, b) => a.createdAt - b.createdAt)
@@ -101,8 +105,8 @@ const CommentsPanel = ({
   return (
     <aside className="panel flex h-full w-72 shrink-0 flex-col rounded-xl">
       <header className="border-border/60 flex h-9 shrink-0 items-center justify-between border-b px-3">
-        <span className="text-sm font-semibold">Comments</span>
-        <Button variant="ghost" size="icon-xs" aria-label="Close comments" onClick={onClose}>
+        <span className="text-sm font-semibold">{t("commentsPanel.title")}</span>
+        <Button variant="ghost" size="icon-xs" aria-label={t("commentsPanel.closeComments")} onClick={onClose}>
           <IconX className="size-4" />
         </Button>
       </header>
@@ -110,15 +114,15 @@ const CommentsPanel = ({
       <div className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-2">
         {draft ? (
           <div className="border-primary/50 rounded-lg border p-2">
-            <p className="text-muted-foreground mb-1.5 text-xs">New comment</p>
-            <Composer autoFocus placeholder="Add a comment…" onSubmit={onSubmitNew} onCancel={onCancelDraft} />
+            <p className="text-muted-foreground mb-1.5 text-xs">{t("commentsPanel.newComment")}</p>
+            <Composer autoFocus placeholder={t("commentsPanel.addCommentPlaceholder")} onSubmit={onSubmitNew} onCancel={onCancelDraft} />
           </div>
         ) : null}
 
         {open.length === 0 && !draft ? (
           <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-2 text-center text-sm">
             <IconMessageOff className="size-6" />
-            <p>No comments yet. Select text and add one.</p>
+            <p>{t("commentsPanel.empty")}</p>
           </div>
         ) : null}
 
@@ -155,13 +159,13 @@ const CommentsPanel = ({
 
               <div className="flex items-center gap-1.5">
                 <div className="flex-1">
-                  <Composer placeholder="Reply…" onSubmit={(body) => onReply(thread.id, body)} />
+                  <Composer placeholder={t("commentsPanel.replyPlaceholder")} onSubmit={(body) => onReply(thread.id, body)} />
                 </div>
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label="Resolve thread"
-                  title="Resolve"
+                  aria-label={t("commentsPanel.resolveThread")}
+                  title={t("commentsPanel.resolve")}
                   onClick={(event) => {
                     event.stopPropagation()
                     onResolve(thread.id)

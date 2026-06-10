@@ -2,6 +2,7 @@
 
 import { type ReactNode, useEffect, useState } from "react"
 import Link from "next/link"
+import { useTranslation } from "react-i18next"
 import { type CollabDocument, useCollabDocument } from "@lib/useCollabDocument"
 import { IconShieldLock, IconTrash } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
@@ -18,6 +19,7 @@ interface CollabBoundaryProps {
 
 /** Loads a collaborative document and handles loading / decrypting / locked / error states. */
 const CollabBoundary = ({ nodeId, backHref, render }: CollabBoundaryProps) => {
+  const { t } = useTranslation("collab")
   const collab = useCollabDocument(nodeId)
   const [unlockOpen, setUnlockOpen] = useState(false)
 
@@ -28,8 +30,12 @@ const CollabBoundary = ({ nodeId, backHref, render }: CollabBoundaryProps) => {
   if (collab.status === "error") {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
-        <p className="text-muted-foreground text-sm">This couldn’t be opened.</p>
-        <Button variant="secondary" size="sm" render={<Link href={backHref}>Go back</Link>} />
+        <p className="text-muted-foreground text-sm">{t("collabBoundary.couldNotOpen")}</p>
+        <Button
+          variant="secondary"
+          size="sm"
+          render={<Link href={backHref}>{t("collabBoundary.goBack")}</Link>}
+        />
       </div>
     )
   }
@@ -39,10 +45,15 @@ const CollabBoundary = ({ nodeId, backHref, render }: CollabBoundaryProps) => {
       <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
         <IconTrash className="text-muted-foreground size-8" />
         <p className="text-muted-foreground text-sm">
-          This was deleted{collab.doc ? ` — “${collab.doc.name}”` : ""}. Your changes can’t be
-          saved.
+          {collab.doc
+            ? t("collabBoundary.deletedNamed", { name: collab.doc.name })
+            : t("collabBoundary.deleted")}
         </p>
-        <Button variant="secondary" size="sm" render={<Link href={backHref}>Go back</Link>} />
+        <Button
+          variant="secondary"
+          size="sm"
+          render={<Link href={backHref}>{t("collabBoundary.goBack")}</Link>}
+        />
       </div>
     )
   }
@@ -51,9 +62,9 @@ const CollabBoundary = ({ nodeId, backHref, render }: CollabBoundaryProps) => {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
         <IconShieldLock className="text-muted-foreground size-8" />
-        <p className="text-muted-foreground text-sm">This is encrypted.</p>
+        <p className="text-muted-foreground text-sm">{t("collabBoundary.encrypted")}</p>
         <Button size="sm" onClick={() => setUnlockOpen(true)}>
-          Unlock
+          {t("collabBoundary.unlock")}
         </Button>
         <UnlockDialog open={unlockOpen} onOpenChange={setUnlockOpen} onUnlocked={collab.retry} />
       </div>

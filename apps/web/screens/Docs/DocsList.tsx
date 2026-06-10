@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "react-i18next"
 import { type DocMeta, fetchDocs, openEditor } from "@lib/docs"
 import { trashDriveNode } from "@lib/drive"
 import { createEncryptedDoc } from "@lib/e2e"
@@ -32,6 +33,7 @@ const downloadDoc = (doc: DocMeta) => {
 }
 
 const DocsListInner = () => {
+  const { t } = useTranslation("docs")
   const router = useRouter()
   const queryClient = useQueryClient()
   const selection = useSelection()
@@ -64,7 +66,7 @@ const DocsListInner = () => {
       invalidate()
       openEditor("doc", doc.id, router)
     } catch {
-      toast.error("Could not create document")
+      toast.error(t("docsList.createFailed"))
       setCreating(false)
     }
   }
@@ -81,11 +83,11 @@ const DocsListInner = () => {
     if (toTrash.length === 0) return
     try {
       await Promise.all(toTrash.map((id) => trashDriveNode(id)))
-      toast.success("Moved to trash")
+      toast.success(t("docsList.movedToTrash"))
       selection.clear()
       invalidate()
     } catch {
-      toast.error("Could not delete")
+      toast.error(t("docsList.deleteFailed"))
     }
   }
 
@@ -124,7 +126,7 @@ const DocsListInner = () => {
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Documents</h1>
+        <h1 className="text-lg font-semibold">{t("docsList.title")}</h1>
       </div>
 
       {isLoading ? (
@@ -133,12 +135,12 @@ const DocsListInner = () => {
         <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 text-center">
           <IconFileText className="size-8" />
           <p className="text-sm">
-            {search ? "No documents match your search." : "No documents yet — create one to start."}
+            {search ? t("docsList.emptySearch") : t("docsList.emptyNew")}
           </p>
           {!search ? (
             <Button size="sm" disabled={creating} onClick={create}>
               <IconPlus className="size-4" />
-              New document
+              {t("docsList.newDocument")}
             </Button>
           ) : null}
         </div>
@@ -147,7 +149,7 @@ const DocsListInner = () => {
           {owned.length > 0 ? grid(owned) : null}
           {shared.length > 0 ? (
             <div className="flex flex-col gap-3">
-              <h2 className="text-muted-foreground text-sm font-medium">Shared with me</h2>
+              <h2 className="text-muted-foreground text-sm font-medium">{t("docsList.sharedWithMe")}</h2>
               {grid(shared)}
             </div>
           ) : null}
@@ -161,12 +163,12 @@ const DocsListInner = () => {
           onClick={() => ids.forEach((id) => byId.get(id) && downloadDoc(byId.get(id)!))}
         >
           <Icon name="download" className="size-4" />
-          Download
+          {t("docsList.download")}
         </Button>
         {single?.owner ? (
           <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
             <IconPencil className="size-4" />
-            Rename
+            {t("docsList.rename")}
           </Button>
         ) : null}
         <ConfirmButton
@@ -174,7 +176,7 @@ const DocsListInner = () => {
           armed={trashConfirm.armed}
           onTrigger={trashConfirm.trigger}
         >
-          Trash
+          {t("docsList.trash")}
         </ConfirmButton>
       </SelectionBar>
 

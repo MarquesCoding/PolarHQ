@@ -1,6 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { useTranslation } from "react-i18next"
 import type { DocMeta } from "@lib/docs"
 import { IconDownload, IconExternalLink, IconPencil, IconTrash } from "@tabler/icons-react"
 import {
@@ -24,37 +25,40 @@ interface DocContextMenuProps {
   children: ReactNode
 }
 
-const DocContextMenu = ({ doc, actions, children }: DocContextMenuProps) => (
-  <ContextMenu>
-    <ContextMenuTrigger className="contents" onContextMenu={(event) => event.stopPropagation()}>
-      {children}
-    </ContextMenuTrigger>
-    <ContextMenuContent>
-      <ContextMenuItem onClick={() => actions.open(doc)}>
-        <IconExternalLink />
-        Open
-      </ContextMenuItem>
-      {doc.owner ? (
-        <ContextMenuItem onClick={() => actions.rename(doc)}>
-          <IconPencil />
-          Rename
+const DocContextMenu = ({ doc, actions, children }: DocContextMenuProps) => {
+  const { t } = useTranslation("docs")
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="contents" onContextMenu={(event) => event.stopPropagation()}>
+        {children}
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onClick={() => actions.open(doc)}>
+          <IconExternalLink />
+          {t("docContextMenu.open")}
         </ContextMenuItem>
-      ) : null}
-      <ContextMenuItem onClick={() => actions.download(doc)}>
-        <IconDownload />
-        Download
-      </ContextMenuItem>
-      {doc.owner ? (
-        <>
-          <ContextMenuSeparator />
-          <ContextMenuItem variant="destructive" onClick={() => actions.trash(doc)}>
-            <IconTrash />
-            Move to trash
+        {doc.owner ? (
+          <ContextMenuItem onClick={() => actions.rename(doc)}>
+            <IconPencil />
+            {t("docContextMenu.rename")}
           </ContextMenuItem>
-        </>
-      ) : null}
-    </ContextMenuContent>
-  </ContextMenu>
-)
+        ) : null}
+        <ContextMenuItem onClick={() => actions.download(doc)}>
+          <IconDownload />
+          {t("docContextMenu.download")}
+        </ContextMenuItem>
+        {doc.owner ? (
+          <>
+            <ContextMenuSeparator />
+            <ContextMenuItem variant="destructive" onClick={() => actions.trash(doc)}>
+              <IconTrash />
+              {t("docContextMenu.moveToTrash")}
+            </ContextMenuItem>
+          </>
+        ) : null}
+      </ContextMenuContent>
+    </ContextMenu>
+  )
+}
 
 export default DocContextMenu

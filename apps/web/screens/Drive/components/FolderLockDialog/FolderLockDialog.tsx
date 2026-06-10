@@ -14,6 +14,7 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 interface FolderLockDialogProps {
   node: DriveNode | null
@@ -24,6 +25,7 @@ interface FolderLockDialogProps {
 }
 
 const FolderLockDialog = ({ node, mode, open, onOpenChange, onDone }: FolderLockDialogProps) => {
+  const { t } = useTranslation("drive")
   const [password, setPassword] = useState("")
   const [confirm, setConfirm] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -40,7 +42,7 @@ const FolderLockDialog = ({ node, mode, open, onOpenChange, onDone }: FolderLock
   const submit = async () => {
     if (!node || !password) return
     if (mode === "lock" && password !== confirm) {
-      setError("Passwords don’t match.")
+      setError(t("folderLockDialog.passwordsDontMatch"))
       return
     }
     setBusy(true)
@@ -48,20 +50,20 @@ const FolderLockDialog = ({ node, mode, open, onOpenChange, onDone }: FolderLock
     try {
       if (mode === "lock") {
         await lockFolder(node.id, password)
-        toast.success("Folder locked")
+        toast.success(t("folderLockDialog.folderLocked"))
       } else {
         if (!(await unlockFolder(node.id, password))) {
-          setError("Incorrect password.")
+          setError(t("folderLockDialog.incorrectPassword"))
           setBusy(false)
           return
         }
         await removeFolderLock(node.id)
-        toast.success("Lock removed")
+        toast.success(t("folderLockDialog.lockRemoved"))
       }
       onDone()
       onOpenChange(false)
     } catch {
-      setError("Something went wrong.")
+      setError(t("folderLockDialog.somethingWentWrong"))
     } finally {
       setBusy(false)
     }
@@ -71,11 +73,13 @@ const FolderLockDialog = ({ node, mode, open, onOpenChange, onDone }: FolderLock
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>{mode === "lock" ? "Lock folder" : "Remove lock"}</DialogTitle>
+          <DialogTitle>
+            {mode === "lock" ? t("folderLockDialog.lockFolderTitle") : t("folderLockDialog.removeLockTitle")}
+          </DialogTitle>
           <DialogDescription>
             {mode === "lock"
-              ? "Set a password to open this folder. It gates access on this device — your files stay end-to-end encrypted regardless."
-              : "Enter the folder password to remove its lock."}
+              ? t("folderLockDialog.lockDescription")
+              : t("folderLockDialog.removeDescription")}
           </DialogDescription>
         </DialogHeader>
 
@@ -85,7 +89,7 @@ const FolderLockDialog = ({ node, mode, open, onOpenChange, onDone }: FolderLock
             type="password"
             name="orbit-folder-password"
             autoComplete="off"
-            placeholder="Folder password"
+            placeholder={t("folderLockDialog.folderPasswordPlaceholder")}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             onKeyDown={(event) => event.key === "Enter" && mode === "remove" && void submit()}
@@ -95,7 +99,7 @@ const FolderLockDialog = ({ node, mode, open, onOpenChange, onDone }: FolderLock
               type="password"
               name="orbit-folder-password-confirm"
               autoComplete="off"
-              placeholder="Confirm password"
+              placeholder={t("folderLockDialog.confirmPasswordPlaceholder")}
               value={confirm}
               onChange={(event) => setConfirm(event.target.value)}
               onKeyDown={(event) => event.key === "Enter" && void submit()}
@@ -106,10 +110,10 @@ const FolderLockDialog = ({ node, mode, open, onOpenChange, onDone }: FolderLock
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("folderLockDialog.cancel")}
           </Button>
           <Button disabled={busy || !password} onClick={() => void submit()}>
-            {mode === "lock" ? "Lock" : "Remove lock"}
+            {mode === "lock" ? t("folderLockDialog.lock") : t("folderLockDialog.removeLock")}
           </Button>
         </DialogFooter>
       </DialogContent>

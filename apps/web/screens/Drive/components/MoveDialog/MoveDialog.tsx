@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@workspace/ui/components/dialog"
 import { cn } from "@workspace/ui/lib/utils"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 interface MoveDialogProps {
@@ -23,6 +24,7 @@ interface MoveDialogProps {
 }
 
 const MoveDialog = ({ nodeIds, open, onOpenChange, onDone }: MoveDialogProps) => {
+  const { t } = useTranslation("drive")
   const { data } = useQuery({ queryKey: ["drive", "folders"], queryFn: fetchFolders, enabled: open })
   const [dest, setDest] = useState<string | null>(null)
   const folders = data?.folders ?? []
@@ -32,7 +34,7 @@ const MoveDialog = ({ nodeIds, open, onOpenChange, onDone }: MoveDialogProps) =>
     const parts: string[] = []
     let current: DriveNode | undefined = folder
     while (current) {
-      parts.unshift(current.special === "root" ? "My Drive" : current.name)
+      parts.unshift(current.special === "root" ? t("moveDialog.myDrive") : current.name)
       current = current.parentId ? byId.get(current.parentId) : undefined
     }
     return parts.join(" / ")
@@ -63,19 +65,19 @@ const MoveDialog = ({ nodeIds, open, onOpenChange, onDone }: MoveDialogProps) =>
   const move = useMutation({
     mutationFn: () => Promise.all(nodeIds.map((id) => moveDriveNode(id, dest!))),
     onSuccess: () => {
-      toast.success("Moved")
+      toast.success(t("moveDialog.moved"))
       setDest(null)
       onOpenChange(false)
       onDone()
     },
-    onError: () => toast.error("Could not move"),
+    onError: () => toast.error(t("moveDialog.moveFailed")),
   })
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>Move to folder</DialogTitle>
+          <DialogTitle>{t("moveDialog.title")}</DialogTitle>
         </DialogHeader>
         <div className="scrollbar-slim flex max-h-72 flex-col gap-0.5 overflow-y-auto">
           {candidates.map((folder) => (
@@ -95,10 +97,10 @@ const MoveDialog = ({ nodeIds, open, onOpenChange, onDone }: MoveDialogProps) =>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("moveDialog.cancel")}
           </Button>
           <Button disabled={!dest || move.isPending} onClick={() => move.mutate()}>
-            Move
+            {t("moveDialog.move")}
           </Button>
         </DialogFooter>
       </DialogContent>

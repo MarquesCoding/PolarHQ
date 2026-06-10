@@ -8,6 +8,7 @@ import { IconX } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
+import { useTranslation } from "react-i18next"
 
 interface DetailsPanelProps {
   open: boolean
@@ -51,24 +52,33 @@ const Field = ({ label, value }: { label: string; value: ReactNode }) => (
   </div>
 )
 
-const SingleDetails = ({ node }: { node: DriveNode }) => (
-  <>
-    <div className="flex flex-col items-center gap-3 text-center">
-      <div className="aspect-square w-full overflow-hidden rounded-xl">
-        <Preview node={node} />
+const SingleDetails = ({ node }: { node: DriveNode }) => {
+  const { t } = useTranslation("drive")
+  return (
+    <>
+      <div className="flex flex-col items-center gap-3 text-center">
+        <div className="aspect-square w-full overflow-hidden rounded-xl">
+          <Preview node={node} />
+        </div>
+        <p className="text-sm font-medium break-words">{node.name}</p>
       </div>
-      <p className="text-sm font-medium break-words">{node.name}</p>
-    </div>
-    <dl className="flex flex-col gap-3">
-      <Field label="Type" value={node.kind === "folder" ? "Folder" : (node.mimeType ?? "File")} />
-      {node.kind === "file" ? <Field label="Size" value={formatBytes(node.sizeBytes ?? 0)} /> : null}
-      <Field label="Created" value={new Date(node.createdAt).toLocaleString()} />
-      <Field label="Modified" value={new Date(node.updatedAt).toLocaleString()} />
-    </dl>
-  </>
-)
+      <dl className="flex flex-col gap-3">
+        <Field
+          label={t("detailsPanel.type")}
+          value={node.kind === "folder" ? t("detailsPanel.folder") : (node.mimeType ?? t("detailsPanel.file"))}
+        />
+        {node.kind === "file" ? (
+          <Field label={t("detailsPanel.size")} value={formatBytes(node.sizeBytes ?? 0)} />
+        ) : null}
+        <Field label={t("detailsPanel.created")} value={new Date(node.createdAt).toLocaleString()} />
+        <Field label={t("detailsPanel.modified")} value={new Date(node.updatedAt).toLocaleString()} />
+      </dl>
+    </>
+  )
+}
 
 const StackedDetails = ({ nodes }: { nodes: DriveNode[] }) => {
+  const { t } = useTranslation("drive")
   const folders = nodes.filter((node) => node.kind === "folder").length
   const files = nodes.length - folders
   const totalBytes = nodes.reduce((sum, node) => sum + (node.sizeBytes ?? 0), 0)
@@ -90,43 +100,51 @@ const StackedDetails = ({ nodes }: { nodes: DriveNode[] }) => {
             </div>
           ))}
         </div>
-        <p className="text-sm font-medium">{nodes.length} items selected</p>
+        <p className="text-sm font-medium">{t("detailsPanel.itemsSelected", { count: nodes.length })}</p>
       </div>
       <dl className="flex flex-col gap-3">
-        {files > 0 ? <Field label="Files" value={String(files)} /> : null}
-        {folders > 0 ? <Field label="Folders" value={String(folders)} /> : null}
-        <Field label="Total size" value={formatBytes(totalBytes)} />
+        {files > 0 ? <Field label={t("detailsPanel.files")} value={String(files)} /> : null}
+        {folders > 0 ? <Field label={t("detailsPanel.folders")} value={String(folders)} /> : null}
+        <Field label={t("detailsPanel.totalSize")} value={formatBytes(totalBytes)} />
       </dl>
     </>
   )
 }
 
 /** Right-side details panel: follows the selection (single item, or a stacked summary). */
-const DetailsPanel = ({ open, nodes, onClose }: DetailsPanelProps) => (
-  <motion.aside
-    initial={false}
-    animate={{ width: open ? 288 : 0, opacity: open ? 1 : 0 }}
-    transition={{ duration: 0.2, ease: "easeOut" }}
-    style={{ borderLeftWidth: open ? undefined : 0 }}
-    className="border-border/60 sticky top-0 h-[calc(100svh-4.5rem)] shrink-0 self-start overflow-hidden border-l"
-  >
-    <div className="flex h-full w-72 flex-col gap-5 overflow-y-auto p-5">
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-medium">Details</h2>
-        <Button variant="ghost" size="icon-sm" aria-label="Close details" onClick={onClose}>
-          <IconX className="size-4" />
-        </Button>
-      </div>
+const DetailsPanel = ({ open, nodes, onClose }: DetailsPanelProps) => {
+  const { t } = useTranslation("drive")
+  return (
+    <motion.aside
+      initial={false}
+      animate={{ width: open ? 288 : 0, opacity: open ? 1 : 0 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      style={{ borderLeftWidth: open ? undefined : 0 }}
+      className="border-border/60 sticky top-0 h-[calc(100svh-4.5rem)] shrink-0 self-start overflow-hidden border-l"
+    >
+      <div className="flex h-full w-72 flex-col gap-5 overflow-y-auto p-5">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-medium">{t("detailsPanel.title")}</h2>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t("detailsPanel.closeDetails")}
+            onClick={onClose}
+          >
+            <IconX className="size-4" />
+          </Button>
+        </div>
 
-      {nodes.length === 0 ? (
-        <p className="text-muted-foreground text-sm">Select an item to see its details.</p>
-      ) : nodes.length === 1 ? (
-        <SingleDetails node={nodes[0]!} />
-      ) : (
-        <StackedDetails nodes={nodes} />
-      )}
-    </div>
-  </motion.aside>
-)
+        {nodes.length === 0 ? (
+          <p className="text-muted-foreground text-sm">{t("detailsPanel.empty")}</p>
+        ) : nodes.length === 1 ? (
+          <SingleDetails node={nodes[0]!} />
+        ) : (
+          <StackedDetails nodes={nodes} />
+        )}
+      </div>
+    </motion.aside>
+  )
+}
 
 export default DetailsPanel

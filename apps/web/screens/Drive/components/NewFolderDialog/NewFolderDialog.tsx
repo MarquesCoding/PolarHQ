@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 interface NewFolderDialogProps {
@@ -29,6 +30,7 @@ const NewFolderDialog = ({
   open: openProp,
   onOpenChange,
 }: NewFolderDialogProps) => {
+  const { t } = useTranslation("drive")
   const [internalOpen, setInternalOpen] = useState(false)
   const [name, setName] = useState("")
   const controlled = onOpenChange !== undefined
@@ -38,12 +40,12 @@ const NewFolderDialog = ({
   const create = useMutation({
     mutationFn: () => createDriveFolder(parentId, name.trim()),
     onSuccess: () => {
-      toast.success("Folder created")
+      toast.success(t("newFolderDialog.created"))
       setName("")
       setOpen(false)
       onDone()
     },
-    onError: () => toast.error("Could not create folder"),
+    onError: () => toast.error(t("newFolderDialog.createError")),
   })
 
   return (
@@ -51,29 +53,29 @@ const NewFolderDialog = ({
       {!controlled ? (
         <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
           <Icon name="plus" className="size-4" />
-          New folder
+          {t("newFolderDialog.newFolder")}
         </Button>
       ) : null}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent showCloseButton={false}>
           <DialogHeader>
-            <DialogTitle>New folder</DialogTitle>
+            <DialogTitle>{t("newFolderDialog.title")}</DialogTitle>
           </DialogHeader>
           <Input
             autoFocus
             value={name}
             onChange={(event) => setName(event.target.value)}
-            placeholder="Folder name"
+            placeholder={t("newFolderDialog.placeholder")}
             onKeyDown={(event) => {
               if (event.key === "Enter" && name.trim()) create.mutate()
             }}
           />
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              {t("newFolderDialog.cancel")}
             </Button>
             <Button disabled={!name.trim() || create.isPending} onClick={() => create.mutate()}>
-              Create
+              {t("newFolderDialog.create")}
             </Button>
           </DialogFooter>
         </DialogContent>

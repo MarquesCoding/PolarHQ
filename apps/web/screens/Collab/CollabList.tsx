@@ -14,6 +14,7 @@ import { useAppSelector } from "@store/hooks"
 import { IconPencil, IconPlus } from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import SelectionBar from "@components/SelectionBar/SelectionBar"
@@ -40,6 +41,7 @@ export interface CollabListConfig {
 }
 
 const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfig) => {
+  const { t } = useTranslation("collab")
   const router = useRouter()
   const queryClient = useQueryClient()
   const selection = useSelection()
@@ -69,7 +71,7 @@ const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfi
       invalidate()
       openEditor(type, doc.id, router)
     } catch {
-      toast.error("Could not create")
+      toast.error(t("collabList.createFailed"))
       setCreating(false)
     }
   }
@@ -85,11 +87,11 @@ const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfi
     if (toTrash.length === 0) return
     try {
       await Promise.all(toTrash.map((id) => trashDriveNode(id)))
-      toast.success("Moved to trash")
+      toast.success(t("collabList.movedToTrash"))
       selection.clear()
       invalidate()
     } catch {
-      toast.error("Could not delete")
+      toast.error(t("collabList.deleteFailed"))
     }
   }
 
@@ -135,7 +137,7 @@ const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfi
       ) : all.length === 0 ? (
         <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 text-center">
           <Icon name={iconName} className="size-8" />
-          <p className="text-sm">{search ? "Nothing matches your search." : "Nothing here yet."}</p>
+          <p className="text-sm">{search ? t("collabList.noMatches") : t("collabList.empty")}</p>
           {!search ? (
             <Button size="sm" disabled={creating} onClick={create}>
               <IconPlus className="size-4" />
@@ -148,7 +150,7 @@ const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfi
           {owned.length > 0 ? grid(owned) : null}
           {shared.length > 0 ? (
             <div className="flex flex-col gap-3">
-              <h2 className="text-muted-foreground text-sm font-medium">Shared with me</h2>
+              <h2 className="text-muted-foreground text-sm font-medium">{t("collabList.sharedWithMe")}</h2>
               {grid(shared)}
             </div>
           ) : null}
@@ -162,12 +164,12 @@ const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfi
           onClick={() => ids.forEach((id) => byId.get(id) && download(byId.get(id)!))}
         >
           <Icon name="download" className="size-4" />
-          Download
+          {t("collabList.download")}
         </Button>
         {single?.owner ? (
           <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
             <IconPencil className="size-4" />
-            Rename
+            {t("collabList.rename")}
           </Button>
         ) : null}
         <ConfirmButton
@@ -175,7 +177,7 @@ const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfi
           armed={trashConfirm.armed}
           onTrigger={trashConfirm.trigger}
         >
-          Trash
+          {t("collabList.trash")}
         </ConfirmButton>
       </SelectionBar>
 

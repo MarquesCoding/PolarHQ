@@ -7,6 +7,7 @@ import { Icon } from "@lib/icons"
 import { IconCircle, IconCircleCheckFilled } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
+import { useTranslation } from "react-i18next"
 
 interface DocCardProps {
   doc: DocMeta
@@ -17,7 +18,10 @@ interface DocCardProps {
   iconName?: string
 }
 
-const DocCard = ({ doc, selected, onOpen, onSelect, onToggle, iconName = "document" }: DocCardProps) => (
+const DocCard = ({ doc, selected, onOpen, onSelect, onToggle, iconName = "document" }: DocCardProps) => {
+  const { t } = useTranslation("docs")
+
+  return (
   <div
     data-doc-card={doc.id}
     onClick={(event: MouseEvent) => onSelect(doc, event.shiftKey, event.metaKey || event.ctrlKey)}
@@ -30,7 +34,7 @@ const DocCard = ({ doc, selected, onOpen, onSelect, onToggle, iconName = "docume
     <Button
       variant="ghost"
       size="icon-xs"
-      aria-label={selected ? "Deselect" : "Select"}
+      aria-label={selected ? t("docCard.deselect") : t("docCard.select")}
       onClick={(event) => {
         event.stopPropagation()
         onToggle(doc)
@@ -65,6 +69,7 @@ const DocCard = ({ doc, selected, onOpen, onSelect, onToggle, iconName = "docume
       </span>
     </div>
   </div>
-)
+  )
+}
 
 export default DocCard

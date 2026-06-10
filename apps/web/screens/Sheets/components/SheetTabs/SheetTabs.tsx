@@ -1,12 +1,14 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { IconPlus, IconX } from "@tabler/icons-react"
 import { cn } from "@workspace/ui/lib/utils"
 import type { SheetController } from "@pages/Sheets/useSheet"
 
 /** Bottom tab strip for switching, adding, renaming (double-click) and deleting sheets. */
 const SheetTabs = ({ sheet }: { sheet: SheetController }) => {
+  const { t } = useTranslation("sheets")
   const [editing, setEditing] = useState<string | null>(null)
 
   return (
@@ -14,7 +16,7 @@ const SheetTabs = ({ sheet }: { sheet: SheetController }) => {
       <button
         type="button"
         onClick={sheet.addSheet}
-        aria-label="Add sheet"
+        aria-label={t("sheetTabs.addSheet")}
         className="hover:bg-accent text-muted-foreground hover:text-foreground flex size-7 shrink-0 items-center justify-center rounded-md"
       >
         <IconPlus className="size-4" />
@@ -60,7 +62,7 @@ const SheetTabs = ({ sheet }: { sheet: SheetController }) => {
               {sheet.sheets.length > 1 ? (
                 <button
                   type="button"
-                  aria-label={`Delete ${s.name}`}
+                  aria-label={t("sheetTabs.deleteSheet", { name: s.name })}
                   onClick={(event) => {
                     event.stopPropagation()
                     sheet.deleteSheet(s.id)

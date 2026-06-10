@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "react-i18next"
 import { type DriveNode, isArchiveName } from "@lib/drive"
 import { docTypeOf } from "@lib/docs"
 import { officeTypeForName } from "@lib/importFlow"
@@ -56,6 +57,7 @@ interface NodeContextMenuProps {
 
 const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
   const router = useRouter()
+  const { t } = useTranslation("drive")
   const isFile = node.kind === "file"
   const isImage = isFile && Boolean(node.mimeType?.startsWith("image/"))
   const is3D = isFile && is3DModelName(node.name)
@@ -74,12 +76,12 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
             {node.special === "photos" ? (
               <ContextMenuItem onClick={() => router.push("/photos")}>
                 <IconPhoto />
-                Open in Photos
+                {t("nodeContextMenu.openInPhotos")}
               </ContextMenuItem>
             ) : null}
             <ContextMenuItem onClick={() => actions.details(node)}>
               <IconInfoCircle />
-              Details
+              {t("nodeContextMenu.details")}
             </ContextMenuItem>
           </>
         ) : (
@@ -87,80 +89,80 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
             {docTypeOf(node.mimeType) || officeTypeForName(node.name) ? (
               <ContextMenuItem onClick={() => actions.open(node)}>
                 <IconExternalLink />
-                Open
+                {t("nodeContextMenu.open")}
               </ContextMenuItem>
             ) : null}
             {isImage || is3D ? (
               <ContextMenuItem onClick={() => actions.view(node)}>
                 <IconEye />
-                {is3D ? "View in 3D" : "View"}
+                {is3D ? t("nodeContextMenu.viewIn3d") : t("nodeContextMenu.view")}
               </ContextMenuItem>
             ) : null}
             {isFile ? (
               <>
                 <ContextMenuItem onClick={() => actions.download(node)}>
                   <IconDownload />
-                  Download
+                  {t("nodeContextMenu.download")}
                 </ContextMenuItem>
                 <ContextMenuItem onClick={() => actions.copyLink(node)}>
                   <IconLink />
-                  Copy link
+                  {t("nodeContextMenu.copyLink")}
                 </ContextMenuItem>
                 <ContextMenuItem onClick={() => actions.share(node)}>
                   <IconUserPlus />
-                  Share
+                  {t("nodeContextMenu.share")}
                 </ContextMenuItem>
                 <ContextMenuSeparator />
               </>
             ) : null}
             <ContextMenuItem onClick={() => actions.move(node)}>
               <IconArrowsMove />
-              Move to folder
+              {t("nodeContextMenu.moveToFolder")}
             </ContextMenuItem>
             <ContextMenuItem onClick={() => actions.copy(node)}>
               <IconCopy />
-              Make a copy
+              {t("nodeContextMenu.makeCopy")}
             </ContextMenuItem>
             {isFile && !node.encrypted && isArchiveName(node.name) ? (
               <ContextMenuItem onClick={() => actions.extract(node)}>
                 <IconFileExport />
-                Extract here
+                {t("nodeContextMenu.extractHere")}
               </ContextMenuItem>
             ) : null}
             {!isFile && !node.special ? (
               node.locked ? (
                 <ContextMenuItem onClick={() => actions.removeLock(node)}>
                   <IconLockOpen />
-                  Remove lock
+                  {t("nodeContextMenu.removeLock")}
                 </ContextMenuItem>
               ) : (
                 <ContextMenuItem onClick={() => actions.lock(node)}>
                   <IconLock />
-                  Lock folder
+                  {t("nodeContextMenu.lockFolder")}
                 </ContextMenuItem>
               )
             ) : null}
             <ContextMenuItem onClick={() => actions.rename(node)}>
               <IconPencil />
-              Rename
+              {t("nodeContextMenu.rename")}
             </ContextMenuItem>
             <ContextMenuItem onClick={() => actions.details(node)}>
               <IconInfoCircle />
-              Details
+              {t("nodeContextMenu.details")}
             </ContextMenuItem>
             {isFile ? (
               <>
                 <ContextMenuSeparator />
                 <ContextMenuItem onClick={() => actions.versions(node)}>
                   <IconHistory />
-                  See version history
+                  {t("nodeContextMenu.versionHistory")}
                 </ContextMenuItem>
               </>
             ) : null}
             <ContextMenuSeparator />
             <ContextMenuItem variant="destructive" onClick={() => actions.trash(node)}>
               <IconTrash />
-              Move to trash
+              {t("nodeContextMenu.moveToTrash")}
             </ContextMenuItem>
           </>
         )}

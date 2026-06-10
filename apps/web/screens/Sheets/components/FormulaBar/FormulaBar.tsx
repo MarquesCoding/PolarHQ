@@ -1,6 +1,7 @@
 "use client"
 
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { IconChevronDown } from "@tabler/icons-react"
 import { toast } from "sonner"
 import { Input } from "@workspace/ui/components/input"
@@ -12,6 +13,7 @@ import type { SheetController } from "@pages/Sheets/useSheet"
 
 /** The Name Box (A1 reference) plus the fx formula input, bound to the focused cell. */
 const FormulaBar = ({ sheet }: { sheet: SheetController }) => {
+  const { t } = useTranslation("sheets")
   const focus = sheet.sel.focus
   const raw = sheet.rawAt(focus.r, focus.c)
   const [value, setValue] = useState(raw)
@@ -141,7 +143,7 @@ const FormulaBar = ({ sheet }: { sheet: SheetController }) => {
             if (editing.current) commit(false)
             stopEditing()
           }}
-          aria-label="Formula"
+          aria-label={t("formulaBar.formulaLabel")}
           style={isFormula ? { color: "transparent", caretColor: "var(--foreground)" } : undefined}
           className="relative h-8 w-full rounded-none border-none bg-transparent px-2.5 font-mono text-[0.8rem] shadow-none focus-visible:ring-0"
         />
@@ -169,7 +171,7 @@ const FormulaBar = ({ sheet }: { sheet: SheetController }) => {
               </button>
             ))}
             <div className="text-muted-foreground border-t px-2.5 py-1 text-[11px]">
-              <Kbd>Tab</Kbd> to accept · ↑↓ to navigate
+              <Kbd>Tab</Kbd> {t("formulaBar.suggestionHint")}
             </div>
           </div>
         ) : null}

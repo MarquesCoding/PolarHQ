@@ -1,1 +1,60 @@
-{}
+{
+  "chartsPanel": {
+    "bar": "Bar",
+    "charts": "Charts",
+    "line": "Line",
+    "pie": "Pie",
+    "removeChart": "Remove chart"
+  },
+  "colorPalette": {
+    "custom": "Custom",
+    "fillColor": "Fill color",
+    "reset": "Reset",
+    "textColor": "Text color"
+  },
+  "formulaBar": {
+    "formulaLabel": "Formula",
+    "suggestionHint": "to accept · ↑↓ to navigate"
+  },
+  "inCellEditor": {
+    "hint": "Tab to accept · click a cell to insert a reference"
+  },
+  "numberFormatItems": {
+    "decreaseDecimalPlaces": "Decrease decimal places",
+    "increaseDecimalPlaces": "Increase decimal places"
+  },
+  "sheetTabs": {
+    "addSheet": "Add sheet",
+    "deleteSheet": "Delete {{name}}"
+  },
+  "sheetToolbar": {
+    "align": "Align {{align}}",
+    "allBorders": "All borders",
+    "bold": "Bold",
+    "borders": "Borders",
+    "bottomBorder": "Bottom border",
+    "clearBorders": "Clear borders",
+    "clearFormatting": "Clear formatting",
+    "decreaseDecimalPlaces": "Decrease decimal places",
+    "formatAsCurrency": "Format as currency",
+    "formatAsPercent": "Format as percent",
+    "increaseDecimalPlaces": "Increase decimal places",
+    "innerBorders": "Inner borders",
+    "italic": "Italic",
+    "leftBorder": "Left border",
+    "mergeCells": "Merge cells",
+    "moreFormats": "More formats",
+    "outerBorders": "Outer borders",
+    "redo": "Redo",
+    "rightBorder": "Right border",
+    "strikethrough": "Strikethrough",
+    "topBorder": "Top border",
+    "underline": "Underline",
+    "undo": "Undo",
+    "unmergeCells": "Unmerge cells"
+  },
+  "sheetsList": {
+    "createLabel": "New spreadsheet",
+    "title": "Spreadsheets"
+  }
+}

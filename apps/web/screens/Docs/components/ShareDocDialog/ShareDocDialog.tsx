@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
+import { useTranslation } from "react-i18next"
 import {
   Select,
   SelectContent,
@@ -38,6 +39,7 @@ interface ShareDocDialogProps {
 
 /** Grant or revoke other users' access to a document (owner only). */
 const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProps) => {
+  const { t } = useTranslation("docs")
   const queryClient = useQueryClient()
   const { data: session } = authClient.useSession()
   const [email, setEmail] = useState("")
@@ -63,16 +65,14 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
       setEmail("")
       refresh()
       if (result.status === "key-changed")
-        toast.error(
-          `Their encryption key changed — not shared. Verify their key (${result.fingerprint}) out of band before sharing.`,
-        )
+        toast.error(t("shareDocDialog.keyChanged", { fingerprint: result.fingerprint }))
       else if (result.status === "no-recipient")
-        toast.warning("Added — they haven’t set up encryption yet. Re-share once they have.")
+        toast.warning(t("shareDocDialog.noRecipient"))
       else if (result.status === "ok" && result.fingerprint)
-        toast.success(`Access granted. Verify their key: ${result.fingerprint}`)
-      else toast.success("Access granted")
+        toast.success(t("shareDocDialog.accessGrantedVerify", { fingerprint: result.fingerprint }))
+      else toast.success(t("shareDocDialog.accessGranted"))
     },
-    onError: (error) => toast.error((error as Error).message || "Could not share"),
+    onError: (error) => toast.error((error as Error).message || t("shareDocDialog.couldNotShare")),
   })
 
   const remove = useMutation({
@@ -83,9 +83,9 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
     },
     onSuccess: () => {
       refresh()
-      toast.success("Access revoked")
+      toast.success(t("shareDocDialog.accessRevoked"))
     },
-    onError: () => toast.error("Could not remove"),
+    onError: () => toast.error(t("shareDocDialog.couldNotRemove")),
   })
 
   const list = collaborators ?? []
@@ -94,13 +94,13 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle className="truncate">Share “{name}”</DialogTitle>
+          <DialogTitle className="truncate">{t("shareDocDialog.title", { name })}</DialogTitle>
         </DialogHeader>
 
         <div className="flex items-center gap-2">
           <Input
             type="email"
-            placeholder="Add people by email"
+            placeholder={t("shareDocDialog.emailPlaceholder")}
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             onKeyDown={(event) => {
@@ -112,18 +112,18 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="editor">Editor</SelectItem>
-              <SelectItem value="viewer">Viewer</SelectItem>
+              <SelectItem value="editor">{t("shareDocDialog.roleEditor")}</SelectItem>
+              <SelectItem value="viewer">{t("shareDocDialog.roleViewer")}</SelectItem>
             </SelectContent>
           </Select>
           <Button disabled={!email.trim() || add.isPending} onClick={() => add.mutate()}>
-            Add
+            {t("shareDocDialog.add")}
           </Button>
         </div>
 
         <div className="scrollbar-slim flex max-h-60 flex-col gap-0.5 overflow-y-auto">
           {list.length === 0 ? (
-            <p className="text-muted-foreground py-2 text-sm">Only you have access.</p>
+            <p className="text-muted-foreground py-2 text-sm">{t("shareDocDialog.onlyYou")}</p>
           ) : (
             list.map((collaborator) => (
               <div
@@ -139,7 +139,7 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={`Remove ${collaborator.name}`}
+                  aria-label={t("shareDocDialog.remove", { name: collaborator.name })}
                   onClick={() => remove.mutate(collaborator.userId)}
                 >
                   <IconTrash className="size-4" />
@@ -151,7 +151,7 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Done
+            {t("shareDocDialog.done")}
           </Button>
         </DialogFooter>
       </DialogContent>

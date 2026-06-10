@@ -1,6 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { useTranslation } from "react-i18next"
 import type { DocType } from "@lib/docs"
 import { IconFilePlus, IconFolderPlus, IconTable, IconUpload } from "@tabler/icons-react"
 import {
@@ -24,29 +25,33 @@ const DriveBackgroundMenu = ({
   onNewFolder,
   onNew,
   children,
-}: DriveBackgroundMenuProps) => (
-  <ContextMenu>
-    <ContextMenuTrigger className="flex flex-1 flex-col">{children}</ContextMenuTrigger>
-    <ContextMenuContent>
-      <ContextMenuItem onClick={onUpload}>
-        <IconUpload />
-        Upload files
-      </ContextMenuItem>
-      <ContextMenuItem onClick={onNewFolder}>
-        <IconFolderPlus />
-        New folder
-      </ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem onClick={() => onNew("doc")}>
-        <IconFilePlus />
-        New document
-      </ContextMenuItem>
-      <ContextMenuItem onClick={() => onNew("sheet")}>
-        <IconTable />
-        New spreadsheet
-      </ContextMenuItem>
-    </ContextMenuContent>
-  </ContextMenu>
-)
+}: DriveBackgroundMenuProps) => {
+  const { t } = useTranslation("drive")
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="flex flex-1 flex-col">{children}</ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onClick={onUpload}>
+          <IconUpload />
+          {t("driveBackgroundMenu.uploadFiles")}
+        </ContextMenuItem>
+        <ContextMenuItem onClick={onNewFolder}>
+          <IconFolderPlus />
+          {t("driveBackgroundMenu.newFolder")}
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem onClick={() => onNew("doc")}>
+          <IconFilePlus />
+          {t("driveBackgroundMenu.newDocument")}
+        </ContextMenuItem>
+        <ContextMenuItem onClick={() => onNew("sheet")}>
+          <IconTable />
+          {t("driveBackgroundMenu.newSpreadsheet")}
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  )
+}
 
 export default DriveBackgroundMenu

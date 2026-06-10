@@ -9,6 +9,7 @@ import {
 import { Button } from "@workspace/ui/components/button"
 import { Slider } from "@workspace/ui/components/slider"
 import { cn } from "@workspace/ui/lib/utils"
+import { useTranslation } from "react-i18next"
 import { FILL_COLORS, STROKE_COLORS, STROKE_WIDTHS, type Style } from "../board"
 
 interface Current {
@@ -57,10 +58,12 @@ const Label = ({ children }: { children: string }) => (
   <p className="text-muted-foreground text-xs font-medium">{children}</p>
 )
 
-const PropertiesPanel = ({ current, onStyle, hasSelection, onReorder }: Props) => (
+const PropertiesPanel = ({ current, onStyle, hasSelection, onReorder }: Props) => {
+  const { t } = useTranslation("whiteboard")
+  return (
   <div className="bg-card absolute top-3 left-3 z-10 flex w-52 flex-col gap-3 rounded-xl border p-3 shadow-sm">
     <div className="flex flex-col gap-1.5">
-      <Label>Stroke</Label>
+      <Label>{t("propertiesPanel.stroke")}</Label>
       <div className="flex items-center gap-1.5">
         {STROKE_COLORS.map((color) => (
           <Swatch
@@ -76,7 +79,7 @@ const PropertiesPanel = ({ current, onStyle, hasSelection, onReorder }: Props) =
     </div>
 
     <div className="flex flex-col gap-1.5">
-      <Label>Background</Label>
+      <Label>{t("propertiesPanel.background")}</Label>
       <div className="flex items-center gap-1.5">
         {FILL_COLORS.map((color) => (
           <Swatch
@@ -95,7 +98,7 @@ const PropertiesPanel = ({ current, onStyle, hasSelection, onReorder }: Props) =
     </div>
 
     <div className="flex flex-col gap-1.5">
-      <Label>Stroke width</Label>
+      <Label>{t("propertiesPanel.strokeWidth")}</Label>
       <div className="flex items-center gap-1.5">
         {STROKE_WIDTHS.map((width) => (
           <Button
@@ -116,7 +119,7 @@ const PropertiesPanel = ({ current, onStyle, hasSelection, onReorder }: Props) =
     </div>
 
     <div className="flex flex-col gap-1.5">
-      <Label>Opacity</Label>
+      <Label>{t("propertiesPanel.opacity")}</Label>
       <Slider
         value={[current.opacity]}
         min={0}
@@ -130,24 +133,25 @@ const PropertiesPanel = ({ current, onStyle, hasSelection, onReorder }: Props) =
 
     {hasSelection ? (
       <div className="flex flex-col gap-1.5">
-        <Label>Layers</Label>
+        <Label>{t("propertiesPanel.layers")}</Label>
         <div className="flex items-center gap-1.5">
-          <Button variant="outline" size="icon" className="size-9" aria-label="Send to back" onClick={() => onReorder("back")}>
+          <Button variant="outline" size="icon" className="size-9" aria-label={t("propertiesPanel.sendToBack")} onClick={() => onReorder("back")}>
             <IconChevronsDown className="size-4" />
           </Button>
-          <Button variant="outline" size="icon" className="size-9" aria-label="Send backward" onClick={() => onReorder("backward")}>
+          <Button variant="outline" size="icon" className="size-9" aria-label={t("propertiesPanel.sendBackward")} onClick={() => onReorder("backward")}>
             <IconChevronDown className="size-4" />
           </Button>
-          <Button variant="outline" size="icon" className="size-9" aria-label="Bring forward" onClick={() => onReorder("forward")}>
+          <Button variant="outline" size="icon" className="size-9" aria-label={t("propertiesPanel.bringForward")} onClick={() => onReorder("forward")}>
             <IconChevronUp className="size-4" />
           </Button>
-          <Button variant="outline" size="icon" className="size-9" aria-label="Bring to front" onClick={() => onReorder("front")}>
+          <Button variant="outline" size="icon" className="size-9" aria-label={t("propertiesPanel.bringToFront")} onClick={() => onReorder("front")}>
             <IconChevronsUp className="size-4" />
           </Button>
         </div>
       </div>
     ) : null}
   </div>
-)
+  )
+}
 
 export default PropertiesPanel

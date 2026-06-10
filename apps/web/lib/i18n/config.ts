@@ -7,12 +7,14 @@ import { initReactI18next } from "react-i18next"
 import account from "./locales/en/account.json"
 import admin from "./locales/en/admin.json"
 import auth from "./locales/en/auth.json"
+import collab from "./locales/en/collab.json"
 import common from "./locales/en/common.json"
 import docs from "./locales/en/docs.json"
 import drive from "./locales/en/drive.json"
 import errors from "./locales/en/errors.json"
 import onboarding from "./locales/en/onboarding.json"
 import photos from "./locales/en/photos.json"
+import setup from "./locales/en/setup.json"
 import sheets from "./locales/en/sheets.json"
 import whiteboard from "./locales/en/whiteboard.json"
 
@@ -31,8 +33,10 @@ export const resources = {
     docs,
     sheets,
     whiteboard,
+    collab,
     admin,
     auth,
+    setup,
     account,
     onboarding,
   },

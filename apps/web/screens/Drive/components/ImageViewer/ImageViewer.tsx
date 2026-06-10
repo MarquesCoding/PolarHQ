@@ -8,6 +8,7 @@ import { useZoomPan } from "@lib/useZoomPan"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
+import { useTranslation } from "react-i18next"
 
 interface ImageViewerProps {
   node: DriveNode
@@ -16,6 +17,7 @@ interface ImageViewerProps {
 
 /** Full-screen image viewer with pinch / wheel / button zoom and drag-to-pan, for Drive images. */
 const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
+  const { t } = useTranslation("drive")
   const zoom = useZoomPan(node.id)
   const [decrypted, setDecrypted] = useState<string | null>(null)
   const src = node.encrypted ? (decrypted ?? undefined) : (node.downloadUrl ?? node.thumbnailUrl ?? undefined)
@@ -70,7 +72,7 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Close"
+            aria-label={t("imageViewer.close")}
             onClick={onClose}
             className="rounded-full"
           >
@@ -83,7 +85,7 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Zoom out"
+            aria-label={t("imageViewer.zoomOut")}
             onClick={zoom.zoomOut}
             className="rounded-full"
           >
@@ -95,7 +97,7 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Zoom in"
+            aria-label={t("imageViewer.zoomIn")}
             onClick={zoom.zoomIn}
             className="rounded-full"
           >
@@ -105,7 +107,7 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Reset zoom"
+            aria-label={t("imageViewer.resetZoom")}
             onClick={zoom.reset}
             className="rounded-full"
           >
@@ -114,7 +116,7 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Download"
+            aria-label={t("imageViewer.download")}
             onClick={download}
             className="rounded-full"
           >
