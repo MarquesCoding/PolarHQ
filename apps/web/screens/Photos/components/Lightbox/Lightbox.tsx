@@ -4,11 +4,16 @@ import { type ReactElement, useEffect, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
 import { decryptName } from "@lib/e2e"
 import { type GridAsset, assetOriginalUrl, favoriteAssets, sharePhoto, trashAssets } from "@lib/photos"
-import { fetchDecryptedMotionVideo, fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
+import {
+  fetchDecryptedMotionVideo,
+  fetchDecryptedPhotoOriginal,
+  fetchDecryptedPhotoThumbnail,
+} from "@lib/photosE2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
 import { IconLivePhoto } from "@tabler/icons-react"
 import { useUploadManager } from "@lib/uploadManager"
+import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
 import PhotoEditor from "@pages/Photos/components/PhotoEditor/PhotoEditor"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
@@ -25,6 +30,8 @@ interface LightboxProps {
   index: number
   onIndexChange: (index: number) => void
   onClose: () => void
+  /** Show a thumbnail strip of every asset along the bottom — used for stack/burst viewing. */
+  filmstrip?: boolean
 }
 
 /** A toolbar button with a hover tooltip (the buttons are icon-only and otherwise ambiguous). */
@@ -35,7 +42,51 @@ const Tip = ({ label, children }: { label: string; children: ReactElement }) => 
   </Tooltip>
 )
 
-const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
+/** A single filmstrip thumbnail, reusing PhotoTile's session cache for decrypted thumbnails. */
+const FilmstripThumb = ({ asset, active }: { asset: GridAsset; active: boolean }) => {
+  const [src, setSrc] = useState<string | null>(() =>
+    asset.encrypted ? (decryptedThumbnails.get(asset.id) ?? null) : (asset.thumbnailUrl ?? null),
+  )
+  useEffect(() => {
+    if (!asset.encrypted) {
+      setSrc(asset.thumbnailUrl ?? null)
+      return
+    }
+    const cached = decryptedThumbnails.get(asset.id)
+    if (cached) {
+      setSrc(cached)
+      return
+    }
+    let on = true
+    void fetchDecryptedPhotoThumbnail(asset.id).then((result) => {
+      if (!result) return
+      decryptedThumbnails.set(asset.id, result)
+      if (on) setSrc(result)
+    })
+    return () => {
+      on = false
+    }
+  }, [asset.id, asset.encrypted, asset.thumbnailUrl])
+
+  return (
+    <span
+      className={cn(
+        "relative block h-16 w-16 shrink-0 overflow-hidden rounded-lg border transition",
+        active
+          ? "border-primary ring-primary scale-105 ring-2"
+          : "border-foreground/10 opacity-60 hover:opacity-100",
+      )}
+    >
+      {src ? (
+        <img src={src} alt="" draggable={false} className="h-full w-full object-cover" />
+      ) : (
+        <span className="bg-muted block h-full w-full" />
+      )}
+    </span>
+  )
+}
+
+const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: LightboxProps) => {
   const queryClient = useQueryClient()
   const upload = useUploadManager()
   const [infoPref, setInfoPref] = usePersistentNumber("photos.lightboxDetails", 0)
@@ -46,6 +97,13 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
   const [shareOpen, setShareOpen] = useState(false)
   const asset = assets[index]
   const zoom = useZoomPan(asset?.id)
+  const activeThumbRef = useRef<HTMLButtonElement | null>(null)
+
+  // Keep the active frame visible in the filmstrip as you arrow through a long burst.
+  useEffect(() => {
+    if (!filmstrip) return
+    activeThumbRef.current?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" })
+  }, [index, filmstrip])
 
   // If the open photo is removed (trashed in another tab or by a collaborator), the feed
   // refetches and this index falls off the end — close rather than show a blank viewer.
@@ -446,6 +504,33 @@ const Lightbox = ({ assets, index, onIndexChange, onClose }: LightboxProps) => {
             </Button>
           ) : null}
         </div>
+
+        {filmstrip && assets.length > 1 ? (
+          <div className="flex justify-center px-4 pb-4">
+            <div className="scrollbar-slim flex max-w-full gap-2 overflow-x-auto py-1">
+              {assets.map((member, position) => (
+                <button
+                  key={member.id}
+                  ref={position === index ? activeThumbRef : undefined}
+                  type="button"
+                  aria-label={`Frame ${position + 1} of ${assets.length}`}
+                  aria-current={position === index}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onClick={() => onIndexChange(position)}
+                  className="flex shrink-0 flex-col items-center gap-1.5"
+                >
+                  <FilmstripThumb asset={member} active={position === index} />
+                  <span
+                    className={cn(
+                      "size-1.5 rounded-full transition",
+                      position === index ? "bg-foreground" : "bg-transparent",
+                    )}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <AnimatePresence initial={false}>
