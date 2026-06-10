@@ -2,7 +2,10 @@
 
 import i18n from "i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
+import resourcesToBackend from "i18next-resources-to-backend"
 import { initReactI18next } from "react-i18next"
+
+import { FALLBACKS, LOCALE_CODES, NAMESPACES } from "./locales"
 
 import account from "./locales/en/account.json"
 import admin from "./locales/en/admin.json"
@@ -19,42 +22,46 @@ import sheets from "./locales/en/sheets.json"
 import whiteboard from "./locales/en/whiteboard.json"
 
 /**
- * Every user-facing string lives in a namespaced catalog under locales/<lng>/. Components call
- * `useTranslation("<namespace>")` and reference keys; the backend returns the same keys (never
- * English prose) which the client resolves via the `errors` namespace. Add new locales by
- * dropping a sibling folder and registering it in `resources`.
+ * Every user-facing string lives in a namespaced catalog under locales/<lng>/. English is bundled
+ * for an instant first paint and as the fallback; the other languages are lazy-loaded per
+ * namespace via dynamic import when the user switches, so 20+ locales never bloat the main bundle.
+ * The backend returns the same keys (never English prose), resolved via the `errors` namespace.
  */
-export const resources = {
-  en: {
-    common,
-    errors,
-    photos,
-    drive,
-    docs,
-    sheets,
-    whiteboard,
-    collab,
-    admin,
-    auth,
-    setup,
-    account,
-    onboarding,
-  },
-} as const
-
 export const defaultNS = "common"
-export const namespaces = Object.keys(resources.en)
+
+const enBundle = {
+  common,
+  errors,
+  photos,
+  drive,
+  docs,
+  sheets,
+  whiteboard,
+  collab,
+  admin,
+  auth,
+  setup,
+  account,
+  onboarding,
+}
 
 if (!i18n.isInitialized) {
   void i18n
+    .use(
+      resourcesToBackend(
+        (language: string, namespace: string) => import(`./locales/${language}/${namespace}.json`),
+      ),
+    )
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
-      resources,
-      fallbackLng: "en",
-      supportedLngs: ["en"],
+      resources: { en: enBundle },
+      partialBundledLanguages: true,
+      fallbackLng: FALLBACKS,
+      supportedLngs: LOCALE_CODES,
+      nonExplicitSupportedLngs: true,
       defaultNS,
-      ns: namespaces,
+      ns: NAMESPACES,
       interpolation: { escapeValue: false },
       detection: {
         order: ["localStorage", "navigator"],
