@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { authClient } from "@lib/authClient"
 import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@lib/e2e"
 import { UploadProvider } from "@lib/uploadManager"
+import OnboardingCard from "@components/OnboardingCard/OnboardingCard"
 import Spinner from "@components/Spinner/Spinner"
 import UploadPanel from "@components/UploadPanel/UploadPanel"
 import UnlockDialog from "@pages/Docs/components/UnlockDialog/UnlockDialog"
@@ -99,6 +100,7 @@ const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
         <div className="border-border flex min-w-0 flex-1 flex-col border-l">{content}</div>
       </div>
       <UploadPanel />
+      <OnboardingCard />
       <UnlockDialog
         open={unlockOpen}
         onOpenChange={setUnlockOpen}
