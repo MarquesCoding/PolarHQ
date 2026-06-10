@@ -16,21 +16,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { t } from "@lib/i18n/config"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 import { z } from "zod"
 
 const schema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(8, "Use at least 8 characters"),
+  name: z.string().min(1, t("setup:adminAccountStep.nameRequired")),
+  email: z.string().email(t("setup:adminAccountStep.invalidEmail")),
+  password: z.string().min(8, t("setup:adminAccountStep.passwordMin")),
   registrationMode: z.enum(["invite_only", "open", "closed"]),
 })
-
-const REGISTRATION_OPTIONS: { value: RegistrationMode; label: string }[] = [
-  { value: "invite_only", label: "Invite only — admins create accounts" },
-  { value: "open", label: "Open — anyone can register" },
-  { value: "closed", label: "Closed — no new accounts" },
-]
 
 interface AdminAccountStepProps {
   onComplete: () => void
@@ -47,7 +43,14 @@ const fieldError = (errors: unknown[]): string | null => {
 }
 
 const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
+  const { t } = useTranslation("setup")
   const [recoveryCode, setRecoveryCode] = useState<string | null>(null)
+
+  const REGISTRATION_OPTIONS: { value: RegistrationMode; label: string }[] = [
+    { value: "invite_only", label: t("adminAccountStep.inviteOnlyLabel") },
+    { value: "open", label: t("adminAccountStep.openLabel") },
+    { value: "closed", label: t("adminAccountStep.closedLabel") },
+  ]
 
   const form = useForm({
     defaultValues: {
@@ -64,8 +67,8 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
           email: value.email,
           password: value.password,
         })
-        if (signIn.error) throw new Error(signIn.error.message ?? "Sign-in failed")
-        toast.success("Admin account created")
+        if (signIn.error) throw new Error(signIn.error.message ?? t("adminAccountStep.signInFailed"))
+        toast.success(t("adminAccountStep.accountCreated"))
 
         // Bootstrap end-to-end encryption with the account password right away,
         // so the user never sees a separate "set up encryption" prompt later.
@@ -82,7 +85,7 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
           onComplete()
         }
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : "Setup failed")
+        toast.error(error instanceof Error ? error.message : t("adminAccountStep.setupFailed"))
       }
     },
   })
@@ -103,13 +106,13 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
       <form.Field name="name">
         {(field) => (
           <div className="flex flex-col gap-2">
-            <Label htmlFor={field.name}>Your name</Label>
+            <Label htmlFor={field.name}>{t("adminAccountStep.nameLabel")}</Label>
             <Input
               id={field.name}
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={(event) => field.handleChange(event.target.value)}
-              placeholder="Ada Lovelace"
+              placeholder={t("adminAccountStep.namePlaceholder")}
             />
             {fieldError(field.state.meta.errors) ? (
               <p className="text-destructive text-sm">{fieldError(field.state.meta.errors)}</p>
@@ -121,14 +124,14 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
       <form.Field name="email">
         {(field) => (
           <div className="flex flex-col gap-2">
-            <Label htmlFor={field.name}>Email</Label>
+            <Label htmlFor={field.name}>{t("adminAccountStep.emailLabel")}</Label>
             <Input
               id={field.name}
               type="email"
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={(event) => field.handleChange(event.target.value)}
-              placeholder="admin@example.com"
+              placeholder={t("adminAccountStep.emailPlaceholder")}
             />
             {fieldError(field.state.meta.errors) ? (
               <p className="text-destructive text-sm">{fieldError(field.state.meta.errors)}</p>
@@ -140,14 +143,14 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
       <form.Field name="password">
         {(field) => (
           <div className="flex flex-col gap-2">
-            <Label htmlFor={field.name}>Password</Label>
+            <Label htmlFor={field.name}>{t("adminAccountStep.passwordLabel")}</Label>
             <Input
               id={field.name}
               type="password"
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={(event) => field.handleChange(event.target.value)}
-              placeholder="At least 8 characters"
+              placeholder={t("adminAccountStep.passwordPlaceholder")}
             />
             {fieldError(field.state.meta.errors) ? (
               <p className="text-destructive text-sm">{fieldError(field.state.meta.errors)}</p>
@@ -159,7 +162,7 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
       <form.Field name="registrationMode">
         {(field) => (
           <div className="flex flex-col gap-2">
-            <Label htmlFor={field.name}>Who can create accounts?</Label>
+            <Label htmlFor={field.name}>{t("adminAccountStep.registrationModeLabel")}</Label>
             <Select
               value={field.state.value}
               onValueChange={(value) => field.handleChange(value as RegistrationMode)}
@@ -182,7 +185,7 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
       <form.Subscribe selector={(state) => state.isSubmitting}>
         {(isSubmitting) => (
           <Button type="submit" disabled={isSubmitting} className="mt-1">
-            {isSubmitting ? "Creating…" : "Create admin & continue"}
+            {isSubmitting ? t("adminAccountStep.creating") : t("adminAccountStep.submit")}
           </Button>
         )}
       </form.Subscribe>

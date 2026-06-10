@@ -22,24 +22,26 @@ import {
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const AddMember = ({ groupId }: { groupId: string }) => {
+  const { t } = useTranslation("admin")
   const { data: users } = useQuery({ queryKey: ["admin", "users"], queryFn: fetchAdminUsers })
   const [userId, setUserId] = useState("")
   const add = useMutation({
     mutationFn: () => addGroupMember(groupId, userId),
     onSuccess: () => {
-      toast.success("Member added")
+      toast.success(t("groups.memberAdded"))
       setUserId("")
     },
-    onError: () => toast.error("Could not add the member"),
+    onError: () => toast.error(t("groups.memberAddError")),
   })
 
   return (
     <div className="flex items-center gap-2">
       <Select value={userId} onValueChange={(value) => setUserId(value ?? "")}>
         <SelectTrigger className="w-52">
-          <SelectValue placeholder="Add a member…" />
+          <SelectValue placeholder={t("groups.addMemberPlaceholder")} />
         </SelectTrigger>
         <SelectContent>
           {(users ?? []).map((user) => (
@@ -55,13 +57,14 @@ const AddMember = ({ groupId }: { groupId: string }) => {
         disabled={!userId || add.isPending}
         onClick={() => add.mutate()}
       >
-        Add
+        {t("groups.add")}
       </Button>
     </div>
   )
 }
 
 const Groups = () => {
+  const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
   const { data: groups, isLoading } = useQuery({
     queryKey: ["admin", "groups"],
@@ -73,12 +76,12 @@ const Groups = () => {
   const create = useMutation({
     mutationFn: () => createAdminGroup(name.trim()),
     onSuccess: () => {
-      toast.success("Group created")
+      toast.success(t("groups.groupCreated"))
       setName("")
       void queryClient.invalidateQueries({ queryKey: ["admin", "groups"] })
       void queryClient.invalidateQueries({ queryKey: ["admin", "overview"] })
     },
-    onError: () => toast.error("Could not create the group"),
+    onError: () => toast.error(t("groups.groupCreateError")),
   })
 
   const groupRow = (group: AdminGroup) => (
@@ -99,18 +102,18 @@ const Groups = () => {
 
   return (
     <AdminPage
-      title="Groups"
-      description="Bundle users so roles and limits apply to many people at once."
+      title={t("groups.title")}
+      description={t("groups.description")}
       action={
         <div className="flex items-center gap-2">
           <Input
             value={name}
-            placeholder="New group name"
+            placeholder={t("groups.newGroupNamePlaceholder")}
             onChange={(event) => setName(event.target.value)}
             className="w-48"
           />
           <Button disabled={!name.trim() || create.isPending} onClick={() => create.mutate()}>
-            Create
+            {t("groups.create")}
           </Button>
         </div>
       }
@@ -122,7 +125,7 @@ const Groups = () => {
           {groups.map(groupRow)}
         </div>
       ) : (
-        <p className="text-muted-foreground text-sm">No groups yet.</p>
+        <p className="text-muted-foreground text-sm">{t("groups.empty")}</p>
       )}
       <GroupDetailSheet groupId={selected} onOpenChange={(open) => !open && setSelected(null)} />
     </AdminPage>

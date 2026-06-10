@@ -32,6 +32,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTheme } from "next-themes"
+import { useTranslation } from "react-i18next"
 import Changelog from "@components/Changelog/Changelog"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 import { replayOnboarding } from "@components/OnboardingCard/OnboardingCard"
@@ -62,6 +63,7 @@ const FlatSidebar = ({
   searchable = true,
   children,
 }: FlatSidebarProps) => {
+  const { t } = useTranslation("common")
   const pathname = usePathname()
   const router = useRouter()
   const dispatch = useAppDispatch()
@@ -104,7 +106,7 @@ const FlatSidebar = ({
                     <span className="truncate text-sm font-semibold">{productName}</span>
                     {beta ? (
                       <span className="bg-primary/15 text-primary rounded px-1 py-px text-[9px] font-semibold tracking-wide uppercase">
-                        Beta
+                        {t("flatSidebar.beta")}
                       </span>
                     ) : null}
                   </span>
@@ -122,13 +124,13 @@ const FlatSidebar = ({
               <span className="flex min-w-0 flex-col leading-tight">
                 <span className="truncate text-sm font-semibold">PolarHQ</span>
                 <span className="text-muted-foreground truncate text-[11px]">
-                  Personal workspace
+                  {t("flatSidebar.personalWorkspace")}
                 </span>
               </span>
             </div>
             <div className="depth-divider mb-1" />
             <p className="text-muted-foreground/70 px-1.5 pt-1.5 pb-1 text-[11px] font-medium tracking-wider uppercase">
-              Apps
+              {t("flatSidebar.apps")}
             </p>
             {(apps ?? [])
               .filter((app) => app.available && app.route !== "/" && app.id !== "admin")
@@ -182,10 +184,10 @@ const FlatSidebar = ({
       <div className="flex flex-col gap-2 p-3 pt-2">
         <div className="panel rounded-lg p-2.5">
           <div className="mb-1.5 flex items-center justify-between text-xs">
-            <span className="text-muted-foreground font-medium">Storage</span>
+            <span className="text-muted-foreground font-medium">{t("flatSidebar.storage")}</span>
             <span className="text-muted-foreground tabular-nums">
               {usage
-                ? `${formatBytes(usage.usedBytes)} / ${usage.quotaBytes ? formatBytes(usage.quotaBytes) : "Unlimited"}`
+                ? `${formatBytes(usage.usedBytes)} / ${usage.quotaBytes ? formatBytes(usage.quotaBytes) : t("flatSidebar.unlimited")}`
                 : "—"}
             </span>
           </div>
@@ -206,7 +208,7 @@ const FlatSidebar = ({
                     src={`https://api.dicebear.com/10.x/notionists-neutral/svg?seed=${encodeURIComponent(
                       session?.user?.email ?? session?.user?.name ?? "user",
                     )}`}
-                    alt={session?.user?.name ?? "Account"}
+                    alt={session?.user?.name ?? t("flatSidebar.account")}
                   />
                   <AvatarFallback className="text-xs">
                     {(session?.user?.name ?? "U").slice(0, 1).toUpperCase()}
@@ -223,13 +225,13 @@ const FlatSidebar = ({
             }
           />
           <DropdownMenuContent align="end" side="top" className="w-[var(--anchor-width)]">
-            <DropdownMenuItem onClick={() => setDevicesOpen(true)}>Devices</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push("/admin")}>Settings</DropdownMenuItem>
-            <DropdownMenuItem onClick={replayOnboarding}>Replay intro</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setDevicesOpen(true)}>{t("flatSidebar.devices")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/admin")}>{t("flatSidebar.settings")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={replayOnboarding}>{t("flatSidebar.replayIntro")}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={signOut}>
               <IconLogout className="size-4" />
-              Sign out
+              {t("flatSidebar.signOut")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -243,7 +245,7 @@ const FlatSidebar = ({
             type="button"
             role="switch"
             aria-checked={dark}
-            aria-label="Toggle dark mode"
+            aria-label={t("flatSidebar.toggleDarkMode")}
             onClick={(event) => {
               const rect = event.currentTarget.getBoundingClientRect()
               applyThemeWithReveal(

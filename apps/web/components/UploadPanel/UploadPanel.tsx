@@ -3,11 +3,13 @@
 import { useState } from "react"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
+import { t } from "@lib/i18n/config"
 import { type UploadItem, useUploadManager } from "@lib/uploadManager"
 import { IconChevronDown, IconX } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
+import { useTranslation } from "react-i18next"
 
 const Ring = ({ value, indeterminate }: { value: number; indeterminate?: boolean }) => {
   const size = 22
@@ -50,40 +52,47 @@ const statusText = (item: UploadItem): string => {
   if (item.kind === "task") {
     switch (item.status) {
       case "done":
-        return "Done"
+        return t("common:uploadPanel.done")
       case "error":
-        return item.error ?? "Failed"
+        return item.error ?? t("common:uploadPanel.failed")
       default:
-        return item.size > 0 ? `Archiving ${item.loaded} of ${item.size}` : "Archiving…"
+        return item.size > 0
+          ? t("common:uploadPanel.archivingProgress", { loaded: item.loaded, size: item.size })
+          : t("common:uploadPanel.archiving")
     }
   }
   if (item.kind === "download") {
     switch (item.status) {
       case "done":
-        return "Downloaded"
+        return t("common:uploadPanel.downloaded")
       case "error":
-        return item.error ?? "Download failed"
+        return item.error ?? t("common:uploadPanel.downloadFailed")
       default:
         return item.size > 0
-          ? `${formatBytes(item.loaded)} of ${formatBytes(item.size)}`
-          : "Downloading…"
+          ? t("common:uploadPanel.bytesProgress", {
+              loaded: formatBytes(item.loaded),
+              size: formatBytes(item.size),
+            })
+          : t("common:uploadPanel.downloading")
     }
   }
   switch (item.status) {
     case "uploading":
-      return item.speed > 0 ? `${formatBytes(item.speed)}/s` : "Uploading…"
+      return item.speed > 0
+        ? t("common:uploadPanel.speed", { speed: formatBytes(item.speed) })
+        : t("common:uploadPanel.uploading")
     case "processing":
       return item.mediaType === "video"
-        ? "Transcoding…"
+        ? t("common:uploadPanel.transcoding")
         : item.mediaType === "audio"
-          ? "Processing…"
-          : "Compressing…"
+          ? t("common:uploadPanel.processing")
+          : t("common:uploadPanel.compressing")
     case "done":
-      return "Done"
+      return t("common:uploadPanel.done")
     case "deduped":
-      return "Already in library"
+      return t("common:uploadPanel.alreadyInLibrary")
     case "error":
-      return item.error ?? "Failed"
+      return item.error ?? t("common:uploadPanel.failed")
   }
 }
 
@@ -118,13 +127,19 @@ const Row = ({ item, onRemove }: { item: UploadItem; onRemove: () => void }) => 
       <p className="truncate text-sm">{item.name}</p>
       <p className="text-muted-foreground text-xs">{statusText(item)}</p>
     </div>
-    <Button variant="ghost" size="icon-sm" aria-label="Dismiss" onClick={onRemove}>
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      aria-label={t("common:uploadPanel.dismiss")}
+      onClick={onRemove}
+    >
       <IconX className="size-3.5" />
     </Button>
   </motion.li>
 )
 
 const UploadPanel = () => {
+  const { t } = useTranslation("common")
   const { items, remove, clearFinished } = useUploadManager()
   const [collapsed, setCollapsed] = useState(false)
 
@@ -140,14 +155,14 @@ const UploadPanel = () => {
   ).length
   const title =
     uploading > 0
-      ? `Uploading ${uploading} item${uploading === 1 ? "" : "s"}`
+      ? t("uploadPanel.uploadingItems", { count: uploading })
       : compressing > 0
-        ? `Processing ${compressing} item${compressing === 1 ? "" : "s"}`
+        ? t("uploadPanel.processingItems", { count: compressing })
         : downloading > 0
-          ? `Downloading ${downloading} item${downloading === 1 ? "" : "s"}`
+          ? t("uploadPanel.downloadingItems", { count: downloading })
           : archiving > 0
-            ? `Archiving ${archiving} item${archiving === 1 ? "" : "s"}`
-            : "Activity"
+            ? t("uploadPanel.archivingItems", { count: archiving })
+            : t("uploadPanel.activity")
 
   return (
     <AnimatePresence>
@@ -164,12 +179,12 @@ const UploadPanel = () => {
             <span className="text-sm font-medium">{title}</span>
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="sm" onClick={clearFinished}>
-                Clear
+                {t("uploadPanel.clear")}
               </Button>
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label={collapsed ? "Expand" : "Collapse"}
+                aria-label={collapsed ? t("uploadPanel.expand") : t("uploadPanel.collapse")}
                 onClick={() => setCollapsed((value) => !value)}
               >
                 <IconChevronDown

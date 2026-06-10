@@ -48,8 +48,8 @@ const dayLabel = (date: Date): string => {
   const day = new Date(date)
   day.setHours(0, 0, 0, 0)
   const diff = Math.round((today.getTime() - day.getTime()) / 86_400_000)
-  if (diff <= 0) return t("photoGrid.today")
-  if (diff === 1) return t("photoGrid.yesterday")
+  if (diff <= 0) return t("photos:photoGrid.today")
+  if (diff === 1) return t("photos:photoGrid.yesterday")
   if (diff < 7) return date.toLocaleDateString(undefined, { weekday: "long" })
   return date.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
 }

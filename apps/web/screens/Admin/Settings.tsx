@@ -17,14 +17,15 @@ import {
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
-
-const MODES: { value: AdminSettings["registrationMode"]; label: string }[] = [
-  { value: "invite_only", label: "Invite only" },
-  { value: "open", label: "Open — anyone can sign up" },
-  { value: "closed", label: "Closed — no new accounts" },
-]
+import { useTranslation } from "react-i18next"
 
 const Settings = () => {
+  const { t } = useTranslation("admin")
+  const MODES: { value: AdminSettings["registrationMode"]; label: string }[] = [
+    { value: "invite_only", label: t("settings.modeInviteOnly") },
+    { value: "open", label: t("settings.modeOpen") },
+    { value: "closed", label: t("settings.modeClosed") },
+  ]
   const queryClient = useQueryClient()
   const { data: settings, isLoading } = useQuery({
     queryKey: ["admin", "settings"],
@@ -52,21 +53,21 @@ const Settings = () => {
       })
     },
     onSuccess: () => {
-      toast.success("Settings saved")
+      toast.success(t("settings.saved"))
       void queryClient.invalidateQueries({ queryKey: ["admin", "settings"] })
     },
-    onError: () => toast.error("Could not save settings"),
+    onError: () => toast.error(t("settings.saveError")),
   })
 
   return (
-    <AdminPage title="Settings" description="Registration and instance-wide policy.">
+    <AdminPage title={t("settings.title")} description={t("settings.description")}>
       {isLoading ? (
         <PageSpinner />
       ) : (
         <div className="flex max-w-xl flex-col gap-6">
           <div className="panel flex flex-col gap-5 rounded-xl p-5">
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="reg-mode">Who can create accounts?</Label>
+              <Label htmlFor="reg-mode">{t("settings.whoCanCreate")}</Label>
               <Select value={mode} onValueChange={(value) => setMode(value as typeof mode)}>
                 <SelectTrigger id="reg-mode">
                   <SelectValue />
@@ -81,32 +82,32 @@ const Settings = () => {
               </Select>
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="domains">Allowed email domains</Label>
+              <Label htmlFor="domains">{t("settings.allowedDomains")}</Label>
               <Input
                 id="domains"
                 value={domains}
-                placeholder="example.com, team.org"
+                placeholder={t("settings.domainsPlaceholder")}
                 onChange={(event) => setDomains(event.target.value)}
               />
               <span className="text-muted-foreground text-xs">
-                Comma-separated. Leave blank to allow any domain.
+                {t("settings.domainsHint")}
               </span>
             </div>
             <div>
               <Button onClick={() => save.mutate()} disabled={save.isPending}>
-                Save changes
+                {t("settings.saveChanges")}
               </Button>
             </div>
           </div>
 
           <div className="panel flex items-center justify-between gap-3 rounded-xl p-5">
             <div className="flex flex-col">
-              <span className="text-sm font-medium">Automatic S3 backup</span>
+              <span className="text-sm font-medium">{t("settings.s3Backup")}</span>
               <span className="text-muted-foreground text-xs">
-                Scheduled off-site backups to an S3-compatible bucket.
+                {t("settings.s3BackupHint")}
               </span>
             </div>
-            <Button variant="secondary" render={<Link href="/admin/backup">Configure</Link>} />
+            <Button variant="secondary" render={<Link href="/admin/backup">{t("settings.configure")}</Link>} />
           </div>
         </div>
       )}

@@ -23,6 +23,7 @@ import { IconDotsVertical } from "@tabler/icons-react"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const initials = (name: string): string =>
   name
@@ -36,6 +37,7 @@ const initials = (name: string): string =>
 const isAdmin = (role: string | null): boolean => role === "admin" || role === "owner"
 
 const Users = () => {
+  const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
   const [selected, setSelected] = useState<string | null>(null)
   const { data: users, isLoading } = useQuery({
@@ -51,19 +53,19 @@ const Users = () => {
   const ban = useMutation({
     mutationFn: ({ id, banned }: { id: string; banned: boolean }) => setUserBanned(id, banned),
     onSuccess: (_data, variables) => {
-      toast.success(variables.banned ? "User banned" : "User unbanned")
+      toast.success(variables.banned ? t("users.userBanned") : t("users.userUnbanned"))
       refresh()
     },
-    onError: () => toast.error("Could not update the user"),
+    onError: () => toast.error(t("users.couldNotUpdateUser")),
   })
 
   const role = useMutation({
     mutationFn: ({ id, value }: { id: string; value: string | null }) => setUserRole(id, value),
     onSuccess: () => {
-      toast.success("Role updated")
+      toast.success(t("users.roleUpdated"))
       refresh()
     },
-    onError: () => toast.error("Could not update the role"),
+    onError: () => toast.error(t("users.couldNotUpdateRole")),
   })
 
   const row = (user: AdminUser) => (
@@ -82,12 +84,12 @@ const Users = () => {
         <span className="w-full truncate text-sm font-medium">{user.name}</span>
         <span className="text-muted-foreground w-full truncate text-xs">{user.email}</span>
       </Button>
-      {isAdmin(user.role) ? <Badge variant="secondary">Admin</Badge> : null}
-      {user.banned ? <Badge variant="destructive">Banned</Badge> : null}
+      {isAdmin(user.role) ? <Badge variant="secondary">{t("users.admin")}</Badge> : null}
+      {user.banned ? <Badge variant="destructive">{t("users.banned")}</Badge> : null}
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <Button variant="ghost" size="icon-sm" aria-label="User actions">
+            <Button variant="ghost" size="icon-sm" aria-label={t("users.userActions")}>
               <IconDotsVertical className="size-4" />
             </Button>
           }
@@ -95,24 +97,24 @@ const Users = () => {
         <DropdownMenuContent align="end">
           {isAdmin(user.role) ? (
             <DropdownMenuItem onClick={() => role.mutate({ id: user.id, value: "user" })}>
-              Remove admin
+              {t("users.removeAdmin")}
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem onClick={() => role.mutate({ id: user.id, value: "admin" })}>
-              Make admin
+              {t("users.makeAdmin")}
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
           {user.banned ? (
             <DropdownMenuItem onClick={() => ban.mutate({ id: user.id, banned: false })}>
-              Unban
+              {t("users.unban")}
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
               variant="destructive"
               onClick={() => ban.mutate({ id: user.id, banned: true })}
             >
-              Ban
+              {t("users.ban")}
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
@@ -121,7 +123,7 @@ const Users = () => {
   )
 
   return (
-    <AdminPage title="Users" description="Everyone with an account on this instance.">
+    <AdminPage title={t("users.title")} description={t("users.description")}>
       {isLoading ? (
         <PageSpinner />
       ) : (

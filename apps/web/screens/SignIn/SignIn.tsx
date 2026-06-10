@@ -17,12 +17,14 @@ import {
 } from "@workspace/ui/components/card"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
+import { t } from "@lib/i18n/config"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { z } from "zod"
 
 const schema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(1, "Password is required"),
+  email: z.string().email(t("auth:signIn.invalidEmail")),
+  password: z.string().min(1, t("auth:signIn.passwordRequired")),
 })
 
 const fieldError = (errors: unknown[]): string | null => {
@@ -36,6 +38,7 @@ const fieldError = (errors: unknown[]): string | null => {
 }
 
 const SignIn = () => {
+  const { t } = useTranslation("auth")
   const router = useRouter()
   const { data: session, isPending } = authClient.useSession()
   const [recoveryCode, setRecoveryCode] = useState<string | null>(null)
@@ -54,7 +57,7 @@ const SignIn = () => {
         password: value.password,
       })
       if (result.error) {
-        toast.error(result.error.message ?? "Sign-in failed")
+        toast.error(result.error.message ?? t("signIn.signInFailed"))
         return
       }
       // We control the redirect from here so encryption keys unlock first.
@@ -86,7 +89,7 @@ const SignIn = () => {
   if (isPending || session?.user) {
     return (
       <main className="flex min-h-svh items-center justify-center p-6">
-        <p className="text-muted-foreground text-sm">Loading…</p>
+        <p className="text-muted-foreground text-sm">{t("signIn.loading")}</p>
       </main>
     )
   }
@@ -95,8 +98,8 @@ const SignIn = () => {
     <main className="flex min-h-svh items-center justify-center p-6">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Sign in to {APP_NAME}</CardTitle>
-          <CardDescription>Welcome back. Enter your credentials to continue.</CardDescription>
+          <CardTitle>{t("signIn.title", { appName: APP_NAME })}</CardTitle>
+          <CardDescription>{t("signIn.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -110,14 +113,14 @@ const SignIn = () => {
             <form.Field name="email">
               {(field) => (
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor={field.name}>Email</Label>
+                  <Label htmlFor={field.name}>{t("signIn.email")}</Label>
                   <Input
                     id={field.name}
                     type="email"
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="you@example.com"
+                    placeholder={t("signIn.emailPlaceholder")}
                   />
                   {fieldError(field.state.meta.errors) ? (
                     <p className="text-destructive text-sm">{fieldError(field.state.meta.errors)}</p>
@@ -129,7 +132,7 @@ const SignIn = () => {
             <form.Field name="password">
               {(field) => (
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor={field.name}>Password</Label>
+                  <Label htmlFor={field.name}>{t("signIn.password")}</Label>
                   <Input
                     id={field.name}
                     type="password"
@@ -147,7 +150,7 @@ const SignIn = () => {
             <form.Subscribe selector={(state) => state.isSubmitting}>
               {(isSubmitting) => (
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Signing in…" : "Sign in"}
+                  {isSubmitting ? t("signIn.signingIn") : t("signIn.signIn")}
                 </Button>
               )}
             </form.Subscribe>

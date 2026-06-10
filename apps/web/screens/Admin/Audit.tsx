@@ -2,18 +2,20 @@
 
 import { fetchAdminAudit } from "@lib/admin"
 import { useQuery } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 import { Badge } from "@workspace/ui/components/badge"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 
 const Audit = () => {
+  const { t } = useTranslation("admin")
   const { data: entries, isLoading } = useQuery({
     queryKey: ["admin", "audit"],
     queryFn: fetchAdminAudit,
   })
 
   return (
-    <AdminPage title="Audit log" description="A record of every administrative change.">
+    <AdminPage title={t("audit.title")} description={t("audit.description")}>
       {isLoading ? (
         <PageSpinner />
       ) : entries && entries.length > 0 ? (
@@ -33,7 +35,7 @@ const Audit = () => {
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground text-sm">No activity recorded yet.</p>
+        <p className="text-muted-foreground text-sm">{t("audit.empty")}</p>
       )}
     </AdminPage>
   )

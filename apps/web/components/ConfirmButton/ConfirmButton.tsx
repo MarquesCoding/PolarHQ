@@ -1,6 +1,7 @@
 "use client"
 
 import { type ReactNode, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { buttonVariants } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
@@ -22,10 +23,12 @@ const ConfirmButton = ({
   armed: armedProp,
   onTrigger,
   children,
-  confirmLabel = "Confirm",
+  confirmLabel,
   icon,
   idleVariant = "ghost",
 }: ConfirmButtonProps) => {
+  const { t } = useTranslation("common")
+  const resolvedConfirmLabel = confirmLabel ?? t("confirmButton.confirm")
   const [internalArmed, setInternalArmed] = useState(false)
   const timer = useRef<number | null>(null)
   const controlled = onTrigger !== undefined
@@ -78,7 +81,7 @@ const ConfirmButton = ({
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.12 }}
         >
-          {armed ? confirmLabel : children}
+          {armed ? resolvedConfirmLabel : children}
         </motion.span>
       </AnimatePresence>
     </motion.button>

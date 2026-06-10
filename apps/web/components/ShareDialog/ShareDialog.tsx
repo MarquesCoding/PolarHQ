@@ -25,6 +25,7 @@ import {
 } from "@workspace/ui/components/select"
 import { Switch } from "@workspace/ui/components/switch"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 interface ShareDialogProps {
   name: string | null
@@ -33,13 +34,6 @@ interface ShareDialogProps {
   createLink: (options: ShareOptions) => Promise<ShareLink>
   encryptKeyId?: string
 }
-
-const EXPIRY_OPTIONS = [
-  { value: "1", label: "1 hour" },
-  { value: "24", label: "1 day" },
-  { value: "168", label: "7 days" },
-  { value: "720", label: "30 days" },
-]
 
 const Row = ({ label, hint, control }: { label: string; hint?: string; control: ReactNode }) => (
   <div className="flex items-center justify-between gap-3">
@@ -59,6 +53,13 @@ const ShareDialog = ({
   createLink,
   encryptKeyId,
 }: ShareDialogProps) => {
+  const { t } = useTranslation("common")
+  const EXPIRY_OPTIONS = [
+    { value: "1", label: t("shareDialog.expiry1Hour") },
+    { value: "24", label: t("shareDialog.expiry1Day") },
+    { value: "168", label: t("shareDialog.expiry7Days") },
+    { value: "720", label: t("shareDialog.expiry30Days") },
+  ]
   const [direct, setDirect] = useState(false)
   const [permanent, setPermanent] = useState(true)
   const [expiryHours, setExpiryHours] = useState("24")
@@ -107,43 +108,45 @@ const ShareDialog = ({
   const copy = () => {
     if (!link) return
     void navigator.clipboard.writeText(fullUrl)
-    toast.success("Link copied")
+    toast.success(t("shareDialog.linkCopied"))
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={false}>
         <DialogHeader className="min-w-0">
-          <DialogTitle className="min-w-0 truncate pe-2">Share “{name}”</DialogTitle>
+          <DialogTitle className="min-w-0 truncate pe-2">
+            {t("shareDialog.title", { name })}
+          </DialogTitle>
           <DialogDescription>
             {encrypted
-              ? "End-to-end encrypted: the key lives in the link and never reaches the server, so only people with the link can decrypt it."
-              : "Anyone with this link can download the file."}
+              ? t("shareDialog.descriptionEncrypted")
+              : t("shareDialog.descriptionPublic")}
           </DialogDescription>
         </DialogHeader>
 
         <Input
           readOnly
-          value={link ? fullUrl : "Generating link…"}
+          value={link ? fullUrl : t("shareDialog.generatingLink")}
           onFocus={(event) => event.target.select()}
         />
 
         <div className="flex flex-col gap-3">
           {encrypted ? null : (
             <Row
-              label="Direct download"
-              hint="Skip the landing page and download immediately"
+              label={t("shareDialog.directDownload")}
+              hint={t("shareDialog.directDownloadHint")}
               control={<Switch checked={direct} onCheckedChange={setDirect} />}
             />
           )}
           <Row
-            label="Permanent link"
-            hint="Keep this link active until you delete it"
+            label={t("shareDialog.permanentLink")}
+            hint={t("shareDialog.permanentLinkHint")}
             control={<Switch checked={permanent} onCheckedChange={setPermanent} />}
           />
           {!permanent ? (
             <Row
-              label="Expires after"
+              label={t("shareDialog.expiresAfter")}
               control={
                 <Select value={expiryHours} onValueChange={(value) => setExpiryHours(value ?? "24")}>
                   <SelectTrigger className="w-32">
@@ -161,13 +164,13 @@ const ShareDialog = ({
             />
           ) : null}
           <Row
-            label="Limit downloads"
-            hint="Disable the link after a number of downloads"
+            label={t("shareDialog.limitDownloads")}
+            hint={t("shareDialog.limitDownloadsHint")}
             control={<Switch checked={limitEnabled} onCheckedChange={setLimitEnabled} />}
           />
           {limitEnabled ? (
             <Row
-              label="Maximum downloads"
+              label={t("shareDialog.maximumDownloads")}
               control={
                 <Input
                   type="number"
@@ -183,11 +186,11 @@ const ShareDialog = ({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("shareDialog.cancel")}
           </Button>
           <Button onClick={copy} disabled={!link}>
             <Icon name="duplicate" className="size-4" />
-            Copy link
+            {t("shareDialog.copyLink")}
           </Button>
         </DialogFooter>
       </DialogContent>

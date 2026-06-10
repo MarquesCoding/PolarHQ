@@ -24,6 +24,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@workspace/ui/comp
 import { IconX } from "@tabler/icons-react"
 import Spinner from "@components/Spinner/Spinner"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const MB = 1024 * 1024
 
@@ -39,6 +40,7 @@ const LimitOverrideRow = ({
   limit: GroupLimit
   onChanged: () => void
 }) => {
+  const { t } = useTranslation("admin")
   const [draft, setDraft] = useState(() => overrideDisplay(limit))
 
   const save = useMutation({
@@ -48,24 +50,26 @@ const LimitOverrideRow = ({
       return setLimitFor("workgroup", workgroupId, limit.key, value)
     },
     onSuccess: () => {
-      toast.success(`${limit.label} override saved`)
+      toast.success(t("workgroupDetailSheet.overrideSaved", { label: limit.label }))
       onChanged()
     },
-    onError: () => toast.error("Could not save the override"),
+    onError: () => toast.error(t("workgroupDetailSheet.overrideSaveError")),
   })
 
   const clear = useMutation({
     mutationFn: () => clearLimitFor("workgroup", workgroupId, limit.key),
     onSuccess: () => {
-      toast.success("Override removed")
+      toast.success(t("workgroupDetailSheet.overrideRemoved"))
       setDraft("")
       onChanged()
     },
-    onError: () => toast.error("Could not remove the override"),
+    onError: () => toast.error(t("workgroupDetailSheet.overrideRemoveError")),
   })
 
   const inherited =
-    limit.instanceValue == null ? "unlimited" : `${Math.round(Number(limit.instanceValue) / MB)} MB`
+    limit.instanceValue == null
+      ? t("workgroupDetailSheet.unlimited")
+      : `${Math.round(Number(limit.instanceValue) / MB)} MB`
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -75,7 +79,7 @@ const LimitOverrideRow = ({
           type="number"
           min={0}
           value={draft}
-          placeholder={`Instance: ${inherited}`}
+          placeholder={t("workgroupDetailSheet.instancePlaceholder", { value: inherited })}
           onChange={(event) => setDraft(event.target.value)}
           className="w-32"
         />
@@ -86,11 +90,11 @@ const LimitOverrideRow = ({
           disabled={save.isPending || draft === overrideDisplay(limit)}
           onClick={() => save.mutate()}
         >
-          Save
+          {t("workgroupDetailSheet.save")}
         </Button>
         {limit.hasOverride ? (
           <Button size="sm" variant="ghost" disabled={clear.isPending} onClick={() => clear.mutate()}>
-            Reset
+            {t("workgroupDetailSheet.reset")}
           </Button>
         ) : null}
       </div>
@@ -104,6 +108,7 @@ interface WorkgroupDetailSheetProps {
 }
 
 const WorkgroupDetailSheet = ({ workgroupId, onOpenChange }: WorkgroupDetailSheetProps) => {
+  const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
   const open = workgroupId != null
 
@@ -124,20 +129,20 @@ const WorkgroupDetailSheet = ({ workgroupId, onOpenChange }: WorkgroupDetailShee
   const add = useMutation({
     mutationFn: () => addWorkgroupGroup(workgroupId as string, groupToAdd),
     onSuccess: () => {
-      toast.success("Group added")
+      toast.success(t("workgroupDetailSheet.groupAdded"))
       setGroupToAdd("")
       refresh()
     },
-    onError: () => toast.error("Could not add the group"),
+    onError: () => toast.error(t("workgroupDetailSheet.groupAddError")),
   })
 
   const remove = useMutation({
     mutationFn: (groupId: string) => removeWorkgroupGroup(workgroupId as string, groupId),
     onSuccess: () => {
-      toast.success("Group removed")
+      toast.success(t("workgroupDetailSheet.groupRemoved"))
       refresh()
     },
-    onError: () => toast.error("Could not remove the group"),
+    onError: () => toast.error(t("workgroupDetailSheet.groupRemoveError")),
   })
 
   const memberIds = new Set((detail?.groups ?? []).map((group) => group.id))
@@ -161,7 +166,7 @@ const WorkgroupDetailSheet = ({ workgroupId, onOpenChange }: WorkgroupDetailShee
 
             <section className="flex flex-col gap-2">
               <h3 className="text-xs font-semibold tracking-wide uppercase">
-                Groups · {detail.groups.length}
+                {t("workgroupDetailSheet.groupsCount", { count: detail.groups.length })}
               </h3>
               <div className="panel divide-border/60 divide-y overflow-hidden rounded-xl">
                 {detail.groups.length > 0 ? (
@@ -173,7 +178,7 @@ const WorkgroupDetailSheet = ({ workgroupId, onOpenChange }: WorkgroupDetailShee
                       <Button
                         variant="ghost"
                         size="icon-sm"
-                        aria-label={`Remove ${group.name}`}
+                        aria-label={t("workgroupDetailSheet.removeGroup", { name: group.name })}
                         onClick={() => remove.mutate(group.id)}
                       >
                         <IconX className="size-4" />
@@ -181,14 +186,16 @@ const WorkgroupDetailSheet = ({ workgroupId, onOpenChange }: WorkgroupDetailShee
                     </div>
                   ))
                 ) : (
-                  <p className="text-muted-foreground px-3 py-2 text-sm">No groups yet.</p>
+                  <p className="text-muted-foreground px-3 py-2 text-sm">
+                    {t("workgroupDetailSheet.noGroups")}
+                  </p>
                 )}
               </div>
               {addable.length > 0 ? (
                 <div className="mt-1 flex items-center gap-2">
                   <Select value={groupToAdd} onValueChange={(value) => setGroupToAdd(value ?? "")}>
                     <SelectTrigger className="w-52">
-                      <SelectValue placeholder="Add a group…" />
+                      <SelectValue placeholder={t("workgroupDetailSheet.addGroupPlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {addable.map((group) => (
@@ -204,14 +211,16 @@ const WorkgroupDetailSheet = ({ workgroupId, onOpenChange }: WorkgroupDetailShee
                     disabled={!groupToAdd || add.isPending}
                     onClick={() => add.mutate()}
                   >
-                    Add
+                    {t("workgroupDetailSheet.add")}
                   </Button>
                 </div>
               ) : null}
             </section>
 
             <section className="flex flex-col gap-4">
-              <h3 className="text-xs font-semibold tracking-wide uppercase">Limit overrides</h3>
+              <h3 className="text-xs font-semibold tracking-wide uppercase">
+                {t("workgroupDetailSheet.limitOverrides")}
+              </h3>
               {detail.limits.map((limit) => (
                 <LimitOverrideRow
                   key={limit.key}

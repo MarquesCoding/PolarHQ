@@ -9,8 +9,10 @@ import { Input } from "@workspace/ui/components/input"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const Workgroups = () => {
+  const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
   const { data: workgroups, isLoading } = useQuery({
     queryKey: ["admin", "workgroups"],
@@ -22,11 +24,11 @@ const Workgroups = () => {
   const create = useMutation({
     mutationFn: () => createAdminWorkgroup(name.trim()),
     onSuccess: () => {
-      toast.success("Workgroup created")
+      toast.success(t("workgroups.created"))
       setName("")
       void queryClient.invalidateQueries({ queryKey: ["admin", "workgroups"] })
     },
-    onError: () => toast.error("Could not create the workgroup"),
+    onError: () => toast.error(t("workgroups.createError")),
   })
 
   const row = (workgroup: AdminWorkgroup) => (
@@ -48,18 +50,18 @@ const Workgroups = () => {
 
   return (
     <AdminPage
-      title="Workgroups"
-      description="Group several groups into a department. Roles and limits on a workgroup apply to everyone in its groups."
+      title={t("workgroups.title")}
+      description={t("workgroups.description")}
       action={
         <div className="flex items-center gap-2">
           <Input
             value={name}
-            placeholder="New workgroup name"
+            placeholder={t("workgroups.namePlaceholder")}
             onChange={(event) => setName(event.target.value)}
             className="w-48"
           />
           <Button disabled={!name.trim() || create.isPending} onClick={() => create.mutate()}>
-            Create
+            {t("workgroups.create")}
           </Button>
         </div>
       }
@@ -71,7 +73,7 @@ const Workgroups = () => {
           {workgroups.map(row)}
         </div>
       ) : (
-        <p className="text-muted-foreground text-sm">No workgroups yet.</p>
+        <p className="text-muted-foreground text-sm">{t("workgroups.empty")}</p>
       )}
       <WorkgroupDetailSheet
         workgroupId={selected}

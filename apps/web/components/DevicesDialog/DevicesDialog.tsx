@@ -17,6 +17,7 @@ import {
 } from "@workspace/ui/components/dialog"
 import Spinner from "@components/Spinner/Spinner"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 interface DevicesDialogProps {
   open: boolean
@@ -39,6 +40,7 @@ const iconFor = (platform: Device["platform"]) => {
 }
 
 const DevicesDialog = ({ open, onOpenChange }: DevicesDialogProps) => {
+  const { t } = useTranslation("common")
   const queryClient = useQueryClient()
   const { data, isLoading } = useQuery({
     queryKey: ["account", "devices"],
@@ -50,16 +52,16 @@ const DevicesDialog = ({ open, onOpenChange }: DevicesDialogProps) => {
     mutationFn: revokeDevice,
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["account", "devices"] })
-      toast.success("Device signed out")
+      toast.success(t("devicesDialog.signedOut"))
     },
-    onError: () => toast.error("Couldn't sign out that device"),
+    onError: () => toast.error(t("devicesDialog.signOutError")),
   })
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Devices &amp; sessions</DialogTitle>
+          <DialogTitle>{t("devicesDialog.title")}</DialogTitle>
         </DialogHeader>
 
         {isLoading ? (
@@ -83,13 +85,15 @@ const DevicesDialog = ({ open, onOpenChange }: DevicesDialogProps) => {
                       <span className="truncate text-sm font-medium">{device.label}</span>
                       {device.current ? (
                         <span className="bg-primary/15 text-primary rounded-full px-1.5 py-0.5 text-[10px] font-semibold">
-                          This device
+                          {t("devicesDialog.thisDevice")}
                         </span>
                       ) : null}
                     </div>
                     <p className="text-muted-foreground truncate text-xs">
                       {device.ipAddress ? `${device.ipAddress} · ` : ""}
-                      {device.current ? "Active now" : `Last active ${timeAgo(device.lastActive)}`}
+                      {device.current
+                        ? t("devicesDialog.activeNow")
+                        : t("devicesDialog.lastActive", { time: timeAgo(device.lastActive) })}
                     </p>
                   </div>
                   {device.current ? null : (
@@ -99,7 +103,7 @@ const DevicesDialog = ({ open, onOpenChange }: DevicesDialogProps) => {
                       onClick={() => revoke.mutate(device.id)}
                       disabled={revoke.isPending}
                     >
-                      Sign out
+                      {t("devicesDialog.signOut")}
                     </Button>
                   )}
                 </div>

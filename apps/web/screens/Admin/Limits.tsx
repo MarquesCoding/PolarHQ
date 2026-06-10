@@ -8,6 +8,7 @@ import { Input } from "@workspace/ui/components/input"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const MB = 1024 * 1024
 
@@ -15,6 +16,7 @@ const toDisplay = (limit: AdminLimit): string =>
   limit.value == null ? "" : String(Math.round(Number(limit.value) / MB))
 
 const LimitRow = ({ limit, onSaved }: { limit: AdminLimit; onSaved: () => void }) => {
+  const { t } = useTranslation("admin")
   const [draft, setDraft] = useState(() => toDisplay(limit))
   const save = useMutation({
     mutationFn: () => {
@@ -23,10 +25,10 @@ const LimitRow = ({ limit, onSaved }: { limit: AdminLimit; onSaved: () => void }
       return setInstanceLimit(limit.key, value)
     },
     onSuccess: () => {
-      toast.success(`${limit.label} saved`)
+      toast.success(t("limitRow.saved", { label: limit.label }))
       onSaved()
     },
-    onError: () => toast.error("Could not save the limit"),
+    onError: () => toast.error(t("limitRow.saveError")),
   })
 
   return (
@@ -40,7 +42,7 @@ const LimitRow = ({ limit, onSaved }: { limit: AdminLimit; onSaved: () => void }
           type="number"
           min={0}
           value={draft}
-          placeholder="Unlimited"
+          placeholder={t("limitRow.unlimitedPlaceholder")}
           onChange={(event) => setDraft(event.target.value)}
           className="w-28"
         />
@@ -51,7 +53,7 @@ const LimitRow = ({ limit, onSaved }: { limit: AdminLimit; onSaved: () => void }
           disabled={save.isPending || draft === toDisplay(limit)}
           onClick={() => save.mutate()}
         >
-          Save
+          {t("limitRow.save")}
         </Button>
       </div>
     </div>
@@ -59,6 +61,7 @@ const LimitRow = ({ limit, onSaved }: { limit: AdminLimit; onSaved: () => void }
 }
 
 const Limits = () => {
+  const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
   const { data: limits, isLoading } = useQuery({
     queryKey: ["admin", "limits"],
@@ -68,8 +71,8 @@ const Limits = () => {
 
   return (
     <AdminPage
-      title="Limits"
-      description="Instance-wide defaults. Leave blank for unlimited; per-user and group overrides take precedence."
+      title={t("limits.title")}
+      description={t("limits.description")}
     >
       {isLoading ? (
         <PageSpinner />

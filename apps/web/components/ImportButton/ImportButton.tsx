@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { IconFileImport } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 /** File-picker filter per document type. */
 const ACCEPT: Record<DocType, string> = {
@@ -18,6 +19,7 @@ const ACCEPT: Record<DocType, string> = {
 
 /** Imports an Office/Google file (.xlsx, .docx, .pptx, …) into a new document of `type`. */
 const ImportButton = ({ type }: { type: DocType }) => {
+  const { t } = useTranslation("common")
   const router = useRouter()
   const queryClient = useQueryClient()
   const inputRef = useRef<HTMLInputElement>(null)
@@ -30,7 +32,7 @@ const ImportButton = ({ type }: { type: DocType }) => {
       await importFile(file, type, router)
       void queryClient.invalidateQueries({ queryKey: ["docs"] })
     } catch {
-      toast.error("Could not import this file")
+      toast.error(t("importButton.importFailed"))
     } finally {
       setBusy(false)
       if (inputRef.current) inputRef.current.value = ""
@@ -46,7 +48,7 @@ const ImportButton = ({ type }: { type: DocType }) => {
         onClick={() => inputRef.current?.click()}
       >
         <IconFileImport className="size-4" />
-        Import
+        {t("importButton.import")}
       </Button>
       <input
         ref={inputRef}

@@ -25,6 +25,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@workspace/ui/comp
 import { IconX } from "@tabler/icons-react"
 import Spinner from "@components/Spinner/Spinner"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const MB = 1024 * 1024
 
@@ -49,6 +50,7 @@ const LimitOverrideRow = ({
   limit: GroupLimit
   onChanged: () => void
 }) => {
+  const { t } = useTranslation("admin")
   const [draft, setDraft] = useState(() => overrideDisplay(limit))
 
   const save = useMutation({
@@ -58,24 +60,26 @@ const LimitOverrideRow = ({
       return setLimitFor("group", groupId, limit.key, value)
     },
     onSuccess: () => {
-      toast.success(`${limit.label} override saved`)
+      toast.success(t("groupDetailSheet.overrideSaved", { label: limit.label }))
       onChanged()
     },
-    onError: () => toast.error("Could not save the override"),
+    onError: () => toast.error(t("groupDetailSheet.overrideSaveError")),
   })
 
   const clear = useMutation({
     mutationFn: () => clearLimitFor("group", groupId, limit.key),
     onSuccess: () => {
-      toast.success("Override removed")
+      toast.success(t("groupDetailSheet.overrideRemoved"))
       setDraft("")
       onChanged()
     },
-    onError: () => toast.error("Could not remove the override"),
+    onError: () => toast.error(t("groupDetailSheet.overrideRemoveError")),
   })
 
   const inherited =
-    limit.instanceValue == null ? "unlimited" : `${Math.round(Number(limit.instanceValue) / MB)} MB`
+    limit.instanceValue == null
+      ? t("groupDetailSheet.unlimited")
+      : `${Math.round(Number(limit.instanceValue) / MB)} MB`
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -85,7 +89,7 @@ const LimitOverrideRow = ({
           type="number"
           min={0}
           value={draft}
-          placeholder={`Instance: ${inherited}`}
+          placeholder={t("groupDetailSheet.instancePlaceholder", { value: inherited })}
           onChange={(event) => setDraft(event.target.value)}
           className="w-32"
         />
@@ -96,11 +100,11 @@ const LimitOverrideRow = ({
           disabled={save.isPending || draft === overrideDisplay(limit)}
           onClick={() => save.mutate()}
         >
-          Save
+          {t("groupDetailSheet.save")}
         </Button>
         {limit.hasOverride ? (
           <Button size="sm" variant="ghost" disabled={clear.isPending} onClick={() => clear.mutate()}>
-            Reset
+            {t("groupDetailSheet.reset")}
           </Button>
         ) : null}
       </div>
@@ -114,6 +118,7 @@ interface GroupDetailSheetProps {
 }
 
 const GroupDetailSheet = ({ groupId, onOpenChange }: GroupDetailSheetProps) => {
+  const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
   const open = groupId != null
 
@@ -134,20 +139,20 @@ const GroupDetailSheet = ({ groupId, onOpenChange }: GroupDetailSheetProps) => {
   const add = useMutation({
     mutationFn: () => addGroupMember(groupId as string, userToAdd),
     onSuccess: () => {
-      toast.success("Member added")
+      toast.success(t("groupDetailSheet.memberAdded"))
       setUserToAdd("")
       refresh()
     },
-    onError: () => toast.error("Could not add the member"),
+    onError: () => toast.error(t("groupDetailSheet.memberAddError")),
   })
 
   const remove = useMutation({
     mutationFn: (userId: string) => removeGroupMember(groupId as string, userId),
     onSuccess: () => {
-      toast.success("Member removed")
+      toast.success(t("groupDetailSheet.memberRemoved"))
       refresh()
     },
-    onError: () => toast.error("Could not remove the member"),
+    onError: () => toast.error(t("groupDetailSheet.memberRemoveError")),
   })
 
   const memberIds = new Set((detail?.members ?? []).map((member) => member.id))
@@ -171,7 +176,7 @@ const GroupDetailSheet = ({ groupId, onOpenChange }: GroupDetailSheetProps) => {
 
             <section className="flex flex-col gap-2">
               <h3 className="text-xs font-semibold tracking-wide uppercase">
-                Members · {detail.members.length}
+                {t("groupDetailSheet.membersHeading", { count: detail.members.length })}
               </h3>
               <div className="panel divide-border/60 divide-y overflow-hidden rounded-xl">
                 {detail.members.length > 0 ? (
@@ -189,7 +194,7 @@ const GroupDetailSheet = ({ groupId, onOpenChange }: GroupDetailSheetProps) => {
                       <Button
                         variant="ghost"
                         size="icon-sm"
-                        aria-label={`Remove ${member.name}`}
+                        aria-label={t("groupDetailSheet.removeMember", { name: member.name })}
                         onClick={() => remove.mutate(member.id)}
                       >
                         <IconX className="size-4" />
@@ -197,14 +202,16 @@ const GroupDetailSheet = ({ groupId, onOpenChange }: GroupDetailSheetProps) => {
                     </div>
                   ))
                 ) : (
-                  <p className="text-muted-foreground px-3 py-2 text-sm">No members yet.</p>
+                  <p className="text-muted-foreground px-3 py-2 text-sm">
+                    {t("groupDetailSheet.noMembers")}
+                  </p>
                 )}
               </div>
               {addable.length > 0 ? (
                 <div className="mt-1 flex items-center gap-2">
                   <Select value={userToAdd} onValueChange={(value) => setUserToAdd(value ?? "")}>
                     <SelectTrigger className="w-52">
-                      <SelectValue placeholder="Add a member…" />
+                      <SelectValue placeholder={t("groupDetailSheet.addMemberPlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {addable.map((user) => (
@@ -220,14 +227,16 @@ const GroupDetailSheet = ({ groupId, onOpenChange }: GroupDetailSheetProps) => {
                     disabled={!userToAdd || add.isPending}
                     onClick={() => add.mutate()}
                   >
-                    Add
+                    {t("groupDetailSheet.add")}
                   </Button>
                 </div>
               ) : null}
             </section>
 
             <section className="flex flex-col gap-4">
-              <h3 className="text-xs font-semibold tracking-wide uppercase">Limit overrides</h3>
+              <h3 className="text-xs font-semibold tracking-wide uppercase">
+                {t("groupDetailSheet.limitOverrides")}
+              </h3>
               {detail.limits.map((limit) => (
                 <LimitOverrideRow
                   key={limit.key}
