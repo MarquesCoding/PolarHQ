@@ -13,6 +13,7 @@ import { toast } from "sonner"
 const ACCEPT: Record<DocType, string> = {
   sheet: ".xlsx,.xls,.csv,.tsv,.ods",
   doc: ".docx,.txt,.md,.markdown",
+  board: ".json",
 }
 
 /** Imports an Office/Google file (.xlsx, .docx, .pptx, …) into a new document of `type`. */

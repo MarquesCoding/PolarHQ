@@ -36,6 +36,8 @@ const typeIcon = (node: DriveNode): { name: string; color: string } => {
     return { name: "document", color: "text-muted-foreground" }
   if (mime === "application/vnd.orbit.sheet")
     return { name: "table", color: "text-muted-foreground" }
+  if (mime === "application/vnd.orbit.board")
+    return { name: "palette", color: "text-muted-foreground" }
   if (/\.(xlsx|xls|csv|tsv|ods)$/i.test(name)) return { name: "table", color: "text-emerald-500" }
   if (/\.docx$/i.test(name)) return { name: "document", color: "text-blue-500" }
   if (/\.pptx$/i.test(name)) return { name: "presentation", color: "text-amber-500" }
