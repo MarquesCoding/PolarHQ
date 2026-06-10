@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { IconArrowBackUp, IconArrowForwardUp, IconMinus, IconPlus } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -58,6 +59,7 @@ const cornerPoint = (b: { x: number; y: number; w: number; h: number }, c: Corne
         : { x: b.x, y: b.y + b.h }
 
 const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }: Props) => {
+  const { t } = useTranslation("whiteboard")
   const svgRef = useRef<SVGSVGElement>(null)
   const gesture = useRef<Gesture | null>(null)
   const spaceHeld = useRef(false)
@@ -545,7 +547,7 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           variant="ghost"
           size="icon"
           className="size-7"
-          aria-label="Zoom out"
+          aria-label={t("boardCanvas.zoomOut")}
           onClick={() => setZoom((z) => Math.max(0.1, z - 0.1))}
         >
           <IconMinus className="size-4" />
@@ -554,7 +556,7 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           variant="ghost"
           size="sm"
           className="min-w-12 font-normal tabular-nums"
-          aria-label="Reset zoom"
+          aria-label={t("boardCanvas.resetZoom")}
           onClick={() => {
             setZoom(1)
             setPan({ x: 0, y: 0 })
@@ -566,7 +568,7 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           variant="ghost"
           size="icon"
           className="size-7"
-          aria-label="Zoom in"
+          aria-label={t("boardCanvas.zoomIn")}
           onClick={() => setZoom((z) => Math.min(5, z + 0.1))}
         >
           <IconPlus className="size-4" />
@@ -576,7 +578,7 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           variant="ghost"
           size="icon"
           className="size-7"
-          aria-label="Undo"
+          aria-label={t("boardCanvas.undo")}
           onClick={() => board.undo()}
         >
           <IconArrowBackUp className="size-4" />
@@ -585,7 +587,7 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           variant="ghost"
           size="icon"
           className="size-7"
-          aria-label="Redo"
+          aria-label={t("boardCanvas.redo")}
           onClick={() => board.redo()}
         >
           <IconArrowForwardUp className="size-4" />

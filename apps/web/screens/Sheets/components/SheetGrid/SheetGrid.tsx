@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
+import { useTranslation } from "react-i18next"
 import {
   CompactSelection,
   DataEditor,
@@ -41,6 +42,7 @@ interface Action {
 }
 
 const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
+  const { t } = useTranslation("sheets")
   const ref = useRef<DataEditorRef>(null)
   const pointer = useRef({ x: 0, y: 0 })
   const prevRefCells = useRef<Item[]>([])
@@ -409,31 +411,31 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
   }
 
   const colActions: Array<Action | "sep"> = [
-    { label: "Cut", run: () => void sheet.cutSelection() },
-    { label: "Copy", run: () => void sheet.copySelection() },
-    { label: "Paste", run: () => void sheet.pasteSelection() },
+    { label: t("sheetGrid.cut"), run: () => void sheet.cutSelection() },
+    { label: t("sheetGrid.copy"), run: () => void sheet.copySelection() },
+    { label: t("sheetGrid.paste"), run: () => void sheet.pasteSelection() },
     "sep",
-    { label: "Insert column left", run: () => sheet.insertColumn("left") },
-    { label: "Insert column right", run: () => sheet.insertColumn("right") },
-    { label: "Delete column", run: () => sheet.deleteColumns() },
-    { label: "Clear column", run: () => sheet.clearContents() },
+    { label: t("sheetGrid.insertColumnLeft"), run: () => sheet.insertColumn("left") },
+    { label: t("sheetGrid.insertColumnRight"), run: () => sheet.insertColumn("right") },
+    { label: t("sheetGrid.deleteColumn"), run: () => sheet.deleteColumns() },
+    { label: t("sheetGrid.clearColumn"), run: () => sheet.clearContents() },
     "sep",
-    { label: "Sort A → Z", run: () => sheet.sortSelection("asc") },
-    { label: "Sort Z → A", run: () => sheet.sortSelection("desc") },
+    { label: t("sheetGrid.sortAToZ"), run: () => sheet.sortSelection("asc") },
+    { label: t("sheetGrid.sortZToA"), run: () => sheet.sortSelection("desc") },
   ]
   const cellActions: Array<Action | "sep"> = [
-    { label: "Cut", run: () => void sheet.cutSelection() },
-    { label: "Copy", run: () => void sheet.copySelection() },
-    { label: "Paste", run: () => void sheet.pasteSelection() },
+    { label: t("sheetGrid.cut"), run: () => void sheet.cutSelection() },
+    { label: t("sheetGrid.copy"), run: () => void sheet.copySelection() },
+    { label: t("sheetGrid.paste"), run: () => void sheet.pasteSelection() },
     "sep",
-    { label: "Insert row above", run: () => sheet.insertRow("above") },
-    { label: "Insert row below", run: () => sheet.insertRow("below") },
-    { label: "Insert column left", run: () => sheet.insertColumn("left") },
-    { label: "Insert column right", run: () => sheet.insertColumn("right") },
+    { label: t("sheetGrid.insertRowAbove"), run: () => sheet.insertRow("above") },
+    { label: t("sheetGrid.insertRowBelow"), run: () => sheet.insertRow("below") },
+    { label: t("sheetGrid.insertColumnLeft"), run: () => sheet.insertColumn("left") },
+    { label: t("sheetGrid.insertColumnRight"), run: () => sheet.insertColumn("right") },
     "sep",
-    { label: "Delete row", run: () => sheet.deleteRows() },
-    { label: "Delete column", run: () => sheet.deleteColumns() },
-    { label: "Clear", run: () => sheet.clearContents() },
+    { label: t("sheetGrid.deleteRow"), run: () => sheet.deleteRows() },
+    { label: t("sheetGrid.deleteColumn"), run: () => sheet.deleteColumns() },
+    { label: t("sheetGrid.clear"), run: () => sheet.clearContents() },
   ]
 
   const stats = useMemo(() => {
@@ -557,7 +559,7 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
 
       <div className="bg-card text-muted-foreground flex shrink-0 items-center gap-2 border-t px-3 py-1 text-sm">
         <Button variant="ghost" size="sm" className="text-primary" onClick={() => sheet.addRows(addN)}>
-          Add
+          {t("sheetGrid.add")}
         </Button>
         <Input
           type="number"
@@ -566,18 +568,18 @@ const SheetGrid = ({ sheet }: { sheet: SheetController }) => {
           onChange={(event) => setAddN(Math.max(1, Number(event.target.value) || 1))}
           className="h-7 w-20"
         />
-        more rows at the bottom
+        {t("sheetGrid.moreRowsAtBottom")}
         {stats ? (
           <div className="ml-auto flex items-center gap-4 tabular-nums">
             {stats.numCount > 0 ? (
               <>
-                <span>Sum: {numFmt(stats.sum)}</span>
-                <span>Avg: {numFmt(stats.avg)}</span>
-                <span>Min: {numFmt(stats.min)}</span>
-                <span>Max: {numFmt(stats.max)}</span>
+                <span>{t("sheetGrid.sum", { value: numFmt(stats.sum) })}</span>
+                <span>{t("sheetGrid.avg", { value: numFmt(stats.avg) })}</span>
+                <span>{t("sheetGrid.min", { value: numFmt(stats.min) })}</span>
+                <span>{t("sheetGrid.max", { value: numFmt(stats.max) })}</span>
               </>
             ) : null}
-            <span>Count: {stats.count}</span>
+            <span>{t("sheetGrid.count", { value: stats.count })}</span>
           </div>
         ) : null}
       </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { IconTrash } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -19,19 +20,21 @@ import {
 } from "@workspace/ui/components/select"
 import { type CondRule, type CondType, a1Range } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
+import { t } from "@lib/i18n/config"
 
 const TYPES: Array<{ value: CondType; label: string }> = [
-  { value: "gt", label: "Greater than" },
-  { value: "lt", label: "Less than" },
-  { value: "eq", label: "Equal to" },
-  { value: "between", label: "Is between" },
-  { value: "contains", label: "Text contains" },
-  { value: "scale", label: "Color scale" },
+  { value: "gt", label: t("sheets:conditionalFormatDialog.greaterThan") },
+  { value: "lt", label: t("sheets:conditionalFormatDialog.lessThan") },
+  { value: "eq", label: t("sheets:conditionalFormatDialog.equalTo") },
+  { value: "between", label: t("sheets:conditionalFormatDialog.isBetween") },
+  { value: "contains", label: t("sheets:conditionalFormatDialog.textContains") },
+  { value: "scale", label: t("sheets:conditionalFormatDialog.colorScale") },
 ]
 
 const describe = (rule: CondRule): string => {
   const label = TYPES.find((t) => t.value === rule.type)?.label ?? rule.type
-  if (rule.type === "scale") return `Color scale · ${a1Range(rule.range)}`
+  if (rule.type === "scale")
+    return `${t("sheets:conditionalFormatDialog.colorScale")} · ${a1Range(rule.range)}`
   if (rule.type === "between") return `${label} ${rule.v1}–${rule.v2} · ${a1Range(rule.range)}`
   return `${label} ${rule.v1} · ${a1Range(rule.range)}`
 }
@@ -78,6 +81,7 @@ const ConditionalFormatDialog = ({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) => {
+  const { t } = useTranslation("sheets")
   const [type, setType] = useState<CondType>("gt")
   const [v1, setV1] = useState("")
   const [v2, setV2] = useState("")
@@ -101,7 +105,7 @@ const ConditionalFormatDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Conditional formatting</DialogTitle>
+          <DialogTitle>{t("conditionalFormatDialog.title")}</DialogTitle>
         </DialogHeader>
 
         {sheet.condFormats.length > 0 ? (
@@ -115,7 +119,7 @@ const ConditionalFormatDialog = ({
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label="Remove rule"
+                  aria-label={t("conditionalFormatDialog.removeRule")}
                   onClick={() => sheet.removeCondFormat(i)}
                 >
                   <IconTrash className="size-4" />
@@ -124,12 +128,13 @@ const ConditionalFormatDialog = ({
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground text-sm">No rules yet.</p>
+          <p className="text-muted-foreground text-sm">{t("conditionalFormatDialog.noRulesYet")}</p>
         )}
 
         <div className="border-border/60 flex flex-col gap-3 border-t pt-3">
           <p className="text-muted-foreground text-xs">
-            New rule applies to <span className="text-foreground font-medium">{a1Range(sheet.selBox)}</span>
+            {t("conditionalFormatDialog.newRuleAppliesTo")}{" "}
+            <span className="text-foreground font-medium">{a1Range(sheet.selBox)}</span>
           </p>
           <Select value={type} onValueChange={(value) => setType(value as CondType)}>
             <SelectTrigger size="sm">
@@ -146,33 +151,37 @@ const ConditionalFormatDialog = ({
 
           {type === "scale" ? (
             <div className="flex items-center gap-2">
-              <ColorField label="Low" value={minColor} onChange={setMinColor} />
-              <ColorField label="High" value={maxColor} onChange={setMaxColor} />
+              <ColorField label={t("conditionalFormatDialog.low")} value={minColor} onChange={setMinColor} />
+              <ColorField label={t("conditionalFormatDialog.high")} value={maxColor} onChange={setMaxColor} />
             </div>
           ) : (
             <div className="flex flex-wrap items-center gap-2">
               <Input
                 value={v1}
                 onChange={(event) => setV1(event.target.value)}
-                placeholder={type === "contains" ? "Text" : "Value"}
+                placeholder={
+                  type === "contains"
+                    ? t("conditionalFormatDialog.text")
+                    : t("conditionalFormatDialog.value")
+                }
                 className="h-8 w-28"
               />
               {type === "between" ? (
                 <Input
                   value={v2}
                   onChange={(event) => setV2(event.target.value)}
-                  placeholder="and"
+                  placeholder={t("conditionalFormatDialog.and")}
                   className="h-8 w-28"
                 />
               ) : null}
-              <ColorField label="Fill" value={bg} onChange={setBg} />
-              <ColorField label="Text" value={color} onChange={setColor} />
+              <ColorField label={t("conditionalFormatDialog.fill")} value={bg} onChange={setBg} />
+              <ColorField label={t("conditionalFormatDialog.text")} value={color} onChange={setColor} />
             </div>
           )}
 
           <div className="flex justify-end">
             <Button size="sm" onClick={add}>
-              Add rule
+              {t("conditionalFormatDialog.addRule")}
             </Button>
           </div>
         </div>
