@@ -6,6 +6,7 @@ import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { type AssetExif, fetchAsset } from "@lib/photos"
 import { useQuery } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 
 const PhotoLocationMap = dynamic(
   () => import("@pages/Photos/components/PhotoLocationMap/PhotoLocationMap"),
@@ -67,6 +68,7 @@ interface InfoPanelProps {
 }
 
 const InfoPanel = ({ assetId }: InfoPanelProps) => {
+  const { t } = useTranslation("photos")
   const { data } = useQuery({
     queryKey: ["photos", "asset", assetId],
     queryFn: () => fetchAsset(assetId),
@@ -76,8 +78,8 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
   if (!asset) {
     return (
       <div className="flex h-full w-full flex-col gap-5 p-5">
-        <h2 className="text-base font-semibold">Details</h2>
-        <p className="text-muted-foreground text-sm">Loading…</p>
+        <h2 className="text-base font-semibold">{t("infoPanel.details")}</h2>
+        <p className="text-muted-foreground text-sm">{t("infoPanel.loading")}</p>
       </div>
     )
   }
@@ -124,54 +126,54 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
 
   return (
     <div className="scrollbar-slim flex h-full w-full flex-col gap-5 overflow-y-auto p-5">
-      <h2 className="text-base font-semibold">Details</h2>
+      <h2 className="text-base font-semibold">{t("infoPanel.details")}</h2>
 
-      <Section icon="file-text" title="File">
+      <Section icon="file-text" title={t("infoPanel.file")}>
         <Row
-          label="Name"
+          label={t("infoPanel.name")}
           value={(asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename}
         />
-        <Row label="Type" value={asset.mimeType} />
-        <Row label="Size" value={formatBytes(asset.sizeBytes)} />
-        <Row label="Dimensions" value={dimensions} />
-        <Row label="Resolution" value={megapixels} />
+        <Row label={t("infoPanel.type")} value={asset.mimeType} />
+        <Row label={t("infoPanel.size")} value={formatBytes(asset.sizeBytes)} />
+        <Row label={t("infoPanel.dimensions")} value={dimensions} />
+        <Row label={t("infoPanel.resolution")} value={megapixels} />
       </Section>
 
-      <Section icon="calendar" title="Date">
-        <Row label="Taken" value={taken} />
-        <Row label="Added" value={added} />
+      <Section icon="calendar" title={t("infoPanel.date")}>
+        <Row label={t("infoPanel.taken")} value={taken} />
+        <Row label={t("infoPanel.added")} value={added} />
       </Section>
 
       {hasCamera ? (
-        <Section icon="camera" title="Camera">
-          <Row label="Camera" value={camera || undefined} />
-          <Row label="Lens" value={exif?.lens} />
-          <Row label="ISO" value={exif?.iso ? `ISO ${exif.iso}` : undefined} />
-          <Row label="Aperture" value={exif?.fNumber ? `ƒ/${exif.fNumber}` : undefined} />
-          <Row label="Shutter" value={formatShutter(exif?.exposureTime)} />
-          <Row label="Focal length" value={focal} />
-          <Row label="Exposure" value={exposureComp} />
-          <Row label="Metering" value={asText(exif?.meteringMode)} />
-          <Row label="White balance" value={asText(exif?.whiteBalance)} />
-          <Row label="Flash" value={asText(exif?.flash)} />
-          <Row label="Program" value={asText(exif?.exposureProgram)} />
-          <Row label="Software" value={exif?.software} />
+        <Section icon="camera" title={t("infoPanel.camera")}>
+          <Row label={t("infoPanel.camera")} value={camera || undefined} />
+          <Row label={t("infoPanel.lens")} value={exif?.lens} />
+          <Row label={t("infoPanel.iso")} value={exif?.iso ? `ISO ${exif.iso}` : undefined} />
+          <Row label={t("infoPanel.aperture")} value={exif?.fNumber ? `ƒ/${exif.fNumber}` : undefined} />
+          <Row label={t("infoPanel.shutter")} value={formatShutter(exif?.exposureTime)} />
+          <Row label={t("infoPanel.focalLength")} value={focal} />
+          <Row label={t("infoPanel.exposure")} value={exposureComp} />
+          <Row label={t("infoPanel.metering")} value={asText(exif?.meteringMode)} />
+          <Row label={t("infoPanel.whiteBalance")} value={asText(exif?.whiteBalance)} />
+          <Row label={t("infoPanel.flash")} value={asText(exif?.flash)} />
+          <Row label={t("infoPanel.program")} value={asText(exif?.exposureProgram)} />
+          <Row label={t("infoPanel.software")} value={exif?.software} />
         </Section>
       ) : null}
 
       {hasLocation ? (
-        <Section icon="map-pin" title="Location">
+        <Section icon="map-pin" title={t("infoPanel.location")}>
           <div className="pt-1.5">
             <PhotoLocationMap lat={latitude} lng={longitude} />
           </div>
-          <Row label="Coordinates" value={`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`} />
+          <Row label={t("infoPanel.coordinates")} value={`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`} />
           <a
             href={`https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=15/${latitude}/${longitude}`}
             target="_blank"
             rel="noreferrer"
             className="text-primary py-1.5 text-sm underline-offset-2 hover:underline"
           >
-            View on map
+            {t("infoPanel.viewOnMap")}
           </a>
         </Section>
       ) : null}

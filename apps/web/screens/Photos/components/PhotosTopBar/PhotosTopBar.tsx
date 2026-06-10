@@ -4,14 +4,15 @@ import { usePathname } from "next/navigation"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { FlatTopBar, type TopBarTitle } from "@components/FlatShell"
 import SizeControl from "@pages/Photos/components/SizeControl/SizeControl"
+import { t } from "@lib/i18n/config"
 
 const TITLES: TopBarTitle[] = [
-  { match: (p) => p === "/photos", label: "All photos", icon: "images-3" },
-  { match: (p) => p.startsWith("/photos/albums"), label: "Albums", icon: "album-3" },
-  { match: (p) => p.startsWith("/photos/map"), label: "Map", icon: "map-pin" },
-  { match: (p) => p.startsWith("/photos/favourites"), label: "Favourites", icon: "favourites" },
-  { match: (p) => p.startsWith("/photos/trash"), label: "Trash", icon: "trash" },
-  { match: (p) => p.startsWith("/photos/tags"), label: "Tag", icon: "tag" },
+  { match: (p) => p === "/photos", label: t("photos:photosTopBar.allPhotos"), icon: "images-3" },
+  { match: (p) => p.startsWith("/photos/albums"), label: t("photos:photosTopBar.albums"), icon: "album-3" },
+  { match: (p) => p.startsWith("/photos/map"), label: t("photos:photosTopBar.map"), icon: "map-pin" },
+  { match: (p) => p.startsWith("/photos/favourites"), label: t("photos:photosTopBar.favourites"), icon: "favourites" },
+  { match: (p) => p.startsWith("/photos/trash"), label: t("photos:photosTopBar.trash"), icon: "trash" },
+  { match: (p) => p.startsWith("/photos/tags"), label: t("photos:photosTopBar.tag"), icon: "tag" },
 ]
 
 /** The size control only makes sense on photo-grid routes — not the albums list or the map. */

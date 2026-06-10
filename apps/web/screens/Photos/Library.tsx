@@ -32,8 +32,10 @@ import { IconPhoto, IconStack2, IconStackPop } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { Kbd } from "@workspace/ui/components/kbd"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const LibraryInner = () => {
+  const { t } = useTranslation("photos")
   const selection = useSelection()
   const upload = useUploadManager()
   const search = useAppSelector((state) => state.ui.searchQuery).trim().toLowerCase()
@@ -86,7 +88,7 @@ const LibraryInner = () => {
       toast.success(message)
       afterAction()
     } catch {
-      toast.error("Action failed")
+      toast.error(t("library.actionFailed"))
     }
   }
 
@@ -95,7 +97,7 @@ const LibraryInner = () => {
     if (target.length === 0) return
     selection.clear()
     upload.task(
-      `Deleting ${target.length} photo${target.length === 1 ? "" : "s"}`,
+      t("library.deleting", { count: target.length }),
       target.length,
       async (onProgress) => {
         const CHUNK = 25
@@ -113,16 +115,16 @@ const LibraryInner = () => {
   const [shareOpen, setShareOpen] = useState(false)
 
   const stackedOne = one?.stackId && one.stackCount > 1 ? one : undefined
-  const stack = () => run(() => stackAssets(ids), "Stacked")
+  const stack = () => run(() => stackAssets(ids), t("library.stacked"))
   const unstack = () =>
     stackedOne?.stackId
-      ? run(() => unstackAssets(stackedOne.stackId as string), "Unstacked")
+      ? run(() => unstackAssets(stackedOne.stackId as string), t("library.unstacked"))
       : undefined
 
-  const favourite = () => run(() => favoriteAssets(ids, true), "Added to favourites")
+  const favourite = () => run(() => favoriteAssets(ids, true), t("library.addedToFavourites"))
   const download = () => {
     if (downloadItems.length === 0) return
-    upload.download(downloadItems.length === 1 ? "Photo" : `${downloadItems.length} photos.zip`, downloadItems)
+    upload.download(downloadItems.length === 1 ? t("library.photo") : t("library.photosZip", { count: downloadItems.length }), downloadItems)
   }
 
   useSelectionHotkeys({
@@ -148,7 +150,7 @@ const LibraryInner = () => {
         <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 text-center">
           <IconPhoto className="size-8" />
           <p className="text-sm">
-            {search ? "No photos match your search." : "Drag photos anywhere to upload them."}
+            {search ? t("library.noMatches") : t("library.dragToUpload")}
           </p>
         </div>
       ) : (
@@ -175,19 +177,19 @@ const LibraryInner = () => {
       >
         <Button variant="ghost" size="sm" onClick={favourite}>
           <Icon name="favourites" className="size-4" />
-          Favourite
+          {t("library.favourite")}
           <Kbd>⇧F</Kbd>
         </Button>
         {ids.length >= 2 ? (
           <Button variant="ghost" size="sm" onClick={stack}>
             <IconStack2 className="size-4" />
-            Stack
+            {t("library.stack")}
           </Button>
         ) : null}
         {stackedOne ? (
           <Button variant="ghost" size="sm" onClick={unstack}>
             <IconStackPop className="size-4" />
-            Unstack
+            {t("library.unstack")}
           </Button>
         ) : null}
         <AddToAlbumDialog
@@ -202,7 +204,7 @@ const LibraryInner = () => {
           armed={trashConfirm.armed}
           onTrigger={trashConfirm.trigger}
         >
-          Trash
+          {t("library.trash")}
           <Kbd>⇧D</Kbd>
         </ConfirmButton>
       </SelectionBar>

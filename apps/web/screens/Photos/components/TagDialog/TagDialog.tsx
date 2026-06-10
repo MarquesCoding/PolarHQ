@@ -15,6 +15,7 @@ import {
 import { Input } from "@workspace/ui/components/input"
 import { Kbd } from "@workspace/ui/components/kbd"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 interface TagDialogProps {
   assetIds: string[]
@@ -24,6 +25,7 @@ interface TagDialogProps {
 }
 
 const TagDialog = ({ assetIds, onDone, open: openProp, onOpenChange }: TagDialogProps) => {
+  const { t } = useTranslation("photos")
   const queryClient = useQueryClient()
   const [internalOpen, setInternalOpen] = useState(false)
   const open = openProp ?? internalOpen
@@ -40,10 +42,10 @@ const TagDialog = ({ assetIds, onDone, open: openProp, onOpenChange }: TagDialog
   const apply = useMutation({
     mutationFn: (tagId: string) => tagAssets(tagId, assetIds),
     onSuccess: () => {
-      toast.success("Tagged")
+      toast.success(t("tagDialog.tagged"))
       finish()
     },
-    onError: () => toast.error("Could not tag"),
+    onError: () => toast.error(t("tagDialog.couldNotTag")),
   })
 
   const create = useMutation({
@@ -52,37 +54,37 @@ const TagDialog = ({ assetIds, onDone, open: openProp, onOpenChange }: TagDialog
       await tagAssets(tag.id, assetIds)
     },
     onSuccess: () => {
-      toast.success("Tag created")
+      toast.success(t("tagDialog.tagCreated"))
       setName("")
       finish()
     },
-    onError: () => toast.error("Could not create tag"),
+    onError: () => toast.error(t("tagDialog.couldNotCreateTag")),
   })
 
   return (
     <>
       <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
         <Icon name="tag" className="size-4" />
-        Tag
+        {t("tagDialog.tag")}
         <Kbd>⇧T</Kbd>
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add a tag</DialogTitle>
+            <DialogTitle>{t("tagDialog.addATag")}</DialogTitle>
           </DialogHeader>
           <div className="flex items-center gap-2">
             <Input
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="New tag name"
+              placeholder={t("tagDialog.newTagName")}
               onKeyDown={(event) => {
                 if (event.key === "Enter" && name.trim()) create.mutate()
               }}
             />
             <Button onClick={() => create.mutate()} disabled={!name.trim() || create.isPending}>
               <IconPlus className="size-4" />
-              Create
+              {t("tagDialog.create")}
             </Button>
           </div>
           <div className="flex max-h-72 flex-wrap gap-2 overflow-y-auto">
@@ -93,7 +95,7 @@ const TagDialog = ({ assetIds, onDone, open: openProp, onOpenChange }: TagDialog
               </Button>
             ))}
             {tags && tags.length === 0 ? (
-              <p className="text-muted-foreground p-2 text-sm">No tags yet. Create one above.</p>
+              <p className="text-muted-foreground p-2 text-sm">{t("tagDialog.noTagsYet")}</p>
             ) : null}
           </div>
         </DialogContent>

@@ -18,6 +18,7 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
 import { motion } from "motion/react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 /** Album cover thumbnail — decrypts the cover client-side for E2E albums (it's ciphertext at rest). */
@@ -66,6 +67,7 @@ const AlbumCover = ({ album }: { album: Album }) => {
 }
 
 const Albums = () => {
+  const { t } = useTranslation("photos")
   const queryClient = useQueryClient()
   const { data: albums, isLoading } = useQuery({ queryKey: ["photos", "albums"], queryFn: fetchAlbums })
   const [open, setOpen] = useState(false)
@@ -74,12 +76,12 @@ const Albums = () => {
   const create = useMutation({
     mutationFn: () => createAlbum(name.trim()),
     onSuccess: () => {
-      toast.success("Album created")
+      toast.success(t("albums.created"))
       setName("")
       setOpen(false)
       void queryClient.invalidateQueries({ queryKey: ["photos", "albums"] })
     },
-    onError: () => toast.error("Could not create album"),
+    onError: () => toast.error(t("albums.createFailed")),
   })
 
   return (
@@ -87,12 +89,12 @@ const Albums = () => {
       <TopBarActions>
         <Button size="sm" onClick={() => setOpen(true)}>
           <IconPlus className="size-4" />
-          New album
+          {t("albums.newAlbum")}
         </Button>
       </TopBarActions>
 
       {isLoading ? (
-        <p className="text-muted-foreground text-sm">Loading albums…</p>
+        <p className="text-muted-foreground text-sm">{t("albums.loading")}</p>
       ) : albums && albums.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {albums.map((album) => (
@@ -108,7 +110,7 @@ const Albums = () => {
               <div>
                 <p className="truncate text-sm font-medium">{album.name}</p>
                 <p className="text-muted-foreground text-xs">
-                  {album.assetCount} item{album.assetCount === 1 ? "" : "s"}
+                  {t("albums.itemCount", { count: album.assetCount })}
                 </p>
               </div>
             </Link>
@@ -117,12 +119,12 @@ const Albums = () => {
       ) : (
         <EmptyState
           icon="albums"
-          title="No albums yet"
-          hint="Group your photos into albums for trips, people and events."
+          title={t("albums.emptyTitle")}
+          hint={t("albums.emptyHint")}
         >
           <Button size="sm" onClick={() => setOpen(true)}>
             <IconPlus className="size-4" />
-            New album
+            {t("albums.newAlbum")}
           </Button>
         </EmptyState>
       )}
@@ -130,19 +132,19 @@ const Albums = () => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New album</DialogTitle>
+            <DialogTitle>{t("albums.newAlbum")}</DialogTitle>
           </DialogHeader>
           <div className="flex items-center gap-2">
             <Input
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="Album name"
+              placeholder={t("albums.namePlaceholder")}
               onKeyDown={(event) => {
                 if (event.key === "Enter" && name.trim()) create.mutate()
               }}
             />
             <Button onClick={() => create.mutate()} disabled={!name.trim() || create.isPending}>
-              Create
+              {t("albums.create")}
             </Button>
           </div>
         </DialogContent>

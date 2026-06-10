@@ -3,6 +3,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useTranslation } from "react-i18next"
+import { t } from "@lib/i18n/config"
 import { Icon } from "@lib/icons"
 import { fetchAlbums, fetchTags } from "@lib/photos"
 import { IconChevronRight } from "@tabler/icons-react"
@@ -12,11 +14,11 @@ import { cn } from "@workspace/ui/lib/utils"
 import { ActiveBg, NavRow, SectionLabel, navRowClass } from "@components/FlatShell"
 
 const NAV = [
-  { href: "/photos", label: "All photos", icon: "images-3" },
-  { href: "/photos/albums", label: "Albums", icon: "album-3" },
-  { href: "/photos/map", label: "Map", icon: "map-pin" },
-  { href: "/photos/favourites", label: "Favourites", icon: "favourites" },
-  { href: "/photos/trash", label: "Trash", icon: "trash" },
+  { href: "/photos", label: t("photos:photosNav.allPhotos"), icon: "images-3" },
+  { href: "/photos/albums", label: t("photos:photosNav.albums"), icon: "album-3" },
+  { href: "/photos/map", label: t("photos:photosNav.map"), icon: "map-pin" },
+  { href: "/photos/favourites", label: t("photos:photosNav.favourites"), icon: "favourites" },
+  { href: "/photos/trash", label: t("photos:photosNav.trash"), icon: "trash" },
 ]
 
 const isActive = (pathname: string, href: string): boolean =>
@@ -24,6 +26,7 @@ const isActive = (pathname: string, href: string): boolean =>
 
 /** Photos-specific nav rows (library + expandable albums + tags) for the shared FlatSidebar. */
 const PhotosNav = () => {
+  const { t } = useTranslation("photos")
   const pathname = usePathname()
   const { data: albums } = useQuery({ queryKey: ["photos", "albums"], queryFn: fetchAlbums })
   const { data: tags } = useQuery({ queryKey: ["photos", "tags"], queryFn: fetchTags })
@@ -31,7 +34,7 @@ const PhotosNav = () => {
 
   return (
     <>
-      <SectionLabel>Library</SectionLabel>
+      <SectionLabel>{t("photosNav.library")}</SectionLabel>
       {NAV.map((item) => {
         const active = isActive(pathname, item.href)
         if (item.icon === "album-3" && albums && albums.length > 0) {
@@ -46,7 +49,7 @@ const PhotosNav = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  aria-label={albumsOpen ? "Collapse" : "Expand"}
+                  aria-label={albumsOpen ? t("photosNav.collapse") : t("photosNav.expand")}
                   className="relative -mr-1 size-5"
                   onClick={() => setAlbumsOpen((value) => !value)}
                 >
@@ -86,7 +89,7 @@ const PhotosNav = () => {
 
       {tags && tags.length > 0 ? (
         <>
-          <SectionLabel>Tags</SectionLabel>
+          <SectionLabel>{t("photosNav.tags")}</SectionLabel>
           {tags.map((tag) => (
             <NavRow
               key={tag.id}

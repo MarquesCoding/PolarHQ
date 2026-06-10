@@ -17,6 +17,7 @@ import { Input } from "@workspace/ui/components/input"
 import { Slider } from "@workspace/ui/components/slider"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 interface Adjustments {
@@ -55,16 +56,16 @@ interface TextOverlay {
 
 const TEXT_COLORS = ["#ffffff", "#000000", "#f43f5e", "#f59e0b", "#22c55e", "#3b82f6", "#a855f7"]
 
-const ADJUSTERS: { key: keyof Adjustments; label: string }[] = [
-  { key: "exposure", label: "Exposure" },
-  { key: "contrast", label: "Contrast" },
-  { key: "saturation", label: "Saturation" },
-  { key: "warmth", label: "Warmth" },
-  { key: "vignette", label: "Vignette" },
+const ADJUSTERS: { key: keyof Adjustments; labelKey: string }[] = [
+  { key: "exposure", labelKey: "photoEditor.exposure" },
+  { key: "contrast", labelKey: "photoEditor.contrast" },
+  { key: "saturation", labelKey: "photoEditor.saturation" },
+  { key: "warmth", labelKey: "photoEditor.warmth" },
+  { key: "vignette", labelKey: "photoEditor.vignette" },
 ]
 
-const ASPECTS: { label: string; value: number | null }[] = [
-  { label: "Free", value: null },
+const ASPECTS: { label: string; labelKey?: string; value: number | null }[] = [
+  { label: "Free", labelKey: "photoEditor.free", value: null },
   { label: "1:1", value: 1 },
   { label: "4:3", value: 4 / 3 },
   { label: "3:2", value: 3 / 2 },
@@ -93,6 +94,7 @@ interface PhotoEditorProps {
  * it as a new asset and stacks it over the original so the pair reads as a before/after.
  */
 const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) => {
+  const { t } = useTranslation("photos")
   const queryClient = useQueryClient()
   const [bitmap, setBitmap] = useState<ImageBitmap | null>(null)
   const [tool, setTool] = useState<Tool>("adjust")
@@ -117,7 +119,7 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
         if (active) setBitmap(result)
         else result.close()
       })
-      .catch(() => toast.error("Couldn't open the image for editing"))
+      .catch(() => toast.error(t("photoEditor.openFailed")))
     return () => {
       active = false
     }
@@ -251,7 +253,7 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
     const id = `t-${texts.length}-${rotation}-${texts.reduce((sum, item) => sum + item.text.length, 1)}`
     setTexts((current) => [
       ...current,
-      { id, text: "Text", x: 0.5, y: 0.5, size: 8, color: "#ffffff" },
+      { id, text: t("photoEditor.defaultText"), x: 0.5, y: 0.5, size: 8, color: "#ffffff" },
     ])
     setActiveText(id)
     setTool("text")
@@ -274,11 +276,11 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
         : (await uploadAsset(file)).asset
       await stackAssets([edited.id, asset.id]).catch(() => undefined)
       await queryClient.invalidateQueries({ queryKey: ["photos"] })
-      toast.success("Saved as a new edit")
+      toast.success(t("photoEditor.saved"))
       onSaved()
       onClose()
     } catch {
-      toast.error("Couldn't save the edit")
+      toast.error(t("photoEditor.saveFailed"))
       setSaving(false)
     }
   }
@@ -370,16 +372,16 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
       exit={{ opacity: 0 }}
     >
       <div className="flex items-center justify-between border-b px-4 py-3">
-        <Button variant="ghost" size="icon-sm" aria-label="Close editor" onClick={onClose}>
+        <Button variant="ghost" size="icon-sm" aria-label={t("photoEditor.closeEditor")} onClick={onClose}>
           <IconX className="size-5" />
         </Button>
-        <span className="text-sm font-medium">Edit photo</span>
+        <span className="text-sm font-medium">{t("photoEditor.title")}</span>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={reset} disabled={!dirty || saving}>
-            Reset
+            {t("photoEditor.reset")}
           </Button>
           <Button size="sm" onClick={save} disabled={!dirty || saving}>
-            {saving ? "Saving…" : "Save copy"}
+            {saving ? t("photoEditor.saving") : t("photoEditor.saveCopy")}
           </Button>
         </div>
       </div>
@@ -456,9 +458,9 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
           <div className="bg-muted/40 flex items-center gap-1 rounded-lg p-1">
             {(
               [
-                { key: "adjust", label: "Adjust", icon: <IconSparkles className="size-4" /> },
-                { key: "crop", label: "Crop", icon: <IconCrop className="size-4" /> },
-                { key: "text", label: "Text", icon: <IconLetterT className="size-4" /> },
+                { key: "adjust", label: t("photoEditor.adjust"), icon: <IconSparkles className="size-4" /> },
+                { key: "crop", label: t("photoEditor.crop"), icon: <IconCrop className="size-4" /> },
+                { key: "text", label: t("photoEditor.text"), icon: <IconLetterT className="size-4" /> },
               ] as const
             ).map((item) => (
               <Button
@@ -480,10 +482,10 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
 
           {tool === "adjust" ? (
             <div className="flex flex-col gap-3">
-              {ADJUSTERS.map(({ key, label }) => (
+              {ADJUSTERS.map(({ key, labelKey }) => (
                 <div key={key} className="flex flex-col gap-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">{label}</span>
+                    <span className="text-muted-foreground">{t(labelKey)}</span>
                     <span className="tabular-nums">{adjustments[key]}</span>
                   </div>
                   <Slider
@@ -506,7 +508,7 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
             <div className="flex flex-col gap-3">
               <Button variant="outline" size="sm" onClick={() => setRotation((r) => (r + 90) % 360)}>
                 <IconRotateClockwise className="size-4" />
-                Rotate 90°
+                {t("photoEditor.rotate90")}
               </Button>
               <div className="grid grid-cols-3 gap-1.5">
                 {ASPECTS.map((item) => (
@@ -516,7 +518,7 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
                     size="sm"
                     onClick={() => applyAspect(item.value)}
                   >
-                    {item.label}
+                    {item.labelKey ? t(item.labelKey) : item.label}
                   </Button>
                 ))}
                 <Button
@@ -527,7 +529,7 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
                     setCrop(FULL_CROP)
                   }}
                 >
-                  Reset
+                  {t("photoEditor.reset")}
                 </Button>
               </div>
             </div>
@@ -537,13 +539,13 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
             <div className="flex flex-col gap-3">
               <Button variant="outline" size="sm" onClick={addText}>
                 <IconLetterT className="size-4" />
-                Add text
+                {t("photoEditor.addText")}
               </Button>
               {active ? (
                 <>
                   <Input
                     value={active.text}
-                    placeholder="Your text"
+                    placeholder={t("photoEditor.textPlaceholder")}
                     onChange={(event) =>
                       setTexts((current) =>
                         current.map((item) =>
@@ -553,7 +555,7 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
                     }
                   />
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-muted-foreground text-xs">Size</span>
+                    <span className="text-muted-foreground text-xs">{t("photoEditor.size")}</span>
                     <Slider
                       min={3}
                       max={20}
@@ -575,7 +577,7 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
                         key={color}
                         variant="ghost"
                         size="icon-sm"
-                        aria-label={`Colour ${color}`}
+                        aria-label={t("photoEditor.colour", { color })}
                         onClick={() =>
                           setTexts((current) =>
                             current.map((item) =>
@@ -602,11 +604,11 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
                     }}
                   >
                     <Icon name="trash" className="size-4" />
-                    Remove text
+                    {t("photoEditor.removeText")}
                   </Button>
                 </>
               ) : (
-                <p className="text-muted-foreground text-xs">Add text, then drag it on the image.</p>
+                <p className="text-muted-foreground text-xs">{t("photoEditor.textHint")}</p>
               )}
             </div>
           ) : null}
