@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { IconTrash } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog"
@@ -15,11 +16,6 @@ import {
 import { type DataRule, a1Range } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
 
-const describe = (rule: DataRule): string =>
-  rule.kind === "list"
-    ? `List: ${rule.spec} · ${a1Range(rule.range)}`
-    : `Number ${rule.spec} · ${a1Range(rule.range)}`
-
 const DataValidationDialog = ({
   sheet,
   open,
@@ -29,8 +25,14 @@ const DataValidationDialog = ({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) => {
+  const { t } = useTranslation("sheets")
   const [kind, setKind] = useState<DataRule["kind"]>("list")
   const [spec, setSpec] = useState("")
+
+  const describe = (rule: DataRule): string =>
+    rule.kind === "list"
+      ? t("dataValidationDialog.describeList", { spec: rule.spec, range: a1Range(rule.range) })
+      : t("dataValidationDialog.describeNumber", { spec: rule.spec, range: a1Range(rule.range) })
 
   const add = () => {
     if (!spec.trim()) return
@@ -42,7 +44,7 @@ const DataValidationDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Data validation</DialogTitle>
+          <DialogTitle>{t("dataValidationDialog.title")}</DialogTitle>
         </DialogHeader>
 
         {sheet.dataRules.length > 0 ? (
@@ -56,7 +58,7 @@ const DataValidationDialog = ({
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label="Remove rule"
+                  aria-label={t("dataValidationDialog.removeRule")}
                   onClick={() => sheet.removeDataRule(i)}
                 >
                   <IconTrash className="size-4" />
@@ -65,12 +67,12 @@ const DataValidationDialog = ({
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground text-sm">No rules yet.</p>
+          <p className="text-muted-foreground text-sm">{t("dataValidationDialog.noRulesYet")}</p>
         )}
 
         <div className="border-border/60 flex flex-col gap-3 border-t pt-3">
           <p className="text-muted-foreground text-xs">
-            New rule applies to{" "}
+            {t("dataValidationDialog.newRuleAppliesTo")}{" "}
             <span className="text-foreground font-medium">{a1Range(sheet.selBox)}</span>
           </p>
           <div className="flex items-center gap-2">
@@ -79,25 +81,29 @@ const DataValidationDialog = ({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="list">List of items</SelectItem>
-                <SelectItem value="number">Number range</SelectItem>
+                <SelectItem value="list">{t("dataValidationDialog.listOfItems")}</SelectItem>
+                <SelectItem value="number">{t("dataValidationDialog.numberRange")}</SelectItem>
               </SelectContent>
             </Select>
             <Input
               value={spec}
               onChange={(event) => setSpec(event.target.value)}
-              placeholder={kind === "list" ? "Red, Green, Blue" : "0, 100"}
+              placeholder={
+                kind === "list"
+                  ? t("dataValidationDialog.listPlaceholder")
+                  : t("dataValidationDialog.numberPlaceholder")
+              }
               className="h-8 flex-1"
             />
           </div>
           <p className="text-muted-foreground text-xs">
             {kind === "list"
-              ? "Comma-separated allowed values."
-              : "Minimum and maximum, comma-separated (either may be blank)."}
+              ? t("dataValidationDialog.listHint")
+              : t("dataValidationDialog.numberHint")}
           </p>
           <div className="flex justify-end">
             <Button size="sm" onClick={add}>
-              Add rule
+              {t("dataValidationDialog.addRule")}
             </Button>
           </div>
         </div>

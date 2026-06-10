@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 const Menu = ({ label, children }: { label: string; children: ReactNode }) => (
   <DropdownMenu>
@@ -44,23 +45,24 @@ interface DocMenuBarProps {
 
 const DocMenuBar = ({ editor, title, commentsOpen, onToggleComments, onAddComment }: DocMenuBarProps) => {
   const router = useRouter()
+  const { t } = useTranslation("docs")
   const exportDocx = async () => {
     try {
       const { exportDocument } = await import("@lib/officeExport")
       await exportDocument(editor.getHTML(), title || "Document")
     } catch {
-      toast.error("Could not export")
+      toast.error(t("docMenuBar.couldNotExport"))
     }
   }
   const run = (fn: (chain: ReturnType<Editor["chain"]>) => ReturnType<Editor["chain"]>) =>
     fn(editor.chain().focus()).run()
 
   const insertImage = () => {
-    const url = window.prompt("Image URL")
+    const url = window.prompt(t("docMenuBar.imageUrl"))
     if (url) editor.chain().focus().setImage({ src: url }).run()
   }
   const insertLink = () => {
-    const input = window.prompt("Link URL")
+    const input = window.prompt(t("docMenuBar.linkUrl"))
     if (!input) return
     const href = sanitizeLinkHref(input)
     if (href) editor.chain().focus().setLink({ href }).run()
@@ -68,127 +70,127 @@ const DocMenuBar = ({ editor, title, commentsOpen, onToggleComments, onAddCommen
   const wordCount = () => {
     const text = editor.getText().trim()
     const words = text ? text.split(/\s+/).length : 0
-    toast.info(`${words} words · ${text.length} characters`)
+    toast.info(t("docMenuBar.wordCharCount", { words, characters: text.length }))
   }
 
   return (
     <div className="bg-card flex items-center gap-0.5 border-b px-1.5 py-0.5 text-sm">
-      <Menu label="File">
+      <Menu label={t("docMenuBar.file")}>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Download</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t("docMenuBar.download")}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuItem onClick={() => void exportDocx()}>
-              Microsoft Word (.docx)
+              {t("docMenuBar.microsoftWordDocx")}
             </DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuItem onClick={() => window.print()}>
-          Print
+          {t("docMenuBar.print")}
           <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/docs")}>Back to Docs</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/docs")}>{t("docMenuBar.backToDocs")}</DropdownMenuItem>
       </Menu>
 
-      <Menu label="Edit">
+      <Menu label={t("docMenuBar.edit")}>
         <DropdownMenuItem onClick={() => run((c) => c.undo())}>
-          Undo
+          {t("docMenuBar.undo")}
           <DropdownMenuShortcut>⌘Z</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => run((c) => c.redo())}>
-          Redo
+          {t("docMenuBar.redo")}
           <DropdownMenuShortcut>⌘Y</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => editor.chain().focus().selectAll().run()}>
-          Select all
+          {t("docMenuBar.selectAll")}
           <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => run((c) => c.unsetAllMarks().clearNodes())}>
-          Clear formatting
+          {t("docMenuBar.clearFormatting")}
         </DropdownMenuItem>
       </Menu>
 
-      <Menu label="View">
+      <Menu label={t("docMenuBar.view")}>
         <DropdownMenuCheckboxItem checked={commentsOpen} onCheckedChange={onToggleComments}>
-          Show comments
+          {t("docMenuBar.showComments")}
         </DropdownMenuCheckboxItem>
       </Menu>
 
-      <Menu label="Insert">
-        <DropdownMenuItem onClick={insertImage}>Image</DropdownMenuItem>
+      <Menu label={t("docMenuBar.insert")}>
+        <DropdownMenuItem onClick={insertImage}>{t("docMenuBar.image")}</DropdownMenuItem>
         <DropdownMenuItem
           onClick={() =>
             editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
           }
         >
-          Table
+          {t("docMenuBar.table")}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={insertLink}>Link</DropdownMenuItem>
+        <DropdownMenuItem onClick={insertLink}>{t("docMenuBar.link")}</DropdownMenuItem>
         <DropdownMenuItem onClick={() => run((c) => c.setHorizontalRule())}>
-          Horizontal line
+          {t("docMenuBar.horizontalLine")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onAddComment}>Comment</DropdownMenuItem>
+        <DropdownMenuItem onClick={onAddComment}>{t("docMenuBar.comment")}</DropdownMenuItem>
       </Menu>
 
-      <Menu label="Format">
+      <Menu label={t("docMenuBar.format")}>
         <DropdownMenuItem onClick={() => run((c) => c.toggleBold())}>
-          Bold
+          {t("docMenuBar.bold")}
           <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => run((c) => c.toggleItalic())}>
-          Italic
+          {t("docMenuBar.italic")}
           <DropdownMenuShortcut>⌘I</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => run((c) => c.toggleUnderline())}>
-          Underline
+          {t("docMenuBar.underline")}
           <DropdownMenuShortcut>⌘U</DropdownMenuShortcut>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => run((c) => c.toggleStrike())}>Strikethrough</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => run((c) => c.toggleStrike())}>{t("docMenuBar.strikethrough")}</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Paragraph styles</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t("docMenuBar.paragraphStyles")}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuItem onClick={() => run((c) => c.setParagraph())}>Normal text</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => run((c) => c.setHeading({ level: 1 }))}>Heading 1</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => run((c) => c.setHeading({ level: 2 }))}>Heading 2</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => run((c) => c.setHeading({ level: 3 }))}>Heading 3</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => run((c) => c.setParagraph())}>{t("docMenuBar.normalText")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => run((c) => c.setHeading({ level: 1 }))}>{t("docMenuBar.heading1")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => run((c) => c.setHeading({ level: 2 }))}>{t("docMenuBar.heading2")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => run((c) => c.setHeading({ level: 3 }))}>{t("docMenuBar.heading3")}</DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Align</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t("docMenuBar.align")}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuItem onClick={() => run((c) => c.setTextAlign("left"))}>Left</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => run((c) => c.setTextAlign("center"))}>Center</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => run((c) => c.setTextAlign("right"))}>Right</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => run((c) => c.setTextAlign("left"))}>{t("docMenuBar.left")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => run((c) => c.setTextAlign("center"))}>{t("docMenuBar.center")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => run((c) => c.setTextAlign("right"))}>{t("docMenuBar.right")}</DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Lists</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t("docMenuBar.lists")}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuItem onClick={() => run((c) => c.toggleBulletList())}>Bulleted</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => run((c) => c.toggleOrderedList())}>Numbered</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => run((c) => c.toggleTaskList())}>Checklist</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => run((c) => c.toggleBulletList())}>{t("docMenuBar.bulleted")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => run((c) => c.toggleOrderedList())}>{t("docMenuBar.numbered")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => run((c) => c.toggleTaskList())}>{t("docMenuBar.checklist")}</DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => run((c) => c.unsetAllMarks().clearNodes())}>
-          Clear formatting
+          {t("docMenuBar.clearFormatting")}
         </DropdownMenuItem>
       </Menu>
 
-      <Menu label="Tools">
-        <DropdownMenuItem onClick={wordCount}>Word count</DropdownMenuItem>
+      <Menu label={t("docMenuBar.tools")}>
+        <DropdownMenuItem onClick={wordCount}>{t("docMenuBar.wordCount")}</DropdownMenuItem>
       </Menu>
 
-      <Menu label="Help">
+      <Menu label={t("docMenuBar.help")}>
         <DropdownMenuItem
           onClick={() =>
-            toast.info("Shortcuts: ⌘Z undo · ⌘B/I/U format · ⌘K not bound · ⌘A select all")
+            toast.info(t("docMenuBar.shortcutsHint"))
           }
         >
-          Keyboard shortcuts
+          {t("docMenuBar.keyboardShortcuts")}
         </DropdownMenuItem>
       </Menu>
     </div>

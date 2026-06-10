@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import { authClient } from "@lib/authClient"
 import { type DocMeta } from "@lib/docs"
@@ -60,6 +61,7 @@ const SheetTopBar = ({
   contentKey,
   sheet,
 }: SheetTopBarProps) => {
+  const { t } = useTranslation("sheets")
   const queryClient = useQueryClient()
   const { data: session } = authClient.useSession()
   const [title, setTitle] = useState(doc.name)
@@ -67,12 +69,12 @@ const SheetTopBar = ({
   const [shareOpen, setShareOpen] = useState(false)
 
   useEffect(() => {
-    document.title = title ? `${title} — PolarHQ Sheets` : "PolarHQ Sheets"
+    document.title = title ? t("sheetTopBar.documentTitle", { title }) : t("sheetTopBar.documentTitleEmpty")
   }, [title])
 
   useEffect(() => {
     const me: Peer = {
-      name: session?.user?.name || "Anonymous",
+      name: session?.user?.name || t("sheetTopBar.anonymous"),
       color: colorFor(session?.user?.id || session?.user?.email || "anon"),
     }
     provider.awareness.setLocalStateField("user", me)
@@ -103,17 +105,19 @@ const SheetTopBar = ({
 
   const status =
     saveState === "saving"
-      ? "Saving…"
+      ? t("sheetTopBar.saving")
       : lastSavedAt
-        ? `Saved ${new Date(lastSavedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
-        : "All changes saved"
+        ? t("sheetTopBar.savedAt", {
+            time: new Date(lastSavedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          })
+        : t("sheetTopBar.allChangesSaved")
 
   return (
     <header className="bg-card flex flex-col gap-0.5 border-b px-3 pt-2">
       <div className="flex items-center gap-2">
         <Link
           href="/sheets"
-          aria-label="Back to Sheets"
+          aria-label={t("sheetTopBar.backToSheets")}
           className="flex size-9 shrink-0 items-center justify-center rounded-md bg-emerald-600/15 text-emerald-600 dark:text-emerald-400"
         >
           <Icon name="table" className="size-5" />
@@ -124,7 +128,7 @@ const SheetTopBar = ({
             onChange={(event) => setTitle(event.target.value)}
             onBlur={commitTitle}
             onKeyDown={(event) => event.key === "Enter" && event.currentTarget.blur()}
-            aria-label="Title"
+            aria-label={t("sheetTopBar.title")}
             className="h-auto w-full border-none bg-transparent px-0 py-0 text-base font-medium shadow-none focus-visible:ring-0"
           />
         </div>
@@ -148,11 +152,11 @@ const SheetTopBar = ({
         {doc.owner ? (
           <Button size="sm" onClick={() => setShareOpen(true)}>
             <IconUserPlus className="size-4" />
-            Share
+            {t("sheetTopBar.share")}
           </Button>
         ) : null}
         <Button variant="outline" size="sm" disabled={saveState === "saving"} onClick={onSave}>
-          Save
+          {t("sheetTopBar.save")}
         </Button>
       </div>
 

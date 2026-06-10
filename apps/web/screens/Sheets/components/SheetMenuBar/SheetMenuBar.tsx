@@ -2,6 +2,7 @@
 
 import { type ReactNode, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -38,6 +39,7 @@ const Menu = ({ label, children }: { label: string; children: ReactNode }) => (
 )
 
 const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string }) => {
+  const { t } = useTranslation("sheets")
   const router = useRouter()
   const [cfOpen, setCfOpen] = useState(false)
   const [dvOpen, setDvOpen] = useState(false)
@@ -53,7 +55,7 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
     try {
       await navigator.clipboard.writeText(rows.join("\n"))
     } catch {
-      toast.error("Clipboard unavailable")
+      toast.error(t("sheetMenuBar.clipboardUnavailable"))
     }
   }
 
@@ -65,7 +67,7 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
         line.split("\t").forEach((value, j) => sheet.setRaw(start.r + i, start.c + j, value)),
       )
     } catch {
-      toast.error("Clipboard unavailable")
+      toast.error(t("sheetMenuBar.clipboardUnavailable"))
     }
   }
 
@@ -92,69 +94,69 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
       const { exportSpreadsheet } = await import("@lib/officeExport")
       await exportSpreadsheet(rows, title || "Spreadsheet")
     } catch {
-      toast.error("Could not export")
+      toast.error(t("sheetMenuBar.couldNotExport"))
     }
   }
 
   return (
     <>
     <div className="bg-card flex items-center gap-0.5 border-b px-1.5 py-0.5 text-sm">
-      <Menu label="File">
+      <Menu label={t("sheetMenuBar.file")}>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Download</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t("sheetMenuBar.download")}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuItem onClick={() => sheet.downloadCsv(title || "Spreadsheet")}>
-              Comma-separated (.csv)
+              {t("sheetMenuBar.commaSeparatedCsv")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => void exportXlsx()}>
-              Microsoft Excel (.xlsx)
+              {t("sheetMenuBar.microsoftExcelXlsx")}
             </DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuItem onClick={() => window.print()}>
-          Print
+          {t("sheetMenuBar.print")}
           <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/sheets")}>Back to Sheets</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/sheets")}>{t("sheetMenuBar.backToSheets")}</DropdownMenuItem>
       </Menu>
 
-      <Menu label="Edit">
+      <Menu label={t("sheetMenuBar.edit")}>
         <DropdownMenuItem disabled={!sheet.canUndo} onClick={sheet.undo}>
-          Undo
+          {t("sheetMenuBar.undo")}
           <DropdownMenuShortcut>⌘Z</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem disabled={!sheet.canRedo} onClick={sheet.redo}>
-          Redo
+          {t("sheetMenuBar.redo")}
           <DropdownMenuShortcut>⌘Y</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => void cut()}>
-          Cut
+          {t("sheetMenuBar.cut")}
           <DropdownMenuShortcut>⌘X</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => void copy()}>
-          Copy
+          {t("sheetMenuBar.copy")}
           <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => void paste()}>
-          Paste
+          {t("sheetMenuBar.paste")}
           <DropdownMenuShortcut>⌘V</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={sheet.clearContents}>
-          Delete values
+          {t("sheetMenuBar.deleteValues")}
           <DropdownMenuShortcut>⌫</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={sheet.selectAll}>
-          Select all
+          {t("sheetMenuBar.selectAll")}
           <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
         </DropdownMenuItem>
       </Menu>
 
-      <Menu label="View">
+      <Menu label={t("sheetMenuBar.view")}>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Zoom</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t("sheetMenuBar.zoom")}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             {ZOOM_LEVELS.map((level) => (
               <DropdownMenuCheckboxItem
@@ -171,105 +173,105 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
           checked={sheet.gridlines}
           onCheckedChange={(value) => sheet.setGridlines(value)}
         >
-          Gridlines
+          {t("sheetMenuBar.gridlines")}
         </DropdownMenuCheckboxItem>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Freeze columns</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t("sheetMenuBar.freezeColumns")}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuCheckboxItem
               checked={sheet.freezeCols === 0}
               onCheckedChange={() => sheet.setFreezeCols(0)}
             >
-              No columns
+              {t("sheetMenuBar.noColumns")}
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={sheet.freezeCols === 1}
               onCheckedChange={() => sheet.setFreezeCols(1)}
             >
-              1 column
+              {t("sheetMenuBar.column_one", { count: 1 })}
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={sheet.freezeCols === 2}
               onCheckedChange={() => sheet.setFreezeCols(2)}
             >
-              2 columns
+              {t("sheetMenuBar.column_other", { count: 2 })}
             </DropdownMenuCheckboxItem>
             <DropdownMenuItem onClick={() => sheet.setFreezeCols(sheet.selBox.c1 + 1)}>
-              Up to current column
+              {t("sheetMenuBar.upToCurrentColumn")}
             </DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
       </Menu>
 
-      <Menu label="Insert">
-        <DropdownMenuItem onClick={() => sheet.insertRow("above")}>Row above</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => sheet.insertRow("below")}>Row below</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => sheet.insertColumn("left")}>Column left</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => sheet.insertColumn("right")}>Column right</DropdownMenuItem>
+      <Menu label={t("sheetMenuBar.insert")}>
+        <DropdownMenuItem onClick={() => sheet.insertRow("above")}>{t("sheetMenuBar.rowAbove")}</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => sheet.insertRow("below")}>{t("sheetMenuBar.rowBelow")}</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => sheet.insertColumn("left")}>{t("sheetMenuBar.columnLeft")}</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => sheet.insertColumn("right")}>{t("sheetMenuBar.columnRight")}</DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => sheet.addChart({ type: "bar", range: { ...sheet.selBox }, title: "Chart" })}
         >
-          Chart from selection
+          {t("sheetMenuBar.chartFromSelection")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => sheet.startEdit(sheet.sel.focus, "=")}>Function</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => sheet.startEdit(sheet.sel.focus, "=")}>{t("sheetMenuBar.function")}</DropdownMenuItem>
       </Menu>
 
-      <Menu label="Format">
+      <Menu label={t("sheetMenuBar.format")}>
         <DropdownMenuItem onClick={() => sheet.toggle("b")}>
-          Bold
+          {t("sheetMenuBar.bold")}
           <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => sheet.toggle("i")}>
-          Italic
+          {t("sheetMenuBar.italic")}
           <DropdownMenuShortcut>⌘I</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => sheet.toggle("u")}>
-          Underline
+          {t("sheetMenuBar.underline")}
           <DropdownMenuShortcut>⌘U</DropdownMenuShortcut>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => sheet.toggle("s")}>Strikethrough</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => sheet.toggle("s")}>{t("sheetMenuBar.strikethrough")}</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Number</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t("sheetMenuBar.number")}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="min-w-56">
             <NumberFormatItems sheet={sheet} />
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Alignment</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t("sheetMenuBar.alignment")}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuItem onClick={() => sheet.applyFormat({ align: "left" })}>Left</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => sheet.applyFormat({ align: "center" })}>Center</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => sheet.applyFormat({ align: "right" })}>Right</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => sheet.applyFormat({ align: "left" })}>{t("sheetMenuBar.left")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => sheet.applyFormat({ align: "center" })}>{t("sheetMenuBar.center")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => sheet.applyFormat({ align: "right" })}>{t("sheetMenuBar.right")}</DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Merge cells</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>{t("sheetMenuBar.mergeCells")}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuItem onClick={sheet.mergeSelection}>Merge all</DropdownMenuItem>
-            <DropdownMenuItem onClick={sheet.unmergeSelection}>Unmerge</DropdownMenuItem>
+            <DropdownMenuItem onClick={sheet.mergeSelection}>{t("sheetMenuBar.mergeAll")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={sheet.unmergeSelection}>{t("sheetMenuBar.unmerge")}</DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
-        <DropdownMenuItem onClick={() => setCfOpen(true)}>Conditional formatting…</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setCfOpen(true)}>{t("sheetMenuBar.conditionalFormatting")}</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={sheet.clearFormatting}>Clear formatting</DropdownMenuItem>
+        <DropdownMenuItem onClick={sheet.clearFormatting}>{t("sheetMenuBar.clearFormatting")}</DropdownMenuItem>
       </Menu>
 
-      <Menu label="Data">
-        <DropdownMenuItem onClick={() => sheet.sortSelection("asc")}>Sort range A → Z</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => sheet.sortSelection("desc")}>Sort range Z → A</DropdownMenuItem>
+      <Menu label={t("sheetMenuBar.data")}>
+        <DropdownMenuItem onClick={() => sheet.sortSelection("asc")}>{t("sheetMenuBar.sortRangeAtoZ")}</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => sheet.sortSelection("desc")}>{t("sheetMenuBar.sortRangeZtoA")}</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setDvOpen(true)}>Data validation…</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setDvOpen(true)}>{t("sheetMenuBar.dataValidation")}</DropdownMenuItem>
       </Menu>
 
-      <Menu label="Help">
+      <Menu label={t("sheetMenuBar.help")}>
         <DropdownMenuItem
           onClick={() =>
-            toast.info("Shortcuts: ⌘Z undo · ⌘B/I/U format · ⌘A select all · Enter edit · Tab next")
+            toast.info(t("sheetMenuBar.shortcutsToast"))
           }
         >
-          Keyboard shortcuts
+          {t("sheetMenuBar.keyboardShortcuts")}
         </DropdownMenuItem>
       </Menu>
     </div>

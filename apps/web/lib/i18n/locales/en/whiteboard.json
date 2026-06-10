@@ -1,4 +1,11 @@
 {
+  "boardCanvas": {
+    "redo": "Redo",
+    "resetZoom": "Reset zoom",
+    "undo": "Undo",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
+  },
   "propertiesPanel": {
     "background": "Background",
     "bringForward": "Bring forward",
@@ -9,6 +16,18 @@
     "sendToBack": "Send to back",
     "stroke": "Stroke",
     "strokeWidth": "Stroke width"
+  },
+  "toolbar": {
+    "arrow": "Arrow",
+    "diamond": "Diamond",
+    "draw": "Draw",
+    "ellipse": "Ellipse",
+    "eraser": "Eraser",
+    "line": "Line",
+    "pan": "Pan",
+    "rectangle": "Rectangle",
+    "select": "Select",
+    "text": "Text"
   },
   "whiteboardList": {
     "createLabel": "New whiteboard",

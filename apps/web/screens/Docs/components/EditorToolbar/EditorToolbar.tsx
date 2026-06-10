@@ -1,6 +1,7 @@
 "use client"
 
 import { type ReactNode, useRef } from "react"
+import { useTranslation } from "react-i18next"
 import { sanitizeLinkHref } from "@lib/editorConfig"
 import { type Editor, useEditorState } from "@tiptap/react"
 import {
@@ -72,21 +73,9 @@ const ToolbarButton = ({ label, active, disabled, onClick, children }: ToolbarBu
 
 const Divider = () => <Separator orientation="vertical" className="mx-1 h-5" />
 
-const BLOCKS = [
-  { value: "paragraph", label: "Normal text" },
-  { value: "h1", label: "Heading 1" },
-  { value: "h2", label: "Heading 2" },
-  { value: "h3", label: "Heading 3" },
-]
 const FONTS = ["Default", "Arial", "Georgia", "Times New Roman", "Courier New", "Verdana", "Roboto"]
 const FONT_SIZES = [8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72]
 const ZOOMS = [50, 75, 90, 100, 125, 150, 200]
-const LINE_SPACINGS = [
-  { label: "Single", value: "1" },
-  { label: "1.15", value: "1.15" },
-  { label: "1.5", value: "1.5" },
-  { label: "Double", value: "2" },
-]
 
 interface EditorToolbarProps {
   editor: Editor
@@ -96,6 +85,19 @@ interface EditorToolbarProps {
 
 /** Persistent Google-Docs-style formatting toolbar bound to a TipTap editor. */
 const EditorToolbar = ({ editor, zoom, onZoomChange }: EditorToolbarProps) => {
+  const { t } = useTranslation("docs")
+  const BLOCKS = [
+    { value: "paragraph", label: t("editorToolbar.normalText") },
+    { value: "h1", label: t("editorToolbar.heading1") },
+    { value: "h2", label: t("editorToolbar.heading2") },
+    { value: "h3", label: t("editorToolbar.heading3") },
+  ]
+  const LINE_SPACINGS = [
+    { label: t("editorToolbar.single"), value: "1" },
+    { label: "1.15", value: "1.15" },
+    { label: "1.5", value: "1.5" },
+    { label: t("editorToolbar.double"), value: "2" },
+  ]
   const colorInput = useRef<HTMLInputElement>(null)
   const highlightInput = useRef<HTMLInputElement>(null)
   const state = useEditorState({
@@ -142,14 +144,14 @@ const EditorToolbar = ({ editor, zoom, onZoomChange }: EditorToolbarProps) => {
       editor.chain().focus().unsetLink().run()
       return
     }
-    const input = window.prompt("Link URL")
+    const input = window.prompt(t("editorToolbar.linkUrl"))
     if (!input) return
     const href = sanitizeLinkHref(input)
     if (href) editor.chain().focus().setLink({ href }).run()
   }
 
   const addImage = () => {
-    const url = window.prompt("Image URL")
+    const url = window.prompt(t("editorToolbar.imageUrl"))
     if (url) editor.chain().focus().setImage({ src: url }).run()
   }
 
@@ -159,13 +161,13 @@ const EditorToolbar = ({ editor, zoom, onZoomChange }: EditorToolbarProps) => {
 
   return (
     <div className="bg-card/80 supports-[backdrop-filter]:bg-card/60 flex flex-wrap items-center gap-0.5 rounded-full border px-2 py-1 backdrop-blur">
-      <ToolbarButton label="Undo" disabled={!state.canUndo} onClick={() => editor.chain().focus().undo().run()}>
+      <ToolbarButton label={t("editorToolbar.undo")} disabled={!state.canUndo} onClick={() => editor.chain().focus().undo().run()}>
         <IconArrowBackUp className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Redo" disabled={!state.canRedo} onClick={() => editor.chain().focus().redo().run()}>
+      <ToolbarButton label={t("editorToolbar.redo")} disabled={!state.canRedo} onClick={() => editor.chain().focus().redo().run()}>
         <IconArrowForwardUp className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Print" onClick={() => window.print()}>
+      <ToolbarButton label={t("editorToolbar.print")} onClick={() => window.print()}>
         <IconPrinter className="size-4" />
       </ToolbarButton>
 
@@ -223,7 +225,7 @@ const EditorToolbar = ({ editor, zoom, onZoomChange }: EditorToolbarProps) => {
       </Select>
 
       <div className="flex items-center">
-        <ToolbarButton label="Decrease font size" onClick={() => setSize(currentSize - 1)}>
+        <ToolbarButton label={t("editorToolbar.decreaseFontSize")} onClick={() => setSize(currentSize - 1)}>
           <IconMinus className="size-4" />
         </ToolbarButton>
         <Select value={String(currentSize)} onValueChange={(value) => value && setSize(Number(value))}>
@@ -238,26 +240,26 @@ const EditorToolbar = ({ editor, zoom, onZoomChange }: EditorToolbarProps) => {
             ))}
           </SelectContent>
         </Select>
-        <ToolbarButton label="Increase font size" onClick={() => setSize(currentSize + 1)}>
+        <ToolbarButton label={t("editorToolbar.increaseFontSize")} onClick={() => setSize(currentSize + 1)}>
           <IconPlus className="size-4" />
         </ToolbarButton>
       </div>
 
       <Divider />
 
-      <ToolbarButton label="Bold" active={state.bold} onClick={() => editor.chain().focus().toggleBold().run()}>
+      <ToolbarButton label={t("editorToolbar.bold")} active={state.bold} onClick={() => editor.chain().focus().toggleBold().run()}>
         <IconBold className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Italic" active={state.italic} onClick={() => editor.chain().focus().toggleItalic().run()}>
+      <ToolbarButton label={t("editorToolbar.italic")} active={state.italic} onClick={() => editor.chain().focus().toggleItalic().run()}>
         <IconItalic className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Underline" active={state.underline} onClick={() => editor.chain().focus().toggleUnderline().run()}>
+      <ToolbarButton label={t("editorToolbar.underline")} active={state.underline} onClick={() => editor.chain().focus().toggleUnderline().run()}>
         <IconUnderline className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Strikethrough" active={state.strike} onClick={() => editor.chain().focus().toggleStrike().run()}>
+      <ToolbarButton label={t("editorToolbar.strikethrough")} active={state.strike} onClick={() => editor.chain().focus().toggleStrike().run()}>
         <IconStrikethrough className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Inline code" active={state.code} onClick={() => editor.chain().focus().toggleCode().run()}>
+      <ToolbarButton label={t("editorToolbar.inlineCode")} active={state.code} onClick={() => editor.chain().focus().toggleCode().run()}>
         <IconCode className="size-4" />
       </ToolbarButton>
 
@@ -265,8 +267,8 @@ const EditorToolbar = ({ editor, zoom, onZoomChange }: EditorToolbarProps) => {
         type="button"
         variant="ghost"
         size="icon-sm"
-        aria-label="Text color"
-        title="Text color"
+        aria-label={t("editorToolbar.textColor")}
+        title={t("editorToolbar.textColor")}
         onMouseDown={(event) => event.preventDefault()}
         onClick={() => colorInput.current?.click()}
       >
@@ -287,8 +289,8 @@ const EditorToolbar = ({ editor, zoom, onZoomChange }: EditorToolbarProps) => {
         type="button"
         variant={state.highlight ? "secondary" : "ghost"}
         size="icon-sm"
-        aria-label="Highlight color"
-        title="Highlight color"
+        aria-label={t("editorToolbar.highlightColor")}
+        title={t("editorToolbar.highlightColor")}
         onMouseDown={(event) => event.preventDefault()}
         onClick={() => highlightInput.current?.click()}
       >
@@ -303,19 +305,19 @@ const EditorToolbar = ({ editor, zoom, onZoomChange }: EditorToolbarProps) => {
           aria-hidden
         />
       </Button>
-      <ToolbarButton label="Link" active={state.link} onClick={setLink}>
+      <ToolbarButton label={t("editorToolbar.link")} active={state.link} onClick={setLink}>
         <IconLink className="size-4" />
       </ToolbarButton>
 
       <Divider />
 
-      <ToolbarButton label="Align left" active={state.alignLeft} onClick={() => editor.chain().focus().setTextAlign("left").run()}>
+      <ToolbarButton label={t("editorToolbar.alignLeft")} active={state.alignLeft} onClick={() => editor.chain().focus().setTextAlign("left").run()}>
         <IconAlignLeft className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Align center" active={state.alignCenter} onClick={() => editor.chain().focus().setTextAlign("center").run()}>
+      <ToolbarButton label={t("editorToolbar.alignCenter")} active={state.alignCenter} onClick={() => editor.chain().focus().setTextAlign("center").run()}>
         <IconAlignCenter className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Align right" active={state.alignRight} onClick={() => editor.chain().focus().setTextAlign("right").run()}>
+      <ToolbarButton label={t("editorToolbar.alignRight")} active={state.alignRight} onClick={() => editor.chain().focus().setTextAlign("right").run()}>
         <IconAlignRight className="size-4" />
       </ToolbarButton>
       <DropdownMenu>
@@ -325,8 +327,8 @@ const EditorToolbar = ({ editor, zoom, onZoomChange }: EditorToolbarProps) => {
               type="button"
               variant="ghost"
               size="icon-sm"
-              aria-label="Line spacing"
-              title="Line spacing"
+              aria-label={t("editorToolbar.lineSpacing")}
+              title={t("editorToolbar.lineSpacing")}
               onMouseDown={(event) => event.preventDefault()}
             >
               <IconLineHeight className="size-4" />
@@ -343,47 +345,47 @@ const EditorToolbar = ({ editor, zoom, onZoomChange }: EditorToolbarProps) => {
             </DropdownMenuItem>
           ))}
           <DropdownMenuItem onClick={() => editor.chain().focus().setLineHeight(null).run()}>
-            Default
+            {t("editorToolbar.default")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <Divider />
 
-      <ToolbarButton label="Bullet list" active={state.bulletList} onClick={() => editor.chain().focus().toggleBulletList().run()}>
+      <ToolbarButton label={t("editorToolbar.bulletList")} active={state.bulletList} onClick={() => editor.chain().focus().toggleBulletList().run()}>
         <IconList className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Numbered list" active={state.orderedList} onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+      <ToolbarButton label={t("editorToolbar.numberedList")} active={state.orderedList} onClick={() => editor.chain().focus().toggleOrderedList().run()}>
         <IconListNumbers className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Checklist" active={state.taskList} onClick={() => editor.chain().focus().toggleTaskList().run()}>
+      <ToolbarButton label={t("editorToolbar.checklist")} active={state.taskList} onClick={() => editor.chain().focus().toggleTaskList().run()}>
         <IconListCheck className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Decrease indent" onClick={() => editor.chain().focus().outdent().run()}>
+      <ToolbarButton label={t("editorToolbar.decreaseIndent")} onClick={() => editor.chain().focus().outdent().run()}>
         <IconIndentDecrease className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Increase indent" onClick={() => editor.chain().focus().indent().run()}>
+      <ToolbarButton label={t("editorToolbar.increaseIndent")} onClick={() => editor.chain().focus().indent().run()}>
         <IconIndentIncrease className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Quote" active={state.blockquote} onClick={() => editor.chain().focus().toggleBlockquote().run()}>
+      <ToolbarButton label={t("editorToolbar.quote")} active={state.blockquote} onClick={() => editor.chain().focus().toggleBlockquote().run()}>
         <IconBlockquote className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Code block" active={state.codeBlock} onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
+      <ToolbarButton label={t("editorToolbar.codeBlock")} active={state.codeBlock} onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
         <IconSourceCode className="size-4" />
       </ToolbarButton>
 
       <Divider />
 
-      <ToolbarButton label="Insert image" onClick={addImage}>
+      <ToolbarButton label={t("editorToolbar.insertImage")} onClick={addImage}>
         <IconPhoto className="size-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Insert table"
+        label={t("editorToolbar.insertTable")}
         onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
       >
         <IconTable className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="Clear formatting" onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}>
+      <ToolbarButton label={t("editorToolbar.clearFormatting")} onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}>
         <IconClearFormatting className="size-4" />
       </ToolbarButton>
     </div>
