@@ -59,7 +59,7 @@ const DocsSidebar = () => {
         collapsed ? "w-14" : "w-56",
       )}
     >
-      <WorkspaceSwitcher productName="Docs" icon="file-text" collapsed={collapsed} />
+      <WorkspaceSwitcher productName="Docs" icon="file-text" collapsed={collapsed} beta />
 
       <nav className="flex flex-col gap-1">
         <Fragment>{withTooltip("My Documents", collapsed, homeLink)}</Fragment>

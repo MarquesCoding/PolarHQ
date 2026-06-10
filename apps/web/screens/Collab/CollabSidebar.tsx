@@ -20,6 +20,7 @@ export interface CollabSidebarConfig {
   icon: string
   navLabel: string
   listLabel: string
+  beta?: boolean
 }
 
 const withTooltip = (label: string, collapsed: boolean, element: ReactElement): ReactElement => {
@@ -39,6 +40,7 @@ const CollabSidebar = ({
   icon,
   navLabel,
   listLabel,
+  beta,
 }: CollabSidebarConfig) => {
   const pathname = usePathname()
   const isMobile = useIsMobile()
@@ -75,7 +77,7 @@ const CollabSidebar = ({
         collapsed ? "w-14" : "w-56",
       )}
     >
-      <WorkspaceSwitcher productName={productName} icon={icon} collapsed={collapsed} />
+      <WorkspaceSwitcher productName={productName} icon={icon} collapsed={collapsed} beta={beta} />
 
       <nav className="flex flex-col gap-1">
         <Fragment>{withTooltip(navLabel, collapsed, homeLink)}</Fragment>

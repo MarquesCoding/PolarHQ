@@ -12,6 +12,8 @@ export interface AppManifest {
   category: AppCategory
   privacy: AppPrivacy
   status: AppStatus
+  /** Marks an app as still in beta (shown as a badge in the launcher and app chrome). */
+  beta?: boolean
   requiredPermission?: string
 }
 
@@ -56,6 +58,7 @@ export const SUITE_APPS: AppManifest[] = [
     category: "productivity",
     privacy: "e2e",
     status: "available",
+    beta: true,
     requiredPermission: "docs.document.read",
   },
   {
@@ -67,6 +70,7 @@ export const SUITE_APPS: AppManifest[] = [
     category: "productivity",
     privacy: "e2e",
     status: "available",
+    beta: true,
     requiredPermission: "docs.document.read",
   },
   {
@@ -78,6 +82,7 @@ export const SUITE_APPS: AppManifest[] = [
     category: "productivity",
     privacy: "e2e",
     status: "available",
+    beta: true,
     requiredPermission: "docs.document.read",
   },
   {

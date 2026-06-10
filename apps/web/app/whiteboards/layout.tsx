@@ -14,6 +14,7 @@ const Layout = ({ children }: { children: ReactNode }) => (
         icon="palette"
         navLabel="My Whiteboards"
         listLabel="Whiteboards"
+        beta
       />
     }
     titleBar={

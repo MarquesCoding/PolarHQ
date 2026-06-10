@@ -7,14 +7,16 @@ interface WorkspaceSwitcherProps {
   productName: string
   icon: string
   collapsed: boolean
+  beta?: boolean
 }
 
-const WorkspaceSwitcher = ({ productName, icon, collapsed }: WorkspaceSwitcherProps) => (
+const WorkspaceSwitcher = ({ productName, icon, collapsed, beta }: WorkspaceSwitcherProps) => (
   <WorkspaceSwitcherBase
     appName={APP_NAME}
     productName={productName}
     icon={icon}
     collapsed={collapsed}
+    beta={beta}
   />
 )
 

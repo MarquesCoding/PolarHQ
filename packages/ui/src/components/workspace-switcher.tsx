@@ -16,9 +16,16 @@ interface WorkspaceSwitcherProps {
   productName: string
   icon: string
   collapsed: boolean
+  beta?: boolean
 }
 
-const WorkspaceSwitcher = ({ appName, productName, icon, collapsed }: WorkspaceSwitcherProps) => (
+const WorkspaceSwitcher = ({
+  appName,
+  productName,
+  icon,
+  collapsed,
+  beta,
+}: WorkspaceSwitcherProps) => (
   <DropdownMenu>
     <DropdownMenuTrigger
       render={
@@ -36,7 +43,14 @@ const WorkspaceSwitcher = ({ appName, productName, icon, collapsed }: WorkspaceS
           {!collapsed ? (
             <>
               <span className="flex min-w-0 flex-col text-left leading-tight">
-                <span className="truncate text-sm font-semibold">{appName}</span>
+                <span className="flex items-center gap-1.5">
+                  <span className="truncate text-sm font-semibold">{appName}</span>
+                  {beta ? (
+                    <span className="bg-primary/15 text-primary rounded px-1 py-px text-[9px] font-semibold tracking-wide uppercase">
+                      Beta
+                    </span>
+                  ) : null}
+                </span>
                 <span className="text-muted-foreground truncate text-xs">{productName}</span>
               </span>
               <IconSelector className="text-muted-foreground ml-auto size-4 shrink-0" />

@@ -58,6 +58,10 @@ const AppTile = ({ app }: AppTileProps) => {
           <span className="bg-muted text-muted-foreground absolute top-2 right-2 rounded-full px-2 py-0.5 text-[10px] font-medium">
             Soon
           </span>
+        ) : app.beta ? (
+          <span className="bg-primary/15 text-primary absolute top-2 right-2 rounded-full px-2 py-0.5 text-[10px] font-medium">
+            Beta
+          </span>
         ) : null}
         <Icon name={app.icon} className="size-8" />
         <div className="space-y-1">
