@@ -14,12 +14,9 @@ import {
   updateKdf,
 } from "./keys"
 import {
-  DATABASE_MIME,
   DOC_MIME,
-  NOTE_MIME,
   type OrbitDocMime,
   SHEET_MIME,
-  SLIDES_MIME,
   addCollaborator,
   createDoc,
   getDocForViewer,
@@ -65,9 +62,6 @@ const parse = async <T>(c: Context, schema: z.ZodType<T>) => {
 const TYPE_MIME: Record<string, OrbitDocMime> = {
   doc: DOC_MIME,
   sheet: SHEET_MIME,
-  slides: SLIDES_MIME,
-  note: NOTE_MIME,
-  database: DATABASE_MIME,
 }
 const mimeForType = (type?: string | null): OrbitDocMime =>
   (type && TYPE_MIME[type]) || DOC_MIME
@@ -88,7 +82,7 @@ docsRoutes.post("/documents", async (c) => {
     z.object({
       parentId: z.string().nullish(),
       title: z.string().optional(),
-      type: z.enum(["doc", "sheet", "slides", "note", "database"]).optional(),
+      type: z.enum(["doc", "sheet"]).optional(),
     }),
   )
   if (!parsed.success) return c.json({ error: "invalid input" }, 400)

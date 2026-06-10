@@ -30,9 +30,9 @@ const ITEMS: Item[] = [
   },
   {
     icon: IconFileContentFillDuo18,
-    title: "Docs, Sheets and Slides",
+    title: "Docs and Sheets",
     description:
-      "A full office suite with real time collaboration and end to end encryption on every keystroke.",
+      "Collaborative documents and spreadsheets with real time collaboration and end to end encryption on every keystroke.",
   },
   {
     icon: IconServerFillDuo18,

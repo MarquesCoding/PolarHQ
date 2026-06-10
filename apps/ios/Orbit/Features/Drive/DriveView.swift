@@ -7,7 +7,7 @@ private enum DriveSort: String, CaseIterable {
 
 /// Files-app-style Drive: an inset list of folders/files with type icons + metadata, swipe and
 /// context actions (rename, delete), a New Folder + sort menu, pushed navigation for folders.
-/// Documents/sheets/presentations live here too — no separate apps.
+/// Documents and sheets live here too — no separate apps.
 struct DriveView: View {
     let parentId: String?
     let title: String

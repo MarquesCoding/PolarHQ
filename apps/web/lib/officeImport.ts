@@ -1,4 +1,3 @@
-import { strFromU8, unzipSync } from "fflate"
 import mammoth from "mammoth"
 import * as XLSX from "xlsx"
 
@@ -6,20 +5,11 @@ import * as XLSX from "xlsx"
 export type ImportPayload =
   | { kind: "sheet"; name: string; cells: Record<string, string> }
   | { kind: "doc"; name: string; html: string }
-  | { kind: "slides"; name: string; slides: Array<{ texts: string[] }> }
 
 const baseName = (file: File): string => file.name.replace(/\.[^.]+$/, "") || "Untitled"
 
 const escapeHtml = (text: string): string =>
   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-
-const decodeXml = (text: string): string =>
-  text
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'")
-    .replace(/&amp;/g, "&")
 
 /** Spreadsheets: .xlsx / .xls / .csv / .tsv / .ods → raw cell values (formulas preserved). */
 export const parseSpreadsheet = async (file: File): Promise<ImportPayload> => {
@@ -55,28 +45,4 @@ export const parseDocument = async (file: File): Promise<ImportPayload> => {
   const arrayBuffer = await file.arrayBuffer()
   const result = await mammoth.convertToHtml({ arrayBuffer })
   return { kind: "doc", name: baseName(file), html: result.value }
-}
-
-const slideNumber = (entry: string): number => Number(entry.match(/slide(\d+)\.xml$/)?.[1] ?? 0)
-
-/** Presentations: .pptx → text runs grouped per paragraph, per slide. */
-export const parsePresentation = async (file: File): Promise<ImportPayload> => {
-  const bytes = new Uint8Array(await file.arrayBuffer())
-  const archive = unzipSync(bytes)
-  const slideFiles = Object.keys(archive)
-    .filter((name) => /^ppt\/slides\/slide\d+\.xml$/.test(name))
-    .sort((a, b) => slideNumber(a) - slideNumber(b))
-  const slides = slideFiles.map((name) => {
-    const xml = strFromU8(archive[name]!)
-    const texts: string[] = []
-    for (const paragraph of xml.split(/<a:p>/).slice(1)) {
-      const runs = [...paragraph.matchAll(/<a:t>([\s\S]*?)<\/a:t>/g)].map((match) =>
-        decodeXml(match[1] ?? ""),
-      )
-      const text = runs.join("").trim()
-      if (text) texts.push(text)
-    }
-    return { texts }
-  })
-  return { kind: "slides", name: baseName(file), slides: slides.length ? slides : [{ texts: [] }] }
 }

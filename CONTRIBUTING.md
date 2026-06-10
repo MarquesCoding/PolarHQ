@@ -49,7 +49,7 @@ Useful scripts:
 ## Project layout
 
 ```
-apps/web        Main app — Photos, Drive, Docs, Sheets, Slides, Admin
+apps/web        Main app — Photos, Drive, Docs, Sheets, Admin
 apps/api        Hono + tRPC API, auth, storage, collaboration relay
 apps/marketing  Landing site (polarhq.app)
 apps/ios        Native SwiftUI client

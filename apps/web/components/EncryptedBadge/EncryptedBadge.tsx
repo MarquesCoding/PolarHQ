@@ -9,7 +9,7 @@ interface EncryptedBadgeProps {
 }
 
 /** The "Encrypted" badge with a popover explaining end-to-end encryption. Used across the
- *  collaborative editors (Sheets, Docs, Slides). */
+ *  collaborative editors (Sheets, Docs). */
 const EncryptedBadge = ({
   description = "Every change you make is automatically and securely saved to Drive.",
 }: EncryptedBadgeProps) => (

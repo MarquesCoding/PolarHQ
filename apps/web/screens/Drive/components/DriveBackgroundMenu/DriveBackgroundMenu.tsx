@@ -2,13 +2,7 @@
 
 import type { ReactNode } from "react"
 import type { DocType } from "@lib/docs"
-import {
-  IconFilePlus,
-  IconFolderPlus,
-  IconPresentation,
-  IconTable,
-  IconUpload,
-} from "@tabler/icons-react"
+import { IconFilePlus, IconFolderPlus, IconTable, IconUpload } from "@tabler/icons-react"
 import {
   ContextMenu,
   ContextMenuContent,
@@ -50,10 +44,6 @@ const DriveBackgroundMenu = ({
       <ContextMenuItem onClick={() => onNew("sheet")}>
         <IconTable />
         New spreadsheet
-      </ContextMenuItem>
-      <ContextMenuItem onClick={() => onNew("slides")}>
-        <IconPresentation />
-        New presentation
       </ContextMenuItem>
     </ContextMenuContent>
   </ContextMenu>
