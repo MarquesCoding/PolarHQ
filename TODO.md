@@ -10,12 +10,12 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 - [x] Album cover images not generating correctly — covers are E2E ciphertext; now decrypted client-side (API returns `coverAssetId`/`coverEncrypted`).
 - [x] **Landing page**: remove the app-grid launcher, auto-redirect `/` → `/photos` (Home screen deleted).
 - [x] Remove **Admin** from the apps list in the account/app dropdown.
-- [x] Photo viewer **Share** button → already resolves to nucleo (`IconShareFillDuo18`) via the `Icon` abstraction; tabler is only the dev fallback.
+- [x] Photo viewer **Share** button → nucleo `open-external` glyph (prefers `IconOpenExternalOutlineDuo18`, falls back to the installed `IconOpenExternalFillDuo18`).
 
 ## Shell / navigation
 - [ ] Separate the app logo from the app dropdown; make the **logo a dropdown for workgroup selection**.
 - [ ] **Collapse sidebar** + better mobile support (consider shadcn sidebar).
-- [ ] Nicer framer-motion **dark/light mode** transition.
+- [x] Nicer **dark/light mode** transition — View Transitions circular reveal from the toggle; expands on, contracts on off (`fill: forwards` to avoid the end-of-animation flash).
 
 ## Dialogs / onboarding
 - [ ] **Storage dialog**: largest file, which app uses most storage, breakdown.

@@ -370,7 +370,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={() => setShareOpen(true)}
               className="rounded-full"
             >
-              <Icon name="share" className="size-5" />
+              <Icon name="open-external" className="size-5" />
             </Button>
           </Tip>
           <Tip label="Download">

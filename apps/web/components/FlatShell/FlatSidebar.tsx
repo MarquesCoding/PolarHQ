@@ -12,6 +12,7 @@ import { Icon } from "@lib/icons"
 import { fetchUsage } from "@lib/photos"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setSearchQuery } from "@store/uiSlice"
+import { applyThemeWithReveal } from "@lib/themeTransition"
 import {
   IconChevronDown,
   IconLogout,
@@ -241,7 +242,14 @@ const FlatSidebar = ({
             role="switch"
             aria-checked={dark}
             aria-label="Toggle dark mode"
-            onClick={() => setTheme(dark ? "light" : "dark")}
+            onClick={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect()
+              applyThemeWithReveal(
+                () => setTheme(dark ? "light" : "dark"),
+                { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+                dark,
+              )
+            }}
             className="bg-sidebar-accent relative h-4 w-7 shrink-0 rounded-full transition-colors"
           >
             <span

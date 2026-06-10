@@ -395,3 +395,24 @@
 .doc-editor .doc-comment:hover {
   background-color: color-mix(in oklab, #f59e0b 42%, transparent);
 }
+
+/* Theme-change circular reveal (View Transitions API). The JS animates the new layer's
+   clip-path; we just stop the default cross-fade so the reveal reads cleanly. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+/* Reverse (turning dark mode off): lift the outgoing layer so it can shrink away over the new one. */
+html[data-vt-reverse]::view-transition-old(root) {
+  z-index: 9999;
+}
+html[data-vt-reverse]::view-transition-new(root) {
+  z-index: 1;
+}
