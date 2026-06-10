@@ -157,6 +157,7 @@
     "yesterday": "Yesterday"
   },
   "photoMap": {
+    "loadingMap": "Loading map…",
     "noLocationData": "No photos with location data yet."
   },
   "photoTile": {

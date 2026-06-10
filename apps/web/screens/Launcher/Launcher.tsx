@@ -85,7 +85,7 @@ const Launcher = () => {
           <span />
         )}
         <p className="text-muted-foreground/60 font-mono text-[10px] tracking-tight">
-          v{APP_VERSION} · build {APP_BUILD}
+          {t("launcher.versionBuild", { version: APP_VERSION, build: APP_BUILD })}
         </p>
       </footer>
     </main>
