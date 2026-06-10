@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Account",
+  "subtitle": "Manage your profile and preferences.",
+  "back": "Back",
+  "profile": "Profile",
+  "name": "Name",
+  "email": "Email",
+  "preferences": "Preferences",
+  "language": "Language",
+  "languageHint": "Choose the language used across the interface.",
+  "appearance": "Appearance",
+  "appearanceHint": "Switch between light and dark mode.",
+  "light": "Light",
+  "dark": "Dark",
+  "system": "System",
+  "security": "Security",
+  "devices": "Devices & sessions",
+  "devicesHint": "Review and sign out devices that are signed in.",
+  "manageDevices": "Manage devices",
+  "signOut": "Sign out",
+  "languageChanged": "Language updated"
+}

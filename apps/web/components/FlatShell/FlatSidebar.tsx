@@ -225,6 +225,7 @@ const FlatSidebar = ({
             }
           />
           <DropdownMenuContent align="end" side="top" className="w-[var(--anchor-width)]">
+            <DropdownMenuItem onClick={() => router.push("/account")}>{t("flatSidebar.account")}</DropdownMenuItem>
             <DropdownMenuItem onClick={() => setDevicesOpen(true)}>{t("flatSidebar.devices")}</DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push("/admin")}>{t("flatSidebar.settings")}</DropdownMenuItem>
             <DropdownMenuItem onClick={replayOnboarding}>{t("flatSidebar.replayIntro")}</DropdownMenuItem>
