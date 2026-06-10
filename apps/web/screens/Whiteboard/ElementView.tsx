@@ -1,4 +1,4 @@
-import { bounds, type BoardElement } from "./board"
+import { bounds, type BoardElement, centerOf } from "./board"
 
 const pointsToPath = (el: BoardElement): string => {
   const pts = el.points ?? []
@@ -53,8 +53,7 @@ const ArrowHead = ({
   )
 }
 
-/** Renders a single whiteboard element as SVG. */
-const ElementView = ({ el }: { el: BoardElement }) => {
+const ElementShape = ({ el }: { el: BoardElement }) => {
   const stroke = {
     stroke: el.stroke,
     strokeWidth: el.strokeWidth,
@@ -134,6 +133,17 @@ const ElementView = ({ el }: { el: BoardElement }) => {
     default:
       return null
   }
+}
+
+/** Renders a single whiteboard element as SVG, applying its rotation. */
+const ElementView = ({ el }: { el: BoardElement }) => {
+  if (!el.angle) return <ElementShape el={el} />
+  const c = centerOf(el)
+  return (
+    <g transform={`rotate(${(el.angle * 180) / Math.PI} ${c.x} ${c.y})`}>
+      <ElementShape el={el} />
+    </g>
+  )
 }
 
 export default ElementView

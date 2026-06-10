@@ -7,8 +7,10 @@ import {
   type BoardElement,
   type BoardState,
   bounds,
+  centerOf,
   linePoints,
   newElement,
+  rotatePoint,
   type Shape,
   type Style,
   type Tool,
@@ -17,16 +19,22 @@ import ElementView from "./ElementView"
 
 type Corner = "nw" | "ne" | "se" | "sw"
 const CORNERS: Corner[] = ["nw", "ne", "se", "sw"]
+const OPPOSITE: Record<Corner, Corner> = { nw: "se", ne: "sw", se: "nw", sw: "ne" }
 const isBox = (el: BoardElement): boolean =>
   el.type === "rectangle" || el.type === "ellipse" || el.type === "diamond" || el.type === "image"
 const isLine = (el: BoardElement): boolean => el.type === "line" || el.type === "arrow"
+const canRotate = (el: BoardElement): boolean => !isLine(el) && el.type !== "draw"
 const dist = (a: { x: number; y: number }, b: { x: number; y: number }) =>
   Math.hypot(a.x - b.x, a.y - b.y)
+/** Map a board (world) point into an element's unrotated local frame. */
+const toLocal = (p: { x: number; y: number }, el: BoardElement) =>
+  el.angle ? rotatePoint(p, centerOf(el), -el.angle) : p
 
 type Gesture =
   | { mode: "create" }
   | { mode: "move"; id: string; start: { x: number; y: number }; orig: BoardElement }
   | { mode: "resize"; id: string; handle: Corner; orig: BoardElement }
+  | { mode: "rotate"; id: string; orig: BoardElement }
   | { mode: "point"; id: string; index: number; orig: BoardElement }
   | { mode: "pan"; start: { x: number; y: number }; orig: { x: number; y: number } }
   | { mode: "erase" }
@@ -71,7 +79,8 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
       const el = elements[i]!
       const b = bounds(el)
       const pad = Math.max(8, el.strokeWidth)
-      if (p.x >= b.x - pad && p.x <= b.x + b.w + pad && p.y >= b.y - pad && p.y <= b.y + b.h + pad)
+      const pl = toLocal(p, el)
+      if (pl.x >= b.x - pad && pl.x <= b.x + b.w + pad && pl.y >= b.y - pad && pl.y <= b.y + b.h + pad)
         return el.id
     }
     return null
@@ -80,12 +89,22 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
   const handleAt = (p: { x: number; y: number }): Corner | null => {
     if (!selected || !isBox(selected)) return null
     const b = bounds(selected)
+    const pl = toLocal(p, selected)
     const r = 9 / zoom
     for (const c of CORNERS) {
       const hp = cornerPoint(b, c)
-      if (Math.abs(p.x - hp.x) <= r && Math.abs(p.y - hp.y) <= r) return c
+      if (Math.abs(pl.x - hp.x) <= r && Math.abs(pl.y - hp.y) <= r) return c
     }
     return null
+  }
+
+  const rotateHandleAt = (p: { x: number; y: number }): boolean => {
+    if (!selected || !canRotate(selected)) return false
+    const b = bounds(selected)
+    const pl = toLocal(p, selected)
+    const hx = b.x + b.w / 2
+    const hy = b.y - 26 / zoom
+    return dist(pl, { x: hx, y: hy }) <= 10 / zoom
   }
 
   const onPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
@@ -98,6 +117,10 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
       return
     }
     if (tool === "select") {
+      if (selected && rotateHandleAt(p)) {
+        gesture.current = { mode: "rotate", id: selected.id, orig: selected }
+        return
+      }
       if (selected && isLine(selected)) {
         const lpts = linePoints(selected)
         const r = 11 / zoom
@@ -188,27 +211,31 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
       setDraft({ ...g.orig, points: pts })
       return
     }
+    if (g.mode === "rotate") {
+      const c = centerOf(g.orig)
+      const angle = Math.atan2(p.y - c.y, p.x - c.x) + Math.PI / 2
+      setDraft({ ...g.orig, angle })
+      return
+    }
     if (g.mode === "resize") {
+      const a = g.orig.angle ?? 0
       const b = bounds(g.orig)
-      let { x, y, w, h } = b
-      if (g.handle === "se") {
-        w = p.x - b.x
-        h = p.y - b.y
-      } else if (g.handle === "nw") {
-        x = p.x
-        y = p.y
-        w = b.x + b.w - p.x
-        h = b.y + b.h - p.y
-      } else if (g.handle === "ne") {
-        y = p.y
-        w = p.x - b.x
-        h = b.y + b.h - p.y
-      } else {
-        x = p.x
-        w = b.x + b.w - p.x
-        h = p.y - b.y
-      }
-      setDraft({ ...g.orig, x, y, w, h })
+      const center = { x: b.x + b.w / 2, y: b.y + b.h / 2 }
+      // Keep the opposite corner fixed in world space, even when rotated.
+      const anchorLocal = cornerPoint(b, OPPOSITE[g.handle])
+      const anchorWorld = rotatePoint(anchorLocal, center, a)
+      const rel = rotatePoint(p, anchorWorld, -a)
+      const dx = rel.x - anchorWorld.x
+      const dy = rel.y - anchorWorld.y
+      const w = Math.max(1, Math.abs(dx))
+      const h = Math.max(1, Math.abs(dy))
+      const half = rotatePoint(
+        { x: (Math.sign(dx) || 1) * (w / 2), y: (Math.sign(dy) || 1) * (h / 2) },
+        { x: 0, y: 0 },
+        a,
+      )
+      const nc = { x: anchorWorld.x + half.x, y: anchorWorld.y + half.y }
+      setDraft({ ...g.orig, x: nc.x - w / 2, y: nc.y - h / 2, w, h })
     }
   }
 
@@ -233,9 +260,13 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
       setDraft(null)
       return
     }
+    if (g.mode === "rotate" && draft) {
+      board.update(g.id, { angle: draft.angle })
+      setDraft(null)
+      return
+    }
     if ((g.mode === "move" || g.mode === "resize") && draft) {
-      const patch: Partial<BoardElement> = { x: draft.x, y: draft.y, w: draft.w, h: draft.h }
-      board.update(g.id, patch)
+      board.update(g.id, { x: draft.x, y: draft.y, w: draft.w, h: draft.h })
       setDraft(null)
     }
   }
@@ -357,7 +388,10 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           : "crosshair"
 
   const visible = elements.filter((el) => el.id !== draft?.id && el.id !== editing)
-  const selBounds = selected ? bounds(selected) : null
+  // While dragging/resizing/rotating, the live draft drives the selection chrome so the
+  // handles follow the element instead of snapping only on release.
+  const selectedLive = draft && draft.id === selectedId ? draft : selected
+  const selBounds = selectedLive ? bounds(selectedLive) : null
   const editEl = editing ? elements.find((el) => el.id === editing) : null
 
   return (
@@ -389,10 +423,10 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           ))}
           {draft ? <ElementView el={draft} /> : null}
 
-          {selected && selBounds && !editing ? (
-            isLine(selected) ? (
+          {selectedLive && selBounds && !editing ? (
+            isLine(selectedLive) ? (
               <g>
-                {linePoints(selected).map((pt, i) => (
+                {linePoints(selectedLive).map((pt, i) => (
                   <circle
                     key={i}
                     cx={pt.x}
@@ -403,9 +437,9 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
                     strokeWidth={1.5 / zoom}
                   />
                 ))}
-                {(selected.points?.length ?? 0) === 4
+                {(selectedLive.points?.length ?? 0) === 4
                   ? (() => {
-                      const lp = linePoints(selected)
+                      const lp = linePoints(selectedLive)
                       const mid = { x: (lp[0]!.x + lp[1]!.x) / 2, y: (lp[0]!.y + lp[1]!.y) / 2 }
                       return (
                         <circle
@@ -422,37 +456,64 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
                   : null}
               </g>
             ) : (
-              <g>
-                <rect
-                  x={selBounds.x - 4 / zoom}
-                  y={selBounds.y - 4 / zoom}
-                  width={selBounds.w + 8 / zoom}
-                  height={selBounds.h + 8 / zoom}
-                  fill="none"
-                  className="stroke-primary"
-                  strokeWidth={1.5 / zoom}
-                  strokeDasharray={`${4 / zoom} ${3 / zoom}`}
-                />
-                {isBox(selected)
-                  ? CORNERS.map((c) => {
-                      const hp = cornerPoint(selBounds, c)
-                      const s = 8 / zoom
-                      return (
-                        <rect
-                          key={c}
-                          x={hp.x - s / 2}
-                          y={hp.y - s / 2}
-                          width={s}
-                          height={s}
+              (() => {
+                const c = { x: selBounds.x + selBounds.w / 2, y: selBounds.y + selBounds.h / 2 }
+                const angDeg = ((selectedLive.angle ?? 0) * 180) / Math.PI
+                const topY = selBounds.y - 4 / zoom
+                return (
+                  <g transform={angDeg ? `rotate(${angDeg} ${c.x} ${c.y})` : undefined}>
+                    <rect
+                      x={selBounds.x - 4 / zoom}
+                      y={topY}
+                      width={selBounds.w + 8 / zoom}
+                      height={selBounds.h + 8 / zoom}
+                      fill="none"
+                      className="stroke-primary"
+                      strokeWidth={1.5 / zoom}
+                      strokeDasharray={`${4 / zoom} ${3 / zoom}`}
+                    />
+                    {canRotate(selectedLive) ? (
+                      <>
+                        <line
+                          x1={c.x}
+                          y1={topY}
+                          x2={c.x}
+                          y2={selBounds.y - 26 / zoom}
+                          className="stroke-primary"
+                          strokeWidth={1.5 / zoom}
+                        />
+                        <circle
+                          cx={c.x}
+                          cy={selBounds.y - 26 / zoom}
+                          r={5 / zoom}
                           fill="#fff"
                           className="stroke-primary"
                           strokeWidth={1.5 / zoom}
-                          rx={1 / zoom}
                         />
-                      )
-                    })
-                  : null}
-              </g>
+                      </>
+                    ) : null}
+                    {isBox(selectedLive)
+                      ? CORNERS.map((corner) => {
+                          const hp = cornerPoint(selBounds, corner)
+                          const s = 8 / zoom
+                          return (
+                            <rect
+                              key={corner}
+                              x={hp.x - s / 2}
+                              y={hp.y - s / 2}
+                              width={s}
+                              height={s}
+                              fill="#fff"
+                              className="stroke-primary"
+                              strokeWidth={1.5 / zoom}
+                              rx={1 / zoom}
+                            />
+                          )
+                        })
+                      : null}
+                  </g>
+                )
+              })()
             )
           ) : null}
         </g>
