@@ -34,6 +34,7 @@ import { cn } from "@workspace/ui/lib/utils"
 import { useTheme } from "next-themes"
 import Changelog from "@components/Changelog/Changelog"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
+import { replayOnboarding } from "@components/OnboardingCard/OnboardingCard"
 import { APP_BUILD, APP_VERSION } from "@lib/env"
 
 interface FlatSidebarProps {
@@ -224,6 +225,7 @@ const FlatSidebar = ({
           <DropdownMenuContent align="end" side="top" className="w-[var(--anchor-width)]">
             <DropdownMenuItem onClick={() => setDevicesOpen(true)}>Devices</DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push("/admin")}>Settings</DropdownMenuItem>
+            <DropdownMenuItem onClick={replayOnboarding}>Replay intro</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={signOut}>
               <IconLogout className="size-4" />
