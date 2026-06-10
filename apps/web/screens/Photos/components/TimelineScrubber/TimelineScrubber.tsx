@@ -27,11 +27,12 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
 
   const setFromY = (clientY: number) => {
     const rect = rootRef.current?.getBoundingClientRect()
-    if (rect) setFraction(clamp((clientY - rect.top - 8) / (rect.height - 16), 0, 1))
+    if (rect) setFraction(clamp((clientY - rect.top) / rect.height, 0, 1))
   }
 
   const targetY = fraction * totalHeight
   const current = [...markers].reverse().find((marker) => marker.y <= targetY) ?? markers[0]!
+  const active = open || scrubbing
 
   const onDown = (event: ReactPointerEvent) => {
     setScrubbing(true)
@@ -39,7 +40,7 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
     setFromY(event.clientY)
   }
   const onMove = (event: ReactPointerEvent) => {
-    if (open || scrubbing) setFromY(event.clientY)
+    if (active) setFromY(event.clientY)
   }
   const onUp = () => {
     if (!scrubbing) return
@@ -51,8 +52,7 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
   return (
     <div
       ref={rootRef}
-      className="absolute z-40 w-5 touch-none"
-      style={{ left: 2 }}
+      className="bg-sidebar/40 border-border absolute inset-y-0 left-0 z-40 w-6 touch-none border-r"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => {
         if (!scrubbing) setOpen(false)
@@ -62,47 +62,47 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
       onPointerUp={onUp}
       onPointerCancel={onUp}
     >
-      <AnimatePresence>
-        {open || scrubbing ? (
-          <motion.div
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -8 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            className="panel pointer-events-none absolute inset-x-0 inset-y-2 rounded-full shadow-xl"
-          >
-            <div className="relative h-full w-full">
-              {markers.map((marker, index) => {
-                const f = marker.y / totalHeight
-                const distance = Math.abs(f - fraction)
-                const width = Math.max(7, 17 - distance * 220)
-                return (
-                  <motion.span
-                    key={index}
-                    className="bg-foreground/35 absolute left-1/2 h-[2px] -translate-x-1/2 rounded-full"
-                    style={{ top: `${f * 100}%` }}
-                    animate={{ width }}
-                    transition={{ type: "spring", stiffness: 500, damping: 34 }}
-                  />
-                )
-              })}
-
+      <div className="sticky top-0 h-svh w-full">
+        <div className="relative h-full w-full py-2">
+          {markers.map((marker, index) => {
+            const f = marker.y / totalHeight
+            const distance = Math.abs(f - fraction)
+            const width = active ? Math.max(6, 15 - distance * 200) : 7
+            return (
               <motion.span
-                className="bg-primary absolute left-1/2 h-1 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                animate={{ top: `${fraction * 100}%` }}
-                transition={{ type: "tween", duration: scrubbing ? 0 : 0.12 }}
+                key={index}
+                className="bg-foreground/30 absolute left-1/2 h-[2px] -translate-x-1/2 rounded-full"
+                style={{ top: `${f * 100}%` }}
+                animate={{ width }}
+                transition={{ type: "spring", stiffness: 500, damping: 34 }}
               />
+            )
+          })}
 
-              <div
-                className="panel absolute left-full ml-3 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap shadow-lg"
+          {active ? (
+            <motion.span
+              className="bg-primary absolute left-1/2 h-1 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full"
+              animate={{ top: `${fraction * 100}%` }}
+              transition={{ type: "tween", duration: scrubbing ? 0 : 0.12 }}
+            />
+          ) : null}
+
+          <AnimatePresence>
+            {active ? (
+              <motion.div
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -6 }}
+                transition={{ duration: 0.12 }}
+                className="panel pointer-events-none absolute left-full z-50 ml-2 rounded-lg px-2.5 py-1 text-xs font-semibold whitespace-nowrap shadow-lg"
                 style={{ top: `${fraction * 100}%`, transform: "translateY(-50%)" }}
               >
                 {current.label}
-              </div>
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   )
 }

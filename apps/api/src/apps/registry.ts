@@ -36,6 +36,7 @@ export const SUITE_APPS: AppManifest[] = [
     category: "storage",
     privacy: "server-side",
     status: "available",
+    beta: true,
     requiredPermission: "photos.asset.read",
   },
   {
@@ -47,6 +48,7 @@ export const SUITE_APPS: AppManifest[] = [
     category: "storage",
     privacy: "server-side",
     status: "available",
+    beta: true,
     requiredPermission: "drive.file.read",
   },
   {
