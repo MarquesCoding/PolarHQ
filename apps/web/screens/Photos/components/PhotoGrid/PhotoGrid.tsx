@@ -590,6 +590,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
             assets={stackMembers}
             index={stackIndex}
             onIndexChange={setStackIndex}
+            filmstrip
             onClose={() => {
               setStackMembers(null)
               setStackIndex(null)

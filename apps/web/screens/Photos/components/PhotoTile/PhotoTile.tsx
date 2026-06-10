@@ -26,7 +26,8 @@ import { motion } from "motion/react"
  */
 const loadedThumbnails = new Set<string>()
 
-const decryptedThumbnails = new Map<string, string>()
+/** Session cache of decrypted thumbnail object URLs, shared with the stack filmstrip. */
+export const decryptedThumbnails = new Map<string, string>()
 
 const motionVideos = new Map<string, string>()
 
