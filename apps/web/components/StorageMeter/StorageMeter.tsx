@@ -15,7 +15,7 @@ const StorageMeter = ({ collapsed }: { collapsed: boolean }) => {
       ? Math.min(100, (usage.usedBytes / usage.quotaBytes) * 100)
       : 0
   const label = usage
-    ? `${formatBytes(usage.usedBytes)}${usage.quotaBytes ? ` of ${formatBytes(usage.quotaBytes)}` : ""}`
+    ? `${formatBytes(usage.usedBytes)} of ${usage.quotaBytes ? formatBytes(usage.quotaBytes) : "Unlimited"}`
     : undefined
 
   return (
