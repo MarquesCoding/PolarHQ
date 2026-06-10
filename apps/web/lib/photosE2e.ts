@@ -12,7 +12,7 @@ import {
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 import { extractMotionVideo } from "@lib/motionPhoto"
-import type { Asset, GridAsset } from "@lib/photos"
+import { type Asset, type GridAsset, fetchStackMembers } from "@lib/photos"
 import { analyzeAudio, analyzeImage, analyzeVideo } from "@lib/thumbnails"
 import exifr from "exifr"
 
@@ -107,6 +107,41 @@ export const downloadItemFor = (
   name: (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename,
   encrypted: asset.encrypted,
 })
+
+type StackableAsset = Pick<
+  GridAsset,
+  "id" | "encrypted" | "encryptedName" | "originalFilename" | "stackId" | "stackCount"
+>
+
+/**
+ * Expand a selection into download items, replacing each stack cover (a burst, an edited
+ * before/after, …) with all of its frames. Non-stacked assets pass through unchanged. Members
+ * are fetched per stack and de-duplicated so overlapping selections don't download twice.
+ */
+export const expandStacksToDownloadItems = async (
+  assets: StackableAsset[],
+): Promise<{ id: string; name: string; encrypted: boolean }[]> => {
+  const items: { id: string; name: string; encrypted: boolean }[] = []
+  const seen = new Set<string>()
+  const push = (asset: Parameters<typeof downloadItemFor>[0]) => {
+    if (seen.has(asset.id)) return
+    seen.add(asset.id)
+    items.push(downloadItemFor(asset))
+  }
+  for (const asset of assets) {
+    if (asset.stackId && asset.stackCount > 1) {
+      try {
+        const { assets: members } = await fetchStackMembers(asset.stackId)
+        for (const member of members) push(member)
+        continue
+      } catch {
+        /* fall back to just the cover if members can't be fetched */
+      }
+    }
+    push(asset)
+  }
+  return items
+}
 
 const putThumbnail = (url: string, body: Uint8Array): Promise<Response> =>
   fetch(url, {

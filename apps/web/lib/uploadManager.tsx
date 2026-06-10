@@ -12,11 +12,12 @@ import {
 import { API_URL } from "@lib/env"
 import { archiveDriveNodes } from "@lib/drive"
 import { uploadEncryptedDriveFile } from "@lib/driveE2e"
+import { detectBurstGroups } from "@lib/burst"
 import { isUnlocked } from "@lib/e2e"
 import { pairLivePhotos } from "@lib/motionPhoto"
 import { downloadDecryptedPhoto, uploadEncryptedMedia } from "@lib/photosE2e"
 import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@lib/download"
-import { deleteAssets, fetchProcessing } from "@lib/photos"
+import { deleteAssets, fetchProcessing, stackAssets } from "@lib/photos"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -246,11 +247,15 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     (files: FileList | File[], target: UploadTarget = { kind: "photos" }) => {
       const all = Array.from(files)
       const motionByImage = new Map<File, File>()
+      // Resolved asset id per uploaded file, used to auto-stack detected burst groups afterwards.
+      const resolvedIds = new Map<File, string>()
       let queue = all
+      let burstGroups: Promise<File[][]> = Promise.resolve([])
       if (target.kind === "photos" && isUnlocked()) {
         const { uploads } = pairLivePhotos(all)
         queue = uploads.map((entry) => entry.file)
         for (const entry of uploads) if (entry.motion) motionByImage.set(entry.file, entry.motion)
+        burstGroups = detectBurstGroups(queue).catch(() => [])
       }
       // Register every file in the tray up front, collecting the ones to upload.
       const jobs: { id: string; file: File }[] = []
@@ -308,6 +313,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
         return uploadPromise
           .then((response) => {
             const result = normalizeResponse(target, response, readyAssets.current)
+            if (result.assetId) resolvedIds.set(file, result.assetId)
             update(id, { status: result.status, loaded: file.size, assetId: result.assetId })
             scheduleInvalidate()
           })
@@ -326,9 +332,28 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
           if (job) await runJob(job)
         }
       })
-      void Promise.all(runners)
+      void Promise.all(runners).then(async () => {
+        // Collapse each detected burst into a stack once its frames have asset ids; the
+        // first (earliest) frame becomes the cover. Members already in the library (deduped)
+        // still carry an id, so they're folded in too.
+        const groups = await burstGroups
+        let stacked = false
+        for (const group of groups) {
+          const memberIds = group
+            .map((file) => resolvedIds.get(file))
+            .filter((value): value is string => Boolean(value))
+          if (memberIds.length < 2) continue
+          try {
+            await stackAssets(memberIds)
+            stacked = true
+          } catch {
+            /* leave the frames as standalone photos if stacking fails */
+          }
+        }
+        if (stacked) invalidate()
+      })
     },
-    [update, scheduleInvalidate],
+    [update, scheduleInvalidate, invalidate],
   )
 
   const remove = useCallback(
