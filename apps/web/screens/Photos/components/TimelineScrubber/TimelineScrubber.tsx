@@ -1,6 +1,7 @@
 "use client"
 
-import { type PointerEvent as ReactPointerEvent, type RefObject, useState } from "react"
+import { type PointerEvent as ReactPointerEvent, type RefObject, useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 import { AnimatePresence, motion } from "motion/react"
 
 export interface TimelineMarker {
@@ -22,8 +23,13 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
   const [open, setOpen] = useState(false)
   const [scrubbing, setScrubbing] = useState(false)
   const [fraction, setFraction] = useState(0)
+  const [slot, setSlot] = useState<HTMLElement | null>(null)
 
-  if (markers.length === 0 || totalHeight <= 0) return null
+  useEffect(() => {
+    setSlot(document.getElementById("photos-rail-root"))
+  }, [])
+
+  if (markers.length === 0 || totalHeight <= 0 || !slot) return null
 
   const setFromY = (clientY: number) => {
     const rect = rootRef.current?.getBoundingClientRect()
@@ -49,21 +55,20 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
     onScrubTo(fraction * totalHeight)
   }
 
-  return (
-    <div className="sticky top-0 left-0 z-40 h-0 w-6">
-      <div
-        ref={rootRef}
-        className="bg-sidebar/40 border-border absolute top-0 left-0 h-[calc(100svh-3.5rem)] w-6 touch-none border-r"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => {
-          if (!scrubbing) setOpen(false)
-        }}
-        onPointerDown={onDown}
-        onPointerMove={onMove}
-        onPointerUp={onUp}
-        onPointerCancel={onUp}
-      >
-        <div className="relative h-full w-full py-2">
+  const rail = (
+    <div
+      ref={rootRef}
+      className="bg-sidebar/40 border-border pointer-events-auto h-full w-6 touch-none border-r"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => {
+        if (!scrubbing) setOpen(false)
+      }}
+      onPointerDown={onDown}
+      onPointerMove={onMove}
+      onPointerUp={onUp}
+      onPointerCancel={onUp}
+    >
+      <div className="relative h-full w-full py-2">
         {markers.map((marker, index) => {
             const f = marker.y / totalHeight
             const distance = Math.abs(f - fraction)
@@ -101,10 +106,11 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
               </motion.div>
             ) : null}
           </AnimatePresence>
-        </div>
       </div>
     </div>
   )
+
+  return createPortal(rail, slot)
 }
 
 export default TimelineScrubber

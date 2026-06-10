@@ -54,9 +54,13 @@ const FlatShell = ({ children }: { children: ReactNode }) => {
         <FlatSidebar />
         <div className="border-border flex min-w-0 flex-1 flex-col border-l">
           <FlatTopBar />
-          <main className="scrollbar-slim min-w-0 flex-1 overflow-y-auto overscroll-none">
-            {children}
-          </main>
+          <div className="relative flex min-h-0 flex-1 flex-col">
+            <main className="scrollbar-slim min-h-0 flex-1 overflow-y-auto overscroll-none">
+              {children}
+            </main>
+            {/* Stationary slot (below the top bar) the timeline rail portals into so it never scrolls. */}
+            <div id="photos-rail-root" className="pointer-events-none absolute inset-0 z-40" />
+          </div>
         </div>
       </div>
       <UploadPanel />
