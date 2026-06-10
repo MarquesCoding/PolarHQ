@@ -2,6 +2,13 @@
 
 Tracking the batch of frontend + infra changes. Checked = done & committed.
 
+## ⭐ TOP PRIORITY — Localisation (do before any other list item)
+- [ ] Stand up i18n infrastructure (catalog + `t()` + provider).
+- [ ] **No hardcoded user-facing strings anywhere** — every component, screen, hook, toast, dialog, aria-label uses a key.
+- [ ] Backend returns **stable message/error keys**, never English prose; frontend translates.
+- [ ] Sweep EVERY file iteratively until zero inline strings remain (web + api).
+- [ ] Add a lint guard so new literal JSX/toast strings get caught.
+
 ## Quick UI wins
 - [x] **Trash page**: move "Empty trash" to the top bar, remove the top gap, tell users photos auto-delete after 30 days. — via shared TopBarActions portal + a notice banner.
 - [x] **Empty trash** button: destructive style (primary variant, but red). — new `destructive-solid` Button variant.

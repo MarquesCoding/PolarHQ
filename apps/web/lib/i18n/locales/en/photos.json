@@ -1,0 +1,15 @@
+{
+  "trash": {
+    "title": "Trash",
+    "empty": "Empty trash",
+    "emptyConfirm": "Empty trash?",
+    "emptied": "Trash emptied",
+    "emptyText": "Trash is empty.",
+    "emptyTitle": "Trash is empty",
+    "emptyHint": "Deleted photos land here and are removed for good after 30 days.",
+    "permanentlyDeleted": "Permanently deleted",
+    "restore": "Restore",
+    "restored": "Restored",
+    "deleteForever": "Delete forever"
+  }
+}

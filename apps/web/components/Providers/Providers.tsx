@@ -3,6 +3,7 @@
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import { ThemeProvider } from "@components/theme-provider"
+import I18nProvider from "@lib/i18n/I18nProvider"
 import { makeQueryClient } from "@lib/queryClient"
 import { type AppStore, makeStore } from "@store/store"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
@@ -20,10 +21,12 @@ const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <ReduxProvider store={storeRef.current}>
       <QueryClientProvider client={queryClientRef.current}>
-        <ThemeProvider>
-          <TooltipProvider>{children}</TooltipProvider>
-          <Toaster position="bottom-right" />
-        </ThemeProvider>
+        <I18nProvider>
+          <ThemeProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+            <Toaster position="bottom-right" />
+          </ThemeProvider>
+        </I18nProvider>
       </QueryClientProvider>
     </ReduxProvider>
   )

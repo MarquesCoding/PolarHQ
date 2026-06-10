@@ -1,12 +1,14 @@
 "use client"
 
 import { deleteAssets, emptyTrash, fetchAssets, restoreAssets } from "@lib/photos"
+import { t as translate } from "@lib/i18n/config"
 import CollectionView from "@pages/Photos/components/CollectionView/CollectionView"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import EmptyState from "@components/EmptyState/EmptyState"
 import { TopBarActions } from "@components/FlatShell"
 import { useQueryClient } from "@tanstack/react-query"
 import { IconRestore, IconTrashX } from "@tabler/icons-react"
+import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
 
@@ -16,11 +18,12 @@ const run = async (action: () => Promise<unknown>, message: string, after: () =>
     toast.success(message)
     after()
   } catch {
-    toast.error("Action failed")
+    toast.error(translate("errors:actionFailed"))
   }
 }
 
 const Trash = () => {
+  const { t } = useTranslation("photos")
   const queryClient = useQueryClient()
   const refresh = () => void queryClient.invalidateQueries({ queryKey: ["photos"] })
 
@@ -29,44 +32,40 @@ const Trash = () => {
       <TopBarActions>
         <ConfirmButton
           icon={<IconTrashX className="size-4" />}
-          confirmLabel="Empty trash?"
+          confirmLabel={t("trash.emptyConfirm")}
           idleVariant="destructive-solid"
-          onConfirm={() => run(emptyTrash, "Trash emptied", refresh)}
+          onConfirm={() => run(emptyTrash, t("trash.emptied"), refresh)}
         >
-          Empty trash
+          {t("trash.empty")}
         </ConfirmButton>
       </TopBarActions>
 
       <CollectionView
-        title="Trash"
+        title={t("trash.title")}
         queryKey={["photos", "trash"]}
         fetcher={(cursor) => fetchAssets({ view: "trash", cursor })}
-        emptyText="Trash is empty."
+        emptyText={t("trash.emptyText")}
         emptyState={
-          <EmptyState
-            icon="trash"
-            title="Trash is empty"
-            hint="Deleted photos land here and are removed for good after 30 days."
-          />
+          <EmptyState icon="trash" title={t("trash.emptyTitle")} hint={t("trash.emptyHint")} />
         }
         onDeleteSelected={deleteAssets}
-        deleteMessage="Permanently deleted"
+        deleteMessage={t("trash.permanentlyDeleted")}
         actions={(ids, after, deleteConfirm) => (
           <>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => run(() => restoreAssets(ids), "Restored", after)}
+              onClick={() => run(() => restoreAssets(ids), t("trash.restored"), after)}
             >
               <IconRestore className="size-4" />
-              Restore
+              {t("trash.restore")}
             </Button>
             <ConfirmButton
               icon={<IconTrashX className="size-4" />}
               armed={deleteConfirm.armed}
               onTrigger={deleteConfirm.trigger}
             >
-              Delete forever
+              {t("trash.deleteForever")}
             </ConfirmButton>
           </>
         )}
