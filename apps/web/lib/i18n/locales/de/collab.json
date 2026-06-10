@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "Dies konnte nicht geöffnet werden.",
+    "deleted": "Dies wurde gelöscht. Deine Änderungen können nicht gespeichert werden.",
+    "deletedNamed": "Dies wurde gelöscht – „{{name}}“. Deine Änderungen können nicht gespeichert werden.",
+    "encrypted": "Dies ist verschlüsselt.",
+    "goBack": "Zurück",
+    "unlock": "Entsperren"
+  },
+  "collabList": {
+    "createFailed": "Erstellen fehlgeschlagen",
+    "deleteFailed": "Löschen fehlgeschlagen",
+    "download": "Herunterladen",
+    "empty": "Hier ist noch nichts.",
+    "movedToTrash": "In den Papierkorb verschoben",
+    "noMatches": "Keine Treffer für deine Suche.",
+    "rename": "Umbenennen",
+    "sharedWithMe": "Für mich freigegeben",
+    "trash": "Papierkorb"
+  },
+  "collabNav": {
+    "library": "Bibliothek"
+  },
+  "collabToolbar": {
+    "createFailed": "Erstellen fehlgeschlagen"
+  }
+}

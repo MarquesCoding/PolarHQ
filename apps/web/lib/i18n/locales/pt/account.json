@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Conta",
+  "subtitle": "Faça a gestão do seu perfil e preferências.",
+  "back": "Voltar",
+  "profile": "Perfil",
+  "name": "Nome",
+  "email": "Email",
+  "preferences": "Preferências",
+  "language": "Idioma",
+  "languageHint": "Escolha o idioma utilizado em toda a interface.",
+  "appearance": "Aspeto",
+  "appearanceHint": "Alterne entre o modo claro e escuro.",
+  "light": "Claro",
+  "dark": "Escuro",
+  "system": "Sistema",
+  "security": "Segurança",
+  "devices": "Dispositivos e sessões",
+  "devicesHint": "Reveja e termine sessão nos dispositivos com sessão iniciada.",
+  "manageDevices": "Gerir dispositivos",
+  "signOut": "Terminar sessão",
+  "languageChanged": "Idioma atualizado"
+}

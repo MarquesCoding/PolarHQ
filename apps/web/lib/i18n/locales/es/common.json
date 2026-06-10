@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "Atrás",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "create": "Crear",
+    "delete": "Eliminar",
+    "done": "Hecho",
+    "download": "Descargar",
+    "getStarted": "Empezar",
+    "next": "Siguiente",
+    "open": "Abrir",
+    "remove": "Quitar",
+    "rename": "Cambiar nombre",
+    "retry": "Reintentar",
+    "save": "Guardar",
+    "share": "Compartir",
+    "signOut": "Cerrar sesión"
+  },
+  "appTile": {
+    "beta": "Beta",
+    "soon": "Pronto"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · compilación {{build}}",
+    "whatsNew": "Novedades"
+  },
+  "collabHeader": {
+    "anonymous": "Anónimo",
+    "notSavedYet": "Sin guardar todavía",
+    "save": "Guardar",
+    "savedAt": "Guardado {{time}}",
+    "saving": "Guardando…",
+    "share": "Compartir",
+    "title": "Título"
+  },
+  "confirmButton": {
+    "confirm": "Confirmar"
+  },
+  "devicesDialog": {
+    "activeNow": "Activo ahora",
+    "lastActive": "Última actividad {{time}}",
+    "signOut": "Cerrar sesión",
+    "signOutError": "No se pudo cerrar la sesión de ese dispositivo",
+    "signedOut": "Sesión del dispositivo cerrada",
+    "thisDevice": "Este dispositivo",
+    "title": "Dispositivos y sesiones"
+  },
+  "dropZone": {
+    "dropToUpload": "Suelta para subir"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Cada cambio que haces se guarda automáticamente y de forma segura en Drive.",
+    "encrypted": "Cifrado",
+    "endToEndEncrypted": "Cifrado de extremo a extremo"
+  },
+  "flatSidebar": {
+    "account": "Cuenta",
+    "apps": "Aplicaciones",
+    "beta": "Beta",
+    "devices": "Dispositivos",
+    "personalWorkspace": "Espacio personal",
+    "replayIntro": "Repetir introducción",
+    "settings": "Ajustes",
+    "signOut": "Cerrar sesión",
+    "storage": "Almacenamiento",
+    "toggleDarkMode": "Alternar modo oscuro",
+    "unlimited": "Ilimitado"
+  },
+  "importButton": {
+    "import": "Importar",
+    "importFailed": "No se pudo importar este archivo"
+  },
+  "launcher": {
+    "loadingApps": "Cargando aplicaciones…",
+    "ofQuota": "de {{quota}}",
+    "signOut": "Cerrar sesión",
+    "storage": "Almacenamiento",
+    "versionBuild": "v{{version}} · compilación {{build}}",
+    "yourApps": "Tus aplicaciones"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Lo he guardado, continuar",
+    "copied": "Código de recuperación copiado",
+    "copyAriaLabel": "Copiar código de recuperación",
+    "description": "Tu cuenta ahora está cifrada de extremo a extremo. Este código de recuperación es la única forma de recuperar tus datos si olvidas tu contraseña: guárdalo en un lugar seguro. No podremos volver a mostrártelo.",
+    "title": "Guarda tu código de recuperación"
+  },
+  "selectionBar": {
+    "clearSelection": "Borrar selección",
+    "download": "Descargar",
+    "downloadAllFrames": "Descargar todos los fotogramas ({{count}})",
+    "downloadCover": "Descargar portada",
+    "downloadCovers": "Descargar portadas ({{count}})",
+    "photoFilename": "Foto",
+    "photosZipFilename": "{{count}} fotos.zip",
+    "share": "Compartir",
+    "shareNameFallback": "foto"
+  },
+  "shareDialog": {
+    "cancel": "Cancelar",
+    "copyLink": "Copiar enlace",
+    "descriptionEncrypted": "Cifrado de extremo a extremo: la clave reside en el enlace y nunca llega al servidor, así que solo quienes tengan el enlace pueden descifrarlo.",
+    "descriptionPublic": "Cualquiera que tenga este enlace puede descargar el archivo.",
+    "directDownload": "Descarga directa",
+    "directDownloadHint": "Omite la página de inicio y descarga de inmediato",
+    "expiresAfter": "Caduca tras",
+    "expiry1Day": "1 día",
+    "expiry1Hour": "1 hora",
+    "expiry30Days": "30 días",
+    "expiry7Days": "7 días",
+    "generatingLink": "Generando enlace…",
+    "limitDownloads": "Limitar descargas",
+    "limitDownloadsHint": "Desactiva el enlace tras un número de descargas",
+    "linkCopied": "Enlace copiado",
+    "maximumDownloads": "Descargas máximas",
+    "permanentLink": "Enlace permanente",
+    "permanentLinkHint": "Mantén este enlace activo hasta que lo elimines",
+    "title": "Compartir «{{name}}»"
+  },
+  "state": {
+    "empty": "Aquí no hay nada todavía",
+    "error": "Algo ha salido mal",
+    "loading": "Cargando…",
+    "saving": "Guardando…"
+  },
+  "units": {
+    "items_one": "{{count}} elemento",
+    "items_other": "{{count}} elementos"
+  },
+  "uploadManager": {
+    "archiveFailed": "Error al archivar",
+    "downloadFailed": "Error al descargar",
+    "taskFailed": "Error",
+    "unsupportedFileType": "Tipo de archivo no compatible",
+    "unsupportedFileTypeToast": "{{name}} es un tipo de archivo no compatible"
+  },
+  "uploadPanel": {
+    "activity": "Actividad",
+    "alreadyInLibrary": "Ya está en la biblioteca",
+    "archiving": "Archivando…",
+    "archivingItems_one": "Archivando {{count}} elemento",
+    "archivingItems_other": "Archivando {{count}} elementos",
+    "archivingProgress": "Archivando {{loaded}} de {{size}}",
+    "bytesProgress": "{{loaded}} de {{size}}",
+    "clear": "Borrar",
+    "collapse": "Contraer",
+    "compressing": "Comprimiendo…",
+    "dismiss": "Descartar",
+    "done": "Hecho",
+    "downloadFailed": "Error al descargar",
+    "downloaded": "Descargado",
+    "downloading": "Descargando…",
+    "downloadingItems_one": "Descargando {{count}} elemento",
+    "downloadingItems_other": "Descargando {{count}} elementos",
+    "expand": "Expandir",
+    "failed": "Error",
+    "processing": "Procesando…",
+    "processingItems_one": "Procesando {{count}} elemento",
+    "processingItems_other": "Procesando {{count}} elementos",
+    "speed": "{{speed}}/s",
+    "transcoding": "Transcodificando…",
+    "uploading": "Subiendo…",
+    "uploadingItems_one": "Subiendo {{count}} elemento",
+    "uploadingItems_other": "Subiendo {{count}} elementos"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} ya está en tu biblioteca",
+    "alreadyInLibrary_other": "{{count}} ya están en tu biblioteca",
+    "uploadFailed": "Error al subir {{name}}",
+    "uploaded_one": "{{count}} foto subida",
+    "uploaded_other": "{{count}} fotos subidas"
+  },
+  "viewToggle": {
+    "gridView": "Vista de cuadrícula",
+    "tableView": "Vista de tabla"
+  }
+}

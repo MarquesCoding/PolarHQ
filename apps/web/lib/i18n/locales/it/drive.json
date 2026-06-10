@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Il mio Drive"
+  },
+  "browser": {
+    "archive": "Archivia",
+    "archiveExtracted": "Archivio estratto",
+    "archiveLabel_one": "Archivio ({{count}} elemento)",
+    "archiveLabel_other": "Archivio ({{count}} elementi)",
+    "copyCreated": "Copia creata",
+    "couldNotCopy": "Impossibile copiare",
+    "couldNotCreate": "Impossibile creare",
+    "couldNotDelete": "Impossibile eliminare",
+    "couldNotExtract": "Impossibile estrarre",
+    "couldNotMove": "Impossibile spostare",
+    "couldNotOpenFile": "Impossibile aprire questo file",
+    "download": "Scarica",
+    "dragOrUpload": "Trascina i file qui o usa Carica.",
+    "extract": "Estrai",
+    "linkCopied": "Link copiato",
+    "move": "Sposta",
+    "movedToFolder_one": "{{count}} elemento spostato in {{name}}",
+    "movedToFolder_other": "{{count}} elementi spostati in {{name}}",
+    "movedToTrash": "Spostato nel cestino",
+    "noMatches": "Nessun risultato per la tua ricerca.",
+    "open": "Apri",
+    "opening": "Apertura…",
+    "rename": "Rinomina",
+    "share": "Condividi",
+    "trash": "Cestino"
+  },
+  "detailsPanel": {
+    "closeDetails": "Chiudi dettagli",
+    "created": "Creato",
+    "empty": "Seleziona un elemento per vederne i dettagli.",
+    "file": "File",
+    "files": "File",
+    "folder": "Cartella",
+    "folders": "Cartelle",
+    "itemsSelected_one": "{{count}} elemento selezionato",
+    "itemsSelected_other": "{{count}} elementi selezionati",
+    "modified": "Modificato",
+    "size": "Dimensione",
+    "title": "Dettagli",
+    "totalSize": "Dimensione totale",
+    "type": "Tipo"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Nuovo documento",
+    "newFolder": "Nuova cartella",
+    "newSpreadsheet": "Nuovo foglio di calcolo",
+    "uploadFiles": "Carica file"
+  },
+  "driveNav": {
+    "drive": "Drive",
+    "location": "Posizione",
+    "myDrive": "Il mio Drive",
+    "trash": "Cestino"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Impossibile creare",
+    "emptyTrash": "Svuota cestino",
+    "emptyTrashConfirm": "Svuotare il cestino?",
+    "new": "Nuovo",
+    "newDocument": "Nuovo documento",
+    "newFolder": "Nuova cartella",
+    "newSpreadsheet": "Nuovo foglio di calcolo",
+    "toggleDetails": "Mostra/nascondi dettagli",
+    "trashEmptied": "Cestino svuotato",
+    "uploadFiles": "Carica file"
+  },
+  "folderLockDialog": {
+    "cancel": "Annulla",
+    "confirmPasswordPlaceholder": "Conferma password",
+    "folderLocked": "Cartella bloccata",
+    "folderPasswordPlaceholder": "Password della cartella",
+    "incorrectPassword": "Password errata.",
+    "lock": "Blocca",
+    "lockDescription": "Imposta una password per aprire questa cartella. Limita l’accesso su questo dispositivo; i tuoi file restano comunque crittografati end-to-end.",
+    "lockFolderTitle": "Blocca cartella",
+    "lockRemoved": "Blocco rimosso",
+    "passwordsDontMatch": "Le password non corrispondono.",
+    "removeDescription": "Inserisci la password della cartella per rimuoverne il blocco.",
+    "removeLock": "Rimuovi blocco",
+    "removeLockTitle": "Rimuovi blocco",
+    "somethingWentWrong": "Si è verificato un errore."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Inserisci la password per visualizzare il contenuto.",
+    "incorrectPassword": "Password errata.",
+    "locked": "“{{name}}” è bloccata",
+    "passwordPlaceholder": "Password della cartella",
+    "unlock": "Sblocca"
+  },
+  "imageViewer": {
+    "close": "Chiudi",
+    "download": "Scarica",
+    "resetZoom": "Reimposta zoom",
+    "zoomIn": "Ingrandisci",
+    "zoomOut": "Riduci"
+  },
+  "modelViewer": {
+    "autoRotate": "Rotazione automatica",
+    "close": "Chiudi",
+    "decryptError": "Impossibile decrittografare il modello",
+    "loading": "Caricamento del modello…",
+    "normals": "Normali",
+    "openError": "Impossibile aprire questo file 3D.",
+    "shaded": "Con ombreggiatura",
+    "toggleGrid": "Mostra/nascondi griglia",
+    "toggleTextures": "Mostra/nascondi texture",
+    "wireframe": "Wireframe"
+  },
+  "moveDialog": {
+    "cancel": "Annulla",
+    "move": "Sposta",
+    "moveFailed": "Impossibile spostare",
+    "moved": "Spostato",
+    "myDrive": "Il mio Drive",
+    "title": "Sposta nella cartella"
+  },
+  "newFolderDialog": {
+    "cancel": "Annulla",
+    "create": "Crea",
+    "createError": "Impossibile creare la cartella",
+    "created": "Cartella creata",
+    "newFolder": "Nuova cartella",
+    "placeholder": "Nome cartella",
+    "title": "Nuova cartella"
+  },
+  "nodeCard": {
+    "deselect": "Deseleziona",
+    "folder": "Cartella",
+    "select": "Seleziona"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Copia link",
+    "details": "Dettagli",
+    "download": "Scarica",
+    "extractHere": "Estrai qui",
+    "lockFolder": "Blocca cartella",
+    "makeCopy": "Crea una copia",
+    "moveToFolder": "Sposta nella cartella",
+    "moveToTrash": "Sposta nel cestino",
+    "open": "Apri",
+    "openInPhotos": "Apri in Foto",
+    "removeLock": "Rimuovi blocco",
+    "rename": "Rinomina",
+    "share": "Condividi",
+    "versionHistory": "Mostra cronologia versioni",
+    "view": "Visualizza",
+    "viewIn3d": "Visualizza in 3D"
+  },
+  "nodeTable": {
+    "deselect": "Deseleziona",
+    "modified": "Modificato",
+    "name": "Nome",
+    "select": "Seleziona",
+    "selectAll": "Seleziona tutto",
+    "size": "Dimensione"
+  },
+  "parentCard": {
+    "parentFolder": "Cartella principale"
+  },
+  "renameDialog": {
+    "cancel": "Annulla",
+    "couldNotRename": "Impossibile rinominare",
+    "renamed": "Rinominato",
+    "save": "Salva",
+    "title": "Rinomina"
+  },
+  "shell": {
+    "search": "Cerca in Drive"
+  },
+  "trash": {
+    "actionFailed": "Azione non riuscita",
+    "deleteForever": "Elimina definitivamente",
+    "empty": "Il cestino è vuoto.",
+    "permanentlyDeleted": "Eliminato definitivamente",
+    "restore": "Ripristina",
+    "restored": "Ripristinato",
+    "retentionNotice": "Gli elementi qui presenti vengono eliminati definitivamente 30 giorni dopo essere stati spostati nel cestino.",
+    "title": "Cestino"
+  },
+  "versionHistoryDialog": {
+    "close": "Chiudi",
+    "download": "Scarica versione",
+    "empty": "Nessuna versione precedente. Ricarica un file con lo stesso nome per crearne una.",
+    "loading": "Caricamento…",
+    "restore": "Ripristina",
+    "restoreFailed": "Impossibile ripristinare",
+    "restored": "Versione ripristinata",
+    "title": "Cronologia versioni",
+    "versionLabel": "Versione {{number}}"
+  }
+}

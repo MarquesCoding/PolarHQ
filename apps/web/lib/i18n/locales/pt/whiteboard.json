@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Refazer",
+    "resetZoom": "Repor zoom",
+    "undo": "Anular",
+    "zoomIn": "Aumentar zoom",
+    "zoomOut": "Diminuir zoom"
+  },
+  "propertiesPanel": {
+    "background": "Fundo",
+    "bringForward": "Trazer para a frente",
+    "bringToFront": "Trazer para primeiro plano",
+    "layers": "Camadas",
+    "opacity": "Opacidade",
+    "sendBackward": "Enviar para trás",
+    "sendToBack": "Enviar para segundo plano",
+    "stroke": "Traço",
+    "strokeWidth": "Espessura do traço"
+  },
+  "shell": {
+    "myWhiteboards": "Os meus quadros brancos",
+    "newWhiteboard": "Novo quadro branco",
+    "product": "Quadro branco",
+    "search": "Procurar quadros brancos",
+    "whiteboards": "Quadros brancos"
+  },
+  "toolbar": {
+    "arrow": "Seta",
+    "diamond": "Losango",
+    "draw": "Desenhar",
+    "ellipse": "Elipse",
+    "eraser": "Borracha",
+    "line": "Linha",
+    "pan": "Deslocar",
+    "rectangle": "Retângulo",
+    "select": "Selecionar",
+    "text": "Texto"
+  },
+  "whiteboardList": {
+    "createLabel": "Novo quadro branco",
+    "title": "Quadros brancos"
+  }
+}

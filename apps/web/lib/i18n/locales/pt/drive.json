@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "A Minha Drive"
+  },
+  "browser": {
+    "archive": "Arquivar",
+    "archiveExtracted": "Arquivo extraído",
+    "archiveLabel_one": "Arquivo ({{count}} item)",
+    "archiveLabel_other": "Arquivo ({{count}} itens)",
+    "copyCreated": "Cópia criada",
+    "couldNotCopy": "Não foi possível copiar",
+    "couldNotCreate": "Não foi possível criar",
+    "couldNotDelete": "Não foi possível eliminar",
+    "couldNotExtract": "Não foi possível extrair",
+    "couldNotMove": "Não foi possível mover",
+    "couldNotOpenFile": "Não foi possível abrir este ficheiro",
+    "download": "Transferir",
+    "dragOrUpload": "Arraste ficheiros para aqui ou utilize Carregar.",
+    "extract": "Extrair",
+    "linkCopied": "Ligação copiada",
+    "move": "Mover",
+    "movedToFolder_one": "{{count}} item movido para {{name}}",
+    "movedToFolder_other": "{{count}} itens movidos para {{name}}",
+    "movedToTrash": "Movido para o lixo",
+    "noMatches": "Nada corresponde à sua pesquisa.",
+    "open": "Abrir",
+    "opening": "A abrir…",
+    "rename": "Mudar o nome",
+    "share": "Partilhar",
+    "trash": "Lixo"
+  },
+  "detailsPanel": {
+    "closeDetails": "Fechar detalhes",
+    "created": "Criado",
+    "empty": "Selecione um item para ver os respetivos detalhes.",
+    "file": "Ficheiro",
+    "files": "Ficheiros",
+    "folder": "Pasta",
+    "folders": "Pastas",
+    "itemsSelected_one": "{{count}} item selecionado",
+    "itemsSelected_other": "{{count}} itens selecionados",
+    "modified": "Modificado",
+    "size": "Tamanho",
+    "title": "Detalhes",
+    "totalSize": "Tamanho total",
+    "type": "Tipo"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Novo documento",
+    "newFolder": "Nova pasta",
+    "newSpreadsheet": "Nova folha de cálculo",
+    "uploadFiles": "Carregar ficheiros"
+  },
+  "driveNav": {
+    "drive": "Drive",
+    "location": "Localização",
+    "myDrive": "A Minha Drive",
+    "trash": "Lixo"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Não foi possível criar",
+    "emptyTrash": "Esvaziar lixo",
+    "emptyTrashConfirm": "Esvaziar o lixo?",
+    "new": "Novo",
+    "newDocument": "Novo documento",
+    "newFolder": "Nova pasta",
+    "newSpreadsheet": "Nova folha de cálculo",
+    "toggleDetails": "Mostrar/ocultar detalhes",
+    "trashEmptied": "Lixo esvaziado",
+    "uploadFiles": "Carregar ficheiros"
+  },
+  "folderLockDialog": {
+    "cancel": "Cancelar",
+    "confirmPasswordPlaceholder": "Confirmar palavra-passe",
+    "folderLocked": "Pasta bloqueada",
+    "folderPasswordPlaceholder": "Palavra-passe da pasta",
+    "incorrectPassword": "Palavra-passe incorreta.",
+    "lock": "Bloquear",
+    "lockDescription": "Defina uma palavra-passe para abrir esta pasta. Limita o acesso neste dispositivo — os seus ficheiros permanecem encriptados de ponta a ponta independentemente disso.",
+    "lockFolderTitle": "Bloquear pasta",
+    "lockRemoved": "Bloqueio removido",
+    "passwordsDontMatch": "As palavras-passe não coincidem.",
+    "removeDescription": "Introduza a palavra-passe da pasta para remover o respetivo bloqueio.",
+    "removeLock": "Remover bloqueio",
+    "removeLockTitle": "Remover bloqueio",
+    "somethingWentWrong": "Algo correu mal."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Introduza a palavra-passe para ver o conteúdo.",
+    "incorrectPassword": "Palavra-passe incorreta.",
+    "locked": "“{{name}}” está bloqueada",
+    "passwordPlaceholder": "Palavra-passe da pasta",
+    "unlock": "Desbloquear"
+  },
+  "imageViewer": {
+    "close": "Fechar",
+    "download": "Transferir",
+    "resetZoom": "Repor zoom",
+    "zoomIn": "Aumentar zoom",
+    "zoomOut": "Diminuir zoom"
+  },
+  "modelViewer": {
+    "autoRotate": "Rotação automática",
+    "close": "Fechar",
+    "decryptError": "Não foi possível desencriptar o modelo",
+    "loading": "A carregar modelo…",
+    "normals": "Normais",
+    "openError": "Não foi possível abrir este ficheiro 3D.",
+    "shaded": "Sombreado",
+    "toggleGrid": "Mostrar/ocultar grelha",
+    "toggleTextures": "Mostrar/ocultar texturas",
+    "wireframe": "Estrutura de arame"
+  },
+  "moveDialog": {
+    "cancel": "Cancelar",
+    "move": "Mover",
+    "moveFailed": "Não foi possível mover",
+    "moved": "Movido",
+    "myDrive": "A Minha Drive",
+    "title": "Mover para pasta"
+  },
+  "newFolderDialog": {
+    "cancel": "Cancelar",
+    "create": "Criar",
+    "createError": "Não foi possível criar a pasta",
+    "created": "Pasta criada",
+    "newFolder": "Nova pasta",
+    "placeholder": "Nome da pasta",
+    "title": "Nova pasta"
+  },
+  "nodeCard": {
+    "deselect": "Anular seleção",
+    "folder": "Pasta",
+    "select": "Selecionar"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Copiar ligação",
+    "details": "Detalhes",
+    "download": "Transferir",
+    "extractHere": "Extrair aqui",
+    "lockFolder": "Bloquear pasta",
+    "makeCopy": "Criar uma cópia",
+    "moveToFolder": "Mover para pasta",
+    "moveToTrash": "Mover para o lixo",
+    "open": "Abrir",
+    "openInPhotos": "Abrir em Fotografias",
+    "removeLock": "Remover bloqueio",
+    "rename": "Mudar o nome",
+    "share": "Partilhar",
+    "versionHistory": "Ver histórico de versões",
+    "view": "Ver",
+    "viewIn3d": "Ver em 3D"
+  },
+  "nodeTable": {
+    "deselect": "Anular seleção",
+    "modified": "Modificado",
+    "name": "Nome",
+    "select": "Selecionar",
+    "selectAll": "Selecionar tudo",
+    "size": "Tamanho"
+  },
+  "parentCard": {
+    "parentFolder": "Pasta superior"
+  },
+  "renameDialog": {
+    "cancel": "Cancelar",
+    "couldNotRename": "Não foi possível mudar o nome",
+    "renamed": "Nome alterado",
+    "save": "Guardar",
+    "title": "Mudar o nome"
+  },
+  "shell": {
+    "search": "Pesquisar na Drive"
+  },
+  "trash": {
+    "actionFailed": "A ação falhou",
+    "deleteForever": "Eliminar definitivamente",
+    "empty": "O lixo está vazio.",
+    "permanentlyDeleted": "Eliminado definitivamente",
+    "restore": "Restaurar",
+    "restored": "Restaurado",
+    "retentionNotice": "Os itens aqui são eliminados definitivamente 30 dias após serem movidos para o lixo.",
+    "title": "Lixo"
+  },
+  "versionHistoryDialog": {
+    "close": "Fechar",
+    "download": "Transferir versão",
+    "empty": "Não existem versões anteriores. Volte a carregar um ficheiro com o mesmo nome para criar uma.",
+    "loading": "A carregar…",
+    "restore": "Restaurar",
+    "restoreFailed": "Não foi possível restaurar",
+    "restored": "Versão restaurada",
+    "title": "Histórico de versões",
+    "versionLabel": "Versão {{number}}"
+  }
+}

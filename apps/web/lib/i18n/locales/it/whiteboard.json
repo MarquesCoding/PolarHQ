@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Ripeti",
+    "resetZoom": "Reimposta zoom",
+    "undo": "Annulla",
+    "zoomIn": "Aumenta zoom",
+    "zoomOut": "Riduci zoom"
+  },
+  "propertiesPanel": {
+    "background": "Sfondo",
+    "bringForward": "Porta avanti",
+    "bringToFront": "Porta in primo piano",
+    "layers": "Livelli",
+    "opacity": "Opacità",
+    "sendBackward": "Porta indietro",
+    "sendToBack": "Porta in fondo",
+    "stroke": "Tratto",
+    "strokeWidth": "Spessore tratto"
+  },
+  "shell": {
+    "myWhiteboards": "Le mie lavagne",
+    "newWhiteboard": "Nuova lavagna",
+    "product": "Lavagna",
+    "search": "Cerca lavagne",
+    "whiteboards": "Lavagne"
+  },
+  "toolbar": {
+    "arrow": "Freccia",
+    "diamond": "Rombo",
+    "draw": "Disegna",
+    "ellipse": "Ellisse",
+    "eraser": "Gomma",
+    "line": "Linea",
+    "pan": "Sposta",
+    "rectangle": "Rettangolo",
+    "select": "Seleziona",
+    "text": "Testo"
+  },
+  "whiteboardList": {
+    "createLabel": "Nuova lavagna",
+    "title": "Lavagne"
+  }
+}

@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "Zurück",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "create": "Erstellen",
+    "delete": "Löschen",
+    "done": "Fertig",
+    "download": "Herunterladen",
+    "getStarted": "Loslegen",
+    "next": "Weiter",
+    "open": "Öffnen",
+    "remove": "Entfernen",
+    "rename": "Umbenennen",
+    "retry": "Erneut versuchen",
+    "save": "Speichern",
+    "share": "Teilen",
+    "signOut": "Abmelden"
+  },
+  "appTile": {
+    "beta": "Beta",
+    "soon": "Bald"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · Build {{build}}",
+    "whatsNew": "Neuigkeiten"
+  },
+  "collabHeader": {
+    "anonymous": "Anonym",
+    "notSavedYet": "Noch nicht gespeichert",
+    "save": "Speichern",
+    "savedAt": "Gespeichert {{time}}",
+    "saving": "Wird gespeichert…",
+    "share": "Teilen",
+    "title": "Titel"
+  },
+  "confirmButton": {
+    "confirm": "Bestätigen"
+  },
+  "devicesDialog": {
+    "activeNow": "Jetzt aktiv",
+    "lastActive": "Zuletzt aktiv {{time}}",
+    "signOut": "Abmelden",
+    "signOutError": "Dieses Gerät konnte nicht abgemeldet werden",
+    "signedOut": "Gerät abgemeldet",
+    "thisDevice": "Dieses Gerät",
+    "title": "Geräte & Sitzungen"
+  },
+  "dropZone": {
+    "dropToUpload": "Zum Hochladen ablegen"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Jede Änderung wird automatisch und sicher in Drive gespeichert.",
+    "encrypted": "Verschlüsselt",
+    "endToEndEncrypted": "Ende-zu-Ende-verschlüsselt"
+  },
+  "flatSidebar": {
+    "account": "Konto",
+    "apps": "Apps",
+    "beta": "Beta",
+    "devices": "Geräte",
+    "personalWorkspace": "Persönlicher Arbeitsbereich",
+    "replayIntro": "Intro erneut abspielen",
+    "settings": "Einstellungen",
+    "signOut": "Abmelden",
+    "storage": "Speicher",
+    "toggleDarkMode": "Dunkelmodus umschalten",
+    "unlimited": "Unbegrenzt"
+  },
+  "importButton": {
+    "import": "Importieren",
+    "importFailed": "Diese Datei konnte nicht importiert werden"
+  },
+  "launcher": {
+    "loadingApps": "Apps werden geladen…",
+    "ofQuota": "von {{quota}}",
+    "signOut": "Abmelden",
+    "storage": "Speicher",
+    "versionBuild": "v{{version}} · Build {{build}}",
+    "yourApps": "Deine Apps"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Ich habe ihn gespeichert – weiter",
+    "copied": "Wiederherstellungscode kopiert",
+    "copyAriaLabel": "Wiederherstellungscode kopieren",
+    "description": "Dein Konto ist jetzt Ende-zu-Ende-verschlüsselt. Dieser Wiederherstellungscode ist die einzige Möglichkeit, deine Daten wiederherzustellen, falls du dein Passwort vergisst – bewahre ihn an einem sicheren Ort auf. Wir können ihn nicht erneut anzeigen.",
+    "title": "Speichere deinen Wiederherstellungscode"
+  },
+  "selectionBar": {
+    "clearSelection": "Auswahl aufheben",
+    "download": "Herunterladen",
+    "downloadAllFrames": "Alle Frames herunterladen ({{count}})",
+    "downloadCover": "Cover herunterladen",
+    "downloadCovers": "Cover herunterladen ({{count}})",
+    "photoFilename": "Foto",
+    "photosZipFilename": "{{count}} Fotos.zip",
+    "share": "Teilen",
+    "shareNameFallback": "Foto"
+  },
+  "shareDialog": {
+    "cancel": "Abbrechen",
+    "copyLink": "Link kopieren",
+    "descriptionEncrypted": "Ende-zu-Ende-verschlüsselt: Der Schlüssel befindet sich im Link und gelangt nie auf den Server, sodass nur Personen mit dem Link sie entschlüsseln können.",
+    "descriptionPublic": "Jeder mit diesem Link kann die Datei herunterladen.",
+    "directDownload": "Direkter Download",
+    "directDownloadHint": "Die Zielseite überspringen und sofort herunterladen",
+    "expiresAfter": "Läuft ab nach",
+    "expiry1Day": "1 Tag",
+    "expiry1Hour": "1 Stunde",
+    "expiry30Days": "30 Tage",
+    "expiry7Days": "7 Tage",
+    "generatingLink": "Link wird erstellt…",
+    "limitDownloads": "Downloads begrenzen",
+    "limitDownloadsHint": "Den Link nach einer bestimmten Anzahl von Downloads deaktivieren",
+    "linkCopied": "Link kopiert",
+    "maximumDownloads": "Maximale Downloads",
+    "permanentLink": "Permanenter Link",
+    "permanentLinkHint": "Diesen Link aktiv halten, bis du ihn löschst",
+    "title": "„{{name}}“ teilen"
+  },
+  "state": {
+    "empty": "Hier ist noch nichts",
+    "error": "Etwas ist schiefgelaufen",
+    "loading": "Wird geladen…",
+    "saving": "Wird gespeichert…"
+  },
+  "units": {
+    "items_one": "{{count}} Element",
+    "items_other": "{{count}} Elemente"
+  },
+  "uploadManager": {
+    "archiveFailed": "Archivierung fehlgeschlagen",
+    "downloadFailed": "Download fehlgeschlagen",
+    "taskFailed": "Fehlgeschlagen",
+    "unsupportedFileType": "Nicht unterstützter Dateityp",
+    "unsupportedFileTypeToast": "{{name}} ist ein nicht unterstützter Dateityp"
+  },
+  "uploadPanel": {
+    "activity": "Aktivität",
+    "alreadyInLibrary": "Bereits in der Bibliothek",
+    "archiving": "Wird archiviert…",
+    "archivingItems_one": "{{count}} Element wird archiviert",
+    "archivingItems_other": "{{count}} Elemente werden archiviert",
+    "archivingProgress": "{{loaded}} von {{size}} werden archiviert",
+    "bytesProgress": "{{loaded}} von {{size}}",
+    "clear": "Leeren",
+    "collapse": "Einklappen",
+    "compressing": "Wird komprimiert…",
+    "dismiss": "Schließen",
+    "done": "Fertig",
+    "downloadFailed": "Download fehlgeschlagen",
+    "downloaded": "Heruntergeladen",
+    "downloading": "Wird heruntergeladen…",
+    "downloadingItems_one": "{{count}} Element wird heruntergeladen",
+    "downloadingItems_other": "{{count}} Elemente werden heruntergeladen",
+    "expand": "Ausklappen",
+    "failed": "Fehlgeschlagen",
+    "processing": "Wird verarbeitet…",
+    "processingItems_one": "{{count}} Element wird verarbeitet",
+    "processingItems_other": "{{count}} Elemente werden verarbeitet",
+    "speed": "{{speed}}/s",
+    "transcoding": "Wird transkodiert…",
+    "uploading": "Wird hochgeladen…",
+    "uploadingItems_one": "{{count}} Element wird hochgeladen",
+    "uploadingItems_other": "{{count}} Elemente werden hochgeladen"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} bereits in deiner Bibliothek",
+    "alreadyInLibrary_other": "{{count}} bereits in deiner Bibliothek",
+    "uploadFailed": "{{name}} konnte nicht hochgeladen werden",
+    "uploaded_one": "{{count}} Foto hochgeladen",
+    "uploaded_other": "{{count}} Fotos hochgeladen"
+  },
+  "viewToggle": {
+    "gridView": "Rasteransicht",
+    "tableView": "Tabellenansicht"
+  }
+}

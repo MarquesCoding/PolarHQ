@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Administratorkonto erstellt",
+    "closedLabel": "Geschlossen – keine neuen Konten",
+    "creating": "Wird erstellt…",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "Gültige E-Mail-Adresse eingeben",
+    "inviteOnlyLabel": "Nur mit Einladung – Konten werden von Admins erstellt",
+    "nameLabel": "Dein Name",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "Name ist erforderlich",
+    "openLabel": "Offen – jeder kann sich registrieren",
+    "passwordLabel": "Passwort",
+    "passwordMin": "Mindestens 8 Zeichen verwenden",
+    "passwordPlaceholder": "Mindestens 8 Zeichen",
+    "registrationModeLabel": "Wer kann Konten erstellen?",
+    "setupFailed": "Einrichtung fehlgeschlagen",
+    "signInFailed": "Anmeldung fehlgeschlagen",
+    "submit": "Admin erstellen & fortfahren"
+  },
+  "createGroupsStep": {
+    "addGroup": "Gruppe hinzufügen",
+    "adding": "Wird hinzugefügt…",
+    "couldNotCreate": "Gruppe konnte nicht erstellt werden",
+    "createdGroup": "Gruppe „{{name}}“ erstellt",
+    "descriptionLabel": "Beschreibung (optional)",
+    "descriptionPlaceholder": "Größeres Kontingent, frühe Funktionen",
+    "finishSetup": "Einrichtung abschließen",
+    "groupNameLabel": "Gruppenname",
+    "groupNamePlaceholder": "Power-User",
+    "intro": "Mit Gruppen kannst du gemeinsame Rollen und Limits (z. B. Speicherkontingente) für viele Benutzer auf einmal festlegen. Erstelle jetzt ein paar oder überspringe diesen Schritt und hole ihn später in den Admin-Einstellungen nach.",
+    "nameRequired": "Gruppenname ist erforderlich",
+    "skipFinish": "Überspringen & abschließen"
+  },
+  "setup": {
+    "adminDescription": "Erstelle das erste Administratorkonto, um loszulegen.",
+    "groupsDescription": "Richte Gruppen für deine Benutzer ein (optional).",
+    "loading": "Wird geladen…",
+    "welcome": "Willkommen bei {{name}}"
+  }
+}

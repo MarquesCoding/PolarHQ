@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "A ação falhou",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Falha na troca do código do Google.",
+    "gdriveConnectFailed": "Falha ao ligar o Google Drive.",
+    "gdriveNoRefreshToken": "O Google não devolveu um token de atualização (revogue o acesso anterior e tente novamente).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET não estão configurados",
+    "invalidOauthState": "Estado de OAuth inválido."
+  },
+  "badRequest": "Pedido inválido.",
+  "docs": {
+    "alreadyOwner": "Já é o proprietário",
+    "emailRequired": "O e-mail é obrigatório.",
+    "noPublicKey": "Sem chave pública.",
+    "userNotFound": "Utilizador inexistente"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "não é possível eliminar uma pasta do sistema",
+    "cannotLockFolder": "não é possível bloquear esta pasta",
+    "cannotModifySystemFolder": "não é possível modificar uma pasta do sistema",
+    "extractFailed": "não foi possível extrair o arquivo",
+    "fileRequired": "o campo do ficheiro é obrigatório",
+    "photosMediaFilesOnly": "A pasta Fotografias só aceita ficheiros multimédia",
+    "photosMediaOnly": "A pasta Fotografias só aceita imagens, vídeo e áudio"
+  },
+  "forbidden": "Não tem permissão para fazer isso.",
+  "generic": "Algo correu mal.",
+  "invalidInput": "Entrada inválida.",
+  "notFound": "Não encontrado.",
+  "photos": {
+    "fileRequired": "É necessário um ficheiro.",
+    "stackNeedsTwoAssets": "Selecione pelo menos duas das suas fotografias para empilhar."
+  },
+  "rateLimited": "Demasiados pedidos. Tente novamente dentro de momentos.",
+  "setup": {
+    "alreadyComplete": "A configuração já foi concluída",
+    "registrationDisabled": "o registo está desativado nesta instância"
+  },
+  "unauthorized": "Tem de iniciar sessão para fazer isso.",
+  "uploads": {
+    "tooLarge": "O ficheiro excede o limite de carregamento de {{limit}}"
+  }
+}
