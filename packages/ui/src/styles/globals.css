@@ -183,6 +183,34 @@
   background-origin: border-box;
   background-clip: padding-box, border-box;
 }
+
+/* Embossed active row: subtle raised fill + top-light/bottom-dim gradient border + soft shadow. */
+@utility depth-active {
+  border: 1px solid transparent;
+  background-image:
+    linear-gradient(
+      color-mix(in oklab, var(--foreground) 8%, var(--sidebar)),
+      color-mix(in oklab, var(--foreground) 8%, var(--sidebar))
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--foreground) 26%, transparent),
+      color-mix(in oklab, var(--foreground) 5%, transparent)
+    );
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow:
+    0 1px 2px color-mix(in oklab, black 28%, transparent),
+    inset 0 1px 0 color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+
+/* Two-tone hairline separator: a dim line with a faint light line just below it. */
+@utility depth-divider {
+  height: 1px;
+  background-color: color-mix(in oklab, var(--foreground) 9%, transparent);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--foreground) 4%, transparent);
+}
+
 /* Orbit Docs — TipTap/ProseMirror editor content styling */
 .doc-editor {
   outline: none;

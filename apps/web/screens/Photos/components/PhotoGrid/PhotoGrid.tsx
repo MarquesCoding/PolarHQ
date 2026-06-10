@@ -22,6 +22,8 @@ const HEADER_GAP = 6
 /** Visual margin around the grid, baked into the layout so the surrounding space is still
  * part of the (selectable) grid container rather than dead outer padding. */
 const INSET = 24
+// Left gutter reserved for the always-visible timeline rail.
+const RAIL = 26
 const RESIZE_EASE = "cubic-bezier(0.22, 0.61, 0.36, 1)"
 const TILE_RESIZE_CSS = `top 0.3s ${RESIZE_EASE}, left 0.3s ${RESIZE_EASE}, width 0.3s ${RESIZE_EASE}, height 0.3s ${RESIZE_EASE}`
 const HEADER_RESIZE_CSS = `top 0.3s ${RESIZE_EASE}`
@@ -119,7 +121,7 @@ const buildLayout = (
   square: boolean,
 ): Layout => {
   if (width <= 0 || assets.length === 0) return { rows: [], labels: [], totalHeight: 0 }
-  const innerWidth = Math.max(width - INSET * 2, 1)
+  const innerWidth = Math.max(width - INSET * 2 - RAIL, 1)
   const rows: Row[] = []
   const labels: DayLabel[] = []
 
@@ -163,7 +165,7 @@ const buildLayout = (
       const labelY = y
       if (slice.some((item) => item.dayStart)) y += HEADER_HEIGHT + HEADER_GAP
       const cells = slice.map((item, column) => {
-        const x = INSET + column * (tile + gap)
+        const x = INSET + RAIL + column * (tile + gap)
         if (item.dayStart) addLabel(item, x, labelY)
         return {
           asset: item.asset,
@@ -193,7 +195,7 @@ const buildLayout = (
       const rowY = y
       const gaps = (current.length - 1) * gap
       const height = stretch ? (innerWidth - gaps) / aspectSum : rowHeight
-      let x = INSET
+      let x = INSET + RAIL
       const cells = current.map((item) => {
         const cellWidth = height * item.aspect
         if (item.dayStart) addLabel(item, x, labelY)
@@ -528,7 +530,9 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
                 <IconCircle className="text-muted-foreground/60 size-5 shrink-0" />
               )}
             </span>
-            <span>{label.label}</span>
+            <span className="text-foreground/70 text-xs font-semibold tracking-wide uppercase">
+              {label.label}
+            </span>
           </Button>
         </div>
       ))}

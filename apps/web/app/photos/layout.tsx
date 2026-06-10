@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
-import PhotosShell from "@pages/Photos/components/PhotosShell/PhotosShell"
+import FlatShell from "@pages/Photos/components/FlatShell/FlatShell"
 
-const Layout = ({ children }: { children: ReactNode }) => <PhotosShell>{children}</PhotosShell>
+const Layout = ({ children }: { children: ReactNode }) => <FlatShell>{children}</FlatShell>
 
 export default Layout
