@@ -19,7 +19,7 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 
 ## Dialogs / onboarding
 - [ ] **Storage dialog**: largest file, which app uses most storage, breakdown.
-- [ ] **First-run onboarding card** (bottom-right), carousel of real flow examples.
+- [x] **First-run onboarding card** (bottom-right), carousel of flow examples (privacy / upload / albums+share), dismiss persisted in localStorage, mounted in FlatShell.
 
 ## Larger features
 - [ ] **Picture book / collage**: canvas to position + rotate photos, slide-in sheet of all photos, shareable link.
