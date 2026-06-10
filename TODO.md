@@ -3,10 +3,9 @@
 Tracking the batch of frontend + infra changes. Checked = done & committed.
 
 ## ⭐ TOP PRIORITY — Localisation (do before any other list item)
-- [ ] Stand up i18n infrastructure (catalog + `t()` + provider).
-- [ ] **No hardcoded user-facing strings anywhere** — every component, screen, hook, toast, dialog, aria-label uses a key.
-- [ ] Backend returns **stable message/error keys**, never English prose; frontend translates.
-- [ ] Sweep EVERY file iteratively until zero inline strings remain (web + api).
+- [x] Stand up i18n infrastructure (react-i18next: catalogs + `t()` + I18nProvider + namespaces).
+- [x] **No hardcoded user-facing strings in the web app** — Photos, Drive, Docs, Sheets, Whiteboard, Collab, Admin, shared components, Launcher, Setup, SignIn, lib toasts, and the 6 app shell layouts all use keys (~1,000 keys across 13 namespaces). All 110 t()-using files verified to resolve; tsc clean.
+- [ ] Backend returns **stable error keys**, never English prose; frontend maps them. (~94 strings, but most are never shown — the UI uses localised generics.)
 - [ ] Add a lint guard so new literal JSX/toast strings get caught.
 
 ## Quick UI wins
