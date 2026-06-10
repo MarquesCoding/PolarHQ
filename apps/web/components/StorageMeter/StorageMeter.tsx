@@ -5,6 +5,7 @@ import { formatBytes } from "@lib/format"
 import { fetchUsage } from "@lib/photos"
 import { useQuery } from "@tanstack/react-query"
 import StorageMeterBase from "@workspace/ui/components/storage-meter"
+import Changelog from "@components/Changelog/Changelog"
 
 /** Shared storage-usage footer (Photos + Drive share one storage quota). */
 const StorageMeter = ({ collapsed }: { collapsed: boolean }) => {
@@ -23,7 +24,7 @@ const StorageMeter = ({ collapsed }: { collapsed: boolean }) => {
       collapsed={collapsed}
       percent={percent}
       label={label}
-      footer={`v${APP_VERSION} · build ${APP_BUILD}`}
+      footer={<Changelog version={APP_VERSION} build={APP_BUILD} />}
     />
   )
 }

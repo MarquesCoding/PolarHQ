@@ -1,7 +1,9 @@
+import type { ReactNode } from "react"
+
 interface StorageMeterProps {
   percent: number
   label?: string
-  footer?: string
+  footer?: ReactNode
   collapsed?: boolean
 }
 
@@ -54,9 +56,9 @@ const StorageMeter = ({ percent, label, footer, collapsed }: StorageMeterProps) 
         </>
       ) : null}
       {footer ? (
-        <p className="text-muted-foreground/60 pt-0.5 text-center font-mono text-[10px] tracking-tight">
+        <div className="text-muted-foreground/60 pt-0.5 text-center font-mono text-[10px] tracking-tight">
           {footer}
-        </p>
+        </div>
       ) : null}
     </div>
   )
