@@ -1,34 +1,37 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { useTranslation } from "react-i18next"
 import { FlatShell, FlatSidebar, FlatTopBar, type TopBarTitle } from "@components/FlatShell"
 import CollabNav from "@pages/Collab/CollabNav"
 import CollabToolbar from "@pages/Collab/CollabToolbar"
 
-const TITLES: TopBarTitle[] = [{ match: () => true, label: "Whiteboards", icon: "palette" }]
-
-const Layout = ({ children }: { children: ReactNode }) => (
-  <FlatShell
-    sidebar={
-      <FlatSidebar productName="Whiteboard" beta searchPlaceholder="Search Whiteboards">
-        <CollabNav
-          type="board"
-          route="/whiteboards"
-          icon="palette"
-          navLabel="My Whiteboards"
-          listLabel="Whiteboards"
+const Layout = ({ children }: { children: ReactNode }) => {
+  const { t } = useTranslation("whiteboard")
+  const titles: TopBarTitle[] = [{ match: () => true, label: t("shell.whiteboards"), icon: "palette" }]
+  return (
+    <FlatShell
+      sidebar={
+        <FlatSidebar productName={t("shell.product")} beta searchPlaceholder={t("shell.search")}>
+          <CollabNav
+            type="board"
+            route="/whiteboards"
+            icon="palette"
+            navLabel={t("shell.myWhiteboards")}
+            listLabel={t("shell.whiteboards")}
+          />
+        </FlatSidebar>
+      }
+      topBar={
+        <FlatTopBar
+          titles={titles}
+          extra={<CollabToolbar type="board" route="/whiteboards" createLabel={t("shell.newWhiteboard")} />}
         />
-      </FlatSidebar>
-    }
-    topBar={
-      <FlatTopBar
-        titles={TITLES}
-        extra={<CollabToolbar type="board" route="/whiteboards" createLabel="New whiteboard" />}
-      />
-    }
-  >
-    {children}
-  </FlatShell>
-)
+      }
+    >
+      {children}
+    </FlatShell>
+  )
+}
 
 export default Layout

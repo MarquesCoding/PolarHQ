@@ -162,6 +162,12 @@
     "roleViewer": "Viewer",
     "title": "Share “{{name}}”"
   },
+  "shell": {
+    "documents": "Documents",
+    "myDocuments": "My Documents",
+    "product": "Docs",
+    "search": "Search Docs"
+  },
   "unlockDialog": {
     "cancel": "Cancel",
     "checkingKeys": "Checking your keys…",
