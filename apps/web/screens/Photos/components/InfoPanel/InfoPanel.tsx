@@ -38,6 +38,16 @@ const asText = (value?: string | number): string | undefined => {
   return typeof value === "number" ? String(value) : value
 }
 
+const formatDuration = (ms?: number | null): string | undefined => {
+  if (!ms || ms <= 0) return undefined
+  const total = Math.round(ms / 1000)
+  const hours = Math.floor(total / 3600)
+  const minutes = Math.floor((total % 3600) / 60)
+  const seconds = total % 60
+  const pad = (value: number) => String(value).padStart(2, "0")
+  return hours > 0 ? `${hours}:${pad(minutes)}:${pad(seconds)}` : `${minutes}:${pad(seconds)}`
+}
+
 const Row = ({ label, value }: { label: string; value?: string | null }) =>
   value ? (
     <div className="flex items-start justify-between gap-4 py-1.5 text-sm">
@@ -100,6 +110,15 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
     asset.width && asset.height
       ? `${((asset.width * asset.height) / 1_000_000).toFixed(1)} MP`
       : undefined
+  const isImage = asset.mimeType.startsWith("image/")
+  const kindLabel = isImage
+    ? t("infoPanel.kindImage")
+    : asset.mimeType.startsWith("video/")
+      ? t("infoPanel.kindVideo")
+      : asset.mimeType.startsWith("audio/")
+        ? t("infoPanel.kindAudio")
+        : t("infoPanel.kindFile")
+  const duration = formatDuration(asset.durationMs)
   const taken = asset.takenAt ? formatMediumDateTime(asset.takenAt) : undefined
   const added = formatMediumDateTime(asset.createdAt)
   const focal = exif?.focalLength
@@ -129,10 +148,12 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
           label={t("infoPanel.name")}
           value={(asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename}
         />
+        <Row label={t("infoPanel.kind")} value={kindLabel} />
         <Row label={t("infoPanel.type")} value={asset.mimeType} />
         <Row label={t("infoPanel.size")} value={formatBytes(asset.sizeBytes)} />
         <Row label={t("infoPanel.dimensions")} value={dimensions} />
-        <Row label={t("infoPanel.resolution")} value={megapixels} />
+        {isImage ? <Row label={t("infoPanel.resolution")} value={megapixels} /> : null}
+        <Row label={t("infoPanel.duration")} value={duration} />
       </Section>
 
       <Section icon="calendar" title={t("infoPanel.date")}>
