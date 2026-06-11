@@ -14,6 +14,7 @@ import {
   fetchNodes,
   isArchiveName,
   moveDriveNode,
+  setNodeFavorite,
   trashDriveNode,
 } from "@lib/drive"
 import { type DocType, docTypeOf, openEditor } from "@lib/docs"
@@ -32,6 +33,8 @@ import {
   IconExternalLink,
   IconFileExport,
   IconPencil,
+  IconStar,
+  IconStarFilled,
   IconUserPlus,
 } from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -205,6 +208,17 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     }
   }
 
+  const toggleFavorite = async (node: DriveNode) => {
+    const next = !node.favorite
+    try {
+      await setNodeFavorite(node.id, next)
+      toast.success(next ? t("browser.favorited") : t("browser.unfavorited"))
+      invalidate()
+    } catch {
+      toast.error(t("browser.couldNotFavorite"))
+    }
+  }
+
   const archive = (ids: string[]) => {
     if (!parentId || ids.length === 0) return
     upload.archive(t("browser.archiveLabel", { count: ids.length }), ids, parentId)
@@ -247,6 +261,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     extract: (node) => void extract(node.id),
     lock: (node) => setLockDialog({ node, mode: "lock" }),
     removeLock: (node) => setLockDialog({ node, mode: "remove" }),
+    favorite: (node) => void toggleFavorite(node),
     rename: (node) => setRenaming(node),
     details: (node) => {
       if (!selection.isSelected(node.id)) selection.selectOnly(node.id)
@@ -357,6 +372,16 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
           <Icon name="download" className="size-4" />
           {t("browser.download")}
         </Button>
+        {single && !single.special ? (
+          <Button variant="ghost" size="sm" onClick={() => void toggleFavorite(single)}>
+            {single.favorite ? (
+              <IconStarFilled className="size-4" />
+            ) : (
+              <IconStar className="size-4" />
+            )}
+            {single.favorite ? t("browser.unfavorite") : t("browser.favorite")}
+          </Button>
+        ) : null}
         {single && !single.special ? (
           <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
             <IconPencil className="size-4" />

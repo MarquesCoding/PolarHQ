@@ -51,6 +51,7 @@ import {
   renameNode,
   restoreNodeTree,
   restoreVersion,
+  setFavorite,
   trashNodeTree,
   upsertDriveFile,
 } from "./service"
@@ -88,6 +89,7 @@ const serializeNode = (node: DriveNode, encryptedIds?: Set<string>) => {
     photoAssetId: node.photoAssetId,
     encrypted,
     locked: Boolean(node.lockVerifier),
+    favorite: Boolean(node.favoritedAt),
     trashedAt: node.trashedAt,
     createdAt: node.createdAt,
     updatedAt: node.updatedAt,
@@ -145,7 +147,8 @@ driveRoutes.get("/storage", async (c) => {
 driveRoutes.get("/library", async (c) => {
   const userId = c.get("userId")
   const view = c.req.query("view")
-  if (view !== "recent" && view !== "kind") return c.json({ error: "drive.library.invalidView" }, 400)
+  if (view !== "recent" && view !== "kind" && view !== "favorites")
+    return c.json({ error: "drive.library.invalidView" }, 400)
   const kind = c.req.query("kind") as StorageKind | undefined
   const nodes = await listLibrary(userId, view, kind)
   const encrypted = await nodesWithKeys(
@@ -153,6 +156,15 @@ driveRoutes.get("/library", async (c) => {
     nodes.map((n) => n.id),
   )
   return c.json({ children: nodes.map((n) => serializeNode(n, encrypted)) })
+})
+
+driveRoutes.post("/nodes/:id/favorite", async (c) => {
+  const userId = c.get("userId")
+  const parsed = await parse(c, z.object({ favorite: z.boolean() }))
+  if (!parsed.success) return c.json({ error: "drive.favorite.invalid" }, 400)
+  const node = await setFavorite(userId, c.req.param("id"), parsed.data.favorite)
+  notify(userId)
+  return c.json({ node: serializeNode(node) })
 })
 
 driveRoutes.post("/nodes/folder", async (c) => {

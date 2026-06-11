@@ -19,6 +19,7 @@ export interface DriveNode {
   photoAssetId: string | null
   encrypted?: boolean
   locked?: boolean
+  favorite?: boolean
   trashedAt: string | null
   createdAt: string
   updatedAt: string
@@ -80,10 +81,20 @@ export interface DriveUploadResult {
 }
 
 /** List a folder's contents. `parent` is a node id, or null/"root" for My Drive. */
-export type LibraryView = "recent" | "kind"
+export type LibraryView = "recent" | "kind" | "favorites"
 
-/** A parentless, cross-folder file listing for the sidebar smart views (Recents / a file kind). */
-export type LibrarySource = { view: "recent" } | { view: "kind"; kind: StorageKind }
+/** A parentless, cross-folder file listing for the sidebar smart views (Recents / Favorites / a file kind). */
+export type LibrarySource =
+  | { view: "recent" }
+  | { view: "favorites" }
+  | { view: "kind"; kind: StorageKind }
+
+/** Star or unstar a node; favorites surface in the cross-folder Favorites smart view. */
+export const setNodeFavorite = (id: string, favorite: boolean): Promise<{ node: DriveNode }> =>
+  apiFetch<{ node: DriveNode }>(`/api/v1/drive/nodes/${id}/favorite`, {
+    method: "POST",
+    body: JSON.stringify({ favorite }),
+  })
 
 /** Fetch a flat smart-view listing (most-recent files, or all files of one kind). */
 export const fetchLibrary = async (source: LibrarySource): Promise<{ children: DriveNode[] }> => {
@@ -112,7 +123,7 @@ export const driveFolderIdFromPath = (pathname: string): string | undefined | nu
   if (pathname === "/drive/files") return undefined
   if (pathname.startsWith("/drive/kind/")) return null
   const match = pathname.match(/^\/drive\/([^/]+)$/)
-  const reserved = ["trash", "overview", "files", "recent", "kind"]
+  const reserved = ["trash", "overview", "files", "recent", "favorites", "kind"]
   if (!match || reserved.includes(match[1]!)) return null
   return match[1]
 }

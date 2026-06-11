@@ -21,6 +21,8 @@ import {
   IconLockOpen,
   IconPencil,
   IconPhoto,
+  IconStar,
+  IconStarFilled,
   IconTrash,
   IconUserPlus,
 } from "@tabler/icons-react"
@@ -43,6 +45,7 @@ export interface DriveNodeActions {
   extract: (node: DriveNode) => void
   lock: (node: DriveNode) => void
   removeLock: (node: DriveNode) => void
+  favorite: (node: DriveNode) => void
   rename: (node: DriveNode) => void
   details: (node: DriveNode) => void
   versions: (node: DriveNode) => void
@@ -115,6 +118,10 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
                 <ContextMenuSeparator />
               </>
             ) : null}
+            <ContextMenuItem onClick={() => actions.favorite(node)}>
+              {node.favorite ? <IconStarFilled /> : <IconStar />}
+              {node.favorite ? t("nodeContextMenu.unfavorite") : t("nodeContextMenu.favorite")}
+            </ContextMenuItem>
             <ContextMenuItem onClick={() => actions.move(node)}>
               <IconArrowsMove />
               {t("nodeContextMenu.moveToFolder")}

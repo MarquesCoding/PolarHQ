@@ -13,7 +13,8 @@ const isMyDrive = (pathname: string): boolean =>
   /^\/drive\/[^/]+$/.test(pathname) &&
   pathname !== "/drive/trash" &&
   pathname !== "/drive/overview" &&
-  pathname !== "/drive/recent"
+  pathname !== "/drive/recent" &&
+  pathname !== "/drive/favorites"
 
 const FILE_KINDS: { kind: string; icon: string }[] = [
   { kind: "image", icon: "photo" },
@@ -52,6 +53,12 @@ const DriveNav = () => {
         icon="calendar"
         label={t("driveNav.recents")}
         active={pathname === "/drive/recent"}
+      />
+      <NavRow
+        href="/drive/favorites"
+        icon="favourites"
+        label={t("driveNav.favorites")}
+        active={pathname === "/drive/favorites"}
       />
       <NavRow href="/drive/trash" icon="trash" label={t("driveNav.trash")} active={pathname === "/drive/trash"} />
 
