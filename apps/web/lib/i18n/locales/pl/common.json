@@ -22,6 +22,14 @@
     "beta": "Beta",
     "soon": "Wkrótce"
   },
+  "apps": {
+    "admin": "Administracja",
+    "docs": "Dokumenty",
+    "drive": "Dysk",
+    "photos": "Zdjęcia",
+    "sheets": "Arkusze",
+    "whiteboard": "Tablica"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · kompilacja {{build}}",
     "whatsNew": "Co nowego"
@@ -126,9 +134,9 @@
     "saving": "Zapisywanie…"
   },
   "units": {
-    "items_one": "{{count}} element",
     "items_few": "{{count}} elementy",
     "items_many": "{{count}} elementów",
+    "items_one": "{{count}} element",
     "items_other": "{{count}} elementu"
   },
   "uploadManager": {
@@ -142,9 +150,9 @@
     "activity": "Aktywność",
     "alreadyInLibrary": "Już w bibliotece",
     "archiving": "Archiwizowanie…",
-    "archivingItems_one": "Archiwizowanie {{count}} elementu",
     "archivingItems_few": "Archiwizowanie {{count}} elementów",
     "archivingItems_many": "Archiwizowanie {{count}} elementów",
+    "archivingItems_one": "Archiwizowanie {{count}} elementu",
     "archivingItems_other": "Archiwizowanie {{count}} elementu",
     "archivingProgress": "Archiwizowanie {{loaded}} z {{size}}",
     "bytesProgress": "{{loaded}} z {{size}}",
@@ -156,34 +164,34 @@
     "downloadFailed": "Pobieranie nie powiodło się",
     "downloaded": "Pobrano",
     "downloading": "Pobieranie…",
-    "downloadingItems_one": "Pobieranie {{count}} elementu",
     "downloadingItems_few": "Pobieranie {{count}} elementów",
     "downloadingItems_many": "Pobieranie {{count}} elementów",
+    "downloadingItems_one": "Pobieranie {{count}} elementu",
     "downloadingItems_other": "Pobieranie {{count}} elementu",
     "expand": "Rozwiń",
     "failed": "Niepowodzenie",
     "processing": "Przetwarzanie…",
-    "processingItems_one": "Przetwarzanie {{count}} elementu",
     "processingItems_few": "Przetwarzanie {{count}} elementów",
     "processingItems_many": "Przetwarzanie {{count}} elementów",
+    "processingItems_one": "Przetwarzanie {{count}} elementu",
     "processingItems_other": "Przetwarzanie {{count}} elementu",
     "speed": "{{speed}}/s",
     "transcoding": "Transkodowanie…",
     "uploading": "Przesyłanie…",
-    "uploadingItems_one": "Przesyłanie {{count}} elementu",
     "uploadingItems_few": "Przesyłanie {{count}} elementów",
     "uploadingItems_many": "Przesyłanie {{count}} elementów",
+    "uploadingItems_one": "Przesyłanie {{count}} elementu",
     "uploadingItems_other": "Przesyłanie {{count}} elementu"
   },
   "useUploader": {
-    "alreadyInLibrary_one": "{{count}} już w Twojej bibliotece",
     "alreadyInLibrary_few": "{{count}} już w Twojej bibliotece",
     "alreadyInLibrary_many": "{{count}} już w Twojej bibliotece",
+    "alreadyInLibrary_one": "{{count}} już w Twojej bibliotece",
     "alreadyInLibrary_other": "{{count}} już w Twojej bibliotece",
     "uploadFailed": "Nie udało się przesłać {{name}}",
-    "uploaded_one": "Przesłano {{count}} zdjęcie",
     "uploaded_few": "Przesłano {{count}} zdjęcia",
     "uploaded_many": "Przesłano {{count}} zdjęć",
+    "uploaded_one": "Przesłano {{count}} zdjęcie",
     "uploaded_other": "Przesłano {{count}} zdjęcia"
   },
   "viewToggle": {

@@ -22,6 +22,14 @@
     "beta": "Beta",
     "soon": "Yakında"
   },
+  "apps": {
+    "admin": "Yönetim",
+    "docs": "Belgeler",
+    "drive": "Drive",
+    "photos": "Fotoğraflar",
+    "sheets": "Sheets",
+    "whiteboard": "Beyaz Tahta"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · sürüm {{build}}",
     "whatsNew": "Yenilikler"

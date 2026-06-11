@@ -22,6 +22,14 @@
     "beta": "Bèta",
     "soon": "Binnenkort"
   },
+  "apps": {
+    "admin": "Beheer",
+    "docs": "Docs",
+    "drive": "Drive",
+    "photos": "Foto's",
+    "sheets": "Sheets",
+    "whiteboard": "Whiteboard"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · build {{build}}",
     "whatsNew": "Wat is er nieuw"

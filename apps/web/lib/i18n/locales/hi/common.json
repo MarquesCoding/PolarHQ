@@ -22,6 +22,14 @@
     "beta": "बीटा",
     "soon": "जल्द ही"
   },
+  "apps": {
+    "admin": "एडमिन",
+    "docs": "Docs",
+    "drive": "ड्राइव",
+    "photos": "फ़ोटो",
+    "sheets": "Sheets",
+    "whiteboard": "व्हाइटबोर्ड"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · बिल्ड {{build}}",
     "whatsNew": "नया क्या है"
