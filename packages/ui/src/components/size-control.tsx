@@ -206,7 +206,7 @@ const SizeControl = ({
 
             {onRoundedChange ? (
               <div className="flex items-center justify-between">
-                <span className="text-sm">Rounded corners</span>
+                <span className="text-sm">{labels.roundedCorners}</span>
                 <Switch checked={rounded} onCheckedChange={onRoundedChange} />
               </div>
             ) : null}
