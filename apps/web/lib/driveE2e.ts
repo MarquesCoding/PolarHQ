@@ -23,7 +23,7 @@ import {
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 import { generateImageThumbnail } from "@lib/thumbnails"
-import { type UploadOptions, postFormWithProgress } from "@lib/xhrUpload"
+import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
 
 /**
  * Upload a file end-to-end encrypted: encrypt the bytes with a fresh content key,
@@ -191,7 +191,10 @@ export const supportsStreamingDownload = (): boolean =>
  * (including a user-cancelled save dialog), `false` to fall back to the in-memory path, and throws
  * on a mid-stream failure (the partial file is discarded).
  */
-export const downloadEncryptedDriveFileStreaming = async (node: DriveNode): Promise<boolean> => {
+export const downloadEncryptedDriveFileStreaming = async (
+  node: DriveNode,
+  onProgress?: (progress: UploadProgress) => void,
+): Promise<boolean> => {
   if (!node.encrypted || !node.downloadUrl || !supportsStreamingDownload()) return false
   const key = await getDocContentKey(node.id)
   if (!key) return false
@@ -210,6 +213,9 @@ export const downloadEncryptedDriveFileStreaming = async (node: DriveNode): Prom
       await writable.abort?.()
       return false
     }
+    const total = Number(response.headers.get("content-length")) || node.sizeBytes || 0
+    let loaded = 0
+    const startTime = performance.now()
     const reader = response.body.getReader()
     const prefixSize = streamPrefixSize()
     const cipherChunk = streamCipherChunkSize()
@@ -242,6 +248,9 @@ export const downloadEncryptedDriveFileStreaming = async (node: DriveNode): Prom
       if (value) {
         pending.push(value)
         pendingLen += value.length
+        loaded += value.length
+        const elapsed = (performance.now() - startTime) / 1000
+        onProgress?.({ loaded, total, speed: elapsed > 0 ? loaded / elapsed : 0 })
       }
       if (!opener && pendingLen >= prefixSize) {
         const prefix = take(prefixSize)
@@ -268,9 +277,12 @@ export const downloadEncryptedDriveFileStreaming = async (node: DriveNode): Prom
   }
 }
 
-export const downloadDriveFile = async (node: DriveNode): Promise<void> => {
+export const downloadDriveFile = async (
+  node: DriveNode,
+  onProgress?: (progress: UploadProgress) => void,
+): Promise<void> => {
   if (node.kind !== "file" || !node.downloadUrl) return
-  if (node.encrypted && (await downloadEncryptedDriveFileStreaming(node))) return
+  if (node.encrypted && (await downloadEncryptedDriveFileStreaming(node, onProgress))) return
   let href = node.downloadUrl
   let revoke = false
   if (node.encrypted) {

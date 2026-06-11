@@ -78,6 +78,12 @@ interface UploadManagerApi {
   items: UploadItem[]
   upload: (files: FileList | File[], target?: UploadTarget) => void
   download: (name: string, items: DownloadItem[]) => void
+  /** Track an arbitrary download (e.g. a streamed Drive file) in the tray with byte progress. */
+  downloadFile: (
+    name: string,
+    total: number,
+    run: (onProgress: (loaded: number, speed: number) => void) => Promise<unknown>,
+  ) => void
   archive: (name: string, nodeIds: string[], parentId: string) => void
   task: (
     name: string,
@@ -391,6 +397,24 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     [update],
   )
 
+  const downloadFile = useCallback(
+    (
+      name: string,
+      total: number,
+      run: (onProgress: (loaded: number, speed: number) => void) => Promise<unknown>,
+    ) => {
+      const id = nextId()
+      setItems((previous) => [
+        { id, kind: "download", name, size: total, loaded: 0, speed: 0, status: "uploading" },
+        ...previous,
+      ])
+      void run((loaded, speed) => update(id, { loaded, speed }))
+        .then(() => update(id, { status: "done", loaded: total }))
+        .catch((error) => update(id, { status: "error", error: apiErrorMessage(error) }))
+    },
+    [update],
+  )
+
   const archive = useCallback(
     (name: string, nodeIds: string[], parentId: string) => {
       const id = nextId()
@@ -470,7 +494,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <UploadContext.Provider
-      value={{ items, upload, download, archive, task, remove, clearFinished }}
+      value={{ items, upload, download, downloadFile, archive, task, remove, clearFinished }}
     >
       {children}
     </UploadContext.Provider>
