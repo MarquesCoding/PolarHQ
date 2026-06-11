@@ -10,6 +10,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const { t } = useTranslation("drive")
   const titles: TopBarTitle[] = [
     { match: (p) => p === "/drive/trash", label: t("driveNav.trash"), icon: "trash" },
+    { match: (p) => p === "/drive", label: t("driveNav.overview"), icon: "gauge" },
     { match: () => true, label: t("driveNav.myDrive"), icon: "folder" },
   ]
   return (

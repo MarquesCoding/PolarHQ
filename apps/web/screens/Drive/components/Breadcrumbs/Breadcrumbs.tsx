@@ -12,7 +12,7 @@ interface BreadcrumbsProps {
 }
 
 const hrefFor = (node: DriveNode, isRoot: boolean): string =>
-  isRoot ? "/drive" : `/drive/${node.id}`
+  isRoot ? "/drive/files" : `/drive/${node.id}`
 
 const Breadcrumbs = ({ trail }: BreadcrumbsProps) => {
   const { t } = useTranslation("drive")

@@ -117,7 +117,7 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   const parentFolder = trail.length > 1 ? trail[trail.length - 2]! : null
   const parentHref = parentFolder
     ? trail.length === 2
-      ? "/drive"
+      ? "/drive/files"
       : `/drive/${parentFolder.id}`
     : null
 

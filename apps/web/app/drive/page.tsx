@@ -1,5 +1,5 @@
-import Browser from "@pages/Drive/Browser"
+import StorageOverview from "@pages/Drive/StorageOverview"
 
-const Page = () => <Browser />
+const Page = () => <StorageOverview />
 
 export default Page

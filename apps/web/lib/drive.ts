@@ -48,10 +48,13 @@ const nameFields = (
 
 export type StorageApp = "photos" | "drive" | "docs" | "sheets" | "whiteboard"
 
+export type StorageKind = "image" | "video" | "audio" | "document" | "archive" | "other"
+
 export interface StorageStats {
   usedBytes: number
   quotaBytes: number | null
   breakdown: { app: StorageApp; bytes: number; count: number }[]
+  kinds: { kind: StorageKind; bytes: number; count: number }[]
   largest: {
     id: string
     name: string
@@ -93,9 +96,9 @@ export const fetchNodes = async (parent?: string | null): Promise<DriveListing> 
  * (`/drive`), the id for `/drive/<id>`, or `null` for non-browser pages (trash).
  */
 export const driveFolderIdFromPath = (pathname: string): string | undefined | null => {
-  if (pathname === "/drive") return undefined
+  if (pathname === "/drive/files") return undefined
   const match = pathname.match(/^\/drive\/([^/]+)$/)
-  if (!match || match[1] === "trash") return null
+  if (!match || match[1] === "trash" || match[1] === "overview" || match[1] === "files") return null
   return match[1]
 }
 

@@ -1026,10 +1026,33 @@ const appForMime = (mime: string | null, photoAssetId: string | null): StorageAp
   return "drive"
 }
 
+/** Coarse file-kind buckets for the library overview. */
+export type StorageKind = "image" | "video" | "audio" | "document" | "archive" | "other"
+
+const kindForMime = (mime: string | null): StorageKind => {
+  if (!mime) return "other"
+  if (mime.startsWith("image/")) return "image"
+  if (mime.startsWith("video/")) return "video"
+  if (mime.startsWith("audio/")) return "audio"
+  if (
+    mime.startsWith("text/") ||
+    mime === "application/pdf" ||
+    mime.startsWith("application/vnd.orbit.") ||
+    mime.startsWith("application/vnd.openxmlformats") ||
+    mime.startsWith("application/vnd.oasis") ||
+    mime === "application/msword" ||
+    mime === "application/json"
+  )
+    return "document"
+  if (/(zip|tar|gzip|x-7z|x-rar|x-bzip)/.test(mime)) return "archive"
+  return "other"
+}
+
 export interface StorageStats {
   usedBytes: number
   quotaBytes: number | null
   breakdown: { app: StorageApp; bytes: number; count: number }[]
+  kinds: { kind: StorageKind; bytes: number; count: number }[]
   largest: {
     id: string
     name: string
@@ -1065,6 +1088,7 @@ export const getStorageStats = async (ownerId: string): Promise<StorageStats> =>
     )
 
   const totals = new Map<StorageApp, { bytes: number; count: number }>()
+  const kindTotals = new Map<StorageKind, { bytes: number; count: number }>()
   let usedBytes = 0
   for (const file of files) {
     const bytes = file.sizeBytes ?? 0
@@ -1074,10 +1098,20 @@ export const getStorageStats = async (ownerId: string): Promise<StorageStats> =>
     current.bytes += bytes
     current.count += 1
     totals.set(app, current)
+
+    const kind = kindForMime(file.mimeType)
+    const kindCurrent = kindTotals.get(kind) ?? { bytes: 0, count: 0 }
+    kindCurrent.bytes += bytes
+    kindCurrent.count += 1
+    kindTotals.set(kind, kindCurrent)
   }
 
   const breakdown = [...totals.entries()]
     .map(([app, value]) => ({ app, bytes: value.bytes, count: value.count }))
+    .sort((a, b) => b.bytes - a.bytes)
+
+  const kinds = [...kindTotals.entries()]
+    .map(([kind, value]) => ({ kind, bytes: value.bytes, count: value.count }))
     .sort((a, b) => b.bytes - a.bytes)
 
   const largest = [...files]
@@ -1093,5 +1127,5 @@ export const getStorageStats = async (ownerId: string): Promise<StorageStats> =>
     }))
 
   const quota = await resolveLimit(ownerId, "storage.quota.bytes")
-  return { usedBytes, quotaBytes: typeof quota === "number" ? quota : null, breakdown, largest }
+  return { usedBytes, quotaBytes: typeof quota === "number" ? quota : null, breakdown, kinds, largest }
 }
