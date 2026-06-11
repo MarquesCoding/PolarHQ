@@ -4,7 +4,6 @@ import { type ReactNode, useEffect, useState } from "react"
 import { Icon } from "@lib/icons"
 import type { GridAsset } from "@lib/photos"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
-import { t } from "@lib/i18n/config"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
@@ -211,33 +210,32 @@ interface Slide {
   Demo: () => ReactNode
 }
 
-const SLIDES: Slide[] = [
-  {
-    icon: "shield-lock",
-    accent: "from-emerald-500/15 to-emerald-500/5",
-    title: t("onboarding:onboardingCard.privateTitle"),
-    body: t("onboarding:onboardingCard.privateBody"),
-    Demo: PrivacyDemo,
-  },
-  {
-    icon: "photo",
-    accent: "from-primary/15 to-primary/5",
-    title: t("onboarding:onboardingCard.uploadTitle"),
-    body: t("onboarding:onboardingCard.uploadBody"),
-    Demo: UploadDemo,
-  },
-  {
-    icon: "albums",
-    accent: "from-violet-500/15 to-violet-500/5",
-    title: t("onboarding:onboardingCard.albumsTitle"),
-    body: t("onboarding:onboardingCard.albumsBody"),
-    Demo: ShareDemo,
-  },
-]
-
 /** First-run suite intro: a dismissible card that demos key flows with the real UI. */
 const OnboardingCard = () => {
   const { t } = useTranslation("onboarding")
+  const SLIDES: Slide[] = [
+    {
+      icon: "shield-lock",
+      accent: "from-emerald-500/15 to-emerald-500/5",
+      title: t("onboardingCard.privateTitle"),
+      body: t("onboardingCard.privateBody"),
+      Demo: PrivacyDemo,
+    },
+    {
+      icon: "photo",
+      accent: "from-primary/15 to-primary/5",
+      title: t("onboardingCard.uploadTitle"),
+      body: t("onboardingCard.uploadBody"),
+      Demo: UploadDemo,
+    },
+    {
+      icon: "albums",
+      accent: "from-violet-500/15 to-violet-500/5",
+      title: t("onboardingCard.albumsTitle"),
+      body: t("onboardingCard.albumsBody"),
+      Demo: ShareDemo,
+    },
+  ]
   const [visible, setVisible] = useState(false)
   const [index, setIndex] = useState(0)
 
