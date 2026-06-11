@@ -1130,13 +1130,14 @@ export const getStorageStats = async (ownerId: string): Promise<StorageStats> =>
   return { usedBytes, quotaBytes: typeof quota === "number" ? quota : null, breakdown, kinds, largest }
 }
 
-export type LibraryView = "recent" | "kind" | "favorites"
+export type LibraryView = "recent" | "kind" | "favorites" | "all"
 
 /**
  * Flat, cross-folder file listings for the sidebar smart views: the most-recently-updated files
- * ("recent"), every file of a given storage kind ("kind"), or starred items ("favorites" — which
- * also includes folders, ordered by when they were favorited). The result is capped so a huge
- * library cannot return unbounded rows.
+ * ("recent"), every file of a given storage kind ("kind"), starred items ("favorites" — which also
+ * includes folders, ordered by when they were favorited), or every file ("all" — the candidate set
+ * a client filters by decrypted name to run a saved search, since names are E2E-encrypted). The
+ * result is capped so a huge library cannot return unbounded rows.
  */
 export const listLibrary = async (
   ownerId: string,
@@ -1171,4 +1172,32 @@ export const setFavorite = async (
     .where(and(eq(schema.nodes.ownerId, ownerId), eq(schema.nodes.id, nodeId)))
     .returning()
   return updated!
+}
+
+export type SavedSearch = typeof schema.savedSearches.$inferSelect
+
+/** Saved searches pinned to the sidebar (the query text is an E2E-encrypted node name). */
+export const listSavedSearches = (ownerId: string): Promise<SavedSearch[]> =>
+  db
+    .select()
+    .from(schema.savedSearches)
+    .where(eq(schema.savedSearches.ownerId, ownerId))
+    .orderBy(desc(schema.savedSearches.createdAt))
+
+export const createSavedSearch = async (
+  ownerId: string,
+  name: string,
+  encryptedName: string | null,
+): Promise<SavedSearch> => {
+  const [row] = await db
+    .insert(schema.savedSearches)
+    .values({ ownerId, name, encryptedName })
+    .returning()
+  return row!
+}
+
+export const deleteSavedSearch = async (ownerId: string, id: string): Promise<void> => {
+  await db
+    .delete(schema.savedSearches)
+    .where(and(eq(schema.savedSearches.ownerId, ownerId), eq(schema.savedSearches.id, id)))
 }
