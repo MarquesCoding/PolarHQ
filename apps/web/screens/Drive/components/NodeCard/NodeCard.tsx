@@ -6,7 +6,7 @@ import type { DriveNode } from "@lib/drive"
 import { fetchDecryptedThumbnail } from "@lib/driveE2e"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
-import { IconCircle, IconCircleCheckFilled } from "@tabler/icons-react"
+import { IconCircle, IconCircleCheckFilled, IconStarFilled } from "@tabler/icons-react"
 import { cn } from "@workspace/ui/lib/utils"
 import Spinner from "@components/Spinner/Spinner"
 
@@ -178,6 +178,12 @@ const NodeCard = ({
           <IconCircle className="text-muted-foreground bg-background/70 size-5 rounded-full" />
         )}
       </button>
+
+      {node.favorite ? (
+        <span className="absolute top-1 right-1 z-10 flex size-6 items-center justify-center">
+          <IconStarFilled className="size-4 text-amber-400 drop-shadow" />
+        </span>
+      ) : null}
 
       <div className="aspect-square w-full overflow-hidden rounded-lg">
         {thumbUrl ? (

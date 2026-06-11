@@ -1130,12 +1130,13 @@ export const getStorageStats = async (ownerId: string): Promise<StorageStats> =>
   return { usedBytes, quotaBytes: typeof quota === "number" ? quota : null, breakdown, kinds, largest }
 }
 
-export type LibraryView = "recent" | "kind"
+export type LibraryView = "recent" | "kind" | "favorites"
 
 /**
  * Flat, cross-folder file listings for the sidebar smart views: the most-recently-updated files
- * ("recent") or every file of a given storage kind ("kind"). Folders are excluded — these are
- * file-centric views — and the result is capped so a huge library cannot return unbounded rows.
+ * ("recent"), every file of a given storage kind ("kind"), or starred items ("favorites" — which
+ * also includes folders, ordered by when they were favorited). The result is capped so a huge
+ * library cannot return unbounded rows.
  */
 export const listLibrary = async (
   ownerId: string,
@@ -1143,18 +1144,31 @@ export const listLibrary = async (
   kind?: StorageKind,
   limit = 200,
 ): Promise<DriveNode[]> => {
+  const conditions = [eq(schema.nodes.ownerId, ownerId), isNull(schema.nodes.trashedAt)]
+  if (view === "favorites") conditions.push(isNotNull(schema.nodes.favoritedAt))
+  else conditions.push(eq(schema.nodes.kind, "file"))
   const rows = await db
     .select()
     .from(schema.nodes)
-    .where(
-      and(
-        eq(schema.nodes.ownerId, ownerId),
-        eq(schema.nodes.kind, "file"),
-        isNull(schema.nodes.trashedAt),
-      ),
-    )
-    .orderBy(desc(schema.nodes.updatedAt))
+    .where(and(...conditions))
+    .orderBy(view === "favorites" ? desc(schema.nodes.favoritedAt) : desc(schema.nodes.updatedAt))
   const filtered =
     view === "kind" && kind ? rows.filter((node) => kindForMime(node.mimeType) === kind) : rows
   return filtered.slice(0, limit)
+}
+
+/** Star or unstar a node (favorites are a flat, cross-folder smart view). */
+export const setFavorite = async (
+  ownerId: string,
+  nodeId: string,
+  favorite: boolean,
+): Promise<DriveNode> => {
+  const node = await getNode(ownerId, nodeId)
+  if (!node) throw new Error("node not found")
+  const [updated] = await db
+    .update(schema.nodes)
+    .set({ favoritedAt: favorite ? new Date() : null })
+    .where(and(eq(schema.nodes.ownerId, ownerId), eq(schema.nodes.id, nodeId)))
+    .returning()
+  return updated!
 }

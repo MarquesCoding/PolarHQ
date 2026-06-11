@@ -19,6 +19,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const titles: TopBarTitle[] = [
     { match: (p) => p === "/drive/trash", label: t("driveNav.trash"), icon: "trash" },
     { match: (p) => p === "/drive/recent", label: t("driveNav.recents"), icon: "calendar" },
+    { match: (p) => p === "/drive/favorites", label: t("driveNav.favorites"), icon: "favourites" },
     ...Object.entries(kindIcons).map(([kind, icon]) => ({
       match: (p: string) => p === `/drive/kind/${kind}`,
       label: t(`overview.kinds.${kind}`),

@@ -31,6 +31,7 @@ export const nodes = drive.table(
     special: text("special"),
     lockSalt: text("lock_salt"),
     lockVerifier: text("lock_verifier"),
+    favoritedAt: timestamp("favorited_at"),
     trashedAt: timestamp("trashed_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -39,6 +40,7 @@ export const nodes = drive.table(
     index("drive_nodes_owner_parent_idx").on(t.ownerId, t.parentId),
     index("drive_nodes_owner_special_idx").on(t.ownerId, t.special),
     index("drive_nodes_owner_trashed_idx").on(t.ownerId, t.trashedAt),
+    index("drive_nodes_owner_favorited_idx").on(t.ownerId, t.favoritedAt),
     index("drive_nodes_photo_asset_idx").on(t.photoAssetId),
   ],
 )
