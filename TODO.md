@@ -78,7 +78,7 @@ Ideas the community surfaced from [Spacedrive](https://spacedrive.com) (cross-pl
 - [ ] **3D / Gaussian-splat derivative** (stretch/novelty): generate a `.ply` gaussian splat from suitable photos and show a 3D viewer toggle in the viewer. Pure exploration — low priority, high wow-factor.
 
 ### Background jobs
-- [ ] **Jobs panel**: a first-class queue of background work (uploads, thumbnail/preview generation, ML embedding/indexing, facial recognition) with per-job progress, pause/resume/retry — Spacedrive's `Sync / Jobs` sidebar. Directly complements the upload-progress + ML/embedding work already in flight.
+- [~] **Jobs panel**: a persistent **Jobs** button in the sidebar footer (live active-count badge + spinner) opens a first-class dialog listing all background jobs grouped **Active / Finished**, with per-job progress rings, status, dismiss + clear-finished. Reuses the upload-manager model and a shared `JobRow` (also used by the transient bottom-right tray). _Remaining: surfacing server-side jobs (thumbnail/preview gen, ML embedding, facial recognition) — needs a queue-status API — plus per-job retry/pause/resume._
 
 ### Notes / fit
 - Spacedrive is a *local, multi-device* VDFS; we are a *server-hosted, E2E* suite — so device/volume/NAS-indexing concepts (`All Devices`, `Volumes`, `Locations`, offline-device badges) map only loosely. The **views, inspector, storage visualisation, overview dashboard, and jobs panel** are the directly-transferable wins; the distributed-filesystem parts are mostly out of scope.
