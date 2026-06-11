@@ -10,8 +10,7 @@
     "overview": "개요",
     "roles": "역할",
     "settings": "설정",
-    "users": "사용자",
-    "workgroups": "워크그룹"
+    "users": "사용자"
   },
   "apps": {
     "comingSoon": "출시 예정",
@@ -205,34 +204,5 @@
     "userActions": "사용자 작업",
     "userBanned": "사용자가 차단되었습니다",
     "userUnbanned": "사용자 차단이 해제되었습니다"
-  },
-  "workgroupDetailSheet": {
-    "add": "추가",
-    "addGroupPlaceholder": "그룹 추가…",
-    "groupAddError": "그룹을 추가할 수 없습니다",
-    "groupAdded": "그룹이 추가되었습니다",
-    "groupRemoveError": "그룹을 제거할 수 없습니다",
-    "groupRemoved": "그룹이 제거되었습니다",
-    "groupsCount": "그룹 · {{count}}",
-    "instancePlaceholder": "인스턴스: {{value}}",
-    "limitOverrides": "제한 재정의",
-    "noGroups": "아직 그룹이 없습니다.",
-    "overrideRemoveError": "재정의를 제거할 수 없습니다",
-    "overrideRemoved": "재정의가 제거되었습니다",
-    "overrideSaveError": "재정의를 저장할 수 없습니다",
-    "overrideSaved": "{{label}} 재정의가 저장되었습니다",
-    "removeGroup": "{{name}} 제거",
-    "reset": "재설정",
-    "save": "저장",
-    "unlimited": "무제한"
-  },
-  "workgroups": {
-    "create": "생성",
-    "createError": "워크그룹을 생성할 수 없습니다",
-    "created": "워크그룹이 생성되었습니다",
-    "description": "여러 그룹을 하나의 부서로 묶습니다. 워크그룹의 역할과 제한은 해당 그룹에 속한 모든 사람에게 적용됩니다.",
-    "empty": "아직 워크그룹이 없습니다.",
-    "namePlaceholder": "새 워크그룹 이름",
-    "title": "워크그룹"
   }
 }

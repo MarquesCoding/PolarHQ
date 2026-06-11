@@ -10,8 +10,7 @@
     "overview": "Przegląd",
     "roles": "Role",
     "settings": "Ustawienia",
-    "users": "Użytkownicy",
-    "workgroups": "Grupy robocze"
+    "users": "Użytkownicy"
   },
   "apps": {
     "comingSoon": "Wkrótce",
@@ -205,34 +204,5 @@
     "userActions": "Działania użytkownika",
     "userBanned": "Zablokowano użytkownika",
     "userUnbanned": "Odblokowano użytkownika"
-  },
-  "workgroupDetailSheet": {
-    "add": "Dodaj",
-    "addGroupPlaceholder": "Dodaj grupę…",
-    "groupAddError": "Nie udało się dodać grupy",
-    "groupAdded": "Dodano grupę",
-    "groupRemoveError": "Nie udało się usunąć grupy",
-    "groupRemoved": "Usunięto grupę",
-    "groupsCount": "Grupy · {{count}}",
-    "instancePlaceholder": "Instancja: {{value}}",
-    "limitOverrides": "Nadpisania limitów",
-    "noGroups": "Brak grup.",
-    "overrideRemoveError": "Nie udało się usunąć nadpisania",
-    "overrideRemoved": "Usunięto nadpisanie",
-    "overrideSaveError": "Nie udało się zapisać nadpisania",
-    "overrideSaved": "Zapisano nadpisanie {{label}}",
-    "removeGroup": "Usuń {{name}}",
-    "reset": "Resetuj",
-    "save": "Zapisz",
-    "unlimited": "bez limitu"
-  },
-  "workgroups": {
-    "create": "Utwórz",
-    "createError": "Nie udało się utworzyć grupy roboczej",
-    "created": "Utworzono grupę roboczą",
-    "description": "Łącz kilka grup w dział. Role i limity grupy roboczej dotyczą wszystkich w jej grupach.",
-    "empty": "Brak grup roboczych.",
-    "namePlaceholder": "Nazwa nowej grupy roboczej",
-    "title": "Grupy robocze"
   }
 }

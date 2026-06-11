@@ -10,8 +10,7 @@
     "overview": "अवलोकन",
     "roles": "भूमिकाएँ",
     "settings": "सेटिंग्स",
-    "users": "उपयोगकर्ता",
-    "workgroups": "कार्यसमूह"
+    "users": "उपयोगकर्ता"
   },
   "apps": {
     "comingSoon": "जल्द आ रहा है",
@@ -205,34 +204,5 @@
     "userActions": "उपयोगकर्ता क्रियाएँ",
     "userBanned": "उपयोगकर्ता प्रतिबंधित किया गया",
     "userUnbanned": "उपयोगकर्ता का प्रतिबंध हटाया गया"
-  },
-  "workgroupDetailSheet": {
-    "add": "जोड़ें",
-    "addGroupPlaceholder": "समूह जोड़ें…",
-    "groupAddError": "समूह जोड़ा नहीं जा सका",
-    "groupAdded": "समूह जोड़ा गया",
-    "groupRemoveError": "समूह हटाया नहीं जा सका",
-    "groupRemoved": "समूह हटाया गया",
-    "groupsCount": "समूह · {{count}}",
-    "instancePlaceholder": "इंस्टेंस: {{value}}",
-    "limitOverrides": "सीमा ओवरराइड",
-    "noGroups": "अभी तक कोई समूह नहीं।",
-    "overrideRemoveError": "ओवरराइड हटाया नहीं जा सका",
-    "overrideRemoved": "ओवरराइड हटाया गया",
-    "overrideSaveError": "ओवरराइड सहेजा नहीं जा सका",
-    "overrideSaved": "{{label}} ओवरराइड सहेजा गया",
-    "removeGroup": "{{name}} को हटाएँ",
-    "reset": "रीसेट करें",
-    "save": "सहेजें",
-    "unlimited": "असीमित"
-  },
-  "workgroups": {
-    "create": "बनाएँ",
-    "createError": "कार्यसमूह नहीं बनाया जा सका",
-    "created": "कार्यसमूह बनाया गया",
-    "description": "कई समूहों को एक विभाग में समूहित करें। कार्यसमूह की भूमिकाएँ और सीमाएँ इसके सभी समूहों के सभी लोगों पर लागू होती हैं।",
-    "empty": "अभी तक कोई कार्यसमूह नहीं।",
-    "namePlaceholder": "नए कार्यसमूह का नाम",
-    "title": "कार्यसमूह"
   }
 }

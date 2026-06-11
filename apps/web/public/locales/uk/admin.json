@@ -10,8 +10,7 @@
     "overview": "Огляд",
     "roles": "Ролі",
     "settings": "Налаштування",
-    "users": "Користувачі",
-    "workgroups": "Робочі групи"
+    "users": "Користувачі"
   },
   "apps": {
     "comingSoon": "Незабаром",
@@ -205,34 +204,5 @@
     "userActions": "Дії з користувачем",
     "userBanned": "Користувача заблоковано",
     "userUnbanned": "Користувача розблоковано"
-  },
-  "workgroupDetailSheet": {
-    "add": "Додати",
-    "addGroupPlaceholder": "Додати групу…",
-    "groupAddError": "Не вдалося додати групу",
-    "groupAdded": "Групу додано",
-    "groupRemoveError": "Не вдалося видалити групу",
-    "groupRemoved": "Групу видалено",
-    "groupsCount": "Групи · {{count}}",
-    "instancePlaceholder": "Інстанс: {{value}}",
-    "limitOverrides": "Перевизначення лімітів",
-    "noGroups": "Груп ще немає.",
-    "overrideRemoveError": "Не вдалося видалити перевизначення",
-    "overrideRemoved": "Перевизначення видалено",
-    "overrideSaveError": "Не вдалося зберегти перевизначення",
-    "overrideSaved": "Перевизначення «{{label}}» збережено",
-    "removeGroup": "Видалити {{name}}",
-    "reset": "Скинути",
-    "save": "Зберегти",
-    "unlimited": "без обмежень"
-  },
-  "workgroups": {
-    "create": "Створити",
-    "createError": "Не вдалося створити робочу групу",
-    "created": "Робочу групу створено",
-    "description": "Об’єднуйте кілька груп у відділ. Ролі та ліміти робочої групи застосовуються до всіх у її групах.",
-    "empty": "Робочих груп ще немає.",
-    "namePlaceholder": "Назва нової робочої групи",
-    "title": "Робочі групи"
   }
 }

@@ -10,8 +10,7 @@
     "overview": "Resumen",
     "roles": "Roles",
     "settings": "Configuración",
-    "users": "Usuarios",
-    "workgroups": "Grupos de trabajo"
+    "users": "Usuarios"
   },
   "apps": {
     "comingSoon": "Próximamente",
@@ -205,34 +204,5 @@
     "userActions": "Acciones de usuario",
     "userBanned": "Usuario bloqueado",
     "userUnbanned": "Usuario desbloqueado"
-  },
-  "workgroupDetailSheet": {
-    "add": "Agregar",
-    "addGroupPlaceholder": "Agregar un grupo…",
-    "groupAddError": "No se pudo agregar el grupo",
-    "groupAdded": "Grupo agregado",
-    "groupRemoveError": "No se pudo eliminar el grupo",
-    "groupRemoved": "Grupo eliminado",
-    "groupsCount": "Grupos · {{count}}",
-    "instancePlaceholder": "Instancia: {{value}}",
-    "limitOverrides": "Anulaciones de límites",
-    "noGroups": "Aún no hay grupos.",
-    "overrideRemoveError": "No se pudo eliminar la anulación",
-    "overrideRemoved": "Anulación eliminada",
-    "overrideSaveError": "No se pudo guardar la anulación",
-    "overrideSaved": "Anulación de {{label}} guardada",
-    "removeGroup": "Eliminar {{name}}",
-    "reset": "Restablecer",
-    "save": "Guardar",
-    "unlimited": "sin límite"
-  },
-  "workgroups": {
-    "create": "Crear",
-    "createError": "No se pudo crear el grupo de trabajo",
-    "created": "Grupo de trabajo creado",
-    "description": "Agrupa varios grupos en un departamento. Los roles y límites de un grupo de trabajo se aplican a todos los integrantes de sus grupos.",
-    "empty": "Aún no hay grupos de trabajo.",
-    "namePlaceholder": "Nombre del nuevo grupo de trabajo",
-    "title": "Grupos de trabajo"
   }
 }

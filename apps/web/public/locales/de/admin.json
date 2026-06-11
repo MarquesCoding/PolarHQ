@@ -10,8 +10,7 @@
     "overview": "Übersicht",
     "roles": "Rollen",
     "settings": "Einstellungen",
-    "users": "Benutzer",
-    "workgroups": "Arbeitsgruppen"
+    "users": "Benutzer"
   },
   "apps": {
     "comingSoon": "Demnächst verfügbar",
@@ -205,34 +204,5 @@
     "userActions": "Benutzeraktionen",
     "userBanned": "Benutzer gesperrt",
     "userUnbanned": "Benutzer entsperrt"
-  },
-  "workgroupDetailSheet": {
-    "add": "Hinzufügen",
-    "addGroupPlaceholder": "Gruppe hinzufügen…",
-    "groupAddError": "Gruppe konnte nicht hinzugefügt werden",
-    "groupAdded": "Gruppe hinzugefügt",
-    "groupRemoveError": "Gruppe konnte nicht entfernt werden",
-    "groupRemoved": "Gruppe entfernt",
-    "groupsCount": "Gruppen · {{count}}",
-    "instancePlaceholder": "Instanz: {{value}}",
-    "limitOverrides": "Limit-Überschreibungen",
-    "noGroups": "Noch keine Gruppen.",
-    "overrideRemoveError": "Überschreibung konnte nicht entfernt werden",
-    "overrideRemoved": "Überschreibung entfernt",
-    "overrideSaveError": "Überschreibung konnte nicht gespeichert werden",
-    "overrideSaved": "Überschreibung für {{label}} gespeichert",
-    "removeGroup": "{{name}} entfernen",
-    "reset": "Zurücksetzen",
-    "save": "Speichern",
-    "unlimited": "unbegrenzt"
-  },
-  "workgroups": {
-    "create": "Erstellen",
-    "createError": "Arbeitsgruppe konnte nicht erstellt werden",
-    "created": "Arbeitsgruppe erstellt",
-    "description": "Mehrere Gruppen zu einer Abteilung zusammenfassen. Rollen und Limits einer Arbeitsgruppe gelten für alle in ihren Gruppen.",
-    "empty": "Noch keine Arbeitsgruppen.",
-    "namePlaceholder": "Name der neuen Arbeitsgruppe",
-    "title": "Arbeitsgruppen"
   }
 }

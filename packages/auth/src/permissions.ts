@@ -60,15 +60,6 @@ const getGroupIds = async (userId: string): Promise<string[]> => {
   return rows.map((row) => row.groupId)
 }
 
-const getWorkgroupIds = async (groupIds: string[]): Promise<string[]> => {
-  if (groupIds.length === 0) return []
-  const rows = await db
-    .select({ workgroupId: schema.workgroupGroups.workgroupId })
-    .from(schema.workgroupGroups)
-    .where(inArray(schema.workgroupGroups.groupId, groupIds))
-  return [...new Set(rows.map((row) => row.workgroupId))]
-}
-
 interface Candidate {
   permission: string
   effect: "allow" | "deny"
@@ -86,8 +77,7 @@ export const can = async (
   scope: Scope = { type: "global" },
 ): Promise<boolean> => {
   const groupIds = await getGroupIds(userId)
-  const workgroupIds = await getWorkgroupIds(groupIds)
-  const subjectIds = [userId, ...groupIds, ...workgroupIds]
+  const subjectIds = [userId, ...groupIds]
 
   const assignments = await db
     .select({ roleId: schema.subjectRoles.roleId })

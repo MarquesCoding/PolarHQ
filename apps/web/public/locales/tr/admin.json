@@ -10,8 +10,7 @@
     "overview": "Genel bakış",
     "roles": "Roller",
     "settings": "Ayarlar",
-    "users": "Kullanıcılar",
-    "workgroups": "Çalışma grupları"
+    "users": "Kullanıcılar"
   },
   "apps": {
     "comingSoon": "Yakında",
@@ -205,34 +204,5 @@
     "userActions": "Kullanıcı işlemleri",
     "userBanned": "Kullanıcı yasaklandı",
     "userUnbanned": "Kullanıcının yasağı kaldırıldı"
-  },
-  "workgroupDetailSheet": {
-    "add": "Ekle",
-    "addGroupPlaceholder": "Grup ekle…",
-    "groupAddError": "Grup eklenemedi",
-    "groupAdded": "Grup eklendi",
-    "groupRemoveError": "Grup kaldırılamadı",
-    "groupRemoved": "Grup kaldırıldı",
-    "groupsCount": "Gruplar · {{count}}",
-    "instancePlaceholder": "Örnek: {{value}}",
-    "limitOverrides": "Limit geçersiz kılmaları",
-    "noGroups": "Henüz grup yok.",
-    "overrideRemoveError": "Geçersiz kılma kaldırılamadı",
-    "overrideRemoved": "Geçersiz kılma kaldırıldı",
-    "overrideSaveError": "Geçersiz kılma kaydedilemedi",
-    "overrideSaved": "{{label}} geçersiz kılması kaydedildi",
-    "removeGroup": "{{name}} grubunu kaldır",
-    "reset": "Sıfırla",
-    "save": "Kaydet",
-    "unlimited": "sınırsız"
-  },
-  "workgroups": {
-    "create": "Oluştur",
-    "createError": "Çalışma grubu oluşturulamadı",
-    "created": "Çalışma grubu oluşturuldu",
-    "description": "Birkaç grubu bir departman halinde toplayın. Bir çalışma grubundaki roller ve limitler, gruplarındaki herkese uygulanır.",
-    "empty": "Henüz çalışma grubu yok.",
-    "namePlaceholder": "Yeni çalışma grubu adı",
-    "title": "Çalışma grupları"
   }
 }

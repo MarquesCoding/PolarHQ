@@ -10,8 +10,7 @@
     "overview": "Visão geral",
     "roles": "Funções",
     "settings": "Definições",
-    "users": "Utilizadores",
-    "workgroups": "Grupos de trabalho"
+    "users": "Utilizadores"
   },
   "apps": {
     "comingSoon": "Brevemente",
@@ -205,34 +204,5 @@
     "userActions": "Ações do utilizador",
     "userBanned": "Utilizador banido",
     "userUnbanned": "Banimento do utilizador anulado"
-  },
-  "workgroupDetailSheet": {
-    "add": "Adicionar",
-    "addGroupPlaceholder": "Adicionar um grupo…",
-    "groupAddError": "Não foi possível adicionar o grupo",
-    "groupAdded": "Grupo adicionado",
-    "groupRemoveError": "Não foi possível remover o grupo",
-    "groupRemoved": "Grupo removido",
-    "groupsCount": "Grupos · {{count}}",
-    "instancePlaceholder": "Instância: {{value}}",
-    "limitOverrides": "Exceções de limites",
-    "noGroups": "Ainda não há grupos.",
-    "overrideRemoveError": "Não foi possível remover a exceção",
-    "overrideRemoved": "Exceção removida",
-    "overrideSaveError": "Não foi possível guardar a exceção",
-    "overrideSaved": "Exceção de {{label}} guardada",
-    "removeGroup": "Remover {{name}}",
-    "reset": "Repor",
-    "save": "Guardar",
-    "unlimited": "ilimitado"
-  },
-  "workgroups": {
-    "create": "Criar",
-    "createError": "Não foi possível criar o grupo de trabalho",
-    "created": "Grupo de trabalho criado",
-    "description": "Reúna vários grupos num departamento. As funções e os limites de um grupo de trabalho aplicam-se a todos nos seus grupos.",
-    "empty": "Ainda não há grupos de trabalho.",
-    "namePlaceholder": "Nome do novo grupo de trabalho",
-    "title": "Grupos de trabalho"
   }
 }

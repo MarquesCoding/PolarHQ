@@ -10,8 +10,7 @@
     "overview": "Overview",
     "roles": "Roles",
     "settings": "Settings",
-    "users": "Users",
-    "workgroups": "Workgroups"
+    "users": "Users"
   },
   "apps": {
     "comingSoon": "Coming soon",
@@ -205,34 +204,5 @@
     "userActions": "User actions",
     "userBanned": "User banned",
     "userUnbanned": "User unbanned"
-  },
-  "workgroupDetailSheet": {
-    "add": "Add",
-    "addGroupPlaceholder": "Add a group…",
-    "groupAddError": "Could not add the group",
-    "groupAdded": "Group added",
-    "groupRemoveError": "Could not remove the group",
-    "groupRemoved": "Group removed",
-    "groupsCount": "Groups · {{count}}",
-    "instancePlaceholder": "Instance: {{value}}",
-    "limitOverrides": "Limit overrides",
-    "noGroups": "No groups yet.",
-    "overrideRemoveError": "Could not remove the override",
-    "overrideRemoved": "Override removed",
-    "overrideSaveError": "Could not save the override",
-    "overrideSaved": "{{label}} override saved",
-    "removeGroup": "Remove {{name}}",
-    "reset": "Reset",
-    "save": "Save",
-    "unlimited": "unlimited"
-  },
-  "workgroups": {
-    "create": "Create",
-    "createError": "Could not create the workgroup",
-    "created": "Workgroup created",
-    "description": "Group several groups into a department. Roles and limits on a workgroup apply to everyone in its groups.",
-    "empty": "No workgroups yet.",
-    "namePlaceholder": "New workgroup name",
-    "title": "Workgroups"
   }
 }
