@@ -11,8 +11,9 @@ import {
 import { Icon } from "@lib/icons"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
+import { motion } from "motion/react"
 import { cn } from "@workspace/ui/lib/utils"
-import { NavRow, SectionLabel, navRowClass } from "@components/FlatShell"
+import { NavRow, SectionLabel, navItemVariants, navRowClass } from "@components/FlatShell"
 
 const isMyDrive = (pathname: string): boolean =>
   /^\/drive\/[^/]+$/.test(pathname) &&
@@ -95,7 +96,11 @@ const DriveNav = () => {
           {searches.map((search) => {
             const active = pathname === `/drive/search/${search.id}`
             return (
-              <div key={search.id} className="group/sr relative flex items-center">
+              <motion.div
+                key={search.id}
+                variants={navItemVariants}
+                className="group/sr relative flex items-center"
+              >
                 <Link
                   href={`/drive/search/${search.id}`}
                   className={cn(navRowClass(active, true), "min-w-0 flex-1 pr-7", active && "bg-sidebar-accent/60")}
@@ -111,7 +116,7 @@ const DriveNav = () => {
                 >
                   <Icon name="xmark" className="size-3.5" />
                 </button>
-              </div>
+              </motion.div>
             )
           })}
         </>
@@ -121,20 +126,21 @@ const DriveNav = () => {
         <>
           <SectionLabel>{t("driveNav.location")}</SectionLabel>
           {trail.map((node, index) => (
-            <Link
-              key={node.id}
-              href={index === 0 ? "/drive/files" : `/drive/${node.id}`}
-              style={{ paddingLeft: `${0.625 + index * 0.85}rem` }}
-              className={cn(
-                "flex items-center gap-1.5 rounded-md py-1 pr-2 text-[13px] transition",
-                index === trail.length - 1
-                  ? "bg-sidebar-accent/60 font-medium"
-                  : "text-muted-foreground hover:bg-sidebar-accent/40",
-              )}
-            >
-              <Icon name="folder" className="size-3.5 shrink-0" />
-              <span className="truncate">{index === 0 ? t("driveNav.myDrive") : node.name}</span>
-            </Link>
+            <motion.div key={node.id} variants={navItemVariants}>
+              <Link
+                href={index === 0 ? "/drive/files" : `/drive/${node.id}`}
+                style={{ paddingLeft: `${0.625 + index * 0.85}rem` }}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md py-1 pr-2 text-[13px] transition",
+                  index === trail.length - 1
+                    ? "bg-sidebar-accent/60 font-medium"
+                    : "text-muted-foreground hover:bg-sidebar-accent/40",
+                )}
+              >
+                <Icon name="folder" className="size-3.5 shrink-0" />
+                <span className="truncate">{index === 0 ? t("driveNav.myDrive") : node.name}</span>
+              </Link>
+            </motion.div>
           ))}
         </>
       ) : null}
