@@ -27,7 +27,7 @@ const isActive = (item: UploadItem): boolean =>
  *  active and finished. The bottom-right tray gives transient feedback; this is the persistent one. */
 const JobsDialog = ({ open, onOpenChange }: JobsDialogProps) => {
   const { t } = useTranslation("common")
-  const { items, remove, clearFinished } = useUploadManager()
+  const { items, remove, clearFinished, retry } = useUploadManager()
   const active = items.filter(isActive)
   const finished = items.filter((item) => !isActive(item))
 
@@ -68,7 +68,12 @@ const JobsDialog = ({ open, onOpenChange }: JobsDialogProps) => {
                 <ul className="divide-y">
                   <AnimatePresence initial={false}>
                     {finished.map((item) => (
-                      <JobRow key={item.id} item={item} onRemove={() => remove(item.id)} />
+                      <JobRow
+                        key={item.id}
+                        item={item}
+                        onRemove={() => remove(item.id)}
+                        onRetry={() => retry(item.id)}
+                      />
                     ))}
                   </AnimatePresence>
                 </ul>

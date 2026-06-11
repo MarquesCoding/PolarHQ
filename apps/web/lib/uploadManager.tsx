@@ -49,6 +49,8 @@ export interface UploadItem {
   mediaType?: MediaType
   assetId?: string
   error?: string
+  /** Whether a failed job can be re-run (a retry thunk was retained for it). */
+  retriable?: boolean
 }
 
 const mediaTypeFromName = (name: string): MediaType => {
@@ -84,6 +86,8 @@ interface UploadManagerApi {
   items: UploadItem[]
   upload: (files: FileList | File[], target?: UploadTarget) => void
   download: (name: string, items: DownloadItem[]) => void
+  /** Re-run a failed, retriable job (re-uploads, re-downloads, or re-runs the task). */
+  retry: (id: string) => void
   /** Track an arbitrary download (e.g. a streamed Drive file) in the tray with byte progress. */
   downloadFile: (
     name: string,
@@ -177,6 +181,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
   const readyAssets = useRef<Set<string>>(new Set())
   const itemsRef = useRef<UploadItem[]>([])
   const requests = useRef<Map<string, XMLHttpRequest>>(new Map())
+  const retries = useRef<Map<string, () => void>>(new Map())
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -280,6 +285,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
             speed: 0,
             status: "uploading",
             mediaType: isMediaFile(file) ? mediaTypeFromFile(file) : undefined,
+            retriable: true,
           },
           ...previous,
         ])
@@ -322,6 +328,8 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
           .finally(() => requests.current.delete(id))
       }
 
+      for (const job of jobs) retries.current.set(job.id, () => void runJob(job))
+
       const CONCURRENCY = 4
       let cursor = 0
       const runners = Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, async () => {
@@ -359,6 +367,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
         const request = requests.current.get(id)
         if (request && item.status === "uploading") request.abort()
         requests.current.delete(id)
+        retries.current.delete(id)
         const removable = item.status === "processing" || item.status === "done"
         if (item.assetId && removable) {
           void deleteAssets([item.assetId])
@@ -379,12 +388,31 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     [],
   )
 
+  const retry = useCallback(
+    (id: string) => {
+      const start = retries.current.get(id)
+      if (!start) return
+      update(id, { status: "uploading", loaded: 0, speed: 0, error: undefined })
+      start()
+    },
+    [update],
+  )
+
   const download = useCallback(
     (name: string, downloads: DownloadItem[]) => {
       if (downloads.length === 0) return
       const id = nextId()
       setItems((previous) => [
-        { id, kind: "download", name, size: 0, loaded: 0, speed: 0, status: "uploading" },
+        {
+          id,
+          kind: "download",
+          name,
+          size: 0,
+          loaded: 0,
+          speed: 0,
+          status: "uploading",
+          retriable: true,
+        },
         ...previous,
       ])
       const onProgress = ({ received, total }: DownloadProgress) =>
@@ -404,9 +432,12 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
         if (plain.length === 1) await downloadAsset(plain[0]!.id, plain[0]!.name, onProgress)
         else if (plain.length > 1) await downloadAssetsZip(plain.map((p) => p.id), onProgress)
       }
-      void run()
-        .then(() => update(id, { status: "done" }))
-        .catch(() => update(id, { status: "error", error: t("uploadManager.downloadFailed") }))
+      const start = () =>
+        void run()
+          .then(() => update(id, { status: "done" }))
+          .catch(() => update(id, { status: "error", error: t("uploadManager.downloadFailed") }))
+      retries.current.set(id, start)
+      start()
     },
     [update],
   )
@@ -419,12 +450,24 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     ) => {
       const id = nextId()
       setItems((previous) => [
-        { id, kind: "download", name, size: total, loaded: 0, speed: 0, status: "uploading" },
+        {
+          id,
+          kind: "download",
+          name,
+          size: total,
+          loaded: 0,
+          speed: 0,
+          status: "uploading",
+          retriable: true,
+        },
         ...previous,
       ])
-      void run((loaded, speed) => update(id, { loaded, speed }))
-        .then(() => update(id, { status: "done", loaded: total }))
-        .catch((error) => update(id, { status: "error", error: apiErrorMessage(error) }))
+      const start = () =>
+        void run((loaded, speed) => update(id, { loaded, speed }))
+          .then(() => update(id, { status: "done", loaded: total }))
+          .catch((error) => update(id, { status: "error", error: apiErrorMessage(error) }))
+      retries.current.set(id, start)
+      start()
     },
     [update],
   )
@@ -433,15 +476,27 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     (name: string, nodeIds: string[], parentId: string) => {
       const id = nextId()
       setItems((previous) => [
-        { id, kind: "task", name, size: 0, loaded: 0, speed: 0, status: "uploading" },
+        {
+          id,
+          kind: "task",
+          name,
+          size: 0,
+          loaded: 0,
+          speed: 0,
+          status: "uploading",
+          retriable: true,
+        },
         ...previous,
       ])
-      archiveDriveNodes(nodeIds, parentId, id)
-        .then(() => {
-          update(id, { status: "done" })
-          invalidate()
-        })
-        .catch(() => update(id, { status: "error", error: t("uploadManager.archiveFailed") }))
+      const start = () =>
+        archiveDriveNodes(nodeIds, parentId, id)
+          .then(() => {
+            update(id, { status: "done" })
+            invalidate()
+          })
+          .catch(() => update(id, { status: "error", error: t("uploadManager.archiveFailed") }))
+      retries.current.set(id, start)
+      void start()
     },
     [update, invalidate],
   )
@@ -454,15 +509,27 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     ) => {
       const id = nextId()
       setItems((previous) => [
-        { id, kind: "task", name, size: total, loaded: 0, speed: 0, status: "uploading" },
+        {
+          id,
+          kind: "task",
+          name,
+          size: total,
+          loaded: 0,
+          speed: 0,
+          status: "uploading",
+          retriable: true,
+        },
         ...previous,
       ])
-      void run((done) => update(id, { loaded: done }))
-        .then(() => {
-          update(id, { status: "done", loaded: total })
-          invalidate()
-        })
-        .catch(() => update(id, { status: "error", error: t("uploadManager.taskFailed") }))
+      const start = () =>
+        void run((done) => update(id, { loaded: done }))
+          .then(() => {
+            update(id, { status: "done", loaded: total })
+            invalidate()
+          })
+          .catch(() => update(id, { status: "error", error: t("uploadManager.taskFailed") }))
+      retries.current.set(id, start)
+      start()
     },
     [update, invalidate],
   )
@@ -508,7 +575,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <UploadContext.Provider
-      value={{ items, upload, download, downloadFile, archive, task, remove, clearFinished }}
+      value={{ items, upload, download, downloadFile, archive, task, remove, clearFinished, retry }}
     >
       {children}
     </UploadContext.Provider>

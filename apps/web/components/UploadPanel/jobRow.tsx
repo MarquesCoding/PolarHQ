@@ -4,7 +4,7 @@ import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { t } from "@lib/i18n/config"
 import type { UploadItem } from "@lib/uploadManager"
-import { IconX } from "@tabler/icons-react"
+import { IconRefresh, IconX } from "@tabler/icons-react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
@@ -110,8 +110,17 @@ export const jobStatusText = (item: UploadItem): string => {
   }
 }
 
-/** One job row: a status glyph (or progress ring), name + status line, and a dismiss button. */
-export const JobRow = ({ item, onRemove }: { item: UploadItem; onRemove: () => void }) => (
+/** One job row: a status glyph (or progress ring), name + status line, a retry button for failed
+ *  retriable jobs, and a dismiss button. */
+export const JobRow = ({
+  item,
+  onRemove,
+  onRetry,
+}: {
+  item: UploadItem
+  onRemove: () => void
+  onRetry?: () => void
+}) => (
   <motion.li
     layout
     initial={{ opacity: 0, height: 0 }}
@@ -142,6 +151,16 @@ export const JobRow = ({ item, onRemove }: { item: UploadItem; onRemove: () => v
       <p className="truncate text-sm">{item.name}</p>
       <p className="text-muted-foreground text-xs">{jobStatusText(item)}</p>
     </div>
+    {onRetry && item.status === "error" && item.retriable ? (
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label={t("common:uploadPanel.retry")}
+        onClick={onRetry}
+      >
+        <IconRefresh className="size-3.5" />
+      </Button>
+    ) : null}
     <Button
       variant="ghost"
       size="icon-sm"
