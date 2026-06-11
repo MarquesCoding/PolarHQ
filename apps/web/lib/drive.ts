@@ -80,6 +80,19 @@ export interface DriveUploadResult {
 }
 
 /** List a folder's contents. `parent` is a node id, or null/"root" for My Drive. */
+export type LibraryView = "recent" | "kind"
+
+/** A parentless, cross-folder file listing for the sidebar smart views (Recents / a file kind). */
+export type LibrarySource = { view: "recent" } | { view: "kind"; kind: StorageKind }
+
+/** Fetch a flat smart-view listing (most-recent files, or all files of one kind). */
+export const fetchLibrary = async (source: LibrarySource): Promise<{ children: DriveNode[] }> => {
+  const params = new URLSearchParams({ view: source.view })
+  if (source.view === "kind") params.set("kind", source.kind)
+  const listing = await apiFetch<{ children: DriveNode[] }>(`/api/v1/drive/library?${params}`)
+  return { children: listing.children.map(decryptNodeName) }
+}
+
 export const fetchNodes = async (parent?: string | null): Promise<DriveListing> => {
   const listing = await apiFetch<DriveListing>(
     `/api/v1/drive/nodes${parent ? `?parent=${encodeURIComponent(parent)}` : ""}`,
@@ -97,8 +110,10 @@ export const fetchNodes = async (parent?: string | null): Promise<DriveListing> 
  */
 export const driveFolderIdFromPath = (pathname: string): string | undefined | null => {
   if (pathname === "/drive/files") return undefined
+  if (pathname.startsWith("/drive/kind/")) return null
   const match = pathname.match(/^\/drive\/([^/]+)$/)
-  if (!match || match[1] === "trash" || match[1] === "overview" || match[1] === "files") return null
+  const reserved = ["trash", "overview", "files", "recent", "kind"]
+  if (!match || reserved.includes(match[1]!)) return null
   return match[1]
 }
 

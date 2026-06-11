@@ -1129,3 +1129,32 @@ export const getStorageStats = async (ownerId: string): Promise<StorageStats> =>
   const quota = await resolveLimit(ownerId, "storage.quota.bytes")
   return { usedBytes, quotaBytes: typeof quota === "number" ? quota : null, breakdown, kinds, largest }
 }
+
+export type LibraryView = "recent" | "kind"
+
+/**
+ * Flat, cross-folder file listings for the sidebar smart views: the most-recently-updated files
+ * ("recent") or every file of a given storage kind ("kind"). Folders are excluded — these are
+ * file-centric views — and the result is capped so a huge library cannot return unbounded rows.
+ */
+export const listLibrary = async (
+  ownerId: string,
+  view: LibraryView,
+  kind?: StorageKind,
+  limit = 200,
+): Promise<DriveNode[]> => {
+  const rows = await db
+    .select()
+    .from(schema.nodes)
+    .where(
+      and(
+        eq(schema.nodes.ownerId, ownerId),
+        eq(schema.nodes.kind, "file"),
+        isNull(schema.nodes.trashedAt),
+      ),
+    )
+    .orderBy(desc(schema.nodes.updatedAt))
+  const filtered =
+    view === "kind" && kind ? rows.filter((node) => kindForMime(node.mimeType) === kind) : rows
+  return filtered.slice(0, limit)
+}

@@ -20,6 +20,7 @@ import {
   type DriveNode,
   type DriveShare,
   type DriveVersion,
+  type StorageKind,
   archiveNodes,
   breadcrumb,
   clearNodeLock,
@@ -41,6 +42,7 @@ import {
   linkAssetNode,
   listChildren,
   listFolders,
+  listLibrary,
   listTrash,
   purgeExpiredTrash,
   listVersions,
@@ -138,6 +140,19 @@ driveRoutes.get("/nodes", async (c) => {
 
 driveRoutes.get("/storage", async (c) => {
   return c.json(await getStorageStats(c.get("userId")))
+})
+
+driveRoutes.get("/library", async (c) => {
+  const userId = c.get("userId")
+  const view = c.req.query("view")
+  if (view !== "recent" && view !== "kind") return c.json({ error: "drive.library.invalidView" }, 400)
+  const kind = c.req.query("kind") as StorageKind | undefined
+  const nodes = await listLibrary(userId, view, kind)
+  const encrypted = await nodesWithKeys(
+    userId,
+    nodes.map((n) => n.id),
+  )
+  return c.json({ children: nodes.map((n) => serializeNode(n, encrypted)) })
 })
 
 driveRoutes.post("/nodes/folder", async (c) => {
