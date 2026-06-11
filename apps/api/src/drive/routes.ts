@@ -292,8 +292,10 @@ driveRoutes.post("/nodes/upload/:sessionId/part", async (c) => {
     partNumber,
     body,
   )
+  const isNewPart = !session.parts.some((existing) => existing.partNumber === partNumber)
+  session.parts = session.parts.filter((existing) => existing.partNumber !== partNumber)
   session.parts.push(part)
-  session.bytes += body.length
+  if (isNewPart) session.bytes += body.length
   await saveUploadSession(c.req.param("sessionId"), session)
   return c.json({ ok: true })
 })

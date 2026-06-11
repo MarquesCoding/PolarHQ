@@ -20,7 +20,12 @@ import {
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 import { generateImageThumbnail } from "@lib/thumbnails"
-import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
+import {
+  type UploadOptions,
+  type UploadProgress,
+  postFormWithProgress,
+  retryOnTransient,
+} from "@lib/xhrUpload"
 
 /**
  * Upload a file end-to-end encrypted: encrypt the bytes with a fresh content key,
@@ -120,11 +125,13 @@ export const uploadEncryptedDriveFileChunked = async (
       const plain = new Uint8Array(await slice.arrayBuffer())
       const sealed = sealer.seal(plain, index === chunks - 1)
       const body = index === 0 ? concatBytes(sealer.prefix, sealed) : sealed
-      await apiFetch(`/api/v1/drive/nodes/upload/${sessionId}/part?part=${index + 1}`, {
-        method: "POST",
-        body: body as BodyInit,
-        headers: { "content-type": "application/octet-stream" },
-      })
+      await retryOnTransient(() =>
+        apiFetch(`/api/v1/drive/nodes/upload/${sessionId}/part?part=${index + 1}`, {
+          method: "POST",
+          body: body as BodyInit,
+          headers: { "content-type": "application/octet-stream" },
+        }),
+      )
       sent += slice.size
       const elapsed = (performance.now() - start) / 1000
       options?.onProgress?.({

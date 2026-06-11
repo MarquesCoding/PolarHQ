@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto"
+import { once } from "node:events"
 import { createReadStream, createWriteStream } from "node:fs"
-import { access, appendFile, mkdir, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises"
+import { access, mkdir, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises"
 import { dirname, join, relative, resolve, sep } from "node:path"
 import type { Readable } from "node:stream"
 import { pipeline } from "node:stream/promises"
@@ -88,34 +89,51 @@ export class FsDriver implements StorageDriver {
     return results
   }
 
-  private partPath(key: string, uploadId: string): string {
-    return this.resolveKey(`${key}.${uploadId}.uploading`)
+  private partsDir(key: string, uploadId: string): string {
+    return this.resolveKey(`${key}.${uploadId}.parts`)
   }
 
   async createMultipart(key: string): Promise<string> {
     const uploadId = randomUUID()
-    await mkdir(dirname(this.partPath(key, uploadId)), { recursive: true })
+    await mkdir(this.partsDir(key, uploadId), { recursive: true })
     return uploadId
   }
 
+  /** Each part is its own file (named by part number), so a re-uploaded part overwrites rather
+   *  than duplicating — making retries idempotent. */
   async uploadPart(
     key: string,
     uploadId: string,
     partNumber: number,
     body: Buffer | Uint8Array,
   ): Promise<MultipartPart> {
-    await appendFile(this.partPath(key, uploadId), body)
+    await writeFile(join(this.partsDir(key, uploadId), String(partNumber)), body)
     return { partNumber, etag: String(partNumber) }
   }
 
-  async completeMultipart(key: string, uploadId: string): Promise<void> {
+  /** Concatenate the parts in order into the final object, deleting each part as it is written so
+   *  peak disk stays ~1× the file size, then atomically rename into place. */
+  async completeMultipart(key: string, uploadId: string, parts: MultipartPart[]): Promise<void> {
+    const partsDir = this.partsDir(key, uploadId)
     const target = this.resolveKey(key)
+    const tmp = `${target}.assembling`
     await mkdir(dirname(target), { recursive: true })
-    await rename(this.partPath(key, uploadId), target)
+    const out = createWriteStream(tmp)
+    const finished = once(out, "finish")
+    for (const part of [...parts].sort((a, b) => a.partNumber - b.partNumber)) {
+      const partFile = join(partsDir, String(part.partNumber))
+      const data = await readFile(partFile)
+      if (!out.write(data)) await once(out, "drain")
+      await rm(partFile, { force: true })
+    }
+    out.end()
+    await finished
+    await rename(tmp, target)
+    await rm(partsDir, { recursive: true, force: true })
   }
 
   async abortMultipart(key: string, uploadId: string): Promise<void> {
-    await rm(this.partPath(key, uploadId), { force: true })
+    await rm(this.partsDir(key, uploadId), { recursive: true, force: true })
   }
 
   async presignGet(): Promise<string> {
