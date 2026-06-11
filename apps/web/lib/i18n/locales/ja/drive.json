@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "マイドライブ"
+  },
+  "browser": {
+    "archive": "アーカイブ",
+    "archiveExtracted": "アーカイブを展開しました",
+    "archiveLabel_one": "アーカイブ（{{count}} 件）",
+    "archiveLabel_other": "アーカイブ（{{count}} 件）",
+    "copyCreated": "コピーを作成しました",
+    "couldNotCopy": "コピーできませんでした",
+    "couldNotCreate": "作成できませんでした",
+    "couldNotDelete": "削除できませんでした",
+    "couldNotExtract": "展開できませんでした",
+    "couldNotMove": "移動できませんでした",
+    "couldNotOpenFile": "このファイルを開けませんでした",
+    "download": "ダウンロード",
+    "dragOrUpload": "ここにファイルをドラッグするか、アップロードを使用してください。",
+    "extract": "展開",
+    "linkCopied": "リンクをコピーしました",
+    "move": "移動",
+    "movedToFolder_one": "{{count}} 件を {{name}} に移動しました",
+    "movedToFolder_other": "{{count}} 件を {{name}} に移動しました",
+    "movedToTrash": "ゴミ箱に移動しました",
+    "noMatches": "検索条件に一致するものがありません。",
+    "open": "開く",
+    "opening": "開いています…",
+    "rename": "名前を変更",
+    "share": "共有",
+    "trash": "ゴミ箱"
+  },
+  "detailsPanel": {
+    "closeDetails": "詳細を閉じる",
+    "created": "作成日時",
+    "empty": "詳細を表示するにはアイテムを選択してください。",
+    "file": "ファイル",
+    "files": "ファイル",
+    "folder": "フォルダ",
+    "folders": "フォルダ",
+    "itemsSelected_one": "{{count}} 件を選択中",
+    "itemsSelected_other": "{{count}} 件を選択中",
+    "modified": "更新日時",
+    "size": "サイズ",
+    "title": "詳細",
+    "totalSize": "合計サイズ",
+    "type": "種類"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "新しいドキュメント",
+    "newFolder": "新しいフォルダ",
+    "newSpreadsheet": "新しいスプレッドシート",
+    "uploadFiles": "ファイルをアップロード"
+  },
+  "driveNav": {
+    "drive": "ドライブ",
+    "location": "場所",
+    "myDrive": "マイドライブ",
+    "trash": "ゴミ箱"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "作成できませんでした",
+    "emptyTrash": "ゴミ箱を空にする",
+    "emptyTrashConfirm": "ゴミ箱を空にしますか？",
+    "new": "新規",
+    "newDocument": "新しいドキュメント",
+    "newFolder": "新しいフォルダ",
+    "newSpreadsheet": "新しいスプレッドシート",
+    "toggleDetails": "詳細の表示切り替え",
+    "trashEmptied": "ゴミ箱を空にしました",
+    "uploadFiles": "ファイルをアップロード"
+  },
+  "folderLockDialog": {
+    "cancel": "キャンセル",
+    "confirmPasswordPlaceholder": "パスワードを再入力",
+    "folderLocked": "フォルダをロックしました",
+    "folderPasswordPlaceholder": "フォルダのパスワード",
+    "incorrectPassword": "パスワードが正しくありません。",
+    "lock": "ロック",
+    "lockDescription": "このフォルダを開くためのパスワードを設定します。このデバイスでのアクセスを制限するものであり、ファイルはいずれにせよエンドツーエンドで暗号化されたままです。",
+    "lockFolderTitle": "フォルダをロック",
+    "lockRemoved": "ロックを解除しました",
+    "passwordsDontMatch": "パスワードが一致しません。",
+    "removeDescription": "ロックを解除するにはフォルダのパスワードを入力してください。",
+    "removeLock": "ロックを解除",
+    "removeLockTitle": "ロックを解除",
+    "somethingWentWrong": "問題が発生しました。"
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "内容を表示するにはパスワードを入力してください。",
+    "incorrectPassword": "パスワードが正しくありません。",
+    "locked": "「{{name}}」はロックされています",
+    "passwordPlaceholder": "フォルダのパスワード",
+    "unlock": "ロック解除"
+  },
+  "imageViewer": {
+    "close": "閉じる",
+    "download": "ダウンロード",
+    "resetZoom": "ズームをリセット",
+    "zoomIn": "拡大",
+    "zoomOut": "縮小"
+  },
+  "modelViewer": {
+    "autoRotate": "自動回転",
+    "close": "閉じる",
+    "decryptError": "モデルを復号できませんでした",
+    "loading": "モデルを読み込んでいます…",
+    "normals": "法線",
+    "openError": "この 3D ファイルを開けませんでした。",
+    "shaded": "シェーディング",
+    "toggleGrid": "グリッドの表示切り替え",
+    "toggleTextures": "テクスチャの表示切り替え",
+    "wireframe": "ワイヤーフレーム"
+  },
+  "moveDialog": {
+    "cancel": "キャンセル",
+    "move": "移動",
+    "moveFailed": "移動できませんでした",
+    "moved": "移動しました",
+    "myDrive": "マイドライブ",
+    "title": "フォルダへ移動"
+  },
+  "newFolderDialog": {
+    "cancel": "キャンセル",
+    "create": "作成",
+    "createError": "フォルダを作成できませんでした",
+    "created": "フォルダを作成しました",
+    "newFolder": "新しいフォルダ",
+    "placeholder": "フォルダ名",
+    "title": "新しいフォルダ"
+  },
+  "nodeCard": {
+    "deselect": "選択を解除",
+    "folder": "フォルダ",
+    "select": "選択"
+  },
+  "nodeContextMenu": {
+    "copyLink": "リンクをコピー",
+    "details": "詳細",
+    "download": "ダウンロード",
+    "extractHere": "ここに展開",
+    "lockFolder": "フォルダをロック",
+    "makeCopy": "コピーを作成",
+    "moveToFolder": "フォルダへ移動",
+    "moveToTrash": "ゴミ箱に移動",
+    "open": "開く",
+    "openInPhotos": "フォトで開く",
+    "removeLock": "ロックを解除",
+    "rename": "名前を変更",
+    "share": "共有",
+    "versionHistory": "バージョン履歴を表示",
+    "view": "表示",
+    "viewIn3d": "3D で表示"
+  },
+  "nodeTable": {
+    "deselect": "選択を解除",
+    "modified": "更新日時",
+    "name": "名前",
+    "select": "選択",
+    "selectAll": "すべて選択",
+    "size": "サイズ"
+  },
+  "parentCard": {
+    "parentFolder": "親フォルダ"
+  },
+  "renameDialog": {
+    "cancel": "キャンセル",
+    "couldNotRename": "名前を変更できませんでした",
+    "renamed": "名前を変更しました",
+    "save": "保存",
+    "title": "名前を変更"
+  },
+  "shell": {
+    "search": "ドライブを検索"
+  },
+  "trash": {
+    "actionFailed": "操作に失敗しました",
+    "deleteForever": "完全に削除",
+    "empty": "ゴミ箱は空です。",
+    "permanentlyDeleted": "完全に削除しました",
+    "restore": "復元",
+    "restored": "復元しました",
+    "retentionNotice": "ここにあるアイテムは、ゴミ箱に移動してから 30 日後に完全に削除されます。",
+    "title": "ゴミ箱"
+  },
+  "versionHistoryDialog": {
+    "close": "閉じる",
+    "download": "バージョンをダウンロード",
+    "empty": "以前のバージョンはありません。同じ名前のファイルを再アップロードすると作成されます。",
+    "loading": "読み込んでいます…",
+    "restore": "復元",
+    "restoreFailed": "復元できませんでした",
+    "restored": "バージョンを復元しました",
+    "title": "バージョン履歴",
+    "versionLabel": "バージョン {{number}}"
+  }
+}

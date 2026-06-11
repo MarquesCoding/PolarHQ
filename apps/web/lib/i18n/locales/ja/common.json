@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "戻る",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "confirm": "確定",
+    "create": "作成",
+    "delete": "削除",
+    "done": "完了",
+    "download": "ダウンロード",
+    "getStarted": "始める",
+    "next": "次へ",
+    "open": "開く",
+    "remove": "削除",
+    "rename": "名前を変更",
+    "retry": "再試行",
+    "save": "保存",
+    "share": "共有",
+    "signOut": "ログアウト"
+  },
+  "appTile": {
+    "beta": "ベータ",
+    "soon": "近日公開"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · ビルド {{build}}",
+    "whatsNew": "新着情報"
+  },
+  "collabHeader": {
+    "anonymous": "匿名",
+    "notSavedYet": "未保存",
+    "save": "保存",
+    "savedAt": "{{time}}に保存",
+    "saving": "保存中…",
+    "share": "共有",
+    "title": "タイトル"
+  },
+  "confirmButton": {
+    "confirm": "確定"
+  },
+  "devicesDialog": {
+    "activeNow": "現在アクティブ",
+    "lastActive": "最終アクティブ {{time}}",
+    "signOut": "ログアウト",
+    "signOutError": "このデバイスからログアウトできませんでした",
+    "signedOut": "デバイスからログアウトしました",
+    "thisDevice": "このデバイス",
+    "title": "デバイスとセッション"
+  },
+  "dropZone": {
+    "dropToUpload": "ドロップしてアップロード"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "変更内容はすべて自動的かつ安全にDriveへ保存されます。",
+    "encrypted": "暗号化済み",
+    "endToEndEncrypted": "エンドツーエンド暗号化"
+  },
+  "flatSidebar": {
+    "account": "アカウント",
+    "apps": "アプリ",
+    "beta": "ベータ",
+    "devices": "デバイス",
+    "personalWorkspace": "個人ワークスペース",
+    "replayIntro": "イントロを再生",
+    "settings": "設定",
+    "signOut": "ログアウト",
+    "storage": "ストレージ",
+    "toggleDarkMode": "ダークモードの切り替え",
+    "unlimited": "無制限"
+  },
+  "importButton": {
+    "import": "インポート",
+    "importFailed": "このファイルをインポートできませんでした"
+  },
+  "launcher": {
+    "loadingApps": "アプリを読み込み中…",
+    "ofQuota": "/ {{quota}}",
+    "signOut": "ログアウト",
+    "storage": "ストレージ",
+    "versionBuild": "v{{version}} · ビルド {{build}}",
+    "yourApps": "あなたのアプリ"
+  },
+  "recoveryCodeDialog": {
+    "continue": "保存しました — 続行",
+    "copied": "リカバリーコードをコピーしました",
+    "copyAriaLabel": "リカバリーコードをコピー",
+    "description": "アカウントはエンドツーエンドで暗号化されました。このリカバリーコードは、パスワードを忘れた場合にデータを復元する唯一の手段です。安全な場所に保管してください。これ以降は再表示できません。",
+    "title": "リカバリーコードを保存"
+  },
+  "selectionBar": {
+    "clearSelection": "選択を解除",
+    "download": "ダウンロード",
+    "downloadAllFrames": "すべてのフレームをダウンロード（{{count}}）",
+    "downloadCover": "カバーをダウンロード",
+    "downloadCovers": "カバーをダウンロード（{{count}}）",
+    "photoFilename": "写真",
+    "photosZipFilename": "{{count}}枚の写真.zip",
+    "share": "共有",
+    "shareNameFallback": "写真"
+  },
+  "shareDialog": {
+    "cancel": "キャンセル",
+    "copyLink": "リンクをコピー",
+    "descriptionEncrypted": "エンドツーエンド暗号化：鍵はリンク内に保持されサーバーには届かないため、リンクを知っている人だけが復号できます。",
+    "descriptionPublic": "このリンクを知っている人は誰でもファイルをダウンロードできます。",
+    "directDownload": "ダイレクトダウンロード",
+    "directDownloadHint": "ランディングページをスキップしてすぐにダウンロード",
+    "expiresAfter": "有効期限",
+    "expiry1Day": "1日",
+    "expiry1Hour": "1時間",
+    "expiry30Days": "30日",
+    "expiry7Days": "7日",
+    "generatingLink": "リンクを生成中…",
+    "limitDownloads": "ダウンロード回数を制限",
+    "limitDownloadsHint": "指定した回数のダウンロード後にリンクを無効化",
+    "linkCopied": "リンクをコピーしました",
+    "maximumDownloads": "最大ダウンロード回数",
+    "permanentLink": "永続リンク",
+    "permanentLinkHint": "削除するまでこのリンクを有効に保ちます",
+    "title": "「{{name}}」を共有"
+  },
+  "state": {
+    "empty": "まだ何もありません",
+    "error": "問題が発生しました",
+    "loading": "読み込み中…",
+    "saving": "保存中…"
+  },
+  "units": {
+    "items_one": "{{count}}件",
+    "items_other": "{{count}}件"
+  },
+  "uploadManager": {
+    "archiveFailed": "アーカイブに失敗しました",
+    "downloadFailed": "ダウンロードに失敗しました",
+    "taskFailed": "失敗しました",
+    "unsupportedFileType": "サポートされていないファイル形式",
+    "unsupportedFileTypeToast": "{{name}}はサポートされていないファイル形式です"
+  },
+  "uploadPanel": {
+    "activity": "アクティビティ",
+    "alreadyInLibrary": "すでにライブラリにあります",
+    "archiving": "アーカイブ中…",
+    "archivingItems_one": "{{count}}件をアーカイブ中",
+    "archivingItems_other": "{{count}}件をアーカイブ中",
+    "archivingProgress": "{{size}}中{{loaded}}をアーカイブ中",
+    "bytesProgress": "{{size}}中{{loaded}}",
+    "clear": "クリア",
+    "collapse": "折りたたむ",
+    "compressing": "圧縮中…",
+    "dismiss": "閉じる",
+    "done": "完了",
+    "downloadFailed": "ダウンロードに失敗しました",
+    "downloaded": "ダウンロード済み",
+    "downloading": "ダウンロード中…",
+    "downloadingItems_one": "{{count}}件をダウンロード中",
+    "downloadingItems_other": "{{count}}件をダウンロード中",
+    "expand": "展開",
+    "failed": "失敗しました",
+    "processing": "処理中…",
+    "processingItems_one": "{{count}}件を処理中",
+    "processingItems_other": "{{count}}件を処理中",
+    "speed": "{{speed}}/秒",
+    "transcoding": "トランスコード中…",
+    "uploading": "アップロード中…",
+    "uploadingItems_one": "{{count}}件をアップロード中",
+    "uploadingItems_other": "{{count}}件をアップロード中"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}}件はすでにライブラリにあります",
+    "alreadyInLibrary_other": "{{count}}件はすでにライブラリにあります",
+    "uploadFailed": "{{name}}のアップロードに失敗しました",
+    "uploaded_one": "{{count}}枚の写真をアップロードしました",
+    "uploaded_other": "{{count}}枚の写真をアップロードしました"
+  },
+  "viewToggle": {
+    "gridView": "グリッド表示",
+    "tableView": "テーブル表示"
+  }
+}

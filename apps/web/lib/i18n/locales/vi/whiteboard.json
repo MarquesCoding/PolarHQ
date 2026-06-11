@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Làm lại",
+    "resetZoom": "Đặt lại thu phóng",
+    "undo": "Hoàn tác",
+    "zoomIn": "Phóng to",
+    "zoomOut": "Thu nhỏ"
+  },
+  "propertiesPanel": {
+    "background": "Nền",
+    "bringForward": "Đưa lên trên",
+    "bringToFront": "Đưa lên trên cùng",
+    "layers": "Lớp",
+    "opacity": "Độ mờ",
+    "sendBackward": "Đưa xuống dưới",
+    "sendToBack": "Đưa xuống dưới cùng",
+    "stroke": "Nét vẽ",
+    "strokeWidth": "Độ dày nét vẽ"
+  },
+  "shell": {
+    "myWhiteboards": "Bảng trắng của tôi",
+    "newWhiteboard": "Bảng trắng mới",
+    "product": "Bảng trắng",
+    "search": "Tìm bảng trắng",
+    "whiteboards": "Bảng trắng"
+  },
+  "toolbar": {
+    "arrow": "Mũi tên",
+    "diamond": "Hình thoi",
+    "draw": "Vẽ",
+    "ellipse": "Hình elip",
+    "eraser": "Tẩy",
+    "line": "Đường thẳng",
+    "pan": "Di chuyển",
+    "rectangle": "Hình chữ nhật",
+    "select": "Chọn",
+    "text": "Văn bản"
+  },
+  "whiteboardList": {
+    "createLabel": "Bảng trắng mới",
+    "title": "Bảng trắng"
+  }
+}

@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 mục",
+    "albumName": "Ý '24",
+    "albumsBody": "Nhóm ảnh vào các album, rồi chia sẻ liên kết riêng tư — không cần tài khoản để xem.",
+    "albumsTitle": "Album và liên kết chia sẻ.",
+    "back": "Quay lại",
+    "dismiss": "Bỏ qua",
+    "getStarted": "Bắt đầu",
+    "linkCopied": "Đã sao chép liên kết",
+    "next": "Tiếp theo",
+    "privateBody": "Mọi ảnh, tài liệu và tệp đều được mã hóa đầu cuối. Chỉ bạn giữ khóa — máy chủ chỉ thấy dữ liệu đã mã hóa.",
+    "privateTitle": "Riêng tư theo mặc định.",
+    "share": "Chia sẻ",
+    "uploadBody": "Kéo ảnh vào bất kỳ đâu để tải lên. Live Photos tự động ghép cặp và ảnh chụp liên tiếp gộp thành một nhóm có thể mở rộng.",
+    "uploadTitle": "Chỉ cần thả vào đây."
+  }
+}

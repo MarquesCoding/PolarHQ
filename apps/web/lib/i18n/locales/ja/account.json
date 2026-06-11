@@ -1,1 +1,22 @@
-{}
+{
+  "title": "アカウント",
+  "subtitle": "プロフィールと設定を管理します。",
+  "back": "戻る",
+  "profile": "プロフィール",
+  "name": "名前",
+  "email": "メールアドレス",
+  "preferences": "設定",
+  "language": "言語",
+  "languageHint": "インターフェース全体で使用する言語を選択します。",
+  "appearance": "外観",
+  "appearanceHint": "ライトモードとダークモードを切り替えます。",
+  "light": "ライト",
+  "dark": "ダーク",
+  "system": "システム",
+  "security": "セキュリティ",
+  "devices": "デバイスとセッション",
+  "devicesHint": "サインイン中のデバイスを確認し、サインアウトします。",
+  "manageDevices": "デバイスを管理",
+  "signOut": "サインアウト",
+  "languageChanged": "言語を更新しました"
+}

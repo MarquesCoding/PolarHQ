@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "やり直し",
+    "resetZoom": "ズームをリセット",
+    "undo": "元に戻す",
+    "zoomIn": "ズームイン",
+    "zoomOut": "ズームアウト"
+  },
+  "propertiesPanel": {
+    "background": "背景",
+    "bringForward": "前面へ移動",
+    "bringToFront": "最前面へ移動",
+    "layers": "レイヤー",
+    "opacity": "不透明度",
+    "sendBackward": "背面へ移動",
+    "sendToBack": "最背面へ移動",
+    "stroke": "線",
+    "strokeWidth": "線の太さ"
+  },
+  "shell": {
+    "myWhiteboards": "マイホワイトボード",
+    "newWhiteboard": "新しいホワイトボード",
+    "product": "ホワイトボード",
+    "search": "ホワイトボードを検索",
+    "whiteboards": "ホワイトボード"
+  },
+  "toolbar": {
+    "arrow": "矢印",
+    "diamond": "ひし形",
+    "draw": "描画",
+    "ellipse": "楕円",
+    "eraser": "消しゴム",
+    "line": "直線",
+    "pan": "手のひら",
+    "rectangle": "長方形",
+    "select": "選択",
+    "text": "テキスト"
+  },
+  "whiteboardList": {
+    "createLabel": "新しいホワイトボード",
+    "title": "ホワイトボード"
+  }
+}

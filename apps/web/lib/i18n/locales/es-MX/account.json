@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Cuenta",
+  "subtitle": "Administra tu perfil y preferencias.",
+  "back": "Atrás",
+  "profile": "Perfil",
+  "name": "Nombre",
+  "email": "Correo electrónico",
+  "preferences": "Preferencias",
+  "language": "Idioma",
+  "languageHint": "Elige el idioma que se usa en toda la interfaz.",
+  "appearance": "Apariencia",
+  "appearanceHint": "Cambia entre el modo claro y el oscuro.",
+  "light": "Claro",
+  "dark": "Oscuro",
+  "system": "Sistema",
+  "security": "Seguridad",
+  "devices": "Dispositivos y sesiones",
+  "devicesHint": "Revisa y cierra la sesión de los dispositivos que tienen la sesión iniciada.",
+  "manageDevices": "Administrar dispositivos",
+  "signOut": "Cerrar sesión",
+  "languageChanged": "Idioma actualizado"
+}

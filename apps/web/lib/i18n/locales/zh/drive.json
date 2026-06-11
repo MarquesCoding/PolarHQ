@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "我的云端硬盘"
+  },
+  "browser": {
+    "archive": "压缩包",
+    "archiveExtracted": "压缩包已解压",
+    "archiveLabel_one": "压缩 {{count}} 个项目",
+    "archiveLabel_other": "压缩 {{count}} 个项目",
+    "copyCreated": "副本已创建",
+    "couldNotCopy": "无法复制",
+    "couldNotCreate": "无法创建",
+    "couldNotDelete": "无法删除",
+    "couldNotExtract": "无法解压",
+    "couldNotMove": "无法移动",
+    "couldNotOpenFile": "无法打开此文件",
+    "download": "下载",
+    "dragOrUpload": "将文件拖到此处，或点击上传。",
+    "extract": "解压",
+    "linkCopied": "链接已复制",
+    "move": "移动",
+    "movedToFolder_one": "已将 {{count}} 个项目移动到 {{name}}",
+    "movedToFolder_other": "已将 {{count}} 个项目移动到 {{name}}",
+    "movedToTrash": "已移至回收站",
+    "noMatches": "没有与搜索匹配的结果。",
+    "open": "打开",
+    "opening": "正在打开…",
+    "rename": "重命名",
+    "share": "共享",
+    "trash": "回收站"
+  },
+  "detailsPanel": {
+    "closeDetails": "关闭详细信息",
+    "created": "创建时间",
+    "empty": "选择一个项目以查看其详细信息。",
+    "file": "文件",
+    "files": "文件",
+    "folder": "文件夹",
+    "folders": "文件夹",
+    "itemsSelected_one": "已选择 {{count}} 个项目",
+    "itemsSelected_other": "已选择 {{count}} 个项目",
+    "modified": "修改时间",
+    "size": "大小",
+    "title": "详细信息",
+    "totalSize": "总大小",
+    "type": "类型"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "新建文档",
+    "newFolder": "新建文件夹",
+    "newSpreadsheet": "新建表格",
+    "uploadFiles": "上传文件"
+  },
+  "driveNav": {
+    "drive": "云端硬盘",
+    "location": "位置",
+    "myDrive": "我的云端硬盘",
+    "trash": "回收站"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "无法创建",
+    "emptyTrash": "清空回收站",
+    "emptyTrashConfirm": "确定要清空回收站吗？",
+    "new": "新建",
+    "newDocument": "新建文档",
+    "newFolder": "新建文件夹",
+    "newSpreadsheet": "新建表格",
+    "toggleDetails": "显示/隐藏详细信息",
+    "trashEmptied": "回收站已清空",
+    "uploadFiles": "上传文件"
+  },
+  "folderLockDialog": {
+    "cancel": "取消",
+    "confirmPasswordPlaceholder": "确认密码",
+    "folderLocked": "文件夹已锁定",
+    "folderPasswordPlaceholder": "文件夹密码",
+    "incorrectPassword": "密码不正确。",
+    "lock": "锁定",
+    "lockDescription": "设置密码以打开此文件夹。它仅在本设备上控制访问——无论如何，您的文件始终保持端到端加密。",
+    "lockFolderTitle": "锁定文件夹",
+    "lockRemoved": "锁定已移除",
+    "passwordsDontMatch": "两次输入的密码不一致。",
+    "removeDescription": "输入文件夹密码以移除其锁定。",
+    "removeLock": "移除锁定",
+    "removeLockTitle": "移除锁定",
+    "somethingWentWrong": "出了点问题。"
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "输入密码以查看内容。",
+    "incorrectPassword": "密码不正确。",
+    "locked": "“{{name}}”已锁定",
+    "passwordPlaceholder": "文件夹密码",
+    "unlock": "解锁"
+  },
+  "imageViewer": {
+    "close": "关闭",
+    "download": "下载",
+    "resetZoom": "重置缩放",
+    "zoomIn": "放大",
+    "zoomOut": "缩小"
+  },
+  "modelViewer": {
+    "autoRotate": "自动旋转",
+    "close": "关闭",
+    "decryptError": "无法解密模型",
+    "loading": "正在加载模型…",
+    "normals": "法线",
+    "openError": "无法打开此 3D 文件。",
+    "shaded": "着色",
+    "toggleGrid": "显示/隐藏网格",
+    "toggleTextures": "显示/隐藏纹理",
+    "wireframe": "线框"
+  },
+  "moveDialog": {
+    "cancel": "取消",
+    "move": "移动",
+    "moveFailed": "无法移动",
+    "moved": "已移动",
+    "myDrive": "我的云端硬盘",
+    "title": "移动到文件夹"
+  },
+  "newFolderDialog": {
+    "cancel": "取消",
+    "create": "创建",
+    "createError": "无法创建文件夹",
+    "created": "文件夹已创建",
+    "newFolder": "新建文件夹",
+    "placeholder": "文件夹名称",
+    "title": "新建文件夹"
+  },
+  "nodeCard": {
+    "deselect": "取消选择",
+    "folder": "文件夹",
+    "select": "选择"
+  },
+  "nodeContextMenu": {
+    "copyLink": "复制链接",
+    "details": "详细信息",
+    "download": "下载",
+    "extractHere": "解压到此处",
+    "lockFolder": "锁定文件夹",
+    "makeCopy": "创建副本",
+    "moveToFolder": "移动到文件夹",
+    "moveToTrash": "移至回收站",
+    "open": "打开",
+    "openInPhotos": "在照片中打开",
+    "removeLock": "移除锁定",
+    "rename": "重命名",
+    "share": "共享",
+    "versionHistory": "查看版本历史记录",
+    "view": "查看",
+    "viewIn3d": "以 3D 查看"
+  },
+  "nodeTable": {
+    "deselect": "取消选择",
+    "modified": "修改时间",
+    "name": "名称",
+    "select": "选择",
+    "selectAll": "全选",
+    "size": "大小"
+  },
+  "parentCard": {
+    "parentFolder": "上级文件夹"
+  },
+  "renameDialog": {
+    "cancel": "取消",
+    "couldNotRename": "无法重命名",
+    "renamed": "已重命名",
+    "save": "保存",
+    "title": "重命名"
+  },
+  "shell": {
+    "search": "搜索云端硬盘"
+  },
+  "trash": {
+    "actionFailed": "操作失败",
+    "deleteForever": "永久删除",
+    "empty": "回收站为空。",
+    "permanentlyDeleted": "已永久删除",
+    "restore": "恢复",
+    "restored": "已恢复",
+    "retentionNotice": "回收站中的项目将在移入 30 天后被永久删除。",
+    "title": "回收站"
+  },
+  "versionHistoryDialog": {
+    "close": "关闭",
+    "download": "下载此版本",
+    "empty": "没有以前的版本。重新上传同名文件即可创建一个版本。",
+    "loading": "正在加载…",
+    "restore": "恢复",
+    "restoreFailed": "无法恢复",
+    "restored": "版本已恢复",
+    "title": "版本历史记录",
+    "versionLabel": "版本 {{number}}"
+  }
+}

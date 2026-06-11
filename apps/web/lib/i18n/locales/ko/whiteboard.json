@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "다시 실행",
+    "resetZoom": "확대/축소 초기화",
+    "undo": "실행 취소",
+    "zoomIn": "확대",
+    "zoomOut": "축소"
+  },
+  "propertiesPanel": {
+    "background": "배경",
+    "bringForward": "앞으로 가져오기",
+    "bringToFront": "맨 앞으로 가져오기",
+    "layers": "레이어",
+    "opacity": "불투명도",
+    "sendBackward": "뒤로 보내기",
+    "sendToBack": "맨 뒤로 보내기",
+    "stroke": "선",
+    "strokeWidth": "선 두께"
+  },
+  "shell": {
+    "myWhiteboards": "내 화이트보드",
+    "newWhiteboard": "새 화이트보드",
+    "product": "화이트보드",
+    "search": "화이트보드 검색",
+    "whiteboards": "화이트보드"
+  },
+  "toolbar": {
+    "arrow": "화살표",
+    "diamond": "마름모",
+    "draw": "그리기",
+    "ellipse": "타원",
+    "eraser": "지우개",
+    "line": "선",
+    "pan": "이동",
+    "rectangle": "사각형",
+    "select": "선택",
+    "text": "텍스트"
+  },
+  "whiteboardList": {
+    "createLabel": "새 화이트보드",
+    "title": "화이트보드"
+  }
+}

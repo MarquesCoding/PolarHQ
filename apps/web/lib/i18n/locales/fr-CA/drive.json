@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Mon disque"
+  },
+  "browser": {
+    "archive": "Archive",
+    "archiveExtracted": "Archive extraite",
+    "archiveLabel_one": "Archive ({{count}} élément)",
+    "archiveLabel_other": "Archive ({{count}} éléments)",
+    "copyCreated": "Copie créée",
+    "couldNotCopy": "Impossible de copier",
+    "couldNotCreate": "Impossible de créer",
+    "couldNotDelete": "Impossible de supprimer",
+    "couldNotExtract": "Impossible d’extraire",
+    "couldNotMove": "Impossible de déplacer",
+    "couldNotOpenFile": "Impossible d’ouvrir ce fichier",
+    "download": "Télécharger",
+    "dragOrUpload": "Glissez des fichiers ici ou utilisez Téléverser.",
+    "extract": "Extraire",
+    "linkCopied": "Lien copié",
+    "move": "Déplacer",
+    "movedToFolder_one": "{{count}} élément déplacé vers {{name}}",
+    "movedToFolder_other": "{{count}} éléments déplacés vers {{name}}",
+    "movedToTrash": "Déplacé vers la corbeille",
+    "noMatches": "Aucun résultat pour votre recherche.",
+    "open": "Ouvrir",
+    "opening": "Ouverture…",
+    "rename": "Renommer",
+    "share": "Partager",
+    "trash": "Corbeille"
+  },
+  "detailsPanel": {
+    "closeDetails": "Fermer les détails",
+    "created": "Créé",
+    "empty": "Sélectionnez un élément pour voir ses détails.",
+    "file": "Fichier",
+    "files": "Fichiers",
+    "folder": "Dossier",
+    "folders": "Dossiers",
+    "itemsSelected_one": "{{count}} élément sélectionné",
+    "itemsSelected_other": "{{count}} éléments sélectionnés",
+    "modified": "Modifié",
+    "size": "Taille",
+    "title": "Détails",
+    "totalSize": "Taille totale",
+    "type": "Type"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Nouveau document",
+    "newFolder": "Nouveau dossier",
+    "newSpreadsheet": "Nouvelle feuille de calcul",
+    "uploadFiles": "Téléverser des fichiers"
+  },
+  "driveNav": {
+    "drive": "Disque",
+    "location": "Emplacement",
+    "myDrive": "Mon disque",
+    "trash": "Corbeille"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Impossible de créer",
+    "emptyTrash": "Vider la corbeille",
+    "emptyTrashConfirm": "Vider la corbeille?",
+    "new": "Nouveau",
+    "newDocument": "Nouveau document",
+    "newFolder": "Nouveau dossier",
+    "newSpreadsheet": "Nouvelle feuille de calcul",
+    "toggleDetails": "Afficher ou masquer les détails",
+    "trashEmptied": "Corbeille vidée",
+    "uploadFiles": "Téléverser des fichiers"
+  },
+  "folderLockDialog": {
+    "cancel": "Annuler",
+    "confirmPasswordPlaceholder": "Confirmer le mot de passe",
+    "folderLocked": "Dossier verrouillé",
+    "folderPasswordPlaceholder": "Mot de passe du dossier",
+    "incorrectPassword": "Mot de passe incorrect.",
+    "lock": "Verrouiller",
+    "lockDescription": "Définissez un mot de passe pour ouvrir ce dossier. Il contrôle l’accès sur cet appareil — vos fichiers demeurent chiffrés de bout en bout, peu importe.",
+    "lockFolderTitle": "Verrouiller le dossier",
+    "lockRemoved": "Verrou retiré",
+    "passwordsDontMatch": "Les mots de passe ne correspondent pas.",
+    "removeDescription": "Saisissez le mot de passe du dossier pour retirer son verrou.",
+    "removeLock": "Retirer le verrou",
+    "removeLockTitle": "Retirer le verrou",
+    "somethingWentWrong": "Une erreur est survenue."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Saisissez son mot de passe pour afficher le contenu.",
+    "incorrectPassword": "Mot de passe incorrect.",
+    "locked": "« {{name}} » est verrouillé",
+    "passwordPlaceholder": "Mot de passe du dossier",
+    "unlock": "Déverrouiller"
+  },
+  "imageViewer": {
+    "close": "Fermer",
+    "download": "Télécharger",
+    "resetZoom": "Réinitialiser le zoom",
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière"
+  },
+  "modelViewer": {
+    "autoRotate": "Rotation automatique",
+    "close": "Fermer",
+    "decryptError": "Impossible de déchiffrer le modèle",
+    "loading": "Chargement du modèle…",
+    "normals": "Normales",
+    "openError": "Impossible d’ouvrir ce fichier 3D.",
+    "shaded": "Ombré",
+    "toggleGrid": "Afficher ou masquer la grille",
+    "toggleTextures": "Afficher ou masquer les textures",
+    "wireframe": "Fil de fer"
+  },
+  "moveDialog": {
+    "cancel": "Annuler",
+    "move": "Déplacer",
+    "moveFailed": "Impossible de déplacer",
+    "moved": "Déplacé",
+    "myDrive": "Mon disque",
+    "title": "Déplacer vers un dossier"
+  },
+  "newFolderDialog": {
+    "cancel": "Annuler",
+    "create": "Créer",
+    "createError": "Impossible de créer le dossier",
+    "created": "Dossier créé",
+    "newFolder": "Nouveau dossier",
+    "placeholder": "Nom du dossier",
+    "title": "Nouveau dossier"
+  },
+  "nodeCard": {
+    "deselect": "Désélectionner",
+    "folder": "Dossier",
+    "select": "Sélectionner"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Copier le lien",
+    "details": "Détails",
+    "download": "Télécharger",
+    "extractHere": "Extraire ici",
+    "lockFolder": "Verrouiller le dossier",
+    "makeCopy": "Faire une copie",
+    "moveToFolder": "Déplacer vers un dossier",
+    "moveToTrash": "Déplacer vers la corbeille",
+    "open": "Ouvrir",
+    "openInPhotos": "Ouvrir dans Photos",
+    "removeLock": "Retirer le verrou",
+    "rename": "Renommer",
+    "share": "Partager",
+    "versionHistory": "Voir l’historique des versions",
+    "view": "Afficher",
+    "viewIn3d": "Afficher en 3D"
+  },
+  "nodeTable": {
+    "deselect": "Désélectionner",
+    "modified": "Modifié",
+    "name": "Nom",
+    "select": "Sélectionner",
+    "selectAll": "Tout sélectionner",
+    "size": "Taille"
+  },
+  "parentCard": {
+    "parentFolder": "Dossier parent"
+  },
+  "renameDialog": {
+    "cancel": "Annuler",
+    "couldNotRename": "Impossible de renommer",
+    "renamed": "Renommé",
+    "save": "Enregistrer",
+    "title": "Renommer"
+  },
+  "shell": {
+    "search": "Rechercher dans Disque"
+  },
+  "trash": {
+    "actionFailed": "Échec de l’action",
+    "deleteForever": "Supprimer définitivement",
+    "empty": "La corbeille est vide.",
+    "permanentlyDeleted": "Supprimé définitivement",
+    "restore": "Restaurer",
+    "restored": "Restauré",
+    "retentionNotice": "Les éléments ici sont supprimés définitivement 30 jours après leur mise à la corbeille.",
+    "title": "Corbeille"
+  },
+  "versionHistoryDialog": {
+    "close": "Fermer",
+    "download": "Télécharger la version",
+    "empty": "Aucune version antérieure. Téléversez de nouveau un fichier du même nom pour en créer une.",
+    "loading": "Chargement…",
+    "restore": "Restaurer",
+    "restoreFailed": "Impossible de restaurer",
+    "restored": "Version restaurée",
+    "title": "Historique des versions",
+    "versionLabel": "Version {{number}}"
+  }
+}

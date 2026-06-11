@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Compte administrateur créé",
+    "closedLabel": "Fermé — aucun nouveau compte",
+    "creating": "Création…",
+    "emailLabel": "Courriel",
+    "emailPlaceholder": "admin@exemple.com",
+    "invalidEmail": "Saisissez un courriel valide",
+    "inviteOnlyLabel": "Sur invitation — les administrateurs créent les comptes",
+    "nameLabel": "Votre nom",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "Le nom est obligatoire",
+    "openLabel": "Ouvert — tout le monde peut s’inscrire",
+    "passwordLabel": "Mot de passe",
+    "passwordMin": "Utilisez au moins 8 caractères",
+    "passwordPlaceholder": "Au moins 8 caractères",
+    "registrationModeLabel": "Qui peut créer des comptes?",
+    "setupFailed": "Échec de la configuration",
+    "signInFailed": "Échec de la connexion",
+    "submit": "Créer l’administrateur et continuer"
+  },
+  "createGroupsStep": {
+    "addGroup": "Ajouter un groupe",
+    "adding": "Ajout…",
+    "couldNotCreate": "Impossible de créer le groupe",
+    "createdGroup": "Groupe « {{name}} » créé",
+    "descriptionLabel": "Description (facultatif)",
+    "descriptionPlaceholder": "Quota plus élevé, fonctionnalités en avant-première",
+    "finishSetup": "Terminer la configuration",
+    "groupNameLabel": "Nom du groupe",
+    "groupNamePlaceholder": "Utilisateurs avancés",
+    "intro": "Les groupes vous permettent d’attribuer des rôles et des limites partagés (comme les quotas de stockage) à plusieurs utilisateurs à la fois. Créez-en quelques-uns maintenant, ou passez cette étape et faites-le plus tard dans les paramètres d’administration.",
+    "nameRequired": "Le nom du groupe est obligatoire",
+    "skipFinish": "Passer et terminer"
+  },
+  "setup": {
+    "adminDescription": "Créez le premier compte administrateur pour commencer.",
+    "groupsDescription": "Configurez des groupes pour vos utilisateurs (facultatif).",
+    "loading": "Chargement…",
+    "welcome": "Bienvenue dans {{name}}"
+  }
+}

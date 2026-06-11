@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 个项目",
+    "albumName": "意大利 '24",
+    "albumsBody": "将照片整理成相册，然后分享私密链接——无需账户即可查看。",
+    "albumsTitle": "相册与可分享链接。",
+    "back": "上一步",
+    "dismiss": "关闭",
+    "getStarted": "开始使用",
+    "linkCopied": "链接已复制",
+    "next": "下一步",
+    "privateBody": "每一张照片、每一份文档和文件都经过端到端加密。只有你掌握密钥——服务器只能看到密文。",
+    "privateTitle": "默认私密。",
+    "share": "分享",
+    "uploadBody": "将照片拖到任意位置即可上传。实况照片自动配对，连拍自动折叠为一个可展开的堆叠。",
+    "uploadTitle": "直接拖进来即可。"
+  }
+}

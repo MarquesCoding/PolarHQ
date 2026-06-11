@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "重做",
+    "resetZoom": "重置缩放",
+    "undo": "撤销",
+    "zoomIn": "放大",
+    "zoomOut": "缩小"
+  },
+  "propertiesPanel": {
+    "background": "背景",
+    "bringForward": "上移一层",
+    "bringToFront": "移到顶层",
+    "layers": "图层",
+    "opacity": "不透明度",
+    "sendBackward": "下移一层",
+    "sendToBack": "移到底层",
+    "stroke": "描边",
+    "strokeWidth": "描边宽度"
+  },
+  "shell": {
+    "myWhiteboards": "我的白板",
+    "newWhiteboard": "新建白板",
+    "product": "白板",
+    "search": "搜索白板",
+    "whiteboards": "白板"
+  },
+  "toolbar": {
+    "arrow": "箭头",
+    "diamond": "菱形",
+    "draw": "画笔",
+    "ellipse": "椭圆",
+    "eraser": "橡皮擦",
+    "line": "直线",
+    "pan": "平移",
+    "rectangle": "矩形",
+    "select": "选择",
+    "text": "文本"
+  },
+  "whiteboardList": {
+    "createLabel": "新建白板",
+    "title": "白板"
+  }
+}

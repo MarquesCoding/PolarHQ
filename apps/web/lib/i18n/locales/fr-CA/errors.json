@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "L’action a échoué",
+  "admin": {
+    "gdriveCodeExchangeFailed": "L’échange du code Google a échoué.",
+    "gdriveConnectFailed": "Échec de la connexion à Google Drive.",
+    "gdriveNoRefreshToken": "Google n’a pas retourné de jeton d’actualisation (révoquez l’accès précédent et réessayez).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET ne sont pas configurés",
+    "invalidOauthState": "État OAuth invalide."
+  },
+  "badRequest": "Requête incorrecte.",
+  "docs": {
+    "alreadyOwner": "Déjà le propriétaire",
+    "emailRequired": "Le courriel est requis.",
+    "noPublicKey": "Aucune clé publique.",
+    "userNotFound": "Utilisateur introuvable"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "impossible de supprimer un dossier système",
+    "cannotLockFolder": "impossible de verrouiller ce dossier",
+    "cannotModifySystemFolder": "impossible de modifier un dossier système",
+    "extractFailed": "impossible d’extraire l’archive",
+    "fileRequired": "le champ du fichier est requis",
+    "photosMediaFilesOnly": "Le dossier Photos n’accepte que des fichiers multimédias",
+    "photosMediaOnly": "Le dossier Photos n’accepte que des images, des vidéos et de l’audio"
+  },
+  "forbidden": "Vous n’avez pas la permission de faire cela.",
+  "generic": "Une erreur est survenue.",
+  "invalidInput": "Entrée invalide.",
+  "notFound": "Introuvable.",
+  "photos": {
+    "fileRequired": "Un fichier est requis.",
+    "stackNeedsTwoAssets": "Sélectionnez au moins deux de vos propres photos pour les empiler."
+  },
+  "rateLimited": "Trop de requêtes. Veuillez réessayer dans un instant.",
+  "setup": {
+    "alreadyComplete": "La configuration a déjà été effectuée",
+    "registrationDisabled": "l’inscription est désactivée sur cette instance"
+  },
+  "unauthorized": "Vous devez vous connecter pour faire cela.",
+  "uploads": {
+    "tooLarge": "Le fichier dépasse la limite de téléversement de {{limit}}"
+  }
+}

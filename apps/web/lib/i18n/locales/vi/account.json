@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Tài khoản",
+  "subtitle": "Quản lý hồ sơ và tùy chọn của bạn.",
+  "back": "Quay lại",
+  "profile": "Hồ sơ",
+  "name": "Tên",
+  "email": "Email",
+  "preferences": "Tùy chọn",
+  "language": "Ngôn ngữ",
+  "languageHint": "Chọn ngôn ngữ sử dụng trên toàn bộ giao diện.",
+  "appearance": "Giao diện",
+  "appearanceHint": "Chuyển đổi giữa chế độ sáng và tối.",
+  "light": "Sáng",
+  "dark": "Tối",
+  "system": "Hệ thống",
+  "security": "Bảo mật",
+  "devices": "Thiết bị và phiên đăng nhập",
+  "devicesHint": "Xem lại và đăng xuất các thiết bị đang đăng nhập.",
+  "manageDevices": "Quản lý thiết bị",
+  "signOut": "Đăng xuất",
+  "languageChanged": "Đã cập nhật ngôn ngữ"
+}
