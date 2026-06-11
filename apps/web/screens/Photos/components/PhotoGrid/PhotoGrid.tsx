@@ -2,6 +2,7 @@
 
 import { dateLocale } from "@lib/i18n/format"
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Icon } from "@lib/icons"
 import { t } from "@lib/i18n/config"
 import { type GridAsset, fetchStackMembers } from "@lib/photos"
@@ -229,6 +230,7 @@ interface PhotoGridProps {
 }
 
 const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
+  const { i18n } = useTranslation()
   const selection = useSelection()
   const containerRef = useRef<HTMLDivElement>(null)
   const reachEndRef = useRef(onReachEnd)
@@ -275,7 +277,8 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   )
   const layout = useMemo(
     () => buildLayout(sortedGridAssets, width, rowHeight, gap, square === 1),
-    [sortedGridAssets, width, rowHeight, gap, square],
+    // i18n.language so the day labels rebuild when the UI language changes.
+    [sortedGridAssets, width, rowHeight, gap, square, i18n.language],
   )
 
   useEffect(() => {
