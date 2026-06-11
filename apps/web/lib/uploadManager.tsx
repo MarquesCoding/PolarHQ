@@ -10,6 +10,9 @@ import {
   useState,
 } from "react"
 import { API_URL } from "@lib/env"
+import { ApiError } from "@lib/apiClient"
+import { apiErrorMessage } from "@lib/i18n/apiError"
+import { type UploadOptions, postFormWithProgress } from "@lib/xhrUpload"
 import { archiveDriveNodes } from "@lib/drive"
 import { uploadEncryptedDriveFile } from "@lib/driveE2e"
 import { detectBurstGroups } from "@lib/burst"
@@ -143,39 +146,14 @@ const nextId = (): string => {
 const xhrUpload = (
   file: File,
   target: UploadTarget,
-  onProgress: (loaded: number, speed: number) => void,
-  onStart: (xhr: XMLHttpRequest) => void,
-): Promise<UploadResponse> =>
-  new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest()
-    onStart(xhr)
-    const form = new FormData()
-    form.set("file", file)
-    if (file.lastModified) form.set("mtime", String(file.lastModified))
-    if (target.kind === "drive") form.set("parentId", target.parentId)
-    const start = performance.now()
-
-    xhr.upload.onprogress = (event) => {
-      if (!event.lengthComputable) return
-      const elapsed = (performance.now() - start) / 1000
-      onProgress(event.loaded, elapsed > 0 ? event.loaded / elapsed : 0)
-    }
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        try {
-          resolve(JSON.parse(xhr.responseText) as UploadResponse)
-        } catch {
-          reject(new Error("Invalid upload response"))
-        }
-      } else {
-        reject(new Error(`Upload failed (${xhr.status})`))
-      }
-    }
-    xhr.onerror = () => reject(new Error("Network error"))
-    xhr.open("POST", endpointFor(target))
-    xhr.withCredentials = true
-    xhr.send(form)
-  })
+  options: UploadOptions,
+): Promise<UploadResponse> => {
+  const form = new FormData()
+  form.set("file", file)
+  if (file.lastModified) form.set("mtime", String(file.lastModified))
+  if (target.kind === "drive") form.set("parentId", target.parentId)
+  return postFormWithProgress<UploadResponse>(endpointFor(target), form, options)
+}
 
 export const UploadProvider = ({ children }: { children: ReactNode }) => {
   const { t } = useTranslation("common")
@@ -297,21 +275,25 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
       }
 
       const runJob = ({ id, file }: { id: string; file: File }) => {
+        const options: UploadOptions = {
+          onProgress: (progress) =>
+            update(id, {
+              loaded: progress.loaded,
+              size: progress.total || file.size,
+              speed: progress.speed,
+            }),
+          register: (xhr) => requests.current.set(id, xhr),
+        }
         const uploadPromise =
           target.kind === "drive" && isUnlocked()
-            ? uploadEncryptedDriveFile(target.parentId, file).then(
+            ? uploadEncryptedDriveFile(target.parentId, file, options).then(
                 (node) => ({ node }) as UploadResponse,
               )
             : target.kind === "photos" && isUnlocked() && isMediaFile(file)
-              ? uploadEncryptedMedia(file, motionByImage.get(file)).then(
+              ? uploadEncryptedMedia(file, motionByImage.get(file), options).then(
                   (asset) => ({ asset, deduped: false }) as UploadResponse,
                 )
-              : xhrUpload(
-                  file,
-                  target,
-                  (loaded, speed) => update(id, { loaded, speed }),
-                  (xhr) => requests.current.set(id, xhr),
-                )
+              : xhrUpload(file, target, options)
         return uploadPromise
           .then((response) => {
             const result = normalizeResponse(target, response, readyAssets.current)
@@ -319,7 +301,10 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
             update(id, { status: result.status, loaded: file.size, assetId: result.assetId })
             scheduleInvalidate()
           })
-          .catch(() => update(id, { status: "error" }))
+          .catch((error) => {
+            if (error instanceof ApiError && error.message === "aborted") return
+            update(id, { status: "error", error: apiErrorMessage(error) })
+          })
           .finally(() => requests.current.delete(id))
       }
 

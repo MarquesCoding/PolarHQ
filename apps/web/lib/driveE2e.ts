@@ -11,6 +11,7 @@ import {
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 import { generateImageThumbnail } from "@lib/thumbnails"
+import { type UploadOptions, postFormWithProgress } from "@lib/xhrUpload"
 
 /**
  * Upload a file end-to-end encrypted: encrypt the bytes with a fresh content key,
@@ -20,6 +21,7 @@ import { generateImageThumbnail } from "@lib/thumbnails"
 export const uploadEncryptedDriveFile = async (
   parentId: string | null,
   file: File,
+  options?: UploadOptions,
 ): Promise<DriveNode> => {
   const key = createContentKey()
   const original = new Uint8Array(await file.arrayBuffer())
@@ -38,13 +40,11 @@ export const uploadEncryptedDriveFile = async (
   if (parentId) form.set("parentId", parentId)
   if (file.lastModified) form.set("mtime", String(file.lastModified))
 
-  const response = await fetch(`${API_URL}/api/v1/drive/nodes/upload`, {
-    method: "POST",
-    credentials: "include",
-    body: form,
-  })
-  if (!response.ok) throw new Error(`Upload failed (${response.status})`)
-  const { node } = (await response.json()) as { node: DriveNode }
+  const { node } = await postFormWithProgress<{ node: DriveNode }>(
+    `${API_URL}/api/v1/drive/nodes/upload`,
+    form,
+    options,
+  )
 
   await storeContentKey(node.id, key)
 

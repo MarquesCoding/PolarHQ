@@ -14,6 +14,7 @@ import { API_URL } from "@lib/env"
 import { extractMotionVideo } from "@lib/motionPhoto"
 import { type Asset, type GridAsset, fetchStackMembers } from "@lib/photos"
 import { analyzeAudio, analyzeImage, analyzeVideo } from "@lib/thumbnails"
+import { type UploadOptions, postFormWithProgress } from "@lib/xhrUpload"
 import exifr from "exifr"
 
 const encoder = new TextEncoder()
@@ -157,7 +158,11 @@ const putThumbnail = (url: string, body: Uint8Array): Promise<Response> =>
  * and send the dimensions/duration/takenAt/filename the grid needs (the server can't read
  * the ciphertext). The server stores only opaque bytes and runs no media processing.
  */
-export const uploadEncryptedMedia = async (file: File, motionFile?: File): Promise<Asset> => {
+export const uploadEncryptedMedia = async (
+  file: File,
+  motionFile?: File,
+  options?: UploadOptions,
+): Promise<Asset> => {
   const key = createContentKey()
   // HEIC can't be decoded/displayed by browsers, so transcode to JPEG up front; EXIF is still
   // read from the original HEIC, which exifr handles.
@@ -201,16 +206,10 @@ export const uploadEncryptedMedia = async (file: File, motionFile?: File): Promi
   const takenAtMs = metadata.takenAtMs ?? (file.lastModified || undefined)
   if (takenAtMs) form.set("mtime", String(takenAtMs))
 
-  const response = await fetch(`${API_URL}/api/v1/photos/assets`, {
-    method: "POST",
-    credentials: "include",
-    body: form,
-  })
-  if (!response.ok) throw new Error(`Upload failed (${response.status})`)
-  const { asset, mirrorNodeId } = (await response.json()) as {
+  const { asset, mirrorNodeId } = await postFormWithProgress<{
     asset: Asset
     mirrorNodeId: string | null
-  }
+  }>(`${API_URL}/api/v1/photos/assets`, form, options)
 
   await storeContentKey(asset.id, key)
   if (mirrorNodeId) await storeContentKey(mirrorNodeId, key)

@@ -48,6 +48,27 @@ const Ring = ({ value, indeterminate }: { value: number; indeterminate?: boolean
   )
 }
 
+const formatEta = (seconds: number): string =>
+  seconds < 60
+    ? t("common:uploadPanel.etaSeconds", { seconds: Math.ceil(seconds) })
+    : t("common:uploadPanel.etaMinutes", { minutes: Math.ceil(seconds / 60) })
+
+const uploadingText = (item: UploadItem): string => {
+  if (item.size > 0 && item.loaded > 0) {
+    const percent = Math.min(100, Math.round((item.loaded / item.size) * 100))
+    const parts = [t("common:uploadPanel.percentDone", { percent })]
+    if (item.speed > 0) {
+      parts.push(t("common:uploadPanel.speed", { speed: formatBytes(item.speed) }))
+      const remaining = item.size - item.loaded
+      if (remaining > 0) parts.push(formatEta(remaining / item.speed))
+    }
+    return parts.join(" · ")
+  }
+  return item.speed > 0
+    ? t("common:uploadPanel.speed", { speed: formatBytes(item.speed) })
+    : t("common:uploadPanel.uploading")
+}
+
 const statusText = (item: UploadItem): string => {
   if (item.kind === "task") {
     switch (item.status) {
@@ -78,9 +99,7 @@ const statusText = (item: UploadItem): string => {
   }
   switch (item.status) {
     case "uploading":
-      return item.speed > 0
-        ? t("common:uploadPanel.speed", { speed: formatBytes(item.speed) })
-        : t("common:uploadPanel.uploading")
+      return uploadingText(item)
     case "processing":
       return item.mediaType === "video"
         ? t("common:uploadPanel.transcoding")

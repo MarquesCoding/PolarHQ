@@ -35,8 +35,12 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 - [x] **S3 / MinIO** option for docker-compose — prod compose gains an opt-in `minio` profile (+ bucket init) and a commented S3 env block; fs stays default. Backend already supported `STORAGE_DRIVER=s3`. Pick one: disk / bundled MinIO / external S3.
 
 ## Reliability / errors
-- [ ] **Better upload-failure errors in the frontend**: large uploads (e.g. a 6GB file) can fail with no surfaced reason. Show *why* it failed — server quota/limit (413/507), network/timeout, multipart abort, size-cap — with a clear, localised toast/inline message and a retry. Distinguish backend rejections (mapped error keys) from network errors; consider chunked/resumable upload for very large files.
-- [ ] **Upload progress: percentage + speed + ETA**: the uploader shows no %, transfer speed, or time remaining. Wire real progress (XHR/`fetch` upload `progress` events or chunked upload counters) into the upload manager UI — per-file and overall — with bytes-done/total, MB/s, and ETA. (Pairs with the failure-reason work above and likely the chunked/resumable refactor.)
+- [x] **Better upload-failure errors in the frontend** — uploads now go through `lib/xhrUpload.ts` (`postFormWithProgress`), which parses the backend's `{ error, errorParams }` into an `ApiError` and tags network failures. `runJob` surfaces the localised reason via `apiErrorMessage` (e.g. the 6GB case → `uploads.tooLarge` "File exceeds the N upload limit"), and silently ignores user-aborts. (Chunked/resumable upload for very large files still TODO — see below.)
+- [x] **Upload progress: percentage + speed + ETA** — threaded real progress through the E2E upload paths (they used `fetch`, which can't report upload progress; now XHR via `postFormWithProgress`). The UploadPanel shows `percent · speed/s · Ns left` per file.
+- [ ] **Chunked / resumable uploads for very large files**: single-shot uploads hold the whole (encrypted) file in memory and can't resume on failure. Add chunked upload + resume (and stream encryption) for multi-GB files.
+
+## Code hygiene
+- [ ] **Remove all inline comments that aren't TSDoc** — strip `// whatever` explanatory comments throughout the codebase; keep only `/** … */` TSDoc on exports/functions. (Matches the standing no-inline-comments rule.)
 
 ## Infra
 - [x] release-please: workflow already declares `permissions: contents/pull-requests: write` **and** supports a PAT (`secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN`). The earlier failure was the **repo setting** "Allow GitHub Actions to create and approve pull requests" being off — flip that in Settings → Actions → General (or add a `RELEASE_PLEASE_TOKEN` PAT secret to bypass it). No code change needed.
