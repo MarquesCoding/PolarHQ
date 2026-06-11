@@ -145,7 +145,9 @@ const FlatSidebar = ({
                     <span className="bg-sidebar-accent flex size-7 shrink-0 items-center justify-center rounded-md">
                       <Icon name={app.icon} className="size-4" />
                     </span>
-                    <span className="min-w-0 flex-1 truncate font-medium">{app.name}</span>
+                    <span className="min-w-0 flex-1 truncate font-medium">
+                      {t(`apps.${app.id}`, { defaultValue: app.name })}
+                    </span>
                     {current ? <span className="bg-primary size-2 rounded-full" /> : null}
                   </DropdownMenuItem>
                 )

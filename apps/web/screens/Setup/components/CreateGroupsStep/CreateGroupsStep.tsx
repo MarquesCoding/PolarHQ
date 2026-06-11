@@ -11,12 +11,12 @@ import { IconUsersGroup } from "@tabler/icons-react"
 import { toast } from "sonner"
 import { z } from "zod"
 import { useTranslation } from "react-i18next"
-import { t } from "@lib/i18n/config"
 
-const schema = z.object({
-  name: z.string().min(1, t("setup:createGroupsStep.nameRequired")),
-  description: z.string(),
-})
+const makeSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("createGroupsStep.nameRequired")),
+    description: z.string(),
+  })
 
 interface CreateGroupsStepProps {
   onFinish: () => void
@@ -24,6 +24,7 @@ interface CreateGroupsStepProps {
 
 const CreateGroupsStep = ({ onFinish }: CreateGroupsStepProps) => {
   const { t } = useTranslation("setup")
+  const schema = makeSchema(t)
   const [groups, setGroups] = useState<Group[]>([])
 
   const form = useForm({

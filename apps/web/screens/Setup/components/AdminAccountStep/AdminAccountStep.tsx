@@ -17,17 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
-import { t } from "@lib/i18n/config"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 import { z } from "zod"
 
-const schema = z.object({
-  name: z.string().min(1, t("setup:adminAccountStep.nameRequired")),
-  email: z.string().email(t("setup:adminAccountStep.invalidEmail")),
-  password: z.string().min(8, t("setup:adminAccountStep.passwordMin")),
-  registrationMode: z.enum(["invite_only", "open", "closed"]),
-})
 
 interface AdminAccountStepProps {
   onComplete: () => void
@@ -45,6 +38,12 @@ const fieldError = (errors: unknown[]): string | null => {
 
 const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
   const { t } = useTranslation("setup")
+  const schema = z.object({
+    name: z.string().min(1, t("adminAccountStep.nameRequired")),
+    email: z.string().email(t("adminAccountStep.invalidEmail")),
+    password: z.string().min(8, t("adminAccountStep.passwordMin")),
+    registrationMode: z.enum(["invite_only", "open", "closed"]),
+  })
   const [recoveryCode, setRecoveryCode] = useState<string | null>(null)
 
   const REGISTRATION_OPTIONS: { value: RegistrationMode; label: string }[] = [

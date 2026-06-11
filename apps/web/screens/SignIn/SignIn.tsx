@@ -17,15 +17,15 @@ import {
 } from "@workspace/ui/components/card"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import { t } from "@lib/i18n/config"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { z } from "zod"
 
-const schema = z.object({
-  email: z.string().email(t("auth:signIn.invalidEmail")),
-  password: z.string().min(1, t("auth:signIn.passwordRequired")),
-})
+const makeSchema = (t: (key: string) => string) =>
+  z.object({
+    email: z.string().email(t("signIn.invalidEmail")),
+    password: z.string().min(1, t("signIn.passwordRequired")),
+  })
 
 const fieldError = (errors: unknown[]): string | null => {
   const first = errors[0]
@@ -39,6 +39,7 @@ const fieldError = (errors: unknown[]): string | null => {
 
 const SignIn = () => {
   const { t } = useTranslation("auth")
+  const schema = makeSchema(t)
   const router = useRouter()
   const { data: session, isPending } = authClient.useSession()
   const [recoveryCode, setRecoveryCode] = useState<string | null>(null)

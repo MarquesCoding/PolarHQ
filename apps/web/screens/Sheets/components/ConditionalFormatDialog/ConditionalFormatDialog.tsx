@@ -20,25 +20,6 @@ import {
 } from "@workspace/ui/components/select"
 import { type CondRule, type CondType, a1Range } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
-import { t } from "@lib/i18n/config"
-
-const TYPES: Array<{ value: CondType; label: string }> = [
-  { value: "gt", label: t("sheets:conditionalFormatDialog.greaterThan") },
-  { value: "lt", label: t("sheets:conditionalFormatDialog.lessThan") },
-  { value: "eq", label: t("sheets:conditionalFormatDialog.equalTo") },
-  { value: "between", label: t("sheets:conditionalFormatDialog.isBetween") },
-  { value: "contains", label: t("sheets:conditionalFormatDialog.textContains") },
-  { value: "scale", label: t("sheets:conditionalFormatDialog.colorScale") },
-]
-
-const describe = (rule: CondRule): string => {
-  const label = TYPES.find((t) => t.value === rule.type)?.label ?? rule.type
-  if (rule.type === "scale")
-    return `${t("sheets:conditionalFormatDialog.colorScale")} · ${a1Range(rule.range)}`
-  if (rule.type === "between") return `${label} ${rule.v1}–${rule.v2} · ${a1Range(rule.range)}`
-  return `${label} ${rule.v1} · ${a1Range(rule.range)}`
-}
-
 const ColorField = ({
   label,
   value,
@@ -82,6 +63,21 @@ const ConditionalFormatDialog = ({
   onOpenChange: (open: boolean) => void
 }) => {
   const { t } = useTranslation("sheets")
+  const TYPES: Array<{ value: CondType; label: string }> = [
+    { value: "gt", label: t("conditionalFormatDialog.greaterThan") },
+    { value: "lt", label: t("conditionalFormatDialog.lessThan") },
+    { value: "eq", label: t("conditionalFormatDialog.equalTo") },
+    { value: "between", label: t("conditionalFormatDialog.isBetween") },
+    { value: "contains", label: t("conditionalFormatDialog.textContains") },
+    { value: "scale", label: t("conditionalFormatDialog.colorScale") },
+  ]
+  const describe = (rule: CondRule): string => {
+    const label = TYPES.find((op) => op.value === rule.type)?.label ?? rule.type
+    if (rule.type === "scale")
+      return `${t("conditionalFormatDialog.colorScale")} · ${a1Range(rule.range)}`
+    if (rule.type === "between") return `${label} ${rule.v1}–${rule.v2} · ${a1Range(rule.range)}`
+    return `${label} ${rule.v1} · ${a1Range(rule.range)}`
+  }
   const [type, setType] = useState<CondType>("gt")
   const [v1, setV1] = useState("")
   const [v2, setV2] = useState("")

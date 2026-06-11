@@ -4,7 +4,6 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTranslation } from "react-i18next"
-import { t } from "@lib/i18n/config"
 import { Icon } from "@lib/icons"
 import { fetchAlbums, fetchTags } from "@lib/photos"
 import { IconChevronRight } from "@tabler/icons-react"
@@ -13,14 +12,6 @@ import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { ActiveBg, NavRow, SectionLabel, navRowClass } from "@components/FlatShell"
 
-const NAV = [
-  { href: "/photos", label: t("photos:photosNav.allPhotos"), icon: "images-3" },
-  { href: "/photos/albums", label: t("photos:photosNav.albums"), icon: "album-3" },
-  { href: "/photos/map", label: t("photos:photosNav.map"), icon: "map-pin" },
-  { href: "/photos/favourites", label: t("photos:photosNav.favourites"), icon: "favourites" },
-  { href: "/photos/trash", label: t("photos:photosNav.trash"), icon: "trash" },
-]
-
 const isActive = (pathname: string, href: string): boolean =>
   href === "/photos" ? pathname === href : pathname.startsWith(href)
 
@@ -28,6 +19,14 @@ const isActive = (pathname: string, href: string): boolean =>
 const PhotosNav = () => {
   const { t } = useTranslation("photos")
   const pathname = usePathname()
+  // Built inside render so the labels re-translate when the language changes.
+  const NAV = [
+    { href: "/photos", label: t("photosNav.allPhotos"), icon: "images-3" },
+    { href: "/photos/albums", label: t("photosNav.albums"), icon: "album-3" },
+    { href: "/photos/map", label: t("photosNav.map"), icon: "map-pin" },
+    { href: "/photos/favourites", label: t("photosNav.favourites"), icon: "favourites" },
+    { href: "/photos/trash", label: t("photosNav.trash"), icon: "trash" },
+  ]
   const { data: albums } = useQuery({ queryKey: ["photos", "albums"], queryFn: fetchAlbums })
   const { data: tags } = useQuery({ queryKey: ["photos", "tags"], queryFn: fetchTags })
   const [albumsOpen, setAlbumsOpen] = useState(true)

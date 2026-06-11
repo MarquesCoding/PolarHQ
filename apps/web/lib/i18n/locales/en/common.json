@@ -22,6 +22,18 @@
     "beta": "Beta",
     "soon": "Soon"
   },
+  "apps": {
+    "admin": "Admin",
+    "authenticator": "Authenticator",
+    "calendar": "Calendar",
+    "docs": "Docs",
+    "drive": "Drive",
+    "meet": "Meet",
+    "passwords": "Passwords",
+    "photos": "Photos",
+    "sheets": "Sheets",
+    "whiteboard": "Whiteboard"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · build {{build}}",
     "whatsNew": "What's new"
