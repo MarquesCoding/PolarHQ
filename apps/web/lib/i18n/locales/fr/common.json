@@ -127,6 +127,14 @@
     "permanentLinkHint": "Garder ce lien actif jusqu'à ce que vous le supprimiez",
     "title": "Partager « {{name}} »"
   },
+  "sizeControl": {
+    "lessSpacing": "Réduire l'espacement",
+    "moreSpacing": "Augmenter l'espacement",
+    "photoSize": "Taille des photos",
+    "roundedCorners": "Coins arrondis",
+    "spacing": "Espacement",
+    "squareTiles": "Vignettes carrées"
+  },
   "state": {
     "empty": "Rien ici pour l'instant",
     "error": "Une erreur s'est produite",

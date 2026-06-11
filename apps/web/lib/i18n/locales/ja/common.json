@@ -127,6 +127,14 @@
     "permanentLinkHint": "削除するまでこのリンクを有効に保ちます",
     "title": "「{{name}}」を共有"
   },
+  "sizeControl": {
+    "lessSpacing": "間隔を狭くする",
+    "moreSpacing": "間隔を広くする",
+    "photoSize": "写真のサイズ",
+    "roundedCorners": "角を丸くする",
+    "spacing": "間隔",
+    "squareTiles": "正方形のタイル"
+  },
   "state": {
     "empty": "まだ何もありません",
     "error": "問題が発生しました",

@@ -127,6 +127,14 @@
     "permanentLinkHint": "在你删除前一直保持此链接有效",
     "title": "分享“{{name}}”"
   },
+  "sizeControl": {
+    "lessSpacing": "减小间距",
+    "moreSpacing": "增大间距",
+    "photoSize": "照片大小",
+    "roundedCorners": "圆角",
+    "spacing": "间距",
+    "squareTiles": "方形平铺"
+  },
   "state": {
     "empty": "这里还没有内容",
     "error": "出了点问题",

@@ -127,6 +127,14 @@
     "permanentLinkHint": "Siz silene kadar bu bağlantıyı etkin tut",
     "title": "“{{name}}” paylaşılıyor"
   },
+  "sizeControl": {
+    "lessSpacing": "Daha az boşluk",
+    "moreSpacing": "Daha fazla boşluk",
+    "photoSize": "Fotoğraf boyutu",
+    "roundedCorners": "Yuvarlatılmış köşeler",
+    "spacing": "Boşluk",
+    "squareTiles": "Kare döşeme"
+  },
   "state": {
     "empty": "Burada henüz bir şey yok",
     "error": "Bir şeyler ters gitti",

@@ -127,6 +127,14 @@
     "permanentLinkHint": "Mantén este enlace activo hasta que lo elimines",
     "title": "Compartir “{{name}}”"
   },
+  "sizeControl": {
+    "lessSpacing": "Menos espaciado",
+    "moreSpacing": "Más espaciado",
+    "photoSize": "Tamaño de fotos",
+    "roundedCorners": "Esquinas redondeadas",
+    "spacing": "Espaciado",
+    "squareTiles": "Mosaicos cuadrados"
+  },
   "state": {
     "empty": "Aún no hay nada aquí",
     "error": "Algo salió mal",

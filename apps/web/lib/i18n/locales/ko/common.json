@@ -127,6 +127,14 @@
     "permanentLinkHint": "삭제할 때까지 이 링크를 계속 활성화합니다",
     "title": "“{{name}}” 공유"
   },
+  "sizeControl": {
+    "lessSpacing": "간격 좁게",
+    "moreSpacing": "간격 넓게",
+    "photoSize": "사진 크기",
+    "roundedCorners": "둥근 모서리",
+    "spacing": "간격",
+    "squareTiles": "정사각형 타일"
+  },
   "state": {
     "empty": "아직 아무것도 없습니다",
     "error": "문제가 발생했습니다",

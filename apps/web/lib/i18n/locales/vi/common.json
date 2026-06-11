@@ -127,6 +127,14 @@
     "permanentLinkHint": "Giữ liên kết này hoạt động cho đến khi bạn xóa nó",
     "title": "Chia sẻ “{{name}}”"
   },
+  "sizeControl": {
+    "lessSpacing": "Giảm khoảng cách",
+    "moreSpacing": "Tăng khoảng cách",
+    "photoSize": "Kích thước ảnh",
+    "roundedCorners": "Bo góc",
+    "spacing": "Khoảng cách",
+    "squareTiles": "Ô vuông"
+  },
   "state": {
     "empty": "Chưa có gì ở đây",
     "error": "Đã xảy ra lỗi",
