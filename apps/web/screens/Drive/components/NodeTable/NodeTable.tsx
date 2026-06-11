@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import { type MouseEvent, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@lib/drive"
@@ -278,7 +279,7 @@ const NodeTable = ({
               {isFolder ? "—" : formatBytes(node.sizeBytes ?? 0)}
             </span>
             <span className="text-muted-foreground">
-              {new Date(node.updatedAt).toLocaleDateString()}
+              {new Date(node.updatedAt).toLocaleDateString(dateLocale())}
             </span>
           </div>
         )

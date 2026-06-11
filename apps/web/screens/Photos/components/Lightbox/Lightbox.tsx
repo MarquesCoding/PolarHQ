@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import { type ReactElement, useEffect, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
 import { decryptName } from "@lib/e2e"
@@ -222,7 +223,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
   const source = asset.encrypted
     ? (decryptedSrc ?? undefined)
     : (asset.previewUrl ?? asset.thumbnailUrl ?? undefined)
-  const taken = asset.takenAt ? new Date(asset.takenAt).toLocaleDateString() : undefined
+  const taken = asset.takenAt ? new Date(asset.takenAt).toLocaleDateString(dateLocale()) : undefined
 
   const [motionSrc, setMotionSrc] = useState<string | null>(null)
   const [playMotion, setPlayMotion] = useState(false)

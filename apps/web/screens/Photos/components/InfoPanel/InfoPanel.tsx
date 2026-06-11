@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import dynamic from "next/dynamic"
 import { decryptName, decryptWithMetaKey } from "@lib/e2e"
 import { formatBytes } from "@lib/format"
@@ -100,9 +101,9 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
       ? `${((asset.width * asset.height) / 1_000_000).toFixed(1)} MP`
       : undefined
   const taken = asset.takenAt
-    ? new Date(asset.takenAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })
+    ? new Date(asset.takenAt).toLocaleString(dateLocale(), { dateStyle: "medium", timeStyle: "short" })
     : undefined
-  const added = new Date(asset.createdAt).toLocaleString(undefined, {
+  const added = new Date(asset.createdAt).toLocaleString(dateLocale(), {
     dateStyle: "medium",
     timeStyle: "short",
   })

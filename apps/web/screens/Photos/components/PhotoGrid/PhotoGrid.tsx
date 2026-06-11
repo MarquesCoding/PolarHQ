@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
 import { t } from "@lib/i18n/config"
@@ -50,8 +51,8 @@ const dayLabel = (date: Date): string => {
   const diff = Math.round((today.getTime() - day.getTime()) / 86_400_000)
   if (diff <= 0) return t("photos:photoGrid.today")
   if (diff === 1) return t("photos:photoGrid.yesterday")
-  if (diff < 7) return date.toLocaleDateString(undefined, { weekday: "long" })
-  return date.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+  if (diff < 7) return date.toLocaleDateString(dateLocale(), { weekday: "long" })
+  return date.toLocaleDateString(dateLocale(), { year: "numeric", month: "long", day: "numeric" })
 }
 
 const dateOf = (asset: GridAsset): Date => new Date(asset.takenAt ?? asset.createdAt)
@@ -423,7 +424,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     () =>
       layout.labels.map((label) => ({
         y: label.y,
-        label: label.date.toLocaleDateString(undefined, {
+        label: label.date.toLocaleDateString(dateLocale(), {
           day: "numeric",
           month: "short",
           year: "numeric",

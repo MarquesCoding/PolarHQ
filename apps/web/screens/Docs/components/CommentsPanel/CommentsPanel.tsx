@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import { useState } from "react"
 import type { CommentThread, DocComment } from "@lib/commentMark"
 import { IconCheck, IconMessageOff, IconX } from "@tabler/icons-react"
@@ -42,7 +43,7 @@ const timeAgo = (ms: number): string => {
   if (minutes < 60) return `${minutes}m`
   const hours = Math.floor(minutes / 60)
   if (hours < 24) return `${hours}h`
-  return new Date(ms).toLocaleDateString()
+  return new Date(ms).toLocaleDateString(dateLocale())
 }
 
 const Composer = ({

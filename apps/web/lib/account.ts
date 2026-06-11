@@ -1,4 +1,5 @@
 import { apiFetch } from "@lib/apiClient"
+import { dateLocale } from "@lib/i18n/format"
 
 export type DevicePlatform = "ios" | "android" | "mac" | "windows" | "linux" | "web"
 
@@ -22,7 +23,6 @@ export const revokeDevice = (id: string): Promise<{ ok: true }> =>
     body: JSON.stringify({ id }),
   })
 
-const relative = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" })
 const STEPS: [Intl.RelativeTimeFormatUnit, number][] = [
   ["year", 31_536_000_000],
   ["month", 2_592_000_000],
@@ -32,12 +32,13 @@ const STEPS: [Intl.RelativeTimeFormatUnit, number][] = [
   ["minute", 60_000],
 ]
 
-/** "2 hours ago", "just now", etc. for a device's last-active timestamp. */
+/** "2 hours ago", "now", etc. for a device's last-active timestamp, in the active UI language. */
 export const timeAgo = (iso: string): string => {
   const diff = Date.now() - new Date(iso).getTime()
-  if (diff < 60_000) return "just now"
+  const relative = new Intl.RelativeTimeFormat(dateLocale(), { numeric: "auto" })
+  if (diff < 60_000) return relative.format(0, "second")
   for (const [unit, ms] of STEPS) {
     if (diff >= ms) return relative.format(-Math.round(diff / ms), unit)
   }
-  return "just now"
+  return relative.format(0, "second")
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import { useEffect, useState } from "react"
 import {
   type AdminBackupRun,
@@ -310,7 +311,7 @@ const Backup = () => {
                         : `${entry.objectCount} objects · ${formatBytes(entry.bytes)} · ${entry.trigger}`}
                     </span>
                     <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
-                      {new Date(entry.startedAt).toLocaleString()}
+                      {new Date(entry.startedAt).toLocaleString(dateLocale())}
                     </span>
                   </div>
                 ))}

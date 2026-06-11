@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import { fetchAdminAudit } from "@lib/admin"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
@@ -29,7 +30,7 @@ const Audit = () => {
                 {entry.targetType ? `${entry.targetType} ${entry.targetId ?? ""}` : ""}
               </span>
               <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
-                {new Date(entry.createdAt).toLocaleString()}
+                {new Date(entry.createdAt).toLocaleString(dateLocale())}
               </span>
             </div>
           ))}
