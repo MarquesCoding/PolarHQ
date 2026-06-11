@@ -148,6 +148,22 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
     return () => window.removeEventListener("keydown", onKey)
   }, [])
 
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return
+      if (event.key === "Escape") {
+        onClose()
+      } else if (event.key === "ArrowLeft" && index > 0) {
+        onIndexChange(index - 1)
+      } else if (event.key === "ArrowRight" && index < assets.length - 1) {
+        onIndexChange(index + 1)
+      }
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [index, assets.length, onClose, onIndexChange])
+
   if (!asset) return null
 
   const refresh = () => void queryClient.invalidateQueries({ queryKey: ["photos"] })
