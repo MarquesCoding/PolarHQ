@@ -88,6 +88,10 @@ const FilmstripThumb = ({ asset, active }: { asset: GridAsset; active: boolean }
   )
 }
 
+/** Above this, an encrypted video can't be whole-buffer decrypted for in-browser playback without
+ *  OOMing the tab — we offer a streaming download instead (true streaming playback is a later phase). */
+const PLAYABLE_ENCRYPTED_MAX = 1.5 * 1024 * 1024 * 1024
+
 const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: LightboxProps) => {
   const { t } = useTranslation("photos")
   const queryClient = useQueryClient()
@@ -99,6 +103,8 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
   const [editing, setEditing] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
   const asset = assets[index]
+  const tooLargeToPreview =
+    !!asset?.encrypted && asset.type === "video" && asset.sizeBytes > PLAYABLE_ENCRYPTED_MAX
   const zoom = useZoomPan(asset?.id)
   const activeThumbRef = useRef<HTMLButtonElement | null>(null)
 
@@ -199,7 +205,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
 
   const [decryptedSrc, setDecryptedSrc] = useState<string | null>(null)
   useEffect(() => {
-    if (!asset.encrypted) {
+    if (!asset.encrypted || tooLargeToPreview) {
       setDecryptedSrc(null)
       return
     }
@@ -217,7 +223,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
       active = false
       if (url) URL.revokeObjectURL(url)
     }
-  }, [asset.id, asset.encrypted, asset.mimeType])
+  }, [asset.id, asset.encrypted, asset.mimeType, tooLargeToPreview])
 
   const source = asset.encrypted
     ? (decryptedSrc ?? undefined)
@@ -438,7 +444,15 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             </Button>
           ) : null}
 
-          {asset.type === "video" ? (
+          {asset.type === "video" && tooLargeToPreview ? (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-3 px-8 text-center">
+              <p className="text-base font-medium text-white">{t("lightbox.tooLargeTitle")}</p>
+              <p className="max-w-sm text-sm text-white/70">{t("lightbox.tooLargeBody")}</p>
+              <Button onClick={download} className="mt-1">
+                {t("lightbox.downloadToView")}
+              </Button>
+            </div>
+          ) : asset.type === "video" ? (
             <MediaPlayer
               key={asset.id}
               kind="video"
