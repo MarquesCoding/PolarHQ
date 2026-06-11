@@ -87,6 +87,80 @@ export const secretboxOpen = (blob: Uint8Array, key: Uint8Array): Uint8Array => 
   return sodium.crypto_secretbox_open_easy(blob.slice(n), blob.slice(0, n), key)
 }
 
+/**
+ * Streaming (secretstream) encryption for large files, so we never hold the whole plaintext or
+ * ciphertext in memory. The stored blob is `STREAM_MAGIC ‖ header(24) ‖ chunk0 ‖ chunk1 ‖ …`, where
+ * every chunk encrypts exactly `STREAM_CHUNK_SIZE` plaintext bytes (the last may be shorter), so the
+ * reader can frame chunks by size without explicit length prefixes. The 4-byte magic distinguishes
+ * this format from a legacy secretbox blob on read.
+ */
+export const STREAM_CHUNK_SIZE = 8 * 1024 * 1024
+
+export const STREAM_OVERHEAD = (): number =>
+  sodium.crypto_secretstream_xchacha20poly1305_ABYTES
+
+const STREAM_MAGIC = Uint8Array.from([0x50, 0x53, 0x53, 0x31])
+
+export interface StreamSealer {
+  /** `STREAM_MAGIC ‖ header` — the first bytes to store, before any sealed chunk. */
+  prefix: Uint8Array
+  /** Encrypt the next plaintext chunk; pass `final: true` for the last one. */
+  seal: (chunk: Uint8Array, final: boolean) => Uint8Array
+}
+
+export const secretstreamInit = (key: Uint8Array): StreamSealer => {
+  const { state, header } = sodium.crypto_secretstream_xchacha20poly1305_init_push(key)
+  const prefix = new Uint8Array(STREAM_MAGIC.length + header.length)
+  prefix.set(STREAM_MAGIC)
+  prefix.set(header, STREAM_MAGIC.length)
+  return {
+    prefix,
+    seal: (chunk, final) =>
+      sodium.crypto_secretstream_xchacha20poly1305_push(
+        state,
+        chunk,
+        null,
+        final
+          ? sodium.crypto_secretstream_xchacha20poly1305_TAG_FINAL
+          : sodium.crypto_secretstream_xchacha20poly1305_TAG_MESSAGE,
+      ),
+  }
+}
+
+/** Whether a stored blob is the streaming format (vs a legacy secretbox blob). */
+export const isStreamBlob = (blob: Uint8Array): boolean =>
+  blob.length >= STREAM_MAGIC.length && STREAM_MAGIC.every((byte, i) => blob[i] === byte)
+
+/** Decrypt a whole streaming blob into plaintext (whole-buffer; streaming-to-disk is a later phase). */
+export const secretstreamOpenAll = (blob: Uint8Array, key: Uint8Array): Uint8Array => {
+  const headerLen = sodium.crypto_secretstream_xchacha20poly1305_HEADERBYTES
+  const header = blob.slice(STREAM_MAGIC.length, STREAM_MAGIC.length + headerLen)
+  const state = sodium.crypto_secretstream_xchacha20poly1305_init_pull(header, key)
+  const cipherChunk = STREAM_CHUNK_SIZE + sodium.crypto_secretstream_xchacha20poly1305_ABYTES
+  const parts: Uint8Array[] = []
+  let offset = STREAM_MAGIC.length + headerLen
+  while (offset < blob.length) {
+    const end = Math.min(offset + cipherChunk, blob.length)
+    const result = sodium.crypto_secretstream_xchacha20poly1305_pull(
+      state,
+      blob.slice(offset, end),
+      null,
+    )
+    if (!result) throw new Error("stream decrypt failed")
+    parts.push(result.message)
+    offset = end
+    if (result.tag === sodium.crypto_secretstream_xchacha20poly1305_TAG_FINAL) break
+  }
+  const total = parts.reduce((sum, part) => sum + part.length, 0)
+  const out = new Uint8Array(total)
+  let cursor = 0
+  for (const part of parts) {
+    out.set(part, cursor)
+    cursor += part.length
+  }
+  return out
+}
+
 /** Anonymous public-key encryption (sealed box) — wrap a key to a recipient's public key. */
 export const sealTo = (message: Uint8Array, recipientPublicKey: Uint8Array): Uint8Array =>
   sodium.crypto_box_seal(message, recipientPublicKey)

@@ -1,11 +1,19 @@
 import { Readable } from "node:stream"
+import { resolveLimit } from "@workspace/auth"
 import { config } from "@workspace/config"
+import { createId } from "@paralleldrive/cuid2"
 import { publishUserEvent } from "@workspace/jobs"
 import { storage } from "@workspace/storage"
 import { type Context, Hono } from "hono"
 import { z } from "zod"
 import { getSessionUser } from "../context"
-import { readUploadForm } from "../uploads"
+import { formatBytes, readUploadForm } from "../uploads"
+import {
+  deleteUploadSession,
+  getUploadSession,
+  saveUploadSession,
+  type UploadSession,
+} from "./uploadSession"
 import { nodesWithKeys } from "../docs/keys"
 import { ingestUpload, purgeAssets, restoreAssets, trashAssets } from "../photos/service"
 import {
@@ -16,9 +24,11 @@ import {
   breadcrumb,
   clearNodeLock,
   copyNode,
+  createDriveFileFromStorage,
   createFolder,
   createShare,
   deleteNode,
+  newDriveStorageKey,
   ensurePhotosDriveNode,
   ensureUserRoots,
   extractArchive,
@@ -224,6 +234,102 @@ driveRoutes.post("/nodes/upload", async (c) => {
 
   const node = await upsertDriveFile({ ownerId: userId, parentId, filename, mimeType, bytes })
   return c.json({ node: serializeNode(node) }, 201)
+})
+
+driveRoutes.post("/nodes/upload/initiate", async (c) => {
+  const userId = c.get("userId")
+  const parsed = await parse(
+    c,
+    z.object({
+      parentId: z.string().nullish(),
+      filename: z.string().min(1),
+      mimeType: z.string().min(1),
+      encryptedName: z.string().nullish(),
+      totalSize: z.number().int().nonnegative(),
+    }),
+  )
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
+
+  const maxBytes = await resolveLimit(userId, "upload.maxFileBytes")
+  if (typeof maxBytes === "number" && parsed.data.totalSize > maxBytes) {
+    return c.json({ error: "uploads.tooLarge", errorParams: { limit: formatBytes(maxBytes) } }, 413)
+  }
+
+  const { rootId } = await ensureUserRoots(userId)
+  const parentId =
+    parsed.data.parentId && parsed.data.parentId !== "root" ? parsed.data.parentId : rootId
+  const storageKey = newDriveStorageKey(userId, parsed.data.filename)
+  const multipartUploadId = await storage().createMultipart(storageKey, "application/octet-stream")
+
+  const sessionId = createId()
+  const session: UploadSession = {
+    ownerId: userId,
+    parentId,
+    filename: parsed.data.filename,
+    mimeType: parsed.data.mimeType,
+    encryptedName: parsed.data.encryptedName ?? null,
+    storageKey,
+    multipartUploadId,
+    parts: [],
+    bytes: 0,
+  }
+  await saveUploadSession(sessionId, session)
+  return c.json({ sessionId }, 201)
+})
+
+driveRoutes.post("/nodes/upload/:sessionId/part", async (c) => {
+  const userId = c.get("userId")
+  const session = await getUploadSession(c.req.param("sessionId"))
+  if (!session || session.ownerId !== userId) return c.json({ error: "notFound" }, 404)
+
+  const partNumber = Number(c.req.query("part"))
+  if (!Number.isInteger(partNumber) || partNumber < 1) return c.json({ error: "invalidInput" }, 400)
+
+  const body = Buffer.from(await c.req.arrayBuffer())
+  const part = await storage().uploadPart(
+    session.storageKey,
+    session.multipartUploadId,
+    partNumber,
+    body,
+  )
+  session.parts.push(part)
+  session.bytes += body.length
+  await saveUploadSession(c.req.param("sessionId"), session)
+  return c.json({ ok: true })
+})
+
+driveRoutes.post("/nodes/upload/:sessionId/complete", async (c) => {
+  const userId = c.get("userId")
+  const sessionId = c.req.param("sessionId")
+  const session = await getUploadSession(sessionId)
+  if (!session || session.ownerId !== userId) return c.json({ error: "notFound" }, 404)
+  if (session.parts.length === 0) return c.json({ error: "invalidInput" }, 400)
+
+  await storage().completeMultipart(session.storageKey, session.multipartUploadId, session.parts)
+  const node = await createDriveFileFromStorage({
+    ownerId: userId,
+    parentId: session.parentId,
+    filename: session.filename,
+    mimeType: session.mimeType,
+    storageKey: session.storageKey,
+    sizeBytes: session.bytes,
+    encryptedName: session.encryptedName,
+  })
+  await deleteUploadSession(sessionId)
+  await notify(userId)
+  return c.json({ node: serializeNode(node) }, 201)
+})
+
+driveRoutes.post("/nodes/upload/:sessionId/abort", async (c) => {
+  const userId = c.get("userId")
+  const sessionId = c.req.param("sessionId")
+  const session = await getUploadSession(sessionId)
+  if (!session || session.ownerId !== userId) return c.json({ ok: true })
+  await storage()
+    .abortMultipart(session.storageKey, session.multipartUploadId)
+    .catch(() => undefined)
+  await deleteUploadSession(sessionId)
+  return c.json({ ok: true })
 })
 
 driveRoutes.put("/nodes/:id/thumbnail", async (c) => {

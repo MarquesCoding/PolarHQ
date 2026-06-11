@@ -861,6 +861,36 @@ export const recordShareDownload = async (shareId: string): Promise<void> => {
     .where(eq(schema.shares.id, shareId))
 }
 
+/** A fresh storage key for a Drive object whose bytes are written out-of-band (e.g. multipart). */
+export const newDriveStorageKey = (ownerId: string, filename: string): string =>
+  driveObjectKey(ownerId, createId(), filename)
+
+/** Create a Drive file node pointing at an already-stored object (chunked upload completion). */
+export const createDriveFileFromStorage = async (input: {
+  ownerId: string
+  parentId: string
+  filename: string
+  mimeType: string
+  storageKey: string
+  sizeBytes: number
+  encryptedName?: string | null
+}): Promise<DriveNode> => {
+  const inserted = await db
+    .insert(schema.nodes)
+    .values({
+      ownerId: input.ownerId,
+      parentId: input.parentId,
+      kind: "file",
+      name: input.filename,
+      encryptedName: input.encryptedName ?? null,
+      mimeType: input.mimeType,
+      sizeBytes: input.sizeBytes,
+      storageKey: input.storageKey,
+    })
+    .returning()
+  return inserted[0]!
+}
+
 interface DriveFileInput {
   ownerId: string
   parentId: string

@@ -14,7 +14,11 @@ import { ApiError } from "@lib/apiClient"
 import { apiErrorMessage } from "@lib/i18n/apiError"
 import { type UploadOptions, postFormWithProgress } from "@lib/xhrUpload"
 import { archiveDriveNodes } from "@lib/drive"
-import { uploadEncryptedDriveFile } from "@lib/driveE2e"
+import {
+  CHUNKED_UPLOAD_THRESHOLD,
+  uploadEncryptedDriveFile,
+  uploadEncryptedDriveFileChunked,
+} from "@lib/driveE2e"
 import { detectBurstGroups } from "@lib/burst"
 import { isUnlocked } from "@lib/e2e"
 import { pairLivePhotos } from "@lib/motionPhoto"
@@ -282,9 +286,10 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
         }
         const uploadPromise =
           target.kind === "drive" && isUnlocked()
-            ? uploadEncryptedDriveFile(target.parentId, file, options).then(
-                (node) => ({ node }) as UploadResponse,
-              )
+            ? (file.size >= CHUNKED_UPLOAD_THRESHOLD
+                ? uploadEncryptedDriveFileChunked(target.parentId, file, options)
+                : uploadEncryptedDriveFile(target.parentId, file, options)
+              ).then((node) => ({ node }) as UploadResponse)
             : target.kind === "photos" && isUnlocked() && isMediaFile(file)
               ? uploadEncryptedMedia(file, motionByImage.get(file), options).then(
                   (asset) => ({ asset, deduped: false }) as UploadResponse,

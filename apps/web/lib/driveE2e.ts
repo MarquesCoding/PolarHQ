@@ -1,6 +1,14 @@
 "use client"
 
-import { secretboxOpen, secretboxSeal } from "@lib/crypto"
+import { apiFetch } from "@lib/apiClient"
+import {
+  STREAM_CHUNK_SIZE,
+  isStreamBlob,
+  secretboxOpen,
+  secretboxSeal,
+  secretstreamInit,
+  secretstreamOpenAll,
+} from "@lib/crypto"
 import { type DriveNode, decryptNodeName } from "@lib/drive"
 import {
   createContentKey,
@@ -63,6 +71,81 @@ export const uploadEncryptedDriveFile = async (
   return { ...decryptNodeName(node), encrypted: true }
 }
 
+const concatBytes = (a: Uint8Array, b: Uint8Array): Uint8Array => {
+  const out = new Uint8Array(a.length + b.length)
+  out.set(a)
+  out.set(b, a.length)
+  return out
+}
+
+/** Files at or above this size upload in streaming chunks instead of one in-memory blob. */
+export const CHUNKED_UPLOAD_THRESHOLD = 64 * 1024 * 1024
+
+/**
+ * Upload a large file end-to-end encrypted in streaming chunks, so the browser never holds the
+ * whole file or ciphertext in memory. Each STREAM_CHUNK_SIZE slice is secretstream-sealed and sent
+ * as one multipart part (the first carries the magic+header prefix); the server assembles them.
+ */
+export const uploadEncryptedDriveFileChunked = async (
+  parentId: string | null,
+  file: File,
+  options?: UploadOptions,
+): Promise<DriveNode> => {
+  const key = createContentKey()
+  const sealer = secretstreamInit(key)
+  const encryptedName = encryptName(file.name)
+
+  const { sessionId } = await apiFetch<{ sessionId: string }>(
+    "/api/v1/drive/nodes/upload/initiate",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        parentId,
+        filename: encryptedName ? encryptedPlaceholder() : file.name,
+        mimeType: file.type || "application/octet-stream",
+        encryptedName: encryptedName ?? undefined,
+        totalSize: file.size,
+      }),
+    },
+  )
+
+  try {
+    const chunks = Math.max(1, Math.ceil(file.size / STREAM_CHUNK_SIZE))
+    const start = performance.now()
+    let sent = 0
+    for (let index = 0; index < chunks; index += 1) {
+      const offset = index * STREAM_CHUNK_SIZE
+      const slice = file.slice(offset, Math.min(offset + STREAM_CHUNK_SIZE, file.size))
+      const plain = new Uint8Array(await slice.arrayBuffer())
+      const sealed = sealer.seal(plain, index === chunks - 1)
+      const body = index === 0 ? concatBytes(sealer.prefix, sealed) : sealed
+      await apiFetch(`/api/v1/drive/nodes/upload/${sessionId}/part?part=${index + 1}`, {
+        method: "POST",
+        body: body as BodyInit,
+        headers: { "content-type": "application/octet-stream" },
+      })
+      sent += slice.size
+      const elapsed = (performance.now() - start) / 1000
+      options?.onProgress?.({
+        loaded: sent,
+        total: file.size,
+        speed: elapsed > 0 ? sent / elapsed : 0,
+      })
+    }
+    const { node } = await apiFetch<{ node: DriveNode }>(
+      `/api/v1/drive/nodes/upload/${sessionId}/complete`,
+      { method: "POST" },
+    )
+    await storeContentKey(node.id, key)
+    return { ...decryptNodeName(node), encrypted: true }
+  } catch (error) {
+    await apiFetch(`/api/v1/drive/nodes/upload/${sessionId}/abort`, { method: "POST" }).catch(
+      () => undefined,
+    )
+    throw error
+  }
+}
+
 /** Fetch + decrypt an encrypted node's thumbnail into an object URL (or null). */
 export const fetchDecryptedThumbnail = async (nodeId: string): Promise<string | null> => {
   const key = await getDocContentKey(nodeId)
@@ -110,7 +193,8 @@ export const fetchDecryptedFile = async (
   const response = await fetch(downloadUrl, { credentials: "include" })
   if (!response.ok) return null
   try {
-    const plain = secretboxOpen(new Uint8Array(await response.arrayBuffer()), key)
+    const bytes = new Uint8Array(await response.arrayBuffer())
+    const plain = isStreamBlob(bytes) ? secretstreamOpenAll(bytes, key) : secretboxOpen(bytes, key)
     return URL.createObjectURL(new Blob([plain as BlobPart], { type: mimeType ?? undefined }))
   } catch {
     return null
