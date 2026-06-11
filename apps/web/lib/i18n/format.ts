@@ -2,8 +2,12 @@
 
 import i18n from "./config"
 
-/** The active UI locale (BCP-47), for Intl/toLocale* date & number formatting. */
-export const dateLocale = (): string => i18n.resolvedLanguage || i18n.language || "en"
+/**
+ * The active UI locale (BCP-47) for Intl/toLocale* formatting. Prefer the explicitly selected
+ * `language` — `resolvedLanguage` can collapse to a fallback (e.g. a base language or "en") while
+ * the user has clearly chosen another, which would silently mis-format dates.
+ */
+export const dateLocale = (): string => i18n.language || i18n.resolvedLanguage || "en"
 
 /** Format a date in the active UI locale. */
 export const formatDate = (
