@@ -46,6 +46,45 @@
   "confirmButton": {
     "confirm": "Bestätigen"
   },
+  "dates": {
+    "monthsLong": [
+      "Januar",
+      "Februar",
+      "März",
+      "April",
+      "Mai",
+      "Juni",
+      "Juli",
+      "August",
+      "September",
+      "Oktober",
+      "November",
+      "Dezember"
+    ],
+    "monthsShort": [
+      "Jan",
+      "Feb",
+      "Mär",
+      "Apr",
+      "Mai",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Okt",
+      "Nov",
+      "Dez"
+    ],
+    "weekdaysLong": [
+      "Sonntag",
+      "Montag",
+      "Dienstag",
+      "Mittwoch",
+      "Donnerstag",
+      "Freitag",
+      "Samstag"
+    ]
+  },
   "devicesDialog": {
     "activeNow": "Jetzt aktiv",
     "lastActive": "Zuletzt aktiv {{time}}",

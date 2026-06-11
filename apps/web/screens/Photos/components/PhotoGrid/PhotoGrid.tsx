@@ -1,6 +1,6 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { monthLong, monthShort, weekdayLong } from "@lib/i18n/format"
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@lib/icons"
@@ -52,8 +52,8 @@ const dayLabel = (date: Date): string => {
   const diff = Math.round((today.getTime() - day.getTime()) / 86_400_000)
   if (diff <= 0) return t("photos:photoGrid.today")
   if (diff === 1) return t("photos:photoGrid.yesterday")
-  if (diff < 7) return date.toLocaleDateString(dateLocale(), { weekday: "long" })
-  return date.toLocaleDateString(dateLocale(), { year: "numeric", month: "long", day: "numeric" })
+  if (diff < 7) return weekdayLong(date)
+  return `${date.getDate()} ${monthLong(date)} ${date.getFullYear()}`
 }
 
 const dateOf = (asset: GridAsset): Date => new Date(asset.takenAt ?? asset.createdAt)
@@ -230,8 +230,12 @@ interface PhotoGridProps {
 }
 
 const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
-  // Subscribe to language + catalog-loaded events so day labels re-render (see layout memo).
-  useTranslation()
+  const { i18n } = useTranslation()
+  // Changes when the language switches OR its date catalog finishes loading (fetched async),
+  // driving the layout memo so day labels rebuild.
+  const dateStamp =
+    (i18n.t("common:dates.weekdaysLong", { returnObjects: true }) as string[] | undefined)?.[0] ??
+    i18n.language
   const selection = useSelection()
   const containerRef = useRef<HTMLDivElement>(null)
   const reachEndRef = useRef(onReachEnd)
@@ -278,10 +282,8 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   )
   const layout = useMemo(
     () => buildLayout(sortedGridAssets, width, rowHeight, gap, square === 1),
-    // dateLocale() (the resolved locale) so the day labels rebuild both when the language
-    // changes AND when the lazy-loaded catalog resolves the locale (en -> mk) on first load.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sortedGridAssets, width, rowHeight, gap, square, dateLocale()],
+    // dateStamp rebuilds the day labels when the language changes or its catalog loads.
+    [sortedGridAssets, width, rowHeight, gap, square, dateStamp],
   )
 
   useEffect(() => {
@@ -430,11 +432,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     () =>
       layout.labels.map((label) => ({
         y: label.y,
-        label: label.date.toLocaleDateString(dateLocale(), {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        }),
+        label: `${label.date.getDate()} ${monthShort(label.date)} ${label.date.getFullYear()}`,
       })),
     [layout],
   )

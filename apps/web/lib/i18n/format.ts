@@ -26,3 +26,30 @@ export const formatDateTime = (
   value: string | number | Date,
   options?: Intl.DateTimeFormatOptions,
 ): string => new Date(value).toLocaleString(dateLocale(), options)
+
+/**
+ * Weekday / month names from the catalog (common.dates.*) rather than the browser's Intl, which
+ * lacks date data for some locales (e.g. Macedonian returns English). The names are CLDR-sourced
+ * (Node full-ICU) at build time, so they're correct in every supported language regardless of the
+ * user's browser ICU. Falls back to Intl if the catalog hasn't loaded.
+ */
+const fromCatalog = (key: string, index: number, fallback: () => string): string => {
+  const arr = i18n.t(`common:dates.${key}`, { returnObjects: true }) as unknown
+  const name = Array.isArray(arr) ? (arr[index] as string | undefined) : undefined
+  return name || fallback()
+}
+
+export const weekdayLong = (date: Date): string =>
+  fromCatalog("weekdaysLong", date.getDay(), () =>
+    date.toLocaleDateString(dateLocale(), { weekday: "long" }),
+  )
+
+export const monthLong = (date: Date): string =>
+  fromCatalog("monthsLong", date.getMonth(), () =>
+    date.toLocaleDateString(dateLocale(), { month: "long" }),
+  )
+
+export const monthShort = (date: Date): string =>
+  fromCatalog("monthsShort", date.getMonth(), () =>
+    date.toLocaleDateString(dateLocale(), { month: "short" }),
+  )
