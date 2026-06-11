@@ -26,6 +26,7 @@ import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
+import { Sidebar } from "@workspace/ui/components/sidebar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -105,7 +106,7 @@ const FlatSidebar = ({
   const dark = resolvedTheme === "dark"
 
   return (
-    <aside className="bg-sidebar flex h-svh w-[264px] shrink-0 flex-col">
+    <Sidebar collapsible="offcanvas">
       {/* App switcher — replaces the global app rail + workgroup dropdown */}
       <div className="border-border flex h-14 shrink-0 items-center border-b px-3">
         <DropdownMenu>
@@ -314,7 +315,7 @@ const FlatSidebar = ({
 
       <DevicesDialog open={devicesOpen} onOpenChange={setDevicesOpen} />
       <StorageDialog open={storageOpen} onOpenChange={setStorageOpen} />
-    </aside>
+    </Sidebar>
   )
 }
 

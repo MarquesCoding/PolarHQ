@@ -22,7 +22,7 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 
 ## Shell / navigation
 - [ ] Separate the app logo from the app dropdown; make the **logo a dropdown for workgroup selection**.
-- [x] **Collapse sidebar** + better mobile support — `uiSlice` gains `sidebarCollapsed` (desktop hide) + `sidebarMobileOpen` (off-canvas drawer); `FlatShell` renders the sidebar as a fixed slide-in drawer with scrim below `md` and a collapsible in-flow column at `md+`; `FlatTopBar` gets a leading hamburger (mobile) / collapse toggle (desktop). Drawer closes on scrim click, Escape, and route change.
+- [x] **Collapse sidebar** + better mobile support — adopted the shadcn `Sidebar`: `FlatShell` wraps the app in `SidebarProvider`, `FlatSidebar` is a `Sidebar collapsible="offcanvas"` (renders a Sheet drawer below `md`, collapsible in-flow column at `md+`), and `FlatTopBar` uses a single `SidebarTrigger` (toggles the drawer on mobile / collapses on desktop, ⌘B shortcut). Mobile drawer auto-closes on route change.
 - [x] Nicer **dark/light mode** transition — View Transitions circular reveal from the toggle; expands on, contracts on off (`fill: forwards` to avoid the end-of-animation flash).
 
 ## Dialogs / onboarding

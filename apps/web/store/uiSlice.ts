@@ -5,10 +5,7 @@ export type ViewMode = "grid" | "table"
 export interface UiState {
   activeAppId: string | null
   searchQuery: string
-  /** Desktop: hide the in-flow sidebar entirely. */
   sidebarCollapsed: boolean
-  /** Mobile: the off-canvas sidebar drawer is open. */
-  sidebarMobileOpen: boolean
   viewMode: ViewMode
   driveDetailsOpen: boolean
 }
@@ -17,7 +14,6 @@ const initialState: UiState = {
   activeAppId: null,
   searchQuery: "",
   sidebarCollapsed: false,
-  sidebarMobileOpen: false,
   viewMode: "grid",
   driveDetailsOpen: false,
 }
@@ -38,12 +34,6 @@ const uiSlice = createSlice({
     setSidebarCollapsed: (state, action: PayloadAction<boolean>) => {
       state.sidebarCollapsed = action.payload
     },
-    toggleSidebarMobile: (state) => {
-      state.sidebarMobileOpen = !state.sidebarMobileOpen
-    },
-    setSidebarMobileOpen: (state, action: PayloadAction<boolean>) => {
-      state.sidebarMobileOpen = action.payload
-    },
     setViewMode: (state, action: PayloadAction<ViewMode>) => {
       state.viewMode = action.payload
     },
@@ -58,8 +48,6 @@ export const {
   setSearchQuery,
   toggleSidebar,
   setSidebarCollapsed,
-  toggleSidebarMobile,
-  setSidebarMobileOpen,
   setViewMode,
   setDriveDetailsOpen,
 } = uiSlice.actions
