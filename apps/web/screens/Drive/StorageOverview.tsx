@@ -3,10 +3,11 @@
 import { type StorageKind, decryptNodeName, fetchStorageStats } from "@lib/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
+import { squarify } from "@lib/treemap"
 import { useQuery } from "@tanstack/react-query"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import type { StorageApp } from "@lib/drive"
+import type { StorageApp, StorageStats } from "@lib/drive"
 
 const KIND_COLOR: Record<StorageKind, string> = {
   image: "bg-blue-500",
@@ -34,6 +35,48 @@ const Stat = ({ label, value }: { label: string; value: string }) => (
   </div>
 )
 
+const SPACE_MAP_RECT = { x: 0, y: 0, w: 2, h: 1 }
+
+/** Squarified treemap of the largest files: rectangle area is proportional to bytes, colour to the
+ *  owning app. A visual companion to the bar/legend above — "what is eating my storage". */
+const StorageTreemap = ({ files }: { files: StorageStats["largest"] }) => {
+  const tiles = squarify(
+    files.map((file) => ({ value: file.sizeBytes, file })),
+    SPACE_MAP_RECT,
+  )
+  return (
+    <div className="bg-muted relative aspect-[2/1] w-full overflow-hidden rounded-xl" dir="ltr">
+      {tiles.map(({ item, x, y, w, h }) => {
+        const widthPct = (w / SPACE_MAP_RECT.w) * 100
+        const heightPct = (h / SPACE_MAP_RECT.h) * 100
+        const name = decryptNodeName(item.file).name
+        return (
+          <div
+            key={item.file.id}
+            className={`border-background absolute flex flex-col justify-end overflow-hidden border-2 p-1.5 text-white ${APP_META[item.file.app].color}`}
+            style={{
+              left: `${(x / SPACE_MAP_RECT.w) * 100}%`,
+              top: `${(y / SPACE_MAP_RECT.h) * 100}%`,
+              width: `${widthPct}%`,
+              height: `${heightPct}%`,
+            }}
+            title={`${name} · ${formatBytes(item.file.sizeBytes)}`}
+          >
+            {widthPct > 13 && heightPct > 16 ? (
+              <>
+                <span className="truncate text-xs leading-tight font-medium">{name}</span>
+                <span className="text-[10px] tabular-nums opacity-90">
+                  {formatBytes(item.file.sizeBytes)}
+                </span>
+              </>
+            ) : null}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 const StorageOverview = () => {
   const { t } = useTranslation("drive")
   const { data } = useQuery({ queryKey: ["drive", "storage"], queryFn: fetchStorageStats })
@@ -45,7 +88,7 @@ const StorageOverview = () => {
   const denom = quota && quota > 0 ? quota : Math.max(used, 1)
 
   return (
-    <div className="mx-auto w-full max-w-4xl p-6">
+    <div className="w-full p-6">
       <h1 className="mb-4 text-lg font-semibold">{t("overview.title")}</h1>
 
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -92,6 +135,16 @@ const StorageOverview = () => {
         </div>
       </section>
 
+      {data && data.largest.length >= 2 ? (
+        <section className="mb-6">
+          <h2 className="text-muted-foreground mb-1 text-xs font-semibold tracking-wide uppercase">
+            {t("overview.spaceMap")}
+          </h2>
+          <p className="text-muted-foreground mb-3 text-xs">{t("overview.spaceMapHint")}</p>
+          <StorageTreemap files={data.largest} />
+        </section>
+      ) : null}
+
       <section className="mb-6">
         <h2 className="text-muted-foreground mb-3 text-xs font-semibold tracking-wide uppercase">
           {t("overview.byApp")}
@@ -119,7 +172,7 @@ const StorageOverview = () => {
           <p className="text-muted-foreground text-sm">{t("overview.noFiles")}</p>
         ) : (
           <div className="panel flex flex-col rounded-xl px-3">
-            {(data?.largest ?? []).map((file) => (
+            {(data?.largest ?? []).slice(0, 8).map((file) => (
               <div
                 key={file.id}
                 className="border-border/50 flex items-center gap-3 border-b py-2.5 last:border-0"

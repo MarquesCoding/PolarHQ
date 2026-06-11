@@ -1116,7 +1116,7 @@ export const getStorageStats = async (ownerId: string): Promise<StorageStats> =>
 
   const largest = [...files]
     .sort((a, b) => (b.sizeBytes ?? 0) - (a.sizeBytes ?? 0))
-    .slice(0, 8)
+    .slice(0, 24)
     .map((file) => ({
       id: file.id,
       name: file.name,

@@ -66,6 +66,8 @@
     "totalFiles": "Total files",
     "unlimited": "Unlimited",
     "byKind": "Storage by file kind",
+    "spaceMap": "Space map",
+    "spaceMapHint": "Your largest files, sized by the space they use",
     "byApp": "Storage by app",
     "largest": "Largest files",
     "noFiles": "No files stored yet",
