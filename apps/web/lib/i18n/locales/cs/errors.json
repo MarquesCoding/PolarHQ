@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "Akce se nezdařila",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Výměna kódu Google se nezdařila.",
+    "gdriveConnectFailed": "Připojení k Disku Google se nezdařilo.",
+    "gdriveNoRefreshToken": "Google nevrátil obnovovací token (odvolejte předchozí přístup a zkuste to znovu).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET nejsou nakonfigurovány",
+    "invalidOauthState": "Neplatný stav OAuth."
+  },
+  "badRequest": "Neplatný požadavek.",
+  "docs": {
+    "alreadyOwner": "Již je vlastníkem",
+    "emailRequired": "E-mail je povinný.",
+    "noPublicKey": "Chybí veřejný klíč.",
+    "userNotFound": "Takový uživatel neexistuje"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "systémovou složku nelze smazat",
+    "cannotLockFolder": "tuto složku nelze uzamknout",
+    "cannotModifySystemFolder": "systémovou složku nelze upravit",
+    "extractFailed": "archiv se nepodařilo rozbalit",
+    "fileRequired": "pole se souborem je povinné",
+    "photosMediaFilesOnly": "Složka Fotky přijímá pouze mediální soubory",
+    "photosMediaOnly": "Složka Fotky přijímá pouze obrázky, videa a zvuk"
+  },
+  "forbidden": "K této akci nemáte oprávnění.",
+  "generic": "Něco se pokazilo.",
+  "invalidInput": "Neplatný vstup.",
+  "notFound": "Nenalezeno.",
+  "photos": {
+    "fileRequired": "Soubor je povinný.",
+    "stackNeedsTwoAssets": "Pro vytvoření skupiny vyberte alespoň dvě vlastní fotky."
+  },
+  "rateLimited": "Příliš mnoho požadavků. Zkuste to prosím za chvíli znovu.",
+  "setup": {
+    "alreadyComplete": "Nastavení již bylo dokončeno",
+    "registrationDisabled": "registrace je na této instanci zakázána"
+  },
+  "unauthorized": "K této akci se musíte přihlásit.",
+  "uploads": {
+    "tooLarge": "Soubor překračuje limit nahrávání {{limit}}"
+  }
+}

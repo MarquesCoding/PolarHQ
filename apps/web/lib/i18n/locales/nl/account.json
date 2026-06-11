@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Account",
+  "subtitle": "Beheer je profiel en voorkeuren.",
+  "back": "Terug",
+  "profile": "Profiel",
+  "name": "Naam",
+  "email": "E-mail",
+  "preferences": "Voorkeuren",
+  "language": "Taal",
+  "languageHint": "Kies de taal die in de interface wordt gebruikt.",
+  "appearance": "Weergave",
+  "appearanceHint": "Schakel tussen lichte en donkere modus.",
+  "light": "Licht",
+  "dark": "Donker",
+  "system": "Systeem",
+  "security": "Beveiliging",
+  "devices": "Apparaten en sessies",
+  "devicesHint": "Bekijk apparaten die zijn aangemeld en meld ze af.",
+  "manageDevices": "Apparaten beheren",
+  "signOut": "Afmelden",
+  "languageChanged": "Taal bijgewerkt"
+}

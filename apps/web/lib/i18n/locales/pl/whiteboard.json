@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Ponów",
+    "resetZoom": "Resetuj powiększenie",
+    "undo": "Cofnij",
+    "zoomIn": "Powiększ",
+    "zoomOut": "Pomniejsz"
+  },
+  "propertiesPanel": {
+    "background": "Tło",
+    "bringForward": "Przesuń do przodu",
+    "bringToFront": "Przesuń na wierzch",
+    "layers": "Warstwy",
+    "opacity": "Krycie",
+    "sendBackward": "Przesuń do tyłu",
+    "sendToBack": "Przesuń na spód",
+    "stroke": "Obrys",
+    "strokeWidth": "Grubość obrysu"
+  },
+  "shell": {
+    "myWhiteboards": "Moje tablice",
+    "newWhiteboard": "Nowa tablica",
+    "product": "Tablica",
+    "search": "Szukaj tablic",
+    "whiteboards": "Tablice"
+  },
+  "toolbar": {
+    "arrow": "Strzałka",
+    "diamond": "Romb",
+    "draw": "Rysuj",
+    "ellipse": "Elipsa",
+    "eraser": "Gumka",
+    "line": "Linia",
+    "pan": "Przesuwanie",
+    "rectangle": "Prostokąt",
+    "select": "Zaznacz",
+    "text": "Tekst"
+  },
+  "whiteboardList": {
+    "createLabel": "Nowa tablica",
+    "title": "Tablice"
+  }
+}

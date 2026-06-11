@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "Дејството не успеа",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Размената на кодот со Google не успеа.",
+    "gdriveConnectFailed": "Поврзувањето со Google Drive не успеа.",
+    "gdriveNoRefreshToken": "Google не врати токен за освежување (отповикајте го претходниот пристап и обидете се повторно).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET не се конфигурирани",
+    "invalidOauthState": "Невалидна OAuth состојба."
+  },
+  "badRequest": "Неисправно барање.",
+  "docs": {
+    "alreadyOwner": "Веќе е сопственик",
+    "emailRequired": "Потребна е е-пошта.",
+    "noPublicKey": "Нема јавен клуч.",
+    "userNotFound": "Нема таков корисник"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "не може да се избрише системска папка",
+    "cannotLockFolder": "оваа папка не може да се заклучи",
+    "cannotModifySystemFolder": "не може да се измени системска папка",
+    "extractFailed": "архивата не можеше да се извлече",
+    "fileRequired": "полето за датотека е задолжително",
+    "photosMediaFilesOnly": "Папката Фотографии прифаќа само мултимедијални датотеки",
+    "photosMediaOnly": "Папката Фотографии прифаќа само слики, видео и аудио"
+  },
+  "forbidden": "Немате дозвола за тоа.",
+  "generic": "Нешто тргна наопаку.",
+  "invalidInput": "Невалиден внес.",
+  "notFound": "Не е пронајдено.",
+  "photos": {
+    "fileRequired": "Потребна е датотека.",
+    "stackNeedsTwoAssets": "Изберете најмалку две свои фотографии за да ги наредите во група."
+  },
+  "rateLimited": "Премногу барања. Обидете се повторно за кратко.",
+  "setup": {
+    "alreadyComplete": "Поставувањето е веќе завршено",
+    "registrationDisabled": "регистрацијата е оневозможена на оваа инстанца"
+  },
+  "unauthorized": "Треба да се најавите за да го направите тоа.",
+  "uploads": {
+    "tooLarge": "Датотеката го надминува ограничувањето за прикачување од {{limit}}"
+  }
+}

@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 elementów",
+    "albumName": "Włochy '24",
+    "albumsBody": "Grupuj zdjęcia w albumy, a następnie udostępniaj prywatny link — do przeglądania nie jest wymagane konto.",
+    "albumsTitle": "Albumy i linki do udostępniania.",
+    "back": "Wstecz",
+    "dismiss": "Zamknij",
+    "getStarted": "Rozpocznij",
+    "linkCopied": "Skopiowano link",
+    "next": "Dalej",
+    "privateBody": "Każde zdjęcie, dokument i plik jest szyfrowany end-to-end. Tylko Ty masz klucze — serwer widzi wyłącznie zaszyfrowane dane.",
+    "privateTitle": "Prywatność domyślnie.",
+    "share": "Udostępnij",
+    "uploadBody": "Przeciągnij zdjęcia w dowolne miejsce, aby je przesłać. Zdjęcia Live łączą się w pary, a serie automatycznie zwijają się w jeden rozwijany stos.",
+    "uploadTitle": "Po prostu je upuść."
+  }
+}

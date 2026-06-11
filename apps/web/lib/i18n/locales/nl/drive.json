@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Mijn Drive"
+  },
+  "browser": {
+    "archive": "Archief",
+    "archiveExtracted": "Archief uitgepakt",
+    "archiveLabel_one": "Archief ({{count}} item)",
+    "archiveLabel_other": "Archief ({{count}} items)",
+    "copyCreated": "Kopie gemaakt",
+    "couldNotCopy": "Kopiëren mislukt",
+    "couldNotCreate": "Maken mislukt",
+    "couldNotDelete": "Verwijderen mislukt",
+    "couldNotExtract": "Uitpakken mislukt",
+    "couldNotMove": "Verplaatsen mislukt",
+    "couldNotOpenFile": "Dit bestand kan niet worden geopend",
+    "download": "Downloaden",
+    "dragOrUpload": "Sleep bestanden hierheen of gebruik Uploaden.",
+    "extract": "Uitpakken",
+    "linkCopied": "Link gekopieerd",
+    "move": "Verplaatsen",
+    "movedToFolder_one": "{{count}} item verplaatst naar {{name}}",
+    "movedToFolder_other": "{{count}} items verplaatst naar {{name}}",
+    "movedToTrash": "Naar prullenbak verplaatst",
+    "noMatches": "Niets komt overeen met je zoekopdracht.",
+    "open": "Openen",
+    "opening": "Bezig met openen…",
+    "rename": "Naam wijzigen",
+    "share": "Delen",
+    "trash": "Prullenbak"
+  },
+  "detailsPanel": {
+    "closeDetails": "Details sluiten",
+    "created": "Gemaakt",
+    "empty": "Selecteer een item om de details te bekijken.",
+    "file": "Bestand",
+    "files": "Bestanden",
+    "folder": "Map",
+    "folders": "Mappen",
+    "itemsSelected_one": "{{count}} item geselecteerd",
+    "itemsSelected_other": "{{count}} items geselecteerd",
+    "modified": "Gewijzigd",
+    "size": "Grootte",
+    "title": "Details",
+    "totalSize": "Totale grootte",
+    "type": "Type"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Nieuw document",
+    "newFolder": "Nieuwe map",
+    "newSpreadsheet": "Nieuw spreadsheet",
+    "uploadFiles": "Bestanden uploaden"
+  },
+  "driveNav": {
+    "drive": "Drive",
+    "location": "Locatie",
+    "myDrive": "Mijn Drive",
+    "trash": "Prullenbak"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Maken mislukt",
+    "emptyTrash": "Prullenbak legen",
+    "emptyTrashConfirm": "Prullenbak legen?",
+    "new": "Nieuw",
+    "newDocument": "Nieuw document",
+    "newFolder": "Nieuwe map",
+    "newSpreadsheet": "Nieuw spreadsheet",
+    "toggleDetails": "Details tonen/verbergen",
+    "trashEmptied": "Prullenbak geleegd",
+    "uploadFiles": "Bestanden uploaden"
+  },
+  "folderLockDialog": {
+    "cancel": "Annuleren",
+    "confirmPasswordPlaceholder": "Wachtwoord bevestigen",
+    "folderLocked": "Map vergrendeld",
+    "folderPasswordPlaceholder": "Mapwachtwoord",
+    "incorrectPassword": "Onjuist wachtwoord.",
+    "lock": "Vergrendelen",
+    "lockDescription": "Stel een wachtwoord in om deze map te openen. Het beperkt de toegang op dit apparaat — je bestanden blijven hoe dan ook end-to-end versleuteld.",
+    "lockFolderTitle": "Map vergrendelen",
+    "lockRemoved": "Vergrendeling verwijderd",
+    "passwordsDontMatch": "Wachtwoorden komen niet overeen.",
+    "removeDescription": "Voer het mapwachtwoord in om de vergrendeling te verwijderen.",
+    "removeLock": "Vergrendeling verwijderen",
+    "removeLockTitle": "Vergrendeling verwijderen",
+    "somethingWentWrong": "Er is iets misgegaan."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Voer het wachtwoord in om de inhoud te bekijken.",
+    "incorrectPassword": "Onjuist wachtwoord.",
+    "locked": "“{{name}}” is vergrendeld",
+    "passwordPlaceholder": "Mapwachtwoord",
+    "unlock": "Ontgrendelen"
+  },
+  "imageViewer": {
+    "close": "Sluiten",
+    "download": "Downloaden",
+    "resetZoom": "Zoom herstellen",
+    "zoomIn": "Inzoomen",
+    "zoomOut": "Uitzoomen"
+  },
+  "modelViewer": {
+    "autoRotate": "Automatisch draaien",
+    "close": "Sluiten",
+    "decryptError": "Model kan niet worden ontsleuteld",
+    "loading": "Model laden…",
+    "normals": "Normalen",
+    "openError": "Dit 3D-bestand kan niet worden geopend.",
+    "shaded": "Gearceerd",
+    "toggleGrid": "Raster tonen/verbergen",
+    "toggleTextures": "Texturen tonen/verbergen",
+    "wireframe": "Draadframe"
+  },
+  "moveDialog": {
+    "cancel": "Annuleren",
+    "move": "Verplaatsen",
+    "moveFailed": "Verplaatsen mislukt",
+    "moved": "Verplaatst",
+    "myDrive": "Mijn Drive",
+    "title": "Verplaatsen naar map"
+  },
+  "newFolderDialog": {
+    "cancel": "Annuleren",
+    "create": "Maken",
+    "createError": "Map maken mislukt",
+    "created": "Map gemaakt",
+    "newFolder": "Nieuwe map",
+    "placeholder": "Mapnaam",
+    "title": "Nieuwe map"
+  },
+  "nodeCard": {
+    "deselect": "Selectie opheffen",
+    "folder": "Map",
+    "select": "Selecteren"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Link kopiëren",
+    "details": "Details",
+    "download": "Downloaden",
+    "extractHere": "Hier uitpakken",
+    "lockFolder": "Map vergrendelen",
+    "makeCopy": "Kopie maken",
+    "moveToFolder": "Verplaatsen naar map",
+    "moveToTrash": "Naar prullenbak verplaatsen",
+    "open": "Openen",
+    "openInPhotos": "Openen in Foto's",
+    "removeLock": "Vergrendeling verwijderen",
+    "rename": "Naam wijzigen",
+    "share": "Delen",
+    "versionHistory": "Versiegeschiedenis bekijken",
+    "view": "Weergeven",
+    "viewIn3d": "Weergeven in 3D"
+  },
+  "nodeTable": {
+    "deselect": "Selectie opheffen",
+    "modified": "Gewijzigd",
+    "name": "Naam",
+    "select": "Selecteren",
+    "selectAll": "Alles selecteren",
+    "size": "Grootte"
+  },
+  "parentCard": {
+    "parentFolder": "Bovenliggende map"
+  },
+  "renameDialog": {
+    "cancel": "Annuleren",
+    "couldNotRename": "Naam wijzigen mislukt",
+    "renamed": "Naam gewijzigd",
+    "save": "Opslaan",
+    "title": "Naam wijzigen"
+  },
+  "shell": {
+    "search": "Drive doorzoeken"
+  },
+  "trash": {
+    "actionFailed": "Actie mislukt",
+    "deleteForever": "Definitief verwijderen",
+    "empty": "Prullenbak is leeg.",
+    "permanentlyDeleted": "Definitief verwijderd",
+    "restore": "Herstellen",
+    "restored": "Hersteld",
+    "retentionNotice": "Items hier worden 30 dagen nadat ze in de prullenbak zijn geplaatst definitief verwijderd.",
+    "title": "Prullenbak"
+  },
+  "versionHistoryDialog": {
+    "close": "Sluiten",
+    "download": "Versie downloaden",
+    "empty": "Geen eerdere versies. Upload een bestand met dezelfde naam opnieuw om er een te maken.",
+    "loading": "Laden…",
+    "restore": "Herstellen",
+    "restoreFailed": "Herstellen mislukt",
+    "restored": "Versie hersteld",
+    "title": "Versiegeschiedenis",
+    "versionLabel": "Versie {{number}}"
+  }
+}

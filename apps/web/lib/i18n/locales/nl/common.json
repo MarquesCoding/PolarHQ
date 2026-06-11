@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "Terug",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "confirm": "Bevestigen",
+    "create": "Aanmaken",
+    "delete": "Verwijderen",
+    "done": "Klaar",
+    "download": "Downloaden",
+    "getStarted": "Aan de slag",
+    "next": "Volgende",
+    "open": "Openen",
+    "remove": "Verwijderen",
+    "rename": "Naam wijzigen",
+    "retry": "Opnieuw proberen",
+    "save": "Opslaan",
+    "share": "Delen",
+    "signOut": "Afmelden"
+  },
+  "appTile": {
+    "beta": "Bèta",
+    "soon": "Binnenkort"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · build {{build}}",
+    "whatsNew": "Wat is er nieuw"
+  },
+  "collabHeader": {
+    "anonymous": "Anoniem",
+    "notSavedYet": "Nog niet opgeslagen",
+    "save": "Opslaan",
+    "savedAt": "Opgeslagen {{time}}",
+    "saving": "Opslaan…",
+    "share": "Delen",
+    "title": "Titel"
+  },
+  "confirmButton": {
+    "confirm": "Bevestigen"
+  },
+  "devicesDialog": {
+    "activeNow": "Nu actief",
+    "lastActive": "Laatst actief {{time}}",
+    "signOut": "Afmelden",
+    "signOutError": "Kan dat apparaat niet afmelden",
+    "signedOut": "Apparaat afgemeld",
+    "thisDevice": "Dit apparaat",
+    "title": "Apparaten en sessies"
+  },
+  "dropZone": {
+    "dropToUpload": "Sleep hierheen om te uploaden"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Elke wijziging die je maakt, wordt automatisch en veilig opgeslagen in Drive.",
+    "encrypted": "Versleuteld",
+    "endToEndEncrypted": "End-to-end versleuteld"
+  },
+  "flatSidebar": {
+    "account": "Account",
+    "apps": "Apps",
+    "beta": "Bèta",
+    "devices": "Apparaten",
+    "personalWorkspace": "Persoonlijke werkruimte",
+    "replayIntro": "Intro opnieuw afspelen",
+    "settings": "Instellingen",
+    "signOut": "Afmelden",
+    "storage": "Opslag",
+    "toggleDarkMode": "Donkere modus wisselen",
+    "unlimited": "Onbeperkt"
+  },
+  "importButton": {
+    "import": "Importeren",
+    "importFailed": "Kan dit bestand niet importeren"
+  },
+  "launcher": {
+    "loadingApps": "Apps laden…",
+    "ofQuota": "van {{quota}}",
+    "signOut": "Afmelden",
+    "storage": "Opslag",
+    "versionBuild": "v{{version}} · build {{build}}",
+    "yourApps": "Jouw apps"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Ik heb hem opgeslagen — doorgaan",
+    "copied": "Herstelcode gekopieerd",
+    "copyAriaLabel": "Herstelcode kopiëren",
+    "description": "Je account is nu end-to-end versleuteld. Deze herstelcode is de enige manier om je gegevens terug te krijgen als je je wachtwoord vergeet — bewaar hem op een veilige plek. We kunnen hem niet opnieuw tonen.",
+    "title": "Sla je herstelcode op"
+  },
+  "selectionBar": {
+    "clearSelection": "Selectie wissen",
+    "download": "Downloaden",
+    "downloadAllFrames": "Alle frames downloaden ({{count}})",
+    "downloadCover": "Omslag downloaden",
+    "downloadCovers": "Omslagen downloaden ({{count}})",
+    "photoFilename": "Foto",
+    "photosZipFilename": "{{count}} foto's.zip",
+    "share": "Delen",
+    "shareNameFallback": "foto"
+  },
+  "shareDialog": {
+    "cancel": "Annuleren",
+    "copyLink": "Link kopiëren",
+    "descriptionEncrypted": "End-to-end versleuteld: de sleutel zit in de link en bereikt de server nooit, dus alleen mensen met de link kunnen het ontsleutelen.",
+    "descriptionPublic": "Iedereen met deze link kan het bestand downloaden.",
+    "directDownload": "Direct downloaden",
+    "directDownloadHint": "Sla de landingspagina over en download direct",
+    "expiresAfter": "Verloopt na",
+    "expiry1Day": "1 dag",
+    "expiry1Hour": "1 uur",
+    "expiry30Days": "30 dagen",
+    "expiry7Days": "7 dagen",
+    "generatingLink": "Link genereren…",
+    "limitDownloads": "Downloads beperken",
+    "limitDownloadsHint": "Schakel de link uit na een aantal downloads",
+    "linkCopied": "Link gekopieerd",
+    "maximumDownloads": "Maximaal aantal downloads",
+    "permanentLink": "Permanente link",
+    "permanentLinkHint": "Houd deze link actief totdat je hem verwijdert",
+    "title": "“{{name}}” delen"
+  },
+  "state": {
+    "empty": "Hier is nog niets",
+    "error": "Er is iets misgegaan",
+    "loading": "Laden…",
+    "saving": "Opslaan…"
+  },
+  "units": {
+    "items_one": "{{count}} item",
+    "items_other": "{{count}} items"
+  },
+  "uploadManager": {
+    "archiveFailed": "Archiveren mislukt",
+    "downloadFailed": "Downloaden mislukt",
+    "taskFailed": "Mislukt",
+    "unsupportedFileType": "Niet-ondersteund bestandstype",
+    "unsupportedFileTypeToast": "{{name}} is een niet-ondersteund bestandstype"
+  },
+  "uploadPanel": {
+    "activity": "Activiteit",
+    "alreadyInLibrary": "Al in bibliotheek",
+    "archiving": "Archiveren…",
+    "archivingItems_one": "{{count}} item archiveren",
+    "archivingItems_other": "{{count}} items archiveren",
+    "archivingProgress": "{{loaded}} van {{size}} archiveren",
+    "bytesProgress": "{{loaded}} van {{size}}",
+    "clear": "Wissen",
+    "collapse": "Inklappen",
+    "compressing": "Comprimeren…",
+    "dismiss": "Sluiten",
+    "done": "Klaar",
+    "downloadFailed": "Downloaden mislukt",
+    "downloaded": "Gedownload",
+    "downloading": "Downloaden…",
+    "downloadingItems_one": "{{count}} item downloaden",
+    "downloadingItems_other": "{{count}} items downloaden",
+    "expand": "Uitklappen",
+    "failed": "Mislukt",
+    "processing": "Verwerken…",
+    "processingItems_one": "{{count}} item verwerken",
+    "processingItems_other": "{{count}} items verwerken",
+    "speed": "{{speed}}/s",
+    "transcoding": "Transcoderen…",
+    "uploading": "Uploaden…",
+    "uploadingItems_one": "{{count}} item uploaden",
+    "uploadingItems_other": "{{count}} items uploaden"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} al in je bibliotheek",
+    "alreadyInLibrary_other": "{{count}} al in je bibliotheek",
+    "uploadFailed": "Uploaden van {{name}} mislukt",
+    "uploaded_one": "{{count}} foto geüpload",
+    "uploaded_other": "{{count}} foto's geüpload"
+  },
+  "viewToggle": {
+    "gridView": "Rasterweergave",
+    "tableView": "Tabelweergave"
+  }
+}

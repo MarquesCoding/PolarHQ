@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "Actie mislukt",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Uitwisselen van Google-code mislukt.",
+    "gdriveConnectFailed": "Verbinden met Google Drive mislukt.",
+    "gdriveNoRefreshToken": "Google heeft geen vernieuwingstoken geretourneerd (trek de eerdere toegang in en probeer opnieuw).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET zijn niet geconfigureerd",
+    "invalidOauthState": "Ongeldige OAuth-status."
+  },
+  "badRequest": "Ongeldig verzoek.",
+  "docs": {
+    "alreadyOwner": "Al de eigenaar",
+    "emailRequired": "E-mailadres is verplicht.",
+    "noPublicKey": "Geen openbare sleutel.",
+    "userNotFound": "Gebruiker bestaat niet"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "kan een systeemmap niet verwijderen",
+    "cannotLockFolder": "kan deze map niet vergrendelen",
+    "cannotModifySystemFolder": "kan een systeemmap niet wijzigen",
+    "extractFailed": "kan archief niet uitpakken",
+    "fileRequired": "veld bestand is verplicht",
+    "photosMediaFilesOnly": "De map Foto's accepteert alleen mediabestanden",
+    "photosMediaOnly": "De map Foto's accepteert alleen afbeeldingen, video en audio"
+  },
+  "forbidden": "Je hebt geen toestemming om dat te doen.",
+  "generic": "Er is iets misgegaan.",
+  "invalidInput": "Ongeldige invoer.",
+  "notFound": "Niet gevonden.",
+  "photos": {
+    "fileRequired": "Een bestand is verplicht.",
+    "stackNeedsTwoAssets": "Selecteer minstens twee van je eigen foto's om te stapelen."
+  },
+  "rateLimited": "Te veel verzoeken. Probeer het zo meteen opnieuw.",
+  "setup": {
+    "alreadyComplete": "De installatie is al voltooid",
+    "registrationDisabled": "registratie is uitgeschakeld op deze instantie"
+  },
+  "unauthorized": "Je moet inloggen om dat te doen.",
+  "uploads": {
+    "tooLarge": "Bestand overschrijdt de uploadlimiet van {{limit}}"
+  }
+}

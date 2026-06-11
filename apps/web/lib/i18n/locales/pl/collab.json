@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "Nie udało się tego otworzyć.",
+    "deleted": "To zostało usunięte. Twoje zmiany nie mogą zostać zapisane.",
+    "deletedNamed": "To zostało usunięte — „{{name}}”. Twoje zmiany nie mogą zostać zapisane.",
+    "encrypted": "To jest zaszyfrowane.",
+    "goBack": "Wróć",
+    "unlock": "Odblokuj"
+  },
+  "collabList": {
+    "createFailed": "Nie udało się utworzyć",
+    "deleteFailed": "Nie udało się usunąć",
+    "download": "Pobierz",
+    "empty": "Tu jeszcze nic nie ma.",
+    "movedToTrash": "Przeniesiono do kosza",
+    "noMatches": "Brak wyników dla wyszukiwania.",
+    "rename": "Zmień nazwę",
+    "sharedWithMe": "Udostępnione mnie",
+    "trash": "Kosz"
+  },
+  "collabNav": {
+    "library": "Biblioteka"
+  },
+  "collabToolbar": {
+    "createFailed": "Nie udało się utworzyć"
+  }
+}

@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Účet",
+  "subtitle": "Spravujte svůj profil a předvolby.",
+  "back": "Zpět",
+  "profile": "Profil",
+  "name": "Jméno",
+  "email": "E-mail",
+  "preferences": "Předvolby",
+  "language": "Jazyk",
+  "languageHint": "Vyberte jazyk používaný v celém rozhraní.",
+  "appearance": "Vzhled",
+  "appearanceHint": "Přepínejte mezi světlým a tmavým režimem.",
+  "light": "Světlý",
+  "dark": "Tmavý",
+  "system": "Systémový",
+  "security": "Zabezpečení",
+  "devices": "Zařízení a relace",
+  "devicesHint": "Zkontrolujte přihlášená zařízení a odhlaste je.",
+  "manageDevices": "Spravovat zařízení",
+  "signOut": "Odhlásit se",
+  "languageChanged": "Jazyk byl aktualizován"
+}

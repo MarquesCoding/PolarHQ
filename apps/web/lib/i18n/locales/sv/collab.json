@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "Det här kunde inte öppnas.",
+    "deleted": "Det här togs bort. Dina ändringar kan inte sparas.",
+    "deletedNamed": "Det här togs bort – ”{{name}}”. Dina ändringar kan inte sparas.",
+    "encrypted": "Det här är krypterat.",
+    "goBack": "Gå tillbaka",
+    "unlock": "Lås upp"
+  },
+  "collabList": {
+    "createFailed": "Det gick inte att skapa",
+    "deleteFailed": "Det gick inte att ta bort",
+    "download": "Ladda ner",
+    "empty": "Inget här ännu.",
+    "movedToTrash": "Flyttad till papperskorgen",
+    "noMatches": "Inget matchar din sökning.",
+    "rename": "Byt namn",
+    "sharedWithMe": "Delat med mig",
+    "trash": "Papperskorg"
+  },
+  "collabNav": {
+    "library": "Bibliotek"
+  },
+  "collabToolbar": {
+    "createFailed": "Det gick inte att skapa"
+  }
+}

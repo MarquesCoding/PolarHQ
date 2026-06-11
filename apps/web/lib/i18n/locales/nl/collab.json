@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "Dit kon niet worden geopend.",
+    "deleted": "Dit is verwijderd. Je wijzigingen kunnen niet worden opgeslagen.",
+    "deletedNamed": "Dit is verwijderd — “{{name}}”. Je wijzigingen kunnen niet worden opgeslagen.",
+    "encrypted": "Dit is versleuteld.",
+    "goBack": "Terug",
+    "unlock": "Ontgrendelen"
+  },
+  "collabList": {
+    "createFailed": "Aanmaken mislukt",
+    "deleteFailed": "Verwijderen mislukt",
+    "download": "Downloaden",
+    "empty": "Hier is nog niets.",
+    "movedToTrash": "Naar prullenbak verplaatst",
+    "noMatches": "Niets komt overeen met je zoekopdracht.",
+    "rename": "Naam wijzigen",
+    "sharedWithMe": "Met mij gedeeld",
+    "trash": "Prullenbak"
+  },
+  "collabNav": {
+    "library": "Bibliotheek"
+  },
+  "collabToolbar": {
+    "createFailed": "Aanmaken mislukt"
+  }
+}

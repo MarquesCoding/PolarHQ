@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 items",
+    "albumName": "Italië '24",
+    "albumsBody": "Groepeer foto's in albums en deel ze via een privélink — er is geen account nodig om ze te bekijken.",
+    "albumsTitle": "Albums en deelbare links.",
+    "back": "Terug",
+    "dismiss": "Sluiten",
+    "getStarted": "Aan de slag",
+    "linkCopied": "Link gekopieerd",
+    "next": "Volgende",
+    "privateBody": "Elke foto, elk document en elk bestand is end-to-end versleuteld. Alleen jij hebt de sleutels — de server ziet uitsluitend versleutelde gegevens.",
+    "privateTitle": "Standaard privé.",
+    "share": "Delen",
+    "uploadBody": "Sleep foto's ergens naartoe om ze te uploaden. Live Photos worden gekoppeld en burst-opnamen worden automatisch samengevoegd tot één uitklapbare stapel.",
+    "uploadTitle": "Zet ze er gewoon in."
+  }
+}

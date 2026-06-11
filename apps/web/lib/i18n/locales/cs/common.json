@@ -1,1 +1,193 @@
-{}
+{
+  "actions": {
+    "back": "Zpět",
+    "cancel": "Zrušit",
+    "close": "Zavřít",
+    "confirm": "Potvrdit",
+    "create": "Vytvořit",
+    "delete": "Smazat",
+    "done": "Hotovo",
+    "download": "Stáhnout",
+    "getStarted": "Začít",
+    "next": "Další",
+    "open": "Otevřít",
+    "remove": "Odebrat",
+    "rename": "Přejmenovat",
+    "retry": "Zkusit znovu",
+    "save": "Uložit",
+    "share": "Sdílet",
+    "signOut": "Odhlásit se"
+  },
+  "appTile": {
+    "beta": "Beta",
+    "soon": "Brzy"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · sestavení {{build}}",
+    "whatsNew": "Novinky"
+  },
+  "collabHeader": {
+    "anonymous": "Anonymní",
+    "notSavedYet": "Zatím neuloženo",
+    "save": "Uložit",
+    "savedAt": "Uloženo {{time}}",
+    "saving": "Ukládání…",
+    "share": "Sdílet",
+    "title": "Název"
+  },
+  "confirmButton": {
+    "confirm": "Potvrdit"
+  },
+  "devicesDialog": {
+    "activeNow": "Aktivní nyní",
+    "lastActive": "Naposledy aktivní {{time}}",
+    "signOut": "Odhlásit se",
+    "signOutError": "Toto zařízení se nepodařilo odhlásit",
+    "signedOut": "Zařízení odhlášeno",
+    "thisDevice": "Toto zařízení",
+    "title": "Zařízení a relace"
+  },
+  "dropZone": {
+    "dropToUpload": "Přetažením nahrajete"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Každá vaše změna se automaticky a bezpečně ukládá na Disk.",
+    "encrypted": "Šifrováno",
+    "endToEndEncrypted": "Šifrováno end-to-end"
+  },
+  "flatSidebar": {
+    "account": "Účet",
+    "apps": "Aplikace",
+    "beta": "Beta",
+    "devices": "Zařízení",
+    "personalWorkspace": "Osobní pracovní prostor",
+    "replayIntro": "Přehrát úvod znovu",
+    "settings": "Nastavení",
+    "signOut": "Odhlásit se",
+    "storage": "Úložiště",
+    "toggleDarkMode": "Přepnout tmavý režim",
+    "unlimited": "Neomezeno"
+  },
+  "importButton": {
+    "import": "Importovat",
+    "importFailed": "Tento soubor se nepodařilo importovat"
+  },
+  "launcher": {
+    "loadingApps": "Načítání aplikací…",
+    "ofQuota": "z {{quota}}",
+    "signOut": "Odhlásit se",
+    "storage": "Úložiště",
+    "versionBuild": "v{{version}} · sestavení {{build}}",
+    "yourApps": "Vaše aplikace"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Uložil(a) jsem si jej — pokračovat",
+    "copied": "Kód pro obnovení zkopírován",
+    "copyAriaLabel": "Kopírovat kód pro obnovení",
+    "description": "Váš účet je nyní šifrován end-to-end. Tento kód pro obnovení je jediný způsob, jak obnovit svá data, pokud zapomenete heslo — uložte jej na bezpečné místo. Znovu jej už nezobrazíme.",
+    "title": "Uložte si kód pro obnovení"
+  },
+  "selectionBar": {
+    "clearSelection": "Zrušit výběr",
+    "download": "Stáhnout",
+    "downloadAllFrames": "Stáhnout všechny snímky ({{count}})",
+    "downloadCover": "Stáhnout obal",
+    "downloadCovers": "Stáhnout obaly ({{count}})",
+    "photoFilename": "Fotka",
+    "photosZipFilename": "{{count}} fotek.zip",
+    "share": "Sdílet",
+    "shareNameFallback": "fotka"
+  },
+  "shareDialog": {
+    "cancel": "Zrušit",
+    "copyLink": "Kopírovat odkaz",
+    "descriptionEncrypted": "Šifrováno end-to-end: klíč je uložen v odkazu a nikdy se nedostane na server, takže soubor mohou dešifrovat pouze lidé s odkazem.",
+    "descriptionPublic": "Soubor si může stáhnout kdokoli s tímto odkazem.",
+    "directDownload": "Přímé stažení",
+    "directDownloadHint": "Přeskočit úvodní stránku a stáhnout ihned",
+    "expiresAfter": "Platnost vyprší za",
+    "expiry1Day": "1 den",
+    "expiry1Hour": "1 hodinu",
+    "expiry30Days": "30 dní",
+    "expiry7Days": "7 dní",
+    "generatingLink": "Generování odkazu…",
+    "limitDownloads": "Omezit počet stažení",
+    "limitDownloadsHint": "Deaktivovat odkaz po určitém počtu stažení",
+    "linkCopied": "Odkaz zkopírován",
+    "maximumDownloads": "Maximální počet stažení",
+    "permanentLink": "Trvalý odkaz",
+    "permanentLinkHint": "Ponechat tento odkaz aktivní, dokud jej nesmažete",
+    "title": "Sdílet „{{name}}“"
+  },
+  "state": {
+    "empty": "Zatím tu nic není",
+    "error": "Něco se pokazilo",
+    "loading": "Načítání…",
+    "saving": "Ukládání…"
+  },
+  "units": {
+    "items_one": "{{count}} položka",
+    "items_few": "{{count}} položky",
+    "items_many": "{{count}} položky",
+    "items_other": "{{count}} položek"
+  },
+  "uploadManager": {
+    "archiveFailed": "Archivace selhala",
+    "downloadFailed": "Stahování selhalo",
+    "taskFailed": "Selhalo",
+    "unsupportedFileType": "Nepodporovaný typ souboru",
+    "unsupportedFileTypeToast": "{{name}} je nepodporovaný typ souboru"
+  },
+  "uploadPanel": {
+    "activity": "Aktivita",
+    "alreadyInLibrary": "Již v knihovně",
+    "archiving": "Archivace…",
+    "archivingItems_one": "Archivace {{count}} položky",
+    "archivingItems_few": "Archivace {{count}} položek",
+    "archivingItems_many": "Archivace {{count}} položek",
+    "archivingItems_other": "Archivace {{count}} položek",
+    "archivingProgress": "Archivace {{loaded}} z {{size}}",
+    "bytesProgress": "{{loaded}} z {{size}}",
+    "clear": "Vymazat",
+    "collapse": "Sbalit",
+    "compressing": "Komprese…",
+    "dismiss": "Zavřít",
+    "done": "Hotovo",
+    "downloadFailed": "Stahování selhalo",
+    "downloaded": "Staženo",
+    "downloading": "Stahování…",
+    "downloadingItems_one": "Stahování {{count}} položky",
+    "downloadingItems_few": "Stahování {{count}} položek",
+    "downloadingItems_many": "Stahování {{count}} položek",
+    "downloadingItems_other": "Stahování {{count}} položek",
+    "expand": "Rozbalit",
+    "failed": "Selhalo",
+    "processing": "Zpracování…",
+    "processingItems_one": "Zpracování {{count}} položky",
+    "processingItems_few": "Zpracování {{count}} položek",
+    "processingItems_many": "Zpracování {{count}} položek",
+    "processingItems_other": "Zpracování {{count}} položek",
+    "speed": "{{speed}}/s",
+    "transcoding": "Překódování…",
+    "uploading": "Nahrávání…",
+    "uploadingItems_one": "Nahrávání {{count}} položky",
+    "uploadingItems_few": "Nahrávání {{count}} položek",
+    "uploadingItems_many": "Nahrávání {{count}} položek",
+    "uploadingItems_other": "Nahrávání {{count}} položek"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} je již ve vaší knihovně",
+    "alreadyInLibrary_few": "{{count}} jsou již ve vaší knihovně",
+    "alreadyInLibrary_many": "{{count}} je již ve vaší knihovně",
+    "alreadyInLibrary_other": "{{count}} je již ve vaší knihovně",
+    "uploadFailed": "Nepodařilo se nahrát {{name}}",
+    "uploaded_one": "Nahrána {{count}} fotka",
+    "uploaded_few": "Nahrány {{count}} fotky",
+    "uploaded_many": "Nahráno {{count}} fotky",
+    "uploaded_other": "Nahráno {{count}} fotek"
+  },
+  "viewToggle": {
+    "gridView": "Zobrazení mřížky",
+    "tableView": "Zobrazení tabulky"
+  }
+}

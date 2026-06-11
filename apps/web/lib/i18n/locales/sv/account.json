@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Konto",
+  "subtitle": "Hantera din profil och dina inställningar.",
+  "back": "Tillbaka",
+  "profile": "Profil",
+  "name": "Namn",
+  "email": "E-post",
+  "preferences": "Inställningar",
+  "language": "Språk",
+  "languageHint": "Välj språket som används i hela gränssnittet.",
+  "appearance": "Utseende",
+  "appearanceHint": "Växla mellan ljust och mörkt läge.",
+  "light": "Ljust",
+  "dark": "Mörkt",
+  "system": "System",
+  "security": "Säkerhet",
+  "devices": "Enheter och sessioner",
+  "devicesHint": "Granska och logga ut enheter som är inloggade.",
+  "manageDevices": "Hantera enheter",
+  "signOut": "Logga ut",
+  "languageChanged": "Språket har uppdaterats"
+}

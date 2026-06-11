@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "Akcja nie powiodła się",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Wymiana kodu Google nie powiodła się.",
+    "gdriveConnectFailed": "Nie udało się połączyć z Dyskiem Google.",
+    "gdriveNoRefreshToken": "Google nie zwróciło tokena odświeżania (cofnij wcześniejszy dostęp i spróbuj ponownie).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET nie są skonfigurowane",
+    "invalidOauthState": "Nieprawidłowy stan OAuth."
+  },
+  "badRequest": "Nieprawidłowe żądanie.",
+  "docs": {
+    "alreadyOwner": "Już jest właścicielem",
+    "emailRequired": "Adres e-mail jest wymagany.",
+    "noPublicKey": "Brak klucza publicznego.",
+    "userNotFound": "Nie ma takiego użytkownika"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "nie można usunąć folderu systemowego",
+    "cannotLockFolder": "nie można zablokować tego folderu",
+    "cannotModifySystemFolder": "nie można zmodyfikować folderu systemowego",
+    "extractFailed": "nie udało się rozpakować archiwum",
+    "fileRequired": "pole pliku jest wymagane",
+    "photosMediaFilesOnly": "Folder Zdjęcia przyjmuje wyłącznie pliki multimedialne",
+    "photosMediaOnly": "Folder Zdjęcia przyjmuje wyłącznie obrazy, wideo i dźwięk"
+  },
+  "forbidden": "Nie masz uprawnień, aby to zrobić.",
+  "generic": "Coś poszło nie tak.",
+  "invalidInput": "Nieprawidłowe dane.",
+  "notFound": "Nie znaleziono.",
+  "photos": {
+    "fileRequired": "Plik jest wymagany.",
+    "stackNeedsTwoAssets": "Wybierz co najmniej dwa własne zdjęcia, aby je zgrupować."
+  },
+  "rateLimited": "Zbyt wiele żądań. Spróbuj ponownie za chwilę.",
+  "setup": {
+    "alreadyComplete": "Konfiguracja została już ukończona",
+    "registrationDisabled": "rejestracja jest wyłączona w tej instancji"
+  },
+  "unauthorized": "Aby to zrobić, musisz się zalogować.",
+  "uploads": {
+    "tooLarge": "Plik przekracza limit przesyłania {{limit}}"
+  }
+}

@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "Åtgärden misslyckades",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Utbytet av Google-koden misslyckades.",
+    "gdriveConnectFailed": "Det gick inte att ansluta Google Drive.",
+    "gdriveNoRefreshToken": "Google returnerade ingen uppdateringstoken (återkalla tidigare åtkomst och försök igen).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET är inte konfigurerade",
+    "invalidOauthState": "Ogiltigt OAuth-tillstånd."
+  },
+  "badRequest": "Felaktig begäran.",
+  "docs": {
+    "alreadyOwner": "Redan ägare",
+    "emailRequired": "E-postadress krävs.",
+    "noPublicKey": "Ingen offentlig nyckel.",
+    "userNotFound": "Användaren finns inte"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "det går inte att ta bort en systemmapp",
+    "cannotLockFolder": "det går inte att låsa den här mappen",
+    "cannotModifySystemFolder": "det går inte att ändra en systemmapp",
+    "extractFailed": "det gick inte att extrahera arkivet",
+    "fileRequired": "fältet fil krävs",
+    "photosMediaFilesOnly": "Mappen Foton accepterar bara mediefiler",
+    "photosMediaOnly": "Mappen Foton accepterar bara bilder, video och ljud"
+  },
+  "forbidden": "Du har inte behörighet att göra det.",
+  "generic": "Något gick fel.",
+  "invalidInput": "Ogiltiga indata.",
+  "notFound": "Hittades inte.",
+  "photos": {
+    "fileRequired": "En fil krävs.",
+    "stackNeedsTwoAssets": "Välj minst två av dina egna foton för att gruppera."
+  },
+  "rateLimited": "För många förfrågningar. Försök igen om en stund.",
+  "setup": {
+    "alreadyComplete": "Konfigurationen är redan slutförd",
+    "registrationDisabled": "registrering är inaktiverad på den här instansen"
+  },
+  "unauthorized": "Du måste logga in för att göra det.",
+  "uploads": {
+    "tooLarge": "Filen överskrider uppladdningsgränsen på {{limit}}"
+  }
+}

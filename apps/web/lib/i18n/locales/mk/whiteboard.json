@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Повтори",
+    "resetZoom": "Ресетирај го зумот",
+    "undo": "Врати назад",
+    "zoomIn": "Зумирај",
+    "zoomOut": "Одзумирај"
+  },
+  "propertiesPanel": {
+    "background": "Позадина",
+    "bringForward": "Премести напред",
+    "bringToFront": "Премести најнапред",
+    "layers": "Слоеви",
+    "opacity": "Непроѕирност",
+    "sendBackward": "Премести назад",
+    "sendToBack": "Премести најназад",
+    "stroke": "Линија",
+    "strokeWidth": "Дебелина на линија"
+  },
+  "shell": {
+    "myWhiteboards": "Мои табли",
+    "newWhiteboard": "Нова табла",
+    "product": "Табла",
+    "search": "Пребарувај табли",
+    "whiteboards": "Табли"
+  },
+  "toolbar": {
+    "arrow": "Стрелка",
+    "diamond": "Ромб",
+    "draw": "Цртај",
+    "ellipse": "Елипса",
+    "eraser": "Гума",
+    "line": "Линија",
+    "pan": "Поместување",
+    "rectangle": "Правоаголник",
+    "select": "Избери",
+    "text": "Текст"
+  },
+  "whiteboardList": {
+    "createLabel": "Нова табла",
+    "title": "Табли"
+  }
+}

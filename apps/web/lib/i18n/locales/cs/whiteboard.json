@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Znovu",
+    "resetZoom": "Obnovit přiblížení",
+    "undo": "Zpět",
+    "zoomIn": "Přiblížit",
+    "zoomOut": "Oddálit"
+  },
+  "propertiesPanel": {
+    "background": "Pozadí",
+    "bringForward": "Přenést blíž",
+    "bringToFront": "Přenést do popředí",
+    "layers": "Vrstvy",
+    "opacity": "Krytí",
+    "sendBackward": "Přenést dál",
+    "sendToBack": "Přenést do pozadí",
+    "stroke": "Obrys",
+    "strokeWidth": "Tloušťka obrysu"
+  },
+  "shell": {
+    "myWhiteboards": "Moje tabule",
+    "newWhiteboard": "Nová tabule",
+    "product": "Tabule",
+    "search": "Hledat tabule",
+    "whiteboards": "Tabule"
+  },
+  "toolbar": {
+    "arrow": "Šipka",
+    "diamond": "Kosočtverec",
+    "draw": "Kreslit",
+    "ellipse": "Elipsa",
+    "eraser": "Guma",
+    "line": "Čára",
+    "pan": "Posunout",
+    "rectangle": "Obdélník",
+    "select": "Vybrat",
+    "text": "Text"
+  },
+  "whiteboardList": {
+    "createLabel": "Nová tabule",
+    "title": "Tabule"
+  }
+}

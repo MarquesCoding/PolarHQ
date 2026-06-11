@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Min enhet"
+  },
+  "browser": {
+    "archive": "Arkiv",
+    "archiveExtracted": "Arkivet extraherades",
+    "archiveLabel_one": "Arkiv ({{count}} objekt)",
+    "archiveLabel_other": "Arkiv ({{count}} objekt)",
+    "copyCreated": "Kopia skapad",
+    "couldNotCopy": "Det gick inte att kopiera",
+    "couldNotCreate": "Det gick inte att skapa",
+    "couldNotDelete": "Det gick inte att ta bort",
+    "couldNotExtract": "Det gick inte att extrahera",
+    "couldNotMove": "Det gick inte att flytta",
+    "couldNotOpenFile": "Det gick inte att öppna den här filen",
+    "download": "Ladda ned",
+    "dragOrUpload": "Dra filer hit eller använd Ladda upp.",
+    "extract": "Extrahera",
+    "linkCopied": "Länk kopierad",
+    "move": "Flytta",
+    "movedToFolder_one": "Flyttade {{count}} objekt till {{name}}",
+    "movedToFolder_other": "Flyttade {{count}} objekt till {{name}}",
+    "movedToTrash": "Flyttad till papperskorgen",
+    "noMatches": "Inget matchar din sökning.",
+    "open": "Öppna",
+    "opening": "Öppnar…",
+    "rename": "Byt namn",
+    "share": "Dela",
+    "trash": "Papperskorgen"
+  },
+  "detailsPanel": {
+    "closeDetails": "Stäng detaljer",
+    "created": "Skapad",
+    "empty": "Välj ett objekt för att se dess detaljer.",
+    "file": "Fil",
+    "files": "Filer",
+    "folder": "Mapp",
+    "folders": "Mappar",
+    "itemsSelected_one": "{{count}} objekt markerat",
+    "itemsSelected_other": "{{count}} objekt markerade",
+    "modified": "Ändrad",
+    "size": "Storlek",
+    "title": "Detaljer",
+    "totalSize": "Total storlek",
+    "type": "Typ"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Nytt dokument",
+    "newFolder": "Ny mapp",
+    "newSpreadsheet": "Nytt kalkylark",
+    "uploadFiles": "Ladda upp filer"
+  },
+  "driveNav": {
+    "drive": "Enhet",
+    "location": "Plats",
+    "myDrive": "Min enhet",
+    "trash": "Papperskorgen"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Det gick inte att skapa",
+    "emptyTrash": "Töm papperskorgen",
+    "emptyTrashConfirm": "Töm papperskorgen?",
+    "new": "Ny",
+    "newDocument": "Nytt dokument",
+    "newFolder": "Ny mapp",
+    "newSpreadsheet": "Nytt kalkylark",
+    "toggleDetails": "Visa/dölj detaljer",
+    "trashEmptied": "Papperskorgen tömd",
+    "uploadFiles": "Ladda upp filer"
+  },
+  "folderLockDialog": {
+    "cancel": "Avbryt",
+    "confirmPasswordPlaceholder": "Bekräfta lösenord",
+    "folderLocked": "Mappen låst",
+    "folderPasswordPlaceholder": "Mapplösenord",
+    "incorrectPassword": "Felaktigt lösenord.",
+    "lock": "Lås",
+    "lockDescription": "Ange ett lösenord för att öppna den här mappen. Det begränsar åtkomsten på den här enheten – dina filer förblir totalsträckskrypterade oavsett.",
+    "lockFolderTitle": "Lås mapp",
+    "lockRemoved": "Lås borttaget",
+    "passwordsDontMatch": "Lösenorden matchar inte.",
+    "removeDescription": "Ange mapplösenordet för att ta bort dess lås.",
+    "removeLock": "Ta bort lås",
+    "removeLockTitle": "Ta bort lås",
+    "somethingWentWrong": "Något gick fel."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Ange lösenordet för att visa innehållet.",
+    "incorrectPassword": "Felaktigt lösenord.",
+    "locked": "”{{name}}” är låst",
+    "passwordPlaceholder": "Mapplösenord",
+    "unlock": "Lås upp"
+  },
+  "imageViewer": {
+    "close": "Stäng",
+    "download": "Ladda ned",
+    "resetZoom": "Återställ zoom",
+    "zoomIn": "Zooma in",
+    "zoomOut": "Zooma ut"
+  },
+  "modelViewer": {
+    "autoRotate": "Rotera automatiskt",
+    "close": "Stäng",
+    "decryptError": "Det gick inte att dekryptera modellen",
+    "loading": "Läser in modell…",
+    "normals": "Normaler",
+    "openError": "Det gick inte att öppna den här 3D-filen.",
+    "shaded": "Skuggad",
+    "toggleGrid": "Visa/dölj rutnät",
+    "toggleTextures": "Visa/dölj texturer",
+    "wireframe": "Trådmodell"
+  },
+  "moveDialog": {
+    "cancel": "Avbryt",
+    "move": "Flytta",
+    "moveFailed": "Det gick inte att flytta",
+    "moved": "Flyttad",
+    "myDrive": "Min enhet",
+    "title": "Flytta till mapp"
+  },
+  "newFolderDialog": {
+    "cancel": "Avbryt",
+    "create": "Skapa",
+    "createError": "Det gick inte att skapa mappen",
+    "created": "Mapp skapad",
+    "newFolder": "Ny mapp",
+    "placeholder": "Mappnamn",
+    "title": "Ny mapp"
+  },
+  "nodeCard": {
+    "deselect": "Avmarkera",
+    "folder": "Mapp",
+    "select": "Markera"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Kopiera länk",
+    "details": "Detaljer",
+    "download": "Ladda ned",
+    "extractHere": "Extrahera här",
+    "lockFolder": "Lås mapp",
+    "makeCopy": "Skapa en kopia",
+    "moveToFolder": "Flytta till mapp",
+    "moveToTrash": "Flytta till papperskorgen",
+    "open": "Öppna",
+    "openInPhotos": "Öppna i Foton",
+    "removeLock": "Ta bort lås",
+    "rename": "Byt namn",
+    "share": "Dela",
+    "versionHistory": "Visa versionshistorik",
+    "view": "Visa",
+    "viewIn3d": "Visa i 3D"
+  },
+  "nodeTable": {
+    "deselect": "Avmarkera",
+    "modified": "Ändrad",
+    "name": "Namn",
+    "select": "Markera",
+    "selectAll": "Markera alla",
+    "size": "Storlek"
+  },
+  "parentCard": {
+    "parentFolder": "Överordnad mapp"
+  },
+  "renameDialog": {
+    "cancel": "Avbryt",
+    "couldNotRename": "Det gick inte att byta namn",
+    "renamed": "Namnet ändrat",
+    "save": "Spara",
+    "title": "Byt namn"
+  },
+  "shell": {
+    "search": "Sök i Enhet"
+  },
+  "trash": {
+    "actionFailed": "Åtgärden misslyckades",
+    "deleteForever": "Ta bort permanent",
+    "empty": "Papperskorgen är tom.",
+    "permanentlyDeleted": "Permanent borttagen",
+    "restore": "Återställ",
+    "restored": "Återställd",
+    "retentionNotice": "Objekt här tas bort permanent 30 dagar efter att de hamnat i papperskorgen.",
+    "title": "Papperskorgen"
+  },
+  "versionHistoryDialog": {
+    "close": "Stäng",
+    "download": "Ladda ned version",
+    "empty": "Inga tidigare versioner. Ladda upp en fil med samma namn igen för att skapa en.",
+    "loading": "Läser in…",
+    "restore": "Återställ",
+    "restoreFailed": "Det gick inte att återställa",
+    "restored": "Versionen återställd",
+    "title": "Versionshistorik",
+    "versionLabel": "Version {{number}}"
+  }
+}
