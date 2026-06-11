@@ -131,6 +131,14 @@
     "permanentLinkHint": "Keep this link active until you delete it",
     "title": "Share “{{name}}”"
   },
+  "sizeControl": {
+    "lessSpacing": "Less spacing",
+    "moreSpacing": "More spacing",
+    "photoSize": "Photo size",
+    "roundedCorners": "Rounded corners",
+    "spacing": "Spacing",
+    "squareTiles": "Square tiles"
+  },
   "state": {
     "empty": "Nothing here yet",
     "error": "Something went wrong",

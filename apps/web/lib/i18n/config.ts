@@ -68,7 +68,9 @@ if (!i18n.isInitialized) {
         lookupLocalStorage: "polarhq.lang",
         caches: ["localStorage"],
       },
-      react: { useSuspense: false },
+      // Re-render on "loaded" too, so views update the moment a lazy-loaded catalog arrives
+      // (the requested language is set synchronously; its catalog resolves a tick later).
+      react: { useSuspense: false, bindI18n: "languageChanged loaded" },
     })
 }
 
