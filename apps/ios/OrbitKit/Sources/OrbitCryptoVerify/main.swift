@@ -10,6 +10,7 @@ struct Vectors: Decodable {
         let password: String, salt: String, ops: Int, mem: Int, expected: String
     }
     struct SecretboxOpen: Decodable { let key: String, blob: String, expected: String }
+    struct SecretstreamOpen: Decodable { let key: String, blob: String, expected: String }
     struct SealedBoxOpen: Decodable { let publicKey, privateKey, sealed, expected: String }
     struct UnlockChain: Decodable {
         let password, salt: String
@@ -19,6 +20,7 @@ struct Vectors: Decodable {
     }
     let deriveKey: [Derive]
     let secretboxOpen: SecretboxOpen
+    let secretstreamOpen: SecretstreamOpen
     let sealedBoxOpen: SealedBoxOpen
     let unlockChain: UnlockChain
 }
@@ -51,6 +53,11 @@ let sb = v.secretboxOpen
 check("secretboxOpen",
       OrbitCrypto.toBase64(try OrbitCrypto.secretboxOpen(try OrbitCrypto.fromBase64(sb.blob), key: try OrbitCrypto.fromBase64(sb.key))),
       sb.expected)
+
+let ss = v.secretstreamOpen
+check("secretstreamOpen",
+      OrbitCrypto.toBase64(try OrbitCrypto.secretstreamOpen(try OrbitCrypto.fromBase64(ss.blob), key: try OrbitCrypto.fromBase64(ss.key))),
+      ss.expected)
 
 let sealed = v.sealedBoxOpen
 let pair = OrbitCrypto.Keypair(

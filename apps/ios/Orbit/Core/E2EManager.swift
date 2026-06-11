@@ -94,10 +94,14 @@ final class E2EManager: ObservableObject {
         return try? OrbitCrypto.secretboxOpen(blob, key: key)
     }
 
-    /// Decrypt an asset's full-resolution original into image data.
+    /// Decrypt an asset's full-resolution original into image data. Large media uploaded in chunks
+    /// is in the streaming (secretstream) format; everything else is a legacy secretbox blob.
     func decryptedOriginal(assetId: String, client: APIClient) async -> Data? {
         guard let key = await contentKey(for: assetId, client: client) else { return nil }
         guard let blob = try? await client.data("api/v1/photos/assets/\(assetId)/original") else { return nil }
+        if OrbitCrypto.isStreamBlob(blob) {
+            return try? OrbitCrypto.secretstreamOpen(blob, key: key)
+        }
         return try? OrbitCrypto.secretboxOpen(blob, key: key)
     }
 
