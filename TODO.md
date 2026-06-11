@@ -59,7 +59,7 @@ Ideas the community surfaced from [Spacedrive](https://spacedrive.com) (cross-pl
 ### Drive — browsing & views
 - [ ] **Miller-column (cascading) view** for Drive: macOS-style multi-pane column browser where selecting a folder opens its children in the next column, with the full path visible at a glance. Add as a view mode beside the existing grid/list (`viewToggle`). Each column reuses `NodeCard`/`NodeTable` rows; the rightmost selection drives the inspector.
 - [ ] **Tabbed browsing**: multiple location tabs in one window (`Downloads | /home/… | Overview | +`), each with its own folder/scroll/selection state. Lets you keep Drive, an album, and the overview open at once.
-- [ ] **Richer grid view**: thumbnail tiles with the file **name + size** under each (Spacedrive's Downloads grid), generated previews for many file types (already have image/video thumbs — extend to PDFs/docs), and per-item kind glyphs.
+- [~] **Richer grid view**: name + size under each tile and per-kind glyphs are **already done** (`NodeCard` renders both). Remaining: generated previews for non-image/video types (PDF/doc thumbnails) — deferred.
 - [ ] **Smart/saved views in the sidebar**: first-class `Recents`, `Favorites`, `File Kinds` (filter by image/video/document/audio/archive), and saved searches — surfaced as sidebar entries like Spacedrive's `Overview / Recents / Favorites / File Kinds`.
 
 ### Inspector panel (right-hand details)
@@ -73,7 +73,7 @@ Ideas the community surfaced from [Spacedrive](https://spacedrive.com) (cross-pl
 - [ ] **Per-device & per-location cards**: storage gauges per device and per indexed location ("18.1 GB free of 31.5 GB", `LOCAL` badge). Maps loosely onto our device list + a future "locations" concept.
 
 ### Photos / media
-- [ ] **Immersive fullscreen viewer polish**: edge-to-edge media viewer with keyboard nav (`ESC`/`Space` to close, `←/→` to navigate) and a clean overlaid control cluster — align our photo viewer with this. (We have a viewer; check the keyboard affordances + chrome.)
+- [x] **Immersive viewer keyboard nav**: the Lightbox now closes on `Escape` and navigates with `←/→` (skips when typing in an input). It already had Shift+D to trash and `i` for info; the edge-to-edge chrome was already in place. (Left `Space`-to-close unbound on purpose — it's play/pause for video.)
 - [ ] **Date-grouped "all media" view across sources**: Spacedrive's Photos-style grid groups by capture date across every location. We already group Photos by day — consider a unified media view that also pulls media out of Drive folders.
 - [ ] **3D / Gaussian-splat derivative** (stretch/novelty): generate a `.ply` gaussian splat from suitable photos and show a 3D viewer toggle in the viewer. Pure exploration — low priority, high wow-factor.
 
