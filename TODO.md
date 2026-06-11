@@ -37,6 +37,7 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 
 ## Reliability / errors
 - [ ] **Better upload-failure errors in the frontend**: large uploads (e.g. a 6GB file) can fail with no surfaced reason. Show *why* it failed — server quota/limit (413/507), network/timeout, multipart abort, size-cap — with a clear, localised toast/inline message and a retry. Distinguish backend rejections (mapped error keys) from network errors; consider chunked/resumable upload for very large files.
+- [ ] **Upload progress: percentage + speed + ETA**: the uploader shows no %, transfer speed, or time remaining. Wire real progress (XHR/`fetch` upload `progress` events or chunked upload counters) into the upload manager UI — per-file and overall — with bytes-done/total, MB/s, and ETA. (Pairs with the failure-reason work above and likely the chunked/resumable refactor.)
 
 ## Infra
 - [x] release-please: workflow already declares `permissions: contents/pull-requests: write` **and** supports a PAT (`secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN`). The earlier failure was the **repo setting** "Allow GitHub Actions to create and approve pull requests" being off — flip that in Settings → Actions → General (or add a `RELEASE_PLEASE_TOKEN` PAT secret to bypass it). No code change needed.

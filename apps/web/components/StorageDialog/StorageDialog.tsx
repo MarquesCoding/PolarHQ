@@ -1,8 +1,10 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
+import NumberFlow from "@number-flow/react"
+import { motion } from "motion/react"
 import { decryptNodeName, fetchStorageStats, type StorageApp } from "@lib/drive"
-import { formatBytes } from "@lib/format"
+import { bytesParts, formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { useQuery } from "@tanstack/react-query"
 import {
@@ -35,10 +37,16 @@ const StorageDialog = ({ open, onOpenChange }: StorageDialogProps) => {
     enabled: open,
   })
 
-  const usedPct =
-    data?.quotaBytes && data.quotaBytes > 0
-      ? Math.min(100, (data.usedBytes / data.quotaBytes) * 100)
-      : 0
+  const parts = bytesParts(data?.usedBytes ?? 0)
+  const denom =
+    data?.quotaBytes && data.quotaBytes > 0 ? data.quotaBytes : Math.max(data?.usedBytes ?? 0, 1)
+
+  const [shown, setShown] = useState(0)
+  useEffect(() => {
+    if (!open || !data) return
+    const frame = requestAnimationFrame(() => setShown(parts.value))
+    return () => cancelAnimationFrame(frame)
+  }, [open, data, parts.value])
 
   const largest = useMemo(
     () => (data?.largest ?? []).map((file) => ({ ...file, label: decryptNodeName(file).name })),
@@ -61,7 +69,14 @@ const StorageDialog = ({ open, onOpenChange }: StorageDialogProps) => {
             <div className="flex flex-col gap-2">
               <div className="flex items-baseline justify-between">
                 <span className="text-2xl font-semibold tabular-nums" dir="ltr">
-                  {formatBytes(data.usedBytes)}
+                  <NumberFlow
+                    value={shown}
+                    suffix={` ${parts.unit}`}
+                    format={{
+                      minimumFractionDigits: parts.decimals,
+                      maximumFractionDigits: parts.decimals,
+                    }}
+                  />
                 </span>
                 <span className="text-muted-foreground text-sm">
                   {data.quotaBytes
@@ -73,24 +88,15 @@ const StorageDialog = ({ open, onOpenChange }: StorageDialogProps) => {
                 </span>
               </div>
               <div className="bg-muted flex h-2.5 w-full overflow-hidden rounded-full" dir="ltr">
-                {data.quotaBytes
-                  ? data.breakdown.map((segment) => (
-                      <div
-                        key={segment.app}
-                        className={APP_META[segment.app].color}
-                        style={{ width: `${(segment.bytes / data.quotaBytes!) * 100}%` }}
-                      />
-                    ))
-                  : data.breakdown.map((segment) => (
-                      <div
-                        key={segment.app}
-                        className={APP_META[segment.app].color}
-                        style={{
-                          width: `${data.usedBytes > 0 ? (segment.bytes / data.usedBytes) * 100 : 0}%`,
-                        }}
-                      />
-                    ))}
-                <div className="bg-muted flex-1" style={{ width: `${100 - usedPct}%` }} />
+                {data.breakdown.map((segment, index) => (
+                  <motion.div
+                    key={segment.app}
+                    className={APP_META[segment.app].color}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(segment.bytes / denom) * 100}%` }}
+                    transition={{ duration: 0.6, delay: index * 0.08, ease: [0.32, 0.72, 0, 1] }}
+                  />
+                ))}
               </div>
             </div>
 
