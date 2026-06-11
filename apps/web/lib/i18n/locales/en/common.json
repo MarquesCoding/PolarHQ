@@ -244,6 +244,7 @@
     "processing": "Processing…",
     "processingItems_one": "Processing {{count}} item",
     "processingItems_other": "Processing {{count}} items",
+    "retry": "Retry",
     "speed": "{{speed}}/s",
     "transcoding": "Transcoding…",
     "uploading": "Uploading…",

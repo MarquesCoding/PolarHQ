@@ -11,7 +11,7 @@ import { JobRow } from "@components/UploadPanel/jobRow"
 
 const UploadPanel = () => {
   const { t } = useTranslation("common")
-  const { items, remove, clearFinished } = useUploadManager()
+  const { items, remove, clearFinished, retry } = useUploadManager()
   const [collapsed, setCollapsed] = useState(false)
 
   const uploading = items.filter(
@@ -76,7 +76,12 @@ const UploadPanel = () => {
               >
                 <AnimatePresence initial={false}>
                   {items.map((item) => (
-                    <JobRow key={item.id} item={item} onRemove={() => remove(item.id)} />
+                    <JobRow
+                      key={item.id}
+                      item={item}
+                      onRemove={() => remove(item.id)}
+                      onRetry={() => retry(item.id)}
+                    />
                   ))}
                 </AnimatePresence>
               </motion.ul>
