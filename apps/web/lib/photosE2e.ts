@@ -9,6 +9,8 @@ import {
   secretstreamInit,
   secretstreamOpenAll,
 } from "@lib/crypto"
+import { CHUNKED_UPLOAD_THRESHOLD } from "@lib/driveE2e"
+import { streamDecryptToDisk, supportsStreamingDownload } from "@lib/streamDownload"
 import {
   createContentKey,
   decryptName,
@@ -22,7 +24,7 @@ import { API_URL } from "@lib/env"
 import { extractMotionVideo } from "@lib/motionPhoto"
 import { type Asset, type GridAsset, fetchStackMembers } from "@lib/photos"
 import { analyzeAudio, analyzeImage, analyzeVideo } from "@lib/thumbnails"
-import { type UploadOptions, postFormWithProgress } from "@lib/xhrUpload"
+import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
 import exifr from "exifr"
 
 const encoder = new TextEncoder()
@@ -110,16 +112,17 @@ const convertHeicToJpeg = async (file: File): Promise<File | null> => {
 
 /** Map an asset to a download item, resolving the encrypted filename for the saved file. */
 export const downloadItemFor = (
-  asset: Pick<GridAsset, "id" | "encrypted" | "encryptedName" | "originalFilename">,
-): { id: string; name: string; encrypted: boolean } => ({
+  asset: Pick<GridAsset, "id" | "encrypted" | "encryptedName" | "originalFilename" | "sizeBytes">,
+): { id: string; name: string; encrypted: boolean; size: number } => ({
   id: asset.id,
   name: (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename,
   encrypted: asset.encrypted,
+  size: asset.sizeBytes,
 })
 
 type StackableAsset = Pick<
   GridAsset,
-  "id" | "encrypted" | "encryptedName" | "originalFilename" | "stackId" | "stackCount"
+  "id" | "encrypted" | "encryptedName" | "originalFilename" | "sizeBytes" | "stackId" | "stackCount"
 >
 
 /**
@@ -129,8 +132,8 @@ type StackableAsset = Pick<
  */
 export const expandStacksToDownloadItems = async (
   assets: StackableAsset[],
-): Promise<{ id: string; name: string; encrypted: boolean }[]> => {
-  const items: { id: string; name: string; encrypted: boolean }[] = []
+): Promise<{ id: string; name: string; encrypted: boolean; size: number }[]> => {
+  const items: { id: string; name: string; encrypted: boolean; size: number }[] = []
   const seen = new Set<string>()
   const push = (asset: Parameters<typeof downloadItemFor>[0]) => {
     if (seen.has(asset.id)) return
@@ -384,8 +387,24 @@ export const fetchDecryptedPhotoThumbnail = async (assetId: string): Promise<str
   }
 }
 
-/** Decrypt an encrypted photo's original and save it to disk with the given filename. */
-export const downloadDecryptedPhoto = async (assetId: string, filename: string): Promise<void> => {
+/**
+ * Decrypt an encrypted photo's original and save it to disk. Large files (≥ the chunk threshold)
+ * stream straight to disk so a multi-GB video never buffers in memory; smaller files use the
+ * in-memory path (no save dialog — keeps batch downloads frictionless).
+ */
+export const downloadDecryptedPhoto = async (
+  assetId: string,
+  filename: string,
+  sizeBytes = 0,
+  onProgress?: (progress: UploadProgress) => void,
+): Promise<void> => {
+  if (sizeBytes >= CHUNKED_UPLOAD_THRESHOLD && supportsStreamingDownload()) {
+    const key = await getDocContentKey(assetId)
+    if (key) {
+      const url = `${API_URL}/api/v1/photos/assets/${assetId}/original`
+      if (await streamDecryptToDisk(url, key, filename, sizeBytes, onProgress)) return
+    }
+  }
   const url = await fetchDecryptedPhotoOriginal(assetId, "application/octet-stream")
   if (!url) throw new Error("Could not decrypt photo")
   const anchor = document.createElement("a")
