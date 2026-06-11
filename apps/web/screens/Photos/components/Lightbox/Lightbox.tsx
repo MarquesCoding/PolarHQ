@@ -279,7 +279,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
     >
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="flex items-center justify-between gap-2 p-3">
-        <div className="panel flex min-w-0 items-center gap-1.5 rounded-full p-1 pr-3 shadow-lg">
+        <div className="panel flex min-w-0 items-center gap-1.5 rounded-md p-1 pr-3 shadow-lg">
           <Button
             variant="ghost"
             size="icon-sm"
@@ -297,7 +297,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
 
         <div className="flex items-center gap-2">
         {asset.type === "image" && source ? (
-          <div className="panel flex items-center gap-0.5 rounded-full p-1 shadow-lg">
+          <div className="panel flex items-center gap-0.5 rounded-md p-1 shadow-lg">
             <Button
               variant="ghost"
               size="icon-sm"
@@ -331,7 +331,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             </Button>
           </div>
         ) : null}
-        <div className="panel flex items-center gap-0.5 rounded-full p-1 shadow-lg">
+        <div className="panel flex items-center gap-0.5 rounded-md p-1 shadow-lg">
           {asset.motion && asset.type === "image" && motionSrc ? (
             <Button
               variant="ghost"
