@@ -92,7 +92,6 @@ const runGDriveBackup = async (settings: BackupSettings): Promise<BackupResult> 
   let objectCount = 0
   let bytes = 0
   for (const object of objects) {
-    // Access tokens last ~1h; refresh periodically for large libraries.
     if (objectCount > 0 && objectCount % 200 === 0) accessToken = await refresh()
     const buffer = await streamToBuffer(await source.getStream(object.key))
     await uploadDriveFile(accessToken, object.key.replace(/\//g, "_"), folderId, buffer)

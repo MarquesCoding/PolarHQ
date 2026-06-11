@@ -27,7 +27,6 @@ const defaultStyles = {
 
 type Theme = "light" | "dark";
 
-// Check document class for theme (works with next-themes, etc.)
 function getDocumentTheme(): Theme | null {
   if (typeof document === "undefined") return null;
   if (document.documentElement.classList.contains("dark")) return "dark";
@@ -35,7 +34,6 @@ function getDocumentTheme(): Theme | null {
   return null;
 }
 
-// Get system preference
 function getSystemTheme(): Theme {
   if (typeof window === "undefined") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -49,9 +47,8 @@ function useResolvedTheme(themeProp?: "light" | "dark"): Theme {
   );
 
   useEffect(() => {
-    if (themeProp) return; // Skip detection if theme is provided via prop
+    if (themeProp) return;
 
-    // Watch for document class changes (e.g., next-themes toggling dark class)
     const observer = new MutationObserver(() => {
       const docTheme = getDocumentTheme();
       if (docTheme) {
@@ -63,10 +60,8 @@ function useResolvedTheme(themeProp?: "light" | "dark"): Theme {
       attributeFilter: ["class"],
     });
 
-    // Also watch for system preference changes
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleSystemChange = (e: MediaQueryListEvent) => {
-      // Only use system preference if no document class is set
       if (!getDocumentTheme()) {
         setDetectedTheme(e.matches ? "dark" : "light");
       }
@@ -202,7 +197,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     [styles],
   );
 
-  // Expose the map instance to the parent component
   useImperativeHandle(ref, () => mapInstance as MapLibreGL.Map, [mapInstance]);
 
   const clearStyleTimeout = useCallback(() => {
@@ -212,7 +206,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     }
   }, []);
 
-  // Initialize the map
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -233,9 +226,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 
     const styleDataHandler = () => {
       clearStyleTimeout();
-      // Delay to ensure style is fully processed before allowing layer operations
-      // This is a workaround to avoid race conditions with the style loading
-      // else we have to force update every layer on setStyle change
       styleTimeoutRef.current = setTimeout(() => {
         setIsStyleLoaded(true);
         if (projection) {
@@ -245,7 +235,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     };
     const loadHandler = () => setIsLoaded(true);
 
-    // Viewport change handler - skip if triggered by internal update
     const handleMove = () => {
       if (internalUpdateRef.current) return;
       onViewportChangeRef.current?.(getViewport(map));
@@ -269,7 +258,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Sync controlled viewport to map
   useEffect(() => {
     if (!mapInstance || !isControlled || !viewport) return;
     if (mapInstance.isMoving()) return;
@@ -297,7 +285,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     internalUpdateRef.current = false;
   }, [mapInstance, isControlled, viewport]);
 
-  // Handle style change
   useEffect(() => {
     if (!mapInstance || !resolvedTheme) return;
 
@@ -328,7 +315,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
         className={cn("relative h-full w-full", className)}
       >
         {(!isLoaded || loading) && <DefaultLoader />}
-        {/* SSR-safe: children render only when map is loaded on client */}
         {mapInstance && children}
       </div>
     </MapContext.Provider>
@@ -1067,7 +1053,6 @@ function MapRoute({
   const sourceId = `route-source-${id}`;
   const layerId = `route-layer-${id}`;
 
-  // Add source and layer on mount
   useEffect(() => {
     if (!isLoaded || !map) return;
 
@@ -1104,7 +1089,6 @@ function MapRoute({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, map]);
 
-  // When coordinates change, update the source data
   useEffect(() => {
     if (!isLoaded || !map || coordinates.length < 2) return;
 
@@ -1129,7 +1113,6 @@ function MapRoute({
     }
   }, [isLoaded, map, layerId, color, width, opacity, dashArray]);
 
-  // Handle click and hover events
   useEffect(() => {
     if (!isLoaded || !map || !interactive) return;
 
@@ -1284,11 +1267,6 @@ function buildArcCoordinates(
 ): [number, number][] {
   const [x0, y0] = from;
   const [xTo, y2] = to;
-  // Unwrap the destination longitude so |dx| <= 180. This makes arcs that
-  // straddle the antimeridian (e.g. Tokyo -> San Francisco) bow the short way
-  // across the Pacific instead of the long way around the globe. Resulting
-  // longitudes may fall outside [-180, 180]; MapLibre renders them correctly
-  // on the globe projection, and on mercator when world copies are enabled.
   const rawDx = xTo - x0;
   const x2 =
     rawDx > 180 ? xTo - 360 : rawDx < -180 ? xTo + 360 : xTo;
@@ -1374,7 +1352,6 @@ function MapArc<T extends MapArcDatum = MapArcDatum>({
   const latestRef = useRef({ data, onClick, onHover });
   latestRef.current = { data, onClick, onHover };
 
-  // Add source and layers on mount.
   useEffect(() => {
     if (!isLoaded || !map) return;
 
@@ -1422,7 +1399,6 @@ function MapArc<T extends MapArcDatum = MapArcDatum>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, map]);
 
-  // Sync features when data / curvature / samples change.
   useEffect(() => {
     if (!isLoaded || !map) return;
     const source = map.getSource(sourceId) as
@@ -1431,7 +1407,6 @@ function MapArc<T extends MapArcDatum = MapArcDatum>({
     source?.setData(geoJSON);
   }, [isLoaded, map, geoJSON, sourceId]);
 
-  // Sync paint/layout when they change.
   useEffect(() => {
     if (!isLoaded || !map || !map.getLayer(layerId)) return;
     for (const [key, value] of Object.entries(mergedPaint)) {
@@ -1453,7 +1428,6 @@ function MapArc<T extends MapArcDatum = MapArcDatum>({
     }
   }, [isLoaded, map, layerId, hitLayerId, mergedPaint, mergedLayout, hitWidth]);
 
-  // Interaction handlers
   useEffect(() => {
     if (!isLoaded || !map || !interactive) return;
 
@@ -1585,11 +1559,9 @@ function MapClusterLayer<
     pointColor,
   });
 
-  // Add source and layers on mount
   useEffect(() => {
     if (!isLoaded || !map) return;
 
-    // Add clustered GeoJSON source
     map.addSource(sourceId, {
       type: "geojson",
       data,
@@ -1598,7 +1570,6 @@ function MapClusterLayer<
       clusterRadius,
     });
 
-    // Add cluster circles layer
     map.addLayer({
       id: clusterLayerId,
       type: "circle",
@@ -1629,7 +1600,6 @@ function MapClusterLayer<
       },
     });
 
-    // Add cluster count text layer
     map.addLayer({
       id: clusterCountLayerId,
       type: "symbol",
@@ -1645,7 +1615,6 @@ function MapClusterLayer<
       },
     });
 
-    // Add unclustered point layer
     map.addLayer({
       id: unclusteredLayerId,
       type: "circle",
@@ -1674,7 +1643,6 @@ function MapClusterLayer<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, map, sourceId]);
 
-  // Update source data when data prop changes (only for non-URL data)
   useEffect(() => {
     if (!isLoaded || !map || typeof data === "string") return;
 
@@ -1684,7 +1652,6 @@ function MapClusterLayer<
     }
   }, [isLoaded, map, data, sourceId]);
 
-  // Update layer styles when props change
   useEffect(() => {
     if (!isLoaded || !map) return;
 
@@ -1693,7 +1660,6 @@ function MapClusterLayer<
       prev.clusterColors !== clusterColors ||
       prev.clusterThresholds !== clusterThresholds;
 
-    // Update cluster layer colors and sizes
     if (map.getLayer(clusterLayerId) && colorsChanged) {
       map.setPaintProperty(clusterLayerId, "circle-color", [
         "step",
@@ -1715,7 +1681,6 @@ function MapClusterLayer<
       ]);
     }
 
-    // Update unclustered point layer color
     if (map.getLayer(unclusteredLayerId) && prev.pointColor !== pointColor) {
       map.setPaintProperty(unclusteredLayerId, "circle-color", pointColor);
     }
@@ -1731,11 +1696,9 @@ function MapClusterLayer<
     pointColor,
   ]);
 
-  // Handle click events
   useEffect(() => {
     if (!isLoaded || !map) return;
 
-    // Cluster click handler - zoom into cluster
     const handleClusterClick = async (
       e: MapLibreGL.MapMouseEvent & {
         features?: MapLibreGL.MapGeoJSONFeature[];
@@ -1757,7 +1720,6 @@ function MapClusterLayer<
       if (onClusterClick) {
         onClusterClick(clusterId, coordinates, pointCount);
       } else {
-        // Default behavior: zoom to cluster expansion zoom
         const source = map.getSource(sourceId) as MapLibreGL.GeoJSONSource;
         const zoom = await source.getClusterExpansionZoom(clusterId);
         map.easeTo({
@@ -1767,7 +1729,6 @@ function MapClusterLayer<
       }
     };
 
-    // Unclustered point click handler
     const handlePointClick = (
       e: MapLibreGL.MapMouseEvent & {
         features?: MapLibreGL.MapGeoJSONFeature[];
@@ -1780,7 +1741,6 @@ function MapClusterLayer<
         feature.geometry as GeoJSON.Point
       ).coordinates.slice() as [number, number];
 
-      // Handle world copies
       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
       }
@@ -1791,7 +1751,6 @@ function MapClusterLayer<
       );
     };
 
-    // Cursor style handlers
     const handleMouseEnterCluster = () => {
       map.getCanvas().style.cursor = "pointer";
     };

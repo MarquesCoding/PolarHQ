@@ -25,7 +25,6 @@ const HEADER_GAP = 6
 /** Visual margin around the grid, baked into the layout so the surrounding space is still
  * part of the (selectable) grid container rather than dead outer padding. */
 const INSET = 24
-// Left gutter reserved for the always-visible timeline rail.
 const RAIL = 26
 const RESIZE_EASE = "cubic-bezier(0.22, 0.61, 0.36, 1)"
 const TILE_RESIZE_CSS = `top 0.3s ${RESIZE_EASE}, left 0.3s ${RESIZE_EASE}, width 0.3s ${RESIZE_EASE}, height 0.3s ${RESIZE_EASE}`
@@ -231,8 +230,6 @@ interface PhotoGridProps {
 
 const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   const { i18n } = useTranslation()
-  // Changes when the language switches OR its date catalog finishes loading (fetched async),
-  // driving the layout memo so day labels rebuild.
   const dateStamp =
     (i18n.t("common:dates.weekdaysLong", { returnObjects: true }) as string[] | undefined)?.[0] ??
     i18n.language
@@ -282,7 +279,6 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   )
   const layout = useMemo(
     () => buildLayout(sortedGridAssets, width, rowHeight, gap, square === 1),
-    // dateStamp rebuilds the day labels when the language changes or its catalog loads.
     [sortedGridAssets, width, rowHeight, gap, square, dateStamp],
   )
 
@@ -354,8 +350,6 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     marqueeStart.current = pointFromEvent(event)
     marqueeBase.current = event.shiftKey ? new Set(selection.selected) : new Set()
     draggedRef.current = false
-    // Empty-space start (not on a tile): capture now so a drag in any direction —
-    // including off the grid into the margins — keeps feeding the marquee.
     if (event.target === event.currentTarget) {
       containerRef.current?.setPointerCapture(event.pointerId)
     }

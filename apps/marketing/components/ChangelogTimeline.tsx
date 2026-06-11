@@ -15,7 +15,6 @@ const ChangelogTimeline = ({ versions }: ChangelogTimelineProps) => {
   const [footerH, setFooterH] = useState(0)
   const barsRef = useRef<HTMLDivElement>(null)
 
-  // Park above the footer (absolute) instead of sitting on it (fixed) once it's in view.
   useEffect(() => {
     const footer = document.querySelector("footer")
     if (!footer) return
@@ -25,7 +24,6 @@ const ChangelogTimeline = ({ versions }: ChangelogTimelineProps) => {
     return () => observer.disconnect()
   }, [])
 
-  // Scroll-spy: highlight the release nearest the middle of the viewport.
   useEffect(() => {
     const sections = versions
       .map((v) => document.getElementById(`v${v.version}`))

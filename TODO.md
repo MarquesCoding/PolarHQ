@@ -40,7 +40,7 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 - [ ] **Chunked / resumable uploads for very large files**: single-shot uploads hold the whole (encrypted) file in memory and can't resume on failure. Add chunked upload + resume (and stream encryption) for multi-GB files.
 
 ## Code hygiene
-- [ ] **Remove all inline comments that aren't TSDoc** — strip `// whatever` explanatory comments throughout the codebase; keep only `/** … */` TSDoc on exports/functions. (Matches the standing no-inline-comments rule.)
+- [x] **Remove all inline comments that aren't TSDoc** — stripped 125 non-TSDoc comments across 31 files via `scripts/strip-comments.cjs` (parser-anchored over the TS AST so it never touches `//` inside strings/regexes/URLs; preserves `/** … */` TSDoc, `eslint-disable`/`@ts-*` directives, and empty-`catch` placeholders). tsc clean across all packages.
 
 ## Infra
 - [x] release-please: workflow already declares `permissions: contents/pull-requests: write` **and** supports a PAT (`secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN`). The earlier failure was the **repo setting** "Allow GitHub Actions to create and approve pull requests" being off — flip that in Settings → Actions → General (or add a `RELEASE_PLEASE_TOKEN` PAT secret to bypass it). No code change needed.

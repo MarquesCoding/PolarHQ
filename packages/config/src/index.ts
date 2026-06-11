@@ -93,11 +93,7 @@ export const config = {
     url: env.API_URL,
   },
   web: {
-    // Canonical web URL (first WEB_URL entry).
     url: env.WEB_URL.split(",")[0]!.trim(),
-    // Every origin we trust for CORS + auth. WEB_URL may be a comma-separated
-    // list (e.g. "http://localhost:8085,http://192.168.1.50:8085"); API_URL is
-    // always included so the public origin is trusted even if only it is set.
     origins: Array.from(
       new Set([env.API_URL, ...env.WEB_URL.split(",")].map((o) => o.trim()).filter(Boolean)),
     ),

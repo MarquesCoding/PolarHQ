@@ -4,7 +4,6 @@ import Reveal from "@components/Reveal"
 
 const AppShowcase = () => (
   <section className="relative px-6 py-24 sm:py-32">
-    {/* Soft ambient glow behind the window. */}
     <div
       aria-hidden
       className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center"

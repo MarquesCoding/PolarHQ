@@ -107,7 +107,6 @@ const FlatSidebar = ({
 
   return (
     <Sidebar collapsible="offcanvas">
-      {/* App switcher — replaces the global app rail */}
       <div className="border-border flex h-14 shrink-0 items-center border-b px-3">
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -174,7 +173,6 @@ const FlatSidebar = ({
         </DropdownMenu>
       </div>
 
-      {/* Search — moved into the sidebar */}
       {searchable ? (
         <div className="px-3 pt-3 pb-2">
           <div className="bg-sidebar-accent/40 focus-within:border-ring/40 flex items-center gap-2 rounded-lg border border-transparent px-2.5 py-1.5">
@@ -195,12 +193,10 @@ const FlatSidebar = ({
         <div className="pt-1" />
       )}
 
-      {/* Nav */}
       <nav className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3">
         {children}
       </nav>
 
-      {/* Bottom: usage + account + version + theme */}
       <div className="flex flex-col gap-2 p-3 pt-2">
         <Button
           variant="ghost"

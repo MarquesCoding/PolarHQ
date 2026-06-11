@@ -35,7 +35,6 @@ const PostBanner = ({ eyebrow, live = false, compact = false, className = "" }: 
       />
     )}
 
-    {/* Same dark scrim language as the home hero. */}
     <div className="from-background/55 via-background/25 to-background/85 absolute inset-0 bg-gradient-to-b" />
 
     <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">

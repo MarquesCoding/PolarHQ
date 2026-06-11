@@ -51,7 +51,6 @@ const Hero = () => {
             transition={{ duration: 2.8, ease: [0.22, 0.61, 0.36, 1] }}
             className="h-full w-full object-cover"
           />
-          {/* Scrims so the headline and controls stay readable over the bright video. */}
           <div className="from-background/45 via-background/15 to-background/80 absolute inset-0 bg-gradient-to-b" />
           <div
             className="absolute inset-0"

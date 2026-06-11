@@ -223,7 +223,6 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
       const a = g.orig.angle ?? 0
       const b = bounds(g.orig)
       const center = { x: b.x + b.w / 2, y: b.y + b.h / 2 }
-      // Keep the opposite corner fixed in world space, even when rotated.
       const anchorLocal = cornerPoint(b, OPPOSITE[g.handle])
       const anchorWorld = rotatePoint(anchorLocal, center, a)
       const rel = rotatePoint(p, anchorWorld, -a)
@@ -390,8 +389,6 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           : "crosshair"
 
   const visible = elements.filter((el) => el.id !== draft?.id && el.id !== editing)
-  // While dragging/resizing/rotating, the live draft drives the selection chrome so the
-  // handles follow the element instead of snapping only on release.
   const selectedLive = draft && draft.id === selectedId ? draft : selected
   const selBounds = selectedLive ? bounds(selectedLive) : null
   const editEl = editing ? elements.find((el) => el.id === editing) : null

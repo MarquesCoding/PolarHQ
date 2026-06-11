@@ -65,12 +65,10 @@ export class RelayProvider {
 
     ws.onopen = () => {
       this.connected = true
-      // sync step 1: advertise our state vector so peers send what we're missing
       const encoder = encoding.createEncoder()
       encoding.writeVarUint(encoder, MESSAGE_SYNC)
       writeSyncStep1(encoder, this.doc)
       this.transmit(encoding.toUint8Array(encoder))
-      // announce our presence
       if (this.awareness.getLocalState()) {
         const aenc = encoding.createEncoder()
         encoding.writeVarUint(aenc, MESSAGE_AWARENESS)
@@ -88,7 +86,7 @@ export class RelayProvider {
         try {
           data = secretboxOpen(data, this.contentKey)
         } catch {
-          return // can't decrypt (mismatched key) — drop the frame
+          return
         }
       }
       this.handleMessage(data)
@@ -116,7 +114,7 @@ export class RelayProvider {
   }
 
   private handleDocUpdate = (update: Uint8Array, origin: unknown): void => {
-    if (origin === this) return // applied from a peer — don't echo it back
+    if (origin === this) return
     const encoder = encoding.createEncoder()
     encoding.writeVarUint(encoder, MESSAGE_SYNC)
     writeUpdate(encoder, update)
