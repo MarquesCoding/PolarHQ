@@ -1,9 +1,16 @@
+import { randomUUID } from "node:crypto"
 import { createReadStream, createWriteStream } from "node:fs"
-import { access, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises"
+import { access, appendFile, mkdir, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises"
 import { dirname, join, relative, resolve, sep } from "node:path"
 import type { Readable } from "node:stream"
 import { pipeline } from "node:stream/promises"
-import type { ObjectInfo, PutObjectInput, PutStreamInput, StorageDriver } from "./driver"
+import type {
+  MultipartPart,
+  ObjectInfo,
+  PutObjectInput,
+  PutStreamInput,
+  StorageDriver,
+} from "./driver"
 
 /** Local filesystem storage driver. Keys map to paths under a single root. */
 export class FsDriver implements StorageDriver {
@@ -79,6 +86,36 @@ export class FsDriver implements StorageDriver {
     }
     await walk(base)
     return results
+  }
+
+  private partPath(key: string, uploadId: string): string {
+    return this.resolveKey(`${key}.${uploadId}.uploading`)
+  }
+
+  async createMultipart(key: string): Promise<string> {
+    const uploadId = randomUUID()
+    await mkdir(dirname(this.partPath(key, uploadId)), { recursive: true })
+    return uploadId
+  }
+
+  async uploadPart(
+    key: string,
+    uploadId: string,
+    partNumber: number,
+    body: Buffer | Uint8Array,
+  ): Promise<MultipartPart> {
+    await appendFile(this.partPath(key, uploadId), body)
+    return { partNumber, etag: String(partNumber) }
+  }
+
+  async completeMultipart(key: string, uploadId: string): Promise<void> {
+    const target = this.resolveKey(key)
+    await mkdir(dirname(target), { recursive: true })
+    await rename(this.partPath(key, uploadId), target)
+  }
+
+  async abortMultipart(key: string, uploadId: string): Promise<void> {
+    await rm(this.partPath(key, uploadId), { force: true })
   }
 
   async presignGet(): Promise<string> {

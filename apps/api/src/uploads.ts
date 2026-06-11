@@ -26,7 +26,7 @@ const MULTIPART_OVERHEAD = 1024 * 1024
 const numericLimit = (value: unknown): number | null =>
   typeof value === "number" && value > 0 ? value : null
 
-const formatBytes = (bytes: number): string => {
+export const formatBytes = (bytes: number): string => {
   const units = ["B", "KB", "MB", "GB", "TB"]
   const exponent = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1)
   const value = bytes / 1024 ** exponent

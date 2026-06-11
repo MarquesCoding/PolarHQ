@@ -19,6 +19,13 @@ export interface ObjectInfo {
   size: number
 }
 
+export interface MultipartPart {
+  /** 1-indexed; parts are uploaded in order for the FS driver. */
+  partNumber: number
+  /** Opaque tag returned by `uploadPart`, passed back to `completeMultipart`. */
+  etag: string
+}
+
 /**
  * Pluggable object-storage backend. Implementations: filesystem (`FsDriver`)
  * and any S3-compatible service (`S3Driver`, default MinIO). Apps depend on
@@ -38,4 +45,18 @@ export interface StorageDriver {
 
   presignGet(key: string, expiresInSeconds?: number): Promise<string>
   presignPut(key: string, expiresInSeconds?: number, contentType?: string): Promise<string>
+
+  /** Begin a resumable multipart upload; returns an opaque upload id. */
+  createMultipart(key: string, contentType?: string): Promise<string>
+  /** Upload one part (1-indexed; in order for FS); returns its etag for completion. */
+  uploadPart(
+    key: string,
+    uploadId: string,
+    partNumber: number,
+    body: Buffer | Uint8Array,
+  ): Promise<MultipartPart>
+  /** Assemble the final object from its uploaded parts. */
+  completeMultipart(key: string, uploadId: string, parts: MultipartPart[]): Promise<void>
+  /** Discard an in-progress multipart upload and its temporary data. */
+  abortMultipart(key: string, uploadId: string): Promise<void>
 }
