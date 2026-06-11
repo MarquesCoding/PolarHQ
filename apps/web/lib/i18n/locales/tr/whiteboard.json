@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Yinele",
+    "resetZoom": "Yakınlaştırmayı sıfırla",
+    "undo": "Geri al",
+    "zoomIn": "Yakınlaştır",
+    "zoomOut": "Uzaklaştır"
+  },
+  "propertiesPanel": {
+    "background": "Arka plan",
+    "bringForward": "Öne getir",
+    "bringToFront": "En öne getir",
+    "layers": "Katmanlar",
+    "opacity": "Saydamlık",
+    "sendBackward": "Geri gönder",
+    "sendToBack": "En arkaya gönder",
+    "stroke": "Çizgi",
+    "strokeWidth": "Çizgi kalınlığı"
+  },
+  "shell": {
+    "myWhiteboards": "Beyaz Tahtalarım",
+    "newWhiteboard": "Yeni beyaz tahta",
+    "product": "Beyaz Tahta",
+    "search": "Beyaz Tahtalarda ara",
+    "whiteboards": "Beyaz Tahtalar"
+  },
+  "toolbar": {
+    "arrow": "Ok",
+    "diamond": "Eşkenar dörtgen",
+    "draw": "Çiz",
+    "ellipse": "Elips",
+    "eraser": "Silgi",
+    "line": "Çizgi",
+    "pan": "Kaydır",
+    "rectangle": "Dikdörtgen",
+    "select": "Seç",
+    "text": "Metin"
+  },
+  "whiteboardList": {
+    "createLabel": "Yeni beyaz tahta",
+    "title": "Beyaz Tahtalar"
+  }
+}

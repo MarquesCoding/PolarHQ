@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "Не вдалося виконати дію",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Не вдалося обміняти код Google.",
+    "gdriveConnectFailed": "Не вдалося підключити Google Drive.",
+    "gdriveNoRefreshToken": "Google не повернув токен оновлення (відкличте попередній доступ і повторіть спробу).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET не налаштовано",
+    "invalidOauthState": "Недійсний стан OAuth."
+  },
+  "badRequest": "Неправильний запит.",
+  "docs": {
+    "alreadyOwner": "Уже власник",
+    "emailRequired": "Потрібна електронна адреса.",
+    "noPublicKey": "Немає відкритого ключа.",
+    "userNotFound": "Такого користувача не знайдено"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "не можна видалити системну папку",
+    "cannotLockFolder": "не можна заблокувати цю папку",
+    "cannotModifySystemFolder": "не можна змінити системну папку",
+    "extractFailed": "не вдалося розпакувати архів",
+    "fileRequired": "поле файлу є обов'язковим",
+    "photosMediaFilesOnly": "Папка «Фото» приймає лише медіафайли",
+    "photosMediaOnly": "Папка «Фото» приймає лише зображення, відео та аудіо"
+  },
+  "forbidden": "У вас немає дозволу на цю дію.",
+  "generic": "Щось пішло не так.",
+  "invalidInput": "Недійсні дані.",
+  "notFound": "Не знайдено.",
+  "photos": {
+    "fileRequired": "Потрібен файл.",
+    "stackNeedsTwoAssets": "Виберіть принаймні два власні фото, щоб об'єднати їх у стос."
+  },
+  "rateLimited": "Забагато запитів. Будь ласка, спробуйте ще раз за мить.",
+  "setup": {
+    "alreadyComplete": "Налаштування вже завершено",
+    "registrationDisabled": "реєстрацію вимкнено на цьому екземплярі"
+  },
+  "unauthorized": "Щоб виконати цю дію, потрібно увійти.",
+  "uploads": {
+    "tooLarge": "Файл перевищує ліміт завантаження {{limit}}"
+  }
+}

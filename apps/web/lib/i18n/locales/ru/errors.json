@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "Не удалось выполнить действие",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Не удалось обменять код Google.",
+    "gdriveConnectFailed": "Не удалось подключить Google Диск.",
+    "gdriveNoRefreshToken": "Google не вернул токен обновления (отзовите ранее выданный доступ и повторите попытку).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET не настроены",
+    "invalidOauthState": "Недопустимое состояние OAuth."
+  },
+  "badRequest": "Неверный запрос.",
+  "docs": {
+    "alreadyOwner": "Уже владелец",
+    "emailRequired": "Укажите адрес электронной почты.",
+    "noPublicKey": "Нет открытого ключа.",
+    "userNotFound": "Пользователь не найден"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "нельзя удалить системную папку",
+    "cannotLockFolder": "нельзя заблокировать эту папку",
+    "cannotModifySystemFolder": "нельзя изменить системную папку",
+    "extractFailed": "не удалось распаковать архив",
+    "fileRequired": "поле файла обязательно",
+    "photosMediaFilesOnly": "Папка «Фото» принимает только медиафайлы",
+    "photosMediaOnly": "Папка «Фото» принимает только изображения, видео и аудио"
+  },
+  "forbidden": "У вас нет прав на это действие.",
+  "generic": "Что-то пошло не так.",
+  "invalidInput": "Неверные данные.",
+  "notFound": "Не найдено.",
+  "photos": {
+    "fileRequired": "Требуется файл.",
+    "stackNeedsTwoAssets": "Выберите минимум два своих фото, чтобы объединить их в стопку."
+  },
+  "rateLimited": "Слишком много запросов. Повторите попытку чуть позже.",
+  "setup": {
+    "alreadyComplete": "Настройка уже завершена",
+    "registrationDisabled": "регистрация на этом сервере отключена"
+  },
+  "unauthorized": "Войдите, чтобы выполнить это действие.",
+  "uploads": {
+    "tooLarge": "Файл превышает лимит загрузки {{limit}}"
+  }
+}

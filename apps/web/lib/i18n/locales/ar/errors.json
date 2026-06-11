@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "فشل تنفيذ الإجراء",
+  "admin": {
+    "gdriveCodeExchangeFailed": "فشل تبادل رمز Google.",
+    "gdriveConnectFailed": "تعذّر الاتصال بـ Google Drive.",
+    "gdriveNoRefreshToken": "لم تُرجِع Google رمز تحديث (قم بإلغاء الوصول السابق وأعد المحاولة).",
+    "gdriveNotConfigured": "لم يتم تكوين GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET",
+    "invalidOauthState": "حالة OAuth غير صالحة."
+  },
+  "badRequest": "طلب غير صالح.",
+  "docs": {
+    "alreadyOwner": "هو المالك بالفعل",
+    "emailRequired": "البريد الإلكتروني مطلوب.",
+    "noPublicKey": "لا يوجد مفتاح عام.",
+    "userNotFound": "لا يوجد مستخدم بهذا الاسم"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "لا يمكن حذف مجلد النظام",
+    "cannotLockFolder": "لا يمكن قفل هذا المجلد",
+    "cannotModifySystemFolder": "لا يمكن تعديل مجلد النظام",
+    "extractFailed": "تعذّر استخراج الأرشيف",
+    "fileRequired": "حقل الملف مطلوب",
+    "photosMediaFilesOnly": "لا يقبل مجلد الصور سوى ملفات الوسائط",
+    "photosMediaOnly": "لا يقبل مجلد الصور سوى الصور ومقاطع الفيديو والصوت"
+  },
+  "forbidden": "ليس لديك إذن للقيام بذلك.",
+  "generic": "حدث خطأ ما.",
+  "invalidInput": "إدخال غير صالح.",
+  "notFound": "غير موجود.",
+  "photos": {
+    "fileRequired": "الملف مطلوب.",
+    "stackNeedsTwoAssets": "حدّد صورتين على الأقل من صورك لتجميعهما."
+  },
+  "rateLimited": "طلبات كثيرة جدًا. يُرجى المحاولة مرة أخرى بعد قليل.",
+  "setup": {
+    "alreadyComplete": "تم إكمال الإعداد بالفعل",
+    "registrationDisabled": "التسجيل معطّل على هذا الخادم"
+  },
+  "unauthorized": "يلزم تسجيل الدخول للقيام بذلك.",
+  "uploads": {
+    "tooLarge": "يتجاوز الملف حد الرفع البالغ {{limit}}"
+  }
+}

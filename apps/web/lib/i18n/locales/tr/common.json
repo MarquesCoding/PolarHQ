@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "Geri",
+    "cancel": "İptal",
+    "close": "Kapat",
+    "confirm": "Onayla",
+    "create": "Oluştur",
+    "delete": "Sil",
+    "done": "Bitti",
+    "download": "İndir",
+    "getStarted": "Başla",
+    "next": "İleri",
+    "open": "Aç",
+    "remove": "Kaldır",
+    "rename": "Yeniden adlandır",
+    "retry": "Yeniden dene",
+    "save": "Kaydet",
+    "share": "Paylaş",
+    "signOut": "Çıkış yap"
+  },
+  "appTile": {
+    "beta": "Beta",
+    "soon": "Yakında"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · sürüm {{build}}",
+    "whatsNew": "Yenilikler"
+  },
+  "collabHeader": {
+    "anonymous": "Anonim",
+    "notSavedYet": "Henüz kaydedilmedi",
+    "save": "Kaydet",
+    "savedAt": "{{time}} kaydedildi",
+    "saving": "Kaydediliyor…",
+    "share": "Paylaş",
+    "title": "Başlık"
+  },
+  "confirmButton": {
+    "confirm": "Onayla"
+  },
+  "devicesDialog": {
+    "activeNow": "Şu anda etkin",
+    "lastActive": "Son etkinlik {{time}}",
+    "signOut": "Çıkış yap",
+    "signOutError": "Bu cihazdan çıkış yapılamadı",
+    "signedOut": "Cihazdan çıkış yapıldı",
+    "thisDevice": "Bu cihaz",
+    "title": "Cihazlar ve oturumlar"
+  },
+  "dropZone": {
+    "dropToUpload": "Yüklemek için bırakın"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Yaptığınız her değişiklik otomatik ve güvenli bir şekilde Drive'a kaydedilir.",
+    "encrypted": "Şifreli",
+    "endToEndEncrypted": "Uçtan uca şifreli"
+  },
+  "flatSidebar": {
+    "account": "Hesap",
+    "apps": "Uygulamalar",
+    "beta": "Beta",
+    "devices": "Cihazlar",
+    "personalWorkspace": "Kişisel çalışma alanı",
+    "replayIntro": "Tanıtımı yeniden oynat",
+    "settings": "Ayarlar",
+    "signOut": "Çıkış yap",
+    "storage": "Depolama",
+    "toggleDarkMode": "Koyu modu aç/kapat",
+    "unlimited": "Sınırsız"
+  },
+  "importButton": {
+    "import": "İçe aktar",
+    "importFailed": "Bu dosya içe aktarılamadı"
+  },
+  "launcher": {
+    "loadingApps": "Uygulamalar yükleniyor…",
+    "ofQuota": "/ {{quota}}",
+    "signOut": "Çıkış yap",
+    "storage": "Depolama",
+    "versionBuild": "v{{version}} · sürüm {{build}}",
+    "yourApps": "Uygulamalarınız"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Kaydettim — devam et",
+    "copied": "Kurtarma kodu kopyalandı",
+    "copyAriaLabel": "Kurtarma kodunu kopyala",
+    "description": "Hesabınız artık uçtan uca şifreli. Bu kurtarma kodu, parolanızı unutmanız durumunda verilerinizi kurtarmanın tek yoludur — güvenli bir yerde saklayın. Bu kodu tekrar gösteremeyiz.",
+    "title": "Kurtarma kodunuzu kaydedin"
+  },
+  "selectionBar": {
+    "clearSelection": "Seçimi temizle",
+    "download": "İndir",
+    "downloadAllFrames": "Tüm kareleri indir ({{count}})",
+    "downloadCover": "Kapağı indir",
+    "downloadCovers": "Kapakları indir ({{count}})",
+    "photoFilename": "Fotoğraf",
+    "photosZipFilename": "{{count}} fotoğraf.zip",
+    "share": "Paylaş",
+    "shareNameFallback": "fotoğraf"
+  },
+  "shareDialog": {
+    "cancel": "İptal",
+    "copyLink": "Bağlantıyı kopyala",
+    "descriptionEncrypted": "Uçtan uca şifreli: anahtar bağlantının içinde yer alır ve hiçbir zaman sunucuya ulaşmaz, böylece dosyayı yalnızca bağlantıya sahip kişiler çözebilir.",
+    "descriptionPublic": "Bu bağlantıya sahip herkes dosyayı indirebilir.",
+    "directDownload": "Doğrudan indirme",
+    "directDownloadHint": "Açılış sayfasını atlayıp hemen indir",
+    "expiresAfter": "Şu süre sonra sona erer",
+    "expiry1Day": "1 gün",
+    "expiry1Hour": "1 saat",
+    "expiry30Days": "30 gün",
+    "expiry7Days": "7 gün",
+    "generatingLink": "Bağlantı oluşturuluyor…",
+    "limitDownloads": "İndirmeleri sınırla",
+    "limitDownloadsHint": "Belirli bir indirme sayısından sonra bağlantıyı devre dışı bırak",
+    "linkCopied": "Bağlantı kopyalandı",
+    "maximumDownloads": "Maksimum indirme",
+    "permanentLink": "Kalıcı bağlantı",
+    "permanentLinkHint": "Siz silene kadar bu bağlantıyı etkin tut",
+    "title": "“{{name}}” paylaşılıyor"
+  },
+  "state": {
+    "empty": "Burada henüz bir şey yok",
+    "error": "Bir şeyler ters gitti",
+    "loading": "Yükleniyor…",
+    "saving": "Kaydediliyor…"
+  },
+  "units": {
+    "items_one": "{{count}} öğe",
+    "items_other": "{{count}} öğe"
+  },
+  "uploadManager": {
+    "archiveFailed": "Arşivleme başarısız",
+    "downloadFailed": "İndirme başarısız",
+    "taskFailed": "Başarısız",
+    "unsupportedFileType": "Desteklenmeyen dosya türü",
+    "unsupportedFileTypeToast": "{{name}} desteklenmeyen bir dosya türü"
+  },
+  "uploadPanel": {
+    "activity": "Etkinlik",
+    "alreadyInLibrary": "Zaten kitaplıkta",
+    "archiving": "Arşivleniyor…",
+    "archivingItems_one": "{{count}} öğe arşivleniyor",
+    "archivingItems_other": "{{count}} öğe arşivleniyor",
+    "archivingProgress": "{{loaded}} / {{size}} arşivleniyor",
+    "bytesProgress": "{{loaded}} / {{size}}",
+    "clear": "Temizle",
+    "collapse": "Daralt",
+    "compressing": "Sıkıştırılıyor…",
+    "dismiss": "Kapat",
+    "done": "Bitti",
+    "downloadFailed": "İndirme başarısız",
+    "downloaded": "İndirildi",
+    "downloading": "İndiriliyor…",
+    "downloadingItems_one": "{{count}} öğe indiriliyor",
+    "downloadingItems_other": "{{count}} öğe indiriliyor",
+    "expand": "Genişlet",
+    "failed": "Başarısız",
+    "processing": "İşleniyor…",
+    "processingItems_one": "{{count}} öğe işleniyor",
+    "processingItems_other": "{{count}} öğe işleniyor",
+    "speed": "{{speed}}/sn",
+    "transcoding": "Dönüştürülüyor…",
+    "uploading": "Yükleniyor…",
+    "uploadingItems_one": "{{count}} öğe yükleniyor",
+    "uploadingItems_other": "{{count}} öğe yükleniyor"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} öğe zaten kitaplığınızda",
+    "alreadyInLibrary_other": "{{count}} öğe zaten kitaplığınızda",
+    "uploadFailed": "{{name}} yüklenemedi",
+    "uploaded_one": "{{count}} fotoğraf yüklendi",
+    "uploaded_other": "{{count}} fotoğraf yüklendi"
+  },
+  "viewToggle": {
+    "gridView": "Izgara görünümü",
+    "tableView": "Tablo görünümü"
+  }
+}

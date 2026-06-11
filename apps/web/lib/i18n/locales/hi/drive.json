@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "मेरी ड्राइव"
+  },
+  "browser": {
+    "archive": "संग्रह करें",
+    "archiveExtracted": "संग्रह निकाल लिया गया",
+    "archiveLabel_one": "संग्रह ({{count}} आइटम)",
+    "archiveLabel_other": "संग्रह ({{count}} आइटम)",
+    "copyCreated": "प्रतिलिपि बना दी गई",
+    "couldNotCopy": "प्रतिलिपि नहीं बनाई जा सकी",
+    "couldNotCreate": "बनाया नहीं जा सका",
+    "couldNotDelete": "हटाया नहीं जा सका",
+    "couldNotExtract": "निकाला नहीं जा सका",
+    "couldNotMove": "स्थानांतरित नहीं किया जा सका",
+    "couldNotOpenFile": "यह फ़ाइल नहीं खोली जा सकी",
+    "download": "डाउनलोड करें",
+    "dragOrUpload": "फ़ाइलें यहाँ खींचें या अपलोड का उपयोग करें।",
+    "extract": "निकालें",
+    "linkCopied": "लिंक कॉपी हो गया",
+    "move": "स्थानांतरित करें",
+    "movedToFolder_one": "{{count}} आइटम {{name}} में स्थानांतरित किया गया",
+    "movedToFolder_other": "{{count}} आइटम {{name}} में स्थानांतरित किए गए",
+    "movedToTrash": "ट्रैश में भेजा गया",
+    "noMatches": "आपकी खोज से कुछ मेल नहीं खाता।",
+    "open": "खोलें",
+    "opening": "खोला जा रहा है…",
+    "rename": "नाम बदलें",
+    "share": "साझा करें",
+    "trash": "ट्रैश"
+  },
+  "detailsPanel": {
+    "closeDetails": "विवरण बंद करें",
+    "created": "बनाया गया",
+    "empty": "विवरण देखने के लिए कोई आइटम चुनें।",
+    "file": "फ़ाइल",
+    "files": "फ़ाइलें",
+    "folder": "फ़ोल्डर",
+    "folders": "फ़ोल्डर",
+    "itemsSelected_one": "{{count}} आइटम चयनित",
+    "itemsSelected_other": "{{count}} आइटम चयनित",
+    "modified": "संशोधित",
+    "size": "आकार",
+    "title": "विवरण",
+    "totalSize": "कुल आकार",
+    "type": "प्रकार"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "नया दस्तावेज़",
+    "newFolder": "नया फ़ोल्डर",
+    "newSpreadsheet": "नई स्प्रेडशीट",
+    "uploadFiles": "फ़ाइलें अपलोड करें"
+  },
+  "driveNav": {
+    "drive": "ड्राइव",
+    "location": "स्थान",
+    "myDrive": "मेरी ड्राइव",
+    "trash": "ट्रैश"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "बनाया नहीं जा सका",
+    "emptyTrash": "ट्रैश खाली करें",
+    "emptyTrashConfirm": "ट्रैश खाली करें?",
+    "new": "नया",
+    "newDocument": "नया दस्तावेज़",
+    "newFolder": "नया फ़ोल्डर",
+    "newSpreadsheet": "नई स्प्रेडशीट",
+    "toggleDetails": "विवरण टॉगल करें",
+    "trashEmptied": "ट्रैश खाली कर दिया गया",
+    "uploadFiles": "फ़ाइलें अपलोड करें"
+  },
+  "folderLockDialog": {
+    "cancel": "रद्द करें",
+    "confirmPasswordPlaceholder": "पासवर्ड की पुष्टि करें",
+    "folderLocked": "फ़ोल्डर लॉक हो गया",
+    "folderPasswordPlaceholder": "फ़ोल्डर पासवर्ड",
+    "incorrectPassword": "गलत पासवर्ड।",
+    "lock": "लॉक करें",
+    "lockDescription": "इस फ़ोल्डर को खोलने के लिए एक पासवर्ड सेट करें। यह इस डिवाइस पर एक्सेस को नियंत्रित करता है — आपकी फ़ाइलें फिर भी एंड-टू-एंड एन्क्रिप्टेड रहती हैं।",
+    "lockFolderTitle": "फ़ोल्डर लॉक करें",
+    "lockRemoved": "लॉक हटा दिया गया",
+    "passwordsDontMatch": "पासवर्ड मेल नहीं खाते।",
+    "removeDescription": "इसका लॉक हटाने के लिए फ़ोल्डर पासवर्ड दर्ज करें।",
+    "removeLock": "लॉक हटाएँ",
+    "removeLockTitle": "लॉक हटाएँ",
+    "somethingWentWrong": "कुछ गलत हो गया।"
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "सामग्री देखने के लिए इसका पासवर्ड दर्ज करें।",
+    "incorrectPassword": "गलत पासवर्ड।",
+    "locked": "“{{name}}” लॉक है",
+    "passwordPlaceholder": "फ़ोल्डर पासवर्ड",
+    "unlock": "अनलॉक करें"
+  },
+  "imageViewer": {
+    "close": "बंद करें",
+    "download": "डाउनलोड करें",
+    "resetZoom": "ज़ूम रीसेट करें",
+    "zoomIn": "ज़ूम इन करें",
+    "zoomOut": "ज़ूम आउट करें"
+  },
+  "modelViewer": {
+    "autoRotate": "स्वतः घुमाएँ",
+    "close": "बंद करें",
+    "decryptError": "मॉडल डिक्रिप्ट नहीं किया जा सका",
+    "loading": "मॉडल लोड हो रहा है…",
+    "normals": "नॉर्मल्स",
+    "openError": "यह 3D फ़ाइल नहीं खोली जा सकी।",
+    "shaded": "शेडेड",
+    "toggleGrid": "ग्रिड टॉगल करें",
+    "toggleTextures": "टेक्सचर टॉगल करें",
+    "wireframe": "वायरफ़्रेम"
+  },
+  "moveDialog": {
+    "cancel": "रद्द करें",
+    "move": "स्थानांतरित करें",
+    "moveFailed": "स्थानांतरित नहीं किया जा सका",
+    "moved": "स्थानांतरित किया गया",
+    "myDrive": "मेरी ड्राइव",
+    "title": "फ़ोल्डर में स्थानांतरित करें"
+  },
+  "newFolderDialog": {
+    "cancel": "रद्द करें",
+    "create": "बनाएँ",
+    "createError": "फ़ोल्डर नहीं बनाया जा सका",
+    "created": "फ़ोल्डर बना दिया गया",
+    "newFolder": "नया फ़ोल्डर",
+    "placeholder": "फ़ोल्डर का नाम",
+    "title": "नया फ़ोल्डर"
+  },
+  "nodeCard": {
+    "deselect": "चयन हटाएँ",
+    "folder": "फ़ोल्डर",
+    "select": "चुनें"
+  },
+  "nodeContextMenu": {
+    "copyLink": "लिंक कॉपी करें",
+    "details": "विवरण",
+    "download": "डाउनलोड करें",
+    "extractHere": "यहाँ निकालें",
+    "lockFolder": "फ़ोल्डर लॉक करें",
+    "makeCopy": "प्रतिलिपि बनाएँ",
+    "moveToFolder": "फ़ोल्डर में स्थानांतरित करें",
+    "moveToTrash": "ट्रैश में भेजें",
+    "open": "खोलें",
+    "openInPhotos": "फ़ोटोज़ में खोलें",
+    "removeLock": "लॉक हटाएँ",
+    "rename": "नाम बदलें",
+    "share": "साझा करें",
+    "versionHistory": "वर्शन इतिहास देखें",
+    "view": "देखें",
+    "viewIn3d": "3D में देखें"
+  },
+  "nodeTable": {
+    "deselect": "चयन हटाएँ",
+    "modified": "संशोधित",
+    "name": "नाम",
+    "select": "चुनें",
+    "selectAll": "सभी चुनें",
+    "size": "आकार"
+  },
+  "parentCard": {
+    "parentFolder": "मूल फ़ोल्डर"
+  },
+  "renameDialog": {
+    "cancel": "रद्द करें",
+    "couldNotRename": "नाम नहीं बदला जा सका",
+    "renamed": "नाम बदल दिया गया",
+    "save": "सहेजें",
+    "title": "नाम बदलें"
+  },
+  "shell": {
+    "search": "ड्राइव खोजें"
+  },
+  "trash": {
+    "actionFailed": "कार्रवाई विफल रही",
+    "deleteForever": "हमेशा के लिए हटाएँ",
+    "empty": "ट्रैश खाली है।",
+    "permanentlyDeleted": "स्थायी रूप से हटा दिया गया",
+    "restore": "पुनर्स्थापित करें",
+    "restored": "पुनर्स्थापित किया गया",
+    "retentionNotice": "यहाँ रखे गए आइटम ट्रैश में भेजे जाने के 30 दिन बाद स्थायी रूप से हटा दिए जाते हैं।",
+    "title": "ट्रैश"
+  },
+  "versionHistoryDialog": {
+    "close": "बंद करें",
+    "download": "वर्शन डाउनलोड करें",
+    "empty": "कोई पिछला वर्शन नहीं है। एक बनाने के लिए उसी नाम से फ़ाइल दोबारा अपलोड करें।",
+    "loading": "लोड हो रहा है…",
+    "restore": "पुनर्स्थापित करें",
+    "restoreFailed": "पुनर्स्थापित नहीं किया जा सका",
+    "restored": "वर्शन पुनर्स्थापित किया गया",
+    "title": "वर्शन इतिहास",
+    "versionLabel": "वर्शन {{number}}"
+  }
+}

@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Hesap",
+  "subtitle": "Profilinizi ve tercihlerinizi yönetin.",
+  "back": "Geri",
+  "profile": "Profil",
+  "name": "Ad",
+  "email": "E-posta",
+  "preferences": "Tercihler",
+  "language": "Dil",
+  "languageHint": "Arayüzde kullanılan dili seçin.",
+  "appearance": "Görünüm",
+  "appearanceHint": "Açık ve koyu mod arasında geçiş yapın.",
+  "light": "Açık",
+  "dark": "Koyu",
+  "system": "Sistem",
+  "security": "Güvenlik",
+  "devices": "Cihazlar ve oturumlar",
+  "devicesHint": "Oturum açmış cihazları gözden geçirin ve oturumlarını kapatın.",
+  "manageDevices": "Cihazları yönet",
+  "signOut": "Oturumu kapat",
+  "languageChanged": "Dil güncellendi"
+}

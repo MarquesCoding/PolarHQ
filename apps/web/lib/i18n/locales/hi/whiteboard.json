@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "फिर से करें",
+    "resetZoom": "ज़ूम रीसेट करें",
+    "undo": "पूर्ववत करें",
+    "zoomIn": "ज़ूम इन करें",
+    "zoomOut": "ज़ूम आउट करें"
+  },
+  "propertiesPanel": {
+    "background": "पृष्ठभूमि",
+    "bringForward": "आगे लाएँ",
+    "bringToFront": "सबसे आगे लाएँ",
+    "layers": "परतें",
+    "opacity": "अपारदर्शिता",
+    "sendBackward": "पीछे भेजें",
+    "sendToBack": "सबसे पीछे भेजें",
+    "stroke": "स्ट्रोक",
+    "strokeWidth": "स्ट्रोक चौड़ाई"
+  },
+  "shell": {
+    "myWhiteboards": "मेरे व्हाइटबोर्ड",
+    "newWhiteboard": "नया व्हाइटबोर्ड",
+    "product": "व्हाइटबोर्ड",
+    "search": "व्हाइटबोर्ड खोजें",
+    "whiteboards": "व्हाइटबोर्ड"
+  },
+  "toolbar": {
+    "arrow": "तीर",
+    "diamond": "विषमकोण",
+    "draw": "ड्रॉ करें",
+    "ellipse": "दीर्घवृत्त",
+    "eraser": "इरेज़र",
+    "line": "रेखा",
+    "pan": "पैन करें",
+    "rectangle": "आयत",
+    "select": "चुनें",
+    "text": "टेक्स्ट"
+  },
+  "whiteboardList": {
+    "createLabel": "नया व्हाइटबोर्ड",
+    "title": "व्हाइटबोर्ड"
+  }
+}

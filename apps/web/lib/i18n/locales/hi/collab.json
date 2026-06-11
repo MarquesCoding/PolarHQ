@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "इसे खोला नहीं जा सका।",
+    "deleted": "इसे हटा दिया गया था। आपके बदलाव सहेजे नहीं जा सकते।",
+    "deletedNamed": "इसे हटा दिया गया था — “{{name}}”. आपके बदलाव सहेजे नहीं जा सकते।",
+    "encrypted": "यह एन्क्रिप्टेड है।",
+    "goBack": "वापस जाएँ",
+    "unlock": "अनलॉक करें"
+  },
+  "collabList": {
+    "createFailed": "बनाया नहीं जा सका",
+    "deleteFailed": "हटाया नहीं जा सका",
+    "download": "डाउनलोड करें",
+    "empty": "यहाँ अभी कुछ नहीं है।",
+    "movedToTrash": "ट्रैश में ले जाया गया",
+    "noMatches": "आपकी खोज से कुछ भी मेल नहीं खाता।",
+    "rename": "नाम बदलें",
+    "sharedWithMe": "मेरे साथ साझा किया गया",
+    "trash": "ट्रैश"
+  },
+  "collabNav": {
+    "library": "लाइब्रेरी"
+  },
+  "collabToolbar": {
+    "createFailed": "बनाया नहीं जा सका"
+  }
+}

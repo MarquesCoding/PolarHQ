@@ -1,1 +1,193 @@
-{}
+{
+  "actions": {
+    "back": "Назад",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "confirm": "Подтвердить",
+    "create": "Создать",
+    "delete": "Удалить",
+    "done": "Готово",
+    "download": "Скачать",
+    "getStarted": "Начать",
+    "next": "Далее",
+    "open": "Открыть",
+    "remove": "Убрать",
+    "rename": "Переименовать",
+    "retry": "Повторить",
+    "save": "Сохранить",
+    "share": "Поделиться",
+    "signOut": "Выйти"
+  },
+  "appTile": {
+    "beta": "Бета",
+    "soon": "Скоро"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · сборка {{build}}",
+    "whatsNew": "Что нового"
+  },
+  "collabHeader": {
+    "anonymous": "Аноним",
+    "notSavedYet": "Ещё не сохранено",
+    "save": "Сохранить",
+    "savedAt": "Сохранено {{time}}",
+    "saving": "Сохранение…",
+    "share": "Поделиться",
+    "title": "Название"
+  },
+  "confirmButton": {
+    "confirm": "Подтвердить"
+  },
+  "devicesDialog": {
+    "activeNow": "Активно сейчас",
+    "lastActive": "Последняя активность {{time}}",
+    "signOut": "Выйти",
+    "signOutError": "Не удалось выйти на этом устройстве",
+    "signedOut": "Сеанс на устройстве завершён",
+    "thisDevice": "Это устройство",
+    "title": "Устройства и сеансы"
+  },
+  "dropZone": {
+    "dropToUpload": "Перетащите для загрузки"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Каждое изменение автоматически и безопасно сохраняется в Drive.",
+    "encrypted": "Зашифровано",
+    "endToEndEncrypted": "Сквозное шифрование"
+  },
+  "flatSidebar": {
+    "account": "Аккаунт",
+    "apps": "Приложения",
+    "beta": "Бета",
+    "devices": "Устройства",
+    "personalWorkspace": "Личное пространство",
+    "replayIntro": "Показать вступление снова",
+    "settings": "Настройки",
+    "signOut": "Выйти",
+    "storage": "Хранилище",
+    "toggleDarkMode": "Переключить тёмную тему",
+    "unlimited": "Без ограничений"
+  },
+  "importButton": {
+    "import": "Импортировать",
+    "importFailed": "Не удалось импортировать этот файл"
+  },
+  "launcher": {
+    "loadingApps": "Загрузка приложений…",
+    "ofQuota": "из {{quota}}",
+    "signOut": "Выйти",
+    "storage": "Хранилище",
+    "versionBuild": "v{{version}} · сборка {{build}}",
+    "yourApps": "Ваши приложения"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Я сохранил — продолжить",
+    "copied": "Код восстановления скопирован",
+    "copyAriaLabel": "Скопировать код восстановления",
+    "description": "Ваш аккаунт теперь защищён сквозным шифрованием. Этот код восстановления — единственный способ восстановить данные, если вы забудете пароль. Сохраните его в надёжном месте. Мы не сможем показать его снова.",
+    "title": "Сохраните код восстановления"
+  },
+  "selectionBar": {
+    "clearSelection": "Снять выделение",
+    "download": "Скачать",
+    "downloadAllFrames": "Скачать все кадры ({{count}})",
+    "downloadCover": "Скачать обложку",
+    "downloadCovers": "Скачать обложки ({{count}})",
+    "photoFilename": "Фото",
+    "photosZipFilename": "{{count}} фото.zip",
+    "share": "Поделиться",
+    "shareNameFallback": "фото"
+  },
+  "shareDialog": {
+    "cancel": "Отмена",
+    "copyLink": "Скопировать ссылку",
+    "descriptionEncrypted": "Сквозное шифрование: ключ хранится в самой ссылке и никогда не попадает на сервер, поэтому расшифровать файл могут только те, у кого есть ссылка.",
+    "descriptionPublic": "Любой, у кого есть эта ссылка, может скачать файл.",
+    "directDownload": "Прямое скачивание",
+    "directDownloadHint": "Пропустить страницу-заставку и сразу начать скачивание",
+    "expiresAfter": "Истекает через",
+    "expiry1Day": "1 день",
+    "expiry1Hour": "1 час",
+    "expiry30Days": "30 дней",
+    "expiry7Days": "7 дней",
+    "generatingLink": "Создание ссылки…",
+    "limitDownloads": "Ограничить число скачиваний",
+    "limitDownloadsHint": "Отключить ссылку после определённого числа скачиваний",
+    "linkCopied": "Ссылка скопирована",
+    "maximumDownloads": "Максимум скачиваний",
+    "permanentLink": "Постоянная ссылка",
+    "permanentLinkHint": "Ссылка остаётся активной, пока вы её не удалите",
+    "title": "Поделиться «{{name}}»"
+  },
+  "state": {
+    "empty": "Здесь пока ничего нет",
+    "error": "Что-то пошло не так",
+    "loading": "Загрузка…",
+    "saving": "Сохранение…"
+  },
+  "units": {
+    "items_one": "{{count}} элемент",
+    "items_few": "{{count}} элемента",
+    "items_many": "{{count}} элементов",
+    "items_other": "{{count}} элемента"
+  },
+  "uploadManager": {
+    "archiveFailed": "Не удалось создать архив",
+    "downloadFailed": "Не удалось скачать",
+    "taskFailed": "Ошибка",
+    "unsupportedFileType": "Неподдерживаемый тип файла",
+    "unsupportedFileTypeToast": "{{name}} — неподдерживаемый тип файла"
+  },
+  "uploadPanel": {
+    "activity": "Активность",
+    "alreadyInLibrary": "Уже в библиотеке",
+    "archiving": "Архивирование…",
+    "archivingItems_one": "Архивирование {{count}} элемента",
+    "archivingItems_few": "Архивирование {{count}} элементов",
+    "archivingItems_many": "Архивирование {{count}} элементов",
+    "archivingItems_other": "Архивирование {{count}} элементов",
+    "archivingProgress": "Архивирование {{loaded}} из {{size}}",
+    "bytesProgress": "{{loaded}} из {{size}}",
+    "clear": "Очистить",
+    "collapse": "Свернуть",
+    "compressing": "Сжатие…",
+    "dismiss": "Скрыть",
+    "done": "Готово",
+    "downloadFailed": "Не удалось скачать",
+    "downloaded": "Скачано",
+    "downloading": "Скачивание…",
+    "downloadingItems_one": "Скачивание {{count}} элемента",
+    "downloadingItems_few": "Скачивание {{count}} элементов",
+    "downloadingItems_many": "Скачивание {{count}} элементов",
+    "downloadingItems_other": "Скачивание {{count}} элементов",
+    "expand": "Развернуть",
+    "failed": "Ошибка",
+    "processing": "Обработка…",
+    "processingItems_one": "Обработка {{count}} элемента",
+    "processingItems_few": "Обработка {{count}} элементов",
+    "processingItems_many": "Обработка {{count}} элементов",
+    "processingItems_other": "Обработка {{count}} элементов",
+    "speed": "{{speed}}/с",
+    "transcoding": "Перекодирование…",
+    "uploading": "Загрузка…",
+    "uploadingItems_one": "Загрузка {{count}} элемента",
+    "uploadingItems_few": "Загрузка {{count}} элементов",
+    "uploadingItems_many": "Загрузка {{count}} элементов",
+    "uploadingItems_other": "Загрузка {{count}} элементов"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} уже в вашей библиотеке",
+    "alreadyInLibrary_few": "{{count}} уже в вашей библиотеке",
+    "alreadyInLibrary_many": "{{count}} уже в вашей библиотеке",
+    "alreadyInLibrary_other": "{{count}} уже в вашей библиотеке",
+    "uploadFailed": "Не удалось загрузить {{name}}",
+    "uploaded_one": "Загружено {{count}} фото",
+    "uploaded_few": "Загружено {{count}} фото",
+    "uploaded_many": "Загружено {{count}} фото",
+    "uploaded_other": "Загружено {{count}} фото"
+  },
+  "viewToggle": {
+    "gridView": "Сетка",
+    "tableView": "Таблица"
+  }
+}

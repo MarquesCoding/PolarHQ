@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Drive'ım"
+  },
+  "browser": {
+    "archive": "Arşiv",
+    "archiveExtracted": "Arşiv çıkarıldı",
+    "archiveLabel_one": "Arşiv ({{count}} öğe)",
+    "archiveLabel_other": "Arşiv ({{count}} öğe)",
+    "copyCreated": "Kopya oluşturuldu",
+    "couldNotCopy": "Kopyalanamadı",
+    "couldNotCreate": "Oluşturulamadı",
+    "couldNotDelete": "Silinemedi",
+    "couldNotExtract": "Çıkarılamadı",
+    "couldNotMove": "Taşınamadı",
+    "couldNotOpenFile": "Bu dosya açılamadı",
+    "download": "İndir",
+    "dragOrUpload": "Dosyaları buraya sürükleyin veya Yükle'yi kullanın.",
+    "extract": "Çıkar",
+    "linkCopied": "Bağlantı kopyalandı",
+    "move": "Taşı",
+    "movedToFolder_one": "{{count}} öğe {{name}} klasörüne taşındı",
+    "movedToFolder_other": "{{count}} öğe {{name}} klasörüne taşındı",
+    "movedToTrash": "Çöp kutusuna taşındı",
+    "noMatches": "Aramanızla eşleşen bir sonuç yok.",
+    "open": "Aç",
+    "opening": "Açılıyor…",
+    "rename": "Yeniden adlandır",
+    "share": "Paylaş",
+    "trash": "Çöp kutusu"
+  },
+  "detailsPanel": {
+    "closeDetails": "Ayrıntıları kapat",
+    "created": "Oluşturulma",
+    "empty": "Ayrıntılarını görmek için bir öğe seçin.",
+    "file": "Dosya",
+    "files": "Dosyalar",
+    "folder": "Klasör",
+    "folders": "Klasörler",
+    "itemsSelected_one": "{{count}} öğe seçildi",
+    "itemsSelected_other": "{{count}} öğe seçildi",
+    "modified": "Değiştirilme",
+    "size": "Boyut",
+    "title": "Ayrıntılar",
+    "totalSize": "Toplam boyut",
+    "type": "Tür"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Yeni doküman",
+    "newFolder": "Yeni klasör",
+    "newSpreadsheet": "Yeni elektronik tablo",
+    "uploadFiles": "Dosya yükle"
+  },
+  "driveNav": {
+    "drive": "Drive",
+    "location": "Konum",
+    "myDrive": "Drive'ım",
+    "trash": "Çöp kutusu"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Oluşturulamadı",
+    "emptyTrash": "Çöp kutusunu boşalt",
+    "emptyTrashConfirm": "Çöp kutusu boşaltılsın mı?",
+    "new": "Yeni",
+    "newDocument": "Yeni doküman",
+    "newFolder": "Yeni klasör",
+    "newSpreadsheet": "Yeni elektronik tablo",
+    "toggleDetails": "Ayrıntıları aç/kapat",
+    "trashEmptied": "Çöp kutusu boşaltıldı",
+    "uploadFiles": "Dosya yükle"
+  },
+  "folderLockDialog": {
+    "cancel": "İptal",
+    "confirmPasswordPlaceholder": "Parolayı doğrula",
+    "folderLocked": "Klasör kilitlendi",
+    "folderPasswordPlaceholder": "Klasör parolası",
+    "incorrectPassword": "Yanlış parola.",
+    "lock": "Kilitle",
+    "lockDescription": "Bu klasörü açmak için bir parola belirleyin. Bu, yalnızca bu cihazdaki erişimi kısıtlar — dosyalarınız her durumda uçtan uca şifreli kalır.",
+    "lockFolderTitle": "Klasörü kilitle",
+    "lockRemoved": "Kilit kaldırıldı",
+    "passwordsDontMatch": "Parolalar eşleşmiyor.",
+    "removeDescription": "Kilidini kaldırmak için klasör parolasını girin.",
+    "removeLock": "Kilidi kaldır",
+    "removeLockTitle": "Kilidi kaldır",
+    "somethingWentWrong": "Bir şeyler ters gitti."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "İçeriği görüntülemek için parolasını girin.",
+    "incorrectPassword": "Yanlış parola.",
+    "locked": "“{{name}}” kilitli",
+    "passwordPlaceholder": "Klasör parolası",
+    "unlock": "Kilidi aç"
+  },
+  "imageViewer": {
+    "close": "Kapat",
+    "download": "İndir",
+    "resetZoom": "Yakınlaştırmayı sıfırla",
+    "zoomIn": "Yakınlaştır",
+    "zoomOut": "Uzaklaştır"
+  },
+  "modelViewer": {
+    "autoRotate": "Otomatik döndür",
+    "close": "Kapat",
+    "decryptError": "Modelin şifresi çözülemedi",
+    "loading": "Model yükleniyor…",
+    "normals": "Normaller",
+    "openError": "Bu 3D dosyası açılamadı.",
+    "shaded": "Gölgeli",
+    "toggleGrid": "Izgarayı aç/kapat",
+    "toggleTextures": "Dokuları aç/kapat",
+    "wireframe": "Tel kafes"
+  },
+  "moveDialog": {
+    "cancel": "İptal",
+    "move": "Taşı",
+    "moveFailed": "Taşınamadı",
+    "moved": "Taşındı",
+    "myDrive": "Drive'ım",
+    "title": "Klasöre taşı"
+  },
+  "newFolderDialog": {
+    "cancel": "İptal",
+    "create": "Oluştur",
+    "createError": "Klasör oluşturulamadı",
+    "created": "Klasör oluşturuldu",
+    "newFolder": "Yeni klasör",
+    "placeholder": "Klasör adı",
+    "title": "Yeni klasör"
+  },
+  "nodeCard": {
+    "deselect": "Seçimi kaldır",
+    "folder": "Klasör",
+    "select": "Seç"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Bağlantıyı kopyala",
+    "details": "Ayrıntılar",
+    "download": "İndir",
+    "extractHere": "Buraya çıkar",
+    "lockFolder": "Klasörü kilitle",
+    "makeCopy": "Kopyasını oluştur",
+    "moveToFolder": "Klasöre taşı",
+    "moveToTrash": "Çöp kutusuna taşı",
+    "open": "Aç",
+    "openInPhotos": "Fotoğraflar'da aç",
+    "removeLock": "Kilidi kaldır",
+    "rename": "Yeniden adlandır",
+    "share": "Paylaş",
+    "versionHistory": "Sürüm geçmişini gör",
+    "view": "Görüntüle",
+    "viewIn3d": "3D olarak görüntüle"
+  },
+  "nodeTable": {
+    "deselect": "Seçimi kaldır",
+    "modified": "Değiştirilme",
+    "name": "Ad",
+    "select": "Seç",
+    "selectAll": "Tümünü seç",
+    "size": "Boyut"
+  },
+  "parentCard": {
+    "parentFolder": "Üst klasör"
+  },
+  "renameDialog": {
+    "cancel": "İptal",
+    "couldNotRename": "Yeniden adlandırılamadı",
+    "renamed": "Yeniden adlandırıldı",
+    "save": "Kaydet",
+    "title": "Yeniden adlandır"
+  },
+  "shell": {
+    "search": "Drive'da ara"
+  },
+  "trash": {
+    "actionFailed": "İşlem başarısız oldu",
+    "deleteForever": "Kalıcı olarak sil",
+    "empty": "Çöp kutusu boş.",
+    "permanentlyDeleted": "Kalıcı olarak silindi",
+    "restore": "Geri yükle",
+    "restored": "Geri yüklendi",
+    "retentionNotice": "Buradaki öğeler çöp kutusuna taşındıktan 30 gün sonra kalıcı olarak silinir.",
+    "title": "Çöp kutusu"
+  },
+  "versionHistoryDialog": {
+    "close": "Kapat",
+    "download": "Sürümü indir",
+    "empty": "Önceki sürüm yok. Bir sürüm oluşturmak için aynı adlı dosyayı yeniden yükleyin.",
+    "loading": "Yükleniyor…",
+    "restore": "Geri yükle",
+    "restoreFailed": "Geri yüklenemedi",
+    "restored": "Sürüm geri yüklendi",
+    "title": "Sürüm geçmişi",
+    "versionLabel": "Sürüm {{number}}"
+  }
+}

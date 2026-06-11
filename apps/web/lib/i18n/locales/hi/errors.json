@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "कार्रवाई विफल रही",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Google कोड एक्सचेंज विफल रहा।",
+    "gdriveConnectFailed": "Google Drive से कनेक्ट करने में विफल।",
+    "gdriveNoRefreshToken": "Google ने रिफ्रेश टोकन नहीं लौटाया (पिछली पहुँच रद्द करें और फिर से प्रयास करें)।",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET कॉन्फ़िगर नहीं किए गए हैं",
+    "invalidOauthState": "अमान्य OAuth स्थिति।"
+  },
+  "badRequest": "खराब अनुरोध।",
+  "docs": {
+    "alreadyOwner": "पहले से ही स्वामी है",
+    "emailRequired": "ईमेल आवश्यक है।",
+    "noPublicKey": "कोई सार्वजनिक कुंजी नहीं।",
+    "userNotFound": "ऐसा कोई उपयोगकर्ता नहीं"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "सिस्टम फ़ोल्डर को हटाया नहीं जा सकता",
+    "cannotLockFolder": "इस फ़ोल्डर को लॉक नहीं किया जा सकता",
+    "cannotModifySystemFolder": "सिस्टम फ़ोल्डर को संशोधित नहीं किया जा सकता",
+    "extractFailed": "संग्रह को निकाला नहीं जा सका",
+    "fileRequired": "फ़ाइल फ़ील्ड आवश्यक है",
+    "photosMediaFilesOnly": "Photos फ़ोल्डर केवल मीडिया फ़ाइलें स्वीकार करता है",
+    "photosMediaOnly": "Photos फ़ोल्डर केवल छवियाँ, वीडियो और ऑडियो स्वीकार करता है"
+  },
+  "forbidden": "आपके पास ऐसा करने की अनुमति नहीं है।",
+  "generic": "कुछ गड़बड़ हो गई।",
+  "invalidInput": "अमान्य इनपुट।",
+  "notFound": "नहीं मिला।",
+  "photos": {
+    "fileRequired": "एक फ़ाइल आवश्यक है।",
+    "stackNeedsTwoAssets": "स्टैक करने के लिए अपनी कम से कम दो तस्वीरें चुनें।"
+  },
+  "rateLimited": "बहुत अधिक अनुरोध। कृपया थोड़ी देर में फिर से प्रयास करें।",
+  "setup": {
+    "alreadyComplete": "सेटअप पहले ही पूरा हो चुका है",
+    "registrationDisabled": "इस इंस्टेंस पर पंजीकरण अक्षम है"
+  },
+  "unauthorized": "ऐसा करने के लिए आपको साइन इन करना होगा।",
+  "uploads": {
+    "tooLarge": "फ़ाइल {{limit}} अपलोड सीमा से अधिक है"
+  }
+}

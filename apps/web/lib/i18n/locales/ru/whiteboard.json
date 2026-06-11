@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Повторить",
+    "resetZoom": "Сбросить масштаб",
+    "undo": "Отменить",
+    "zoomIn": "Увеличить",
+    "zoomOut": "Уменьшить"
+  },
+  "propertiesPanel": {
+    "background": "Фон",
+    "bringForward": "На передний план",
+    "bringToFront": "Поверх всех",
+    "layers": "Слои",
+    "opacity": "Непрозрачность",
+    "sendBackward": "На задний план",
+    "sendToBack": "Под всеми",
+    "stroke": "Контур",
+    "strokeWidth": "Толщина контура"
+  },
+  "shell": {
+    "myWhiteboards": "Мои доски",
+    "newWhiteboard": "Новая доска",
+    "product": "Доска",
+    "search": "Поиск по доскам",
+    "whiteboards": "Доски"
+  },
+  "toolbar": {
+    "arrow": "Стрелка",
+    "diamond": "Ромб",
+    "draw": "Рисование",
+    "ellipse": "Эллипс",
+    "eraser": "Ластик",
+    "line": "Линия",
+    "pan": "Перемещение",
+    "rectangle": "Прямоугольник",
+    "select": "Выделение",
+    "text": "Текст"
+  },
+  "whiteboardList": {
+    "createLabel": "Новая доска",
+    "title": "Доски"
+  }
+}

@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "एडमिन खाता बनाया गया",
+    "closedLabel": "बंद — कोई नया खाता नहीं",
+    "creating": "बनाया जा रहा है…",
+    "emailLabel": "ईमेल",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "मान्य ईमेल दर्ज करें",
+    "inviteOnlyLabel": "केवल आमंत्रण — एडमिन खाते बनाते हैं",
+    "nameLabel": "आपका नाम",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "नाम आवश्यक है",
+    "openLabel": "खुला — कोई भी पंजीकरण कर सकता है",
+    "passwordLabel": "पासवर्ड",
+    "passwordMin": "कम से कम 8 अक्षरों का उपयोग करें",
+    "passwordPlaceholder": "कम से कम 8 अक्षर",
+    "registrationModeLabel": "खाते कौन बना सकता है?",
+    "setupFailed": "सेटअप विफल रहा",
+    "signInFailed": "साइन-इन विफल रहा",
+    "submit": "एडमिन बनाएँ और जारी रखें"
+  },
+  "createGroupsStep": {
+    "addGroup": "समूह जोड़ें",
+    "adding": "जोड़ा जा रहा है…",
+    "couldNotCreate": "समूह नहीं बनाया जा सका",
+    "createdGroup": "“{{name}}” समूह बनाया गया",
+    "descriptionLabel": "विवरण (वैकल्पिक)",
+    "descriptionPlaceholder": "अधिक कोटा, शुरुआती सुविधाएँ",
+    "finishSetup": "सेटअप पूरा करें",
+    "groupNameLabel": "समूह का नाम",
+    "groupNamePlaceholder": "पावर यूज़र",
+    "intro": "समूहों की मदद से आप एक साथ कई उपयोगकर्ताओं को साझा भूमिकाएँ और सीमाएँ (जैसे स्टोरेज कोटा) सौंप सकते हैं। अभी कुछ बनाएँ, या इसे छोड़कर बाद में एडमिन सेटिंग्स में करें।",
+    "nameRequired": "समूह का नाम आवश्यक है",
+    "skipFinish": "छोड़ें और पूरा करें"
+  },
+  "setup": {
+    "adminDescription": "शुरू करने के लिए पहला व्यवस्थापक खाता बनाएँ।",
+    "groupsDescription": "अपने उपयोगकर्ताओं के लिए समूह सेट करें (वैकल्पिक)।",
+    "loading": "लोड हो रहा है…",
+    "welcome": "{{name}} में आपका स्वागत है"
+  }
+}

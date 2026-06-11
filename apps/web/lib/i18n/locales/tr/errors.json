@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "İşlem başarısız oldu",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Google kod değişimi başarısız oldu.",
+    "gdriveConnectFailed": "Google Drive bağlantısı kurulamadı.",
+    "gdriveNoRefreshToken": "Google bir yenileme jetonu döndürmedi (önceki erişimi iptal edip yeniden deneyin).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET yapılandırılmamış",
+    "invalidOauthState": "Geçersiz OAuth durumu."
+  },
+  "badRequest": "Hatalı istek.",
+  "docs": {
+    "alreadyOwner": "Zaten sahibi",
+    "emailRequired": "E-posta gerekli.",
+    "noPublicKey": "Genel anahtar yok.",
+    "userNotFound": "Böyle bir kullanıcı yok"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "bir sistem klasörü silinemez",
+    "cannotLockFolder": "bu klasör kilitlenemez",
+    "cannotModifySystemFolder": "bir sistem klasörü değiştirilemez",
+    "extractFailed": "arşiv çıkarılamadı",
+    "fileRequired": "dosya alanı gerekli",
+    "photosMediaFilesOnly": "Fotoğraflar klasörü yalnızca medya dosyalarını kabul eder",
+    "photosMediaOnly": "Fotoğraflar klasörü yalnızca görsel, video ve ses kabul eder"
+  },
+  "forbidden": "Bunu yapma izniniz yok.",
+  "generic": "Bir şeyler ters gitti.",
+  "invalidInput": "Geçersiz giriş.",
+  "notFound": "Bulunamadı.",
+  "photos": {
+    "fileRequired": "Bir dosya gerekli.",
+    "stackNeedsTwoAssets": "İstiflemek için kendi fotoğraflarınızdan en az ikisini seçin."
+  },
+  "rateLimited": "Çok fazla istek gönderildi. Lütfen kısa süre sonra tekrar deneyin.",
+  "setup": {
+    "alreadyComplete": "Kurulum zaten tamamlandı",
+    "registrationDisabled": "bu sunucuda kayıt devre dışı"
+  },
+  "unauthorized": "Bunu yapmak için oturum açmanız gerekir.",
+  "uploads": {
+    "tooLarge": "Dosya, {{limit}} yükleme sınırını aşıyor"
+  }
+}

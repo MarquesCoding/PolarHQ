@@ -1,1 +1,208 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "قرصي"
+  },
+  "browser": {
+    "archive": "أرشيف",
+    "archiveExtracted": "تم استخراج الأرشيف",
+    "archiveLabel_zero": "أرشيف ({{count}} عنصر)",
+    "archiveLabel_one": "أرشيف (عنصر واحد)",
+    "archiveLabel_two": "أرشيف (عنصران)",
+    "archiveLabel_few": "أرشيف ({{count}} عناصر)",
+    "archiveLabel_many": "أرشيف ({{count}} عنصرًا)",
+    "archiveLabel_other": "أرشيف ({{count}} عنصر)",
+    "copyCreated": "تم إنشاء نسخة",
+    "couldNotCopy": "تعذّر النسخ",
+    "couldNotCreate": "تعذّر الإنشاء",
+    "couldNotDelete": "تعذّر الحذف",
+    "couldNotExtract": "تعذّر الاستخراج",
+    "couldNotMove": "تعذّر النقل",
+    "couldNotOpenFile": "تعذّر فتح هذا الملف",
+    "download": "تنزيل",
+    "dragOrUpload": "اسحب الملفات إلى هنا أو استخدم الرفع.",
+    "extract": "استخراج",
+    "linkCopied": "تم نسخ الرابط",
+    "move": "نقل",
+    "movedToFolder_zero": "تم نقل {{count}} عنصر إلى {{name}}",
+    "movedToFolder_one": "تم نقل عنصر واحد إلى {{name}}",
+    "movedToFolder_two": "تم نقل عنصرين إلى {{name}}",
+    "movedToFolder_few": "تم نقل {{count}} عناصر إلى {{name}}",
+    "movedToFolder_many": "تم نقل {{count}} عنصرًا إلى {{name}}",
+    "movedToFolder_other": "تم نقل {{count}} عنصر إلى {{name}}",
+    "movedToTrash": "تم النقل إلى المهملات",
+    "noMatches": "لا توجد نتائج مطابقة لبحثك.",
+    "open": "فتح",
+    "opening": "جارٍ الفتح…",
+    "rename": "إعادة تسمية",
+    "share": "مشاركة",
+    "trash": "المهملات"
+  },
+  "detailsPanel": {
+    "closeDetails": "إغلاق التفاصيل",
+    "created": "تاريخ الإنشاء",
+    "empty": "حدّد عنصرًا لعرض تفاصيله.",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "itemsSelected_zero": "تم تحديد {{count}} عنصر",
+    "itemsSelected_one": "تم تحديد عنصر واحد",
+    "itemsSelected_two": "تم تحديد عنصرين",
+    "itemsSelected_few": "تم تحديد {{count}} عناصر",
+    "itemsSelected_many": "تم تحديد {{count}} عنصرًا",
+    "itemsSelected_other": "تم تحديد {{count}} عنصر",
+    "modified": "تاريخ التعديل",
+    "size": "الحجم",
+    "title": "التفاصيل",
+    "totalSize": "الحجم الإجمالي",
+    "type": "النوع"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "مستند جديد",
+    "newFolder": "مجلد جديد",
+    "newSpreadsheet": "جدول بيانات جديد",
+    "uploadFiles": "رفع ملفات"
+  },
+  "driveNav": {
+    "drive": "القرص",
+    "location": "الموقع",
+    "myDrive": "قرصي",
+    "trash": "المهملات"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "تعذّر الإنشاء",
+    "emptyTrash": "إفراغ المهملات",
+    "emptyTrashConfirm": "إفراغ المهملات؟",
+    "new": "جديد",
+    "newDocument": "مستند جديد",
+    "newFolder": "مجلد جديد",
+    "newSpreadsheet": "جدول بيانات جديد",
+    "toggleDetails": "إظهار/إخفاء التفاصيل",
+    "trashEmptied": "تم إفراغ المهملات",
+    "uploadFiles": "رفع ملفات"
+  },
+  "folderLockDialog": {
+    "cancel": "إلغاء",
+    "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+    "folderLocked": "تم قفل المجلد",
+    "folderPasswordPlaceholder": "كلمة مرور المجلد",
+    "incorrectPassword": "كلمة المرور غير صحيحة.",
+    "lock": "قفل",
+    "lockDescription": "عيّن كلمة مرور لفتح هذا المجلد. تتحكم في الوصول على هذا الجهاز — تبقى ملفاتك مشفّرة طرفًا إلى طرف على أي حال.",
+    "lockFolderTitle": "قفل المجلد",
+    "lockRemoved": "تمت إزالة القفل",
+    "passwordsDontMatch": "كلمتا المرور غير متطابقتين.",
+    "removeDescription": "أدخل كلمة مرور المجلد لإزالة قفله.",
+    "removeLock": "إزالة القفل",
+    "removeLockTitle": "إزالة القفل",
+    "somethingWentWrong": "حدث خطأ ما."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "أدخل كلمة المرور لعرض المحتويات.",
+    "incorrectPassword": "كلمة المرور غير صحيحة.",
+    "locked": "المجلد ”{{name}}“ مقفل",
+    "passwordPlaceholder": "كلمة مرور المجلد",
+    "unlock": "إلغاء القفل"
+  },
+  "imageViewer": {
+    "close": "إغلاق",
+    "download": "تنزيل",
+    "resetZoom": "إعادة تعيين التكبير",
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير"
+  },
+  "modelViewer": {
+    "autoRotate": "تدوير تلقائي",
+    "close": "إغلاق",
+    "decryptError": "تعذّر فك تشفير النموذج",
+    "loading": "جارٍ تحميل النموذج…",
+    "normals": "المتجهات العمودية",
+    "openError": "تعذّر فتح ملف ثلاثي الأبعاد هذا.",
+    "shaded": "مظلّل",
+    "toggleGrid": "إظهار/إخفاء الشبكة",
+    "toggleTextures": "إظهار/إخفاء الخامات",
+    "wireframe": "إطار سلكي"
+  },
+  "moveDialog": {
+    "cancel": "إلغاء",
+    "move": "نقل",
+    "moveFailed": "تعذّر النقل",
+    "moved": "تم النقل",
+    "myDrive": "قرصي",
+    "title": "النقل إلى مجلد"
+  },
+  "newFolderDialog": {
+    "cancel": "إلغاء",
+    "create": "إنشاء",
+    "createError": "تعذّر إنشاء المجلد",
+    "created": "تم إنشاء المجلد",
+    "newFolder": "مجلد جديد",
+    "placeholder": "اسم المجلد",
+    "title": "مجلد جديد"
+  },
+  "nodeCard": {
+    "deselect": "إلغاء التحديد",
+    "folder": "مجلد",
+    "select": "تحديد"
+  },
+  "nodeContextMenu": {
+    "copyLink": "نسخ الرابط",
+    "details": "التفاصيل",
+    "download": "تنزيل",
+    "extractHere": "استخراج هنا",
+    "lockFolder": "قفل المجلد",
+    "makeCopy": "إنشاء نسخة",
+    "moveToFolder": "النقل إلى مجلد",
+    "moveToTrash": "النقل إلى المهملات",
+    "open": "فتح",
+    "openInPhotos": "فتح في الصور",
+    "removeLock": "إزالة القفل",
+    "rename": "إعادة تسمية",
+    "share": "مشاركة",
+    "versionHistory": "عرض سجل الإصدارات",
+    "view": "عرض",
+    "viewIn3d": "عرض ثلاثي الأبعاد"
+  },
+  "nodeTable": {
+    "deselect": "إلغاء التحديد",
+    "modified": "تاريخ التعديل",
+    "name": "الاسم",
+    "select": "تحديد",
+    "selectAll": "تحديد الكل",
+    "size": "الحجم"
+  },
+  "parentCard": {
+    "parentFolder": "المجلد الأصل"
+  },
+  "renameDialog": {
+    "cancel": "إلغاء",
+    "couldNotRename": "تعذّرت إعادة التسمية",
+    "renamed": "تمت إعادة التسمية",
+    "save": "حفظ",
+    "title": "إعادة تسمية"
+  },
+  "shell": {
+    "search": "البحث في القرص"
+  },
+  "trash": {
+    "actionFailed": "فشل الإجراء",
+    "deleteForever": "حذف نهائي",
+    "empty": "المهملات فارغة.",
+    "permanentlyDeleted": "تم الحذف نهائيًا",
+    "restore": "استعادة",
+    "restored": "تمت الاستعادة",
+    "retentionNotice": "تُحذف العناصر هنا نهائيًا بعد 30 يومًا من نقلها إلى المهملات.",
+    "title": "المهملات"
+  },
+  "versionHistoryDialog": {
+    "close": "إغلاق",
+    "download": "تنزيل الإصدار",
+    "empty": "لا توجد إصدارات سابقة. أعد رفع ملف بالاسم نفسه لإنشاء إصدار.",
+    "loading": "جارٍ التحميل…",
+    "restore": "استعادة",
+    "restoreFailed": "تعذّرت الاستعادة",
+    "restored": "تمت استعادة الإصدار",
+    "title": "سجل الإصدارات",
+    "versionLabel": "الإصدار {{number}}"
+  }
+}
