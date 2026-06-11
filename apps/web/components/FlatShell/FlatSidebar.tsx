@@ -1,6 +1,6 @@
 "use client"
 
-import { type ReactNode, useState } from "react"
+import { type ReactNode, useEffect, useState } from "react"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import logo from "../../public/logo.png"
@@ -8,7 +8,7 @@ import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
 import { lockKeys } from "@lib/e2e"
 import { fetchStorageStats } from "@lib/drive"
-import { formatBytes } from "@lib/format"
+import { bytesParts, formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setSearchQuery } from "@store/uiSlice"
@@ -22,6 +22,8 @@ import {
   IconSun,
 } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
+import NumberFlow from "@number-flow/react"
+import { motion } from "motion/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -88,6 +90,18 @@ const FlatSidebar = ({
     usage?.quotaBytes && usage.quotaBytes > 0
       ? Math.min(100, (usage.usedBytes / usage.quotaBytes) * 100)
       : 0
+  const usedParts = bytesParts(usage?.usedBytes ?? 0)
+  const totalLabel = usage?.quotaBytes
+    ? formatBytes(usage.quotaBytes)
+    : t("flatSidebar.unlimited")
+
+  const [shownUsed, setShownUsed] = useState(0)
+  useEffect(() => {
+    if (!usage) return
+    const frame = requestAnimationFrame(() => setShownUsed(bytesParts(usage.usedBytes).value))
+    return () => cancelAnimationFrame(frame)
+  }, [usage])
+
   const dark = resolvedTheme === "dark"
 
   return (
@@ -196,13 +210,28 @@ const FlatSidebar = ({
           <div className="mb-1.5 flex items-center justify-between text-xs">
             <span className="text-muted-foreground font-medium">{t("flatSidebar.storage")}</span>
             <span dir="ltr" className="text-muted-foreground tabular-nums">
-              {usage
-                ? `${formatBytes(usage.usedBytes)} / ${usage.quotaBytes ? formatBytes(usage.quotaBytes) : t("flatSidebar.unlimited")}`
-                : "—"}
+              {usage ? (
+                <NumberFlow
+                  value={shownUsed}
+                  suffix={` ${usedParts.unit} / ${totalLabel}`}
+                  format={{
+                    minimumFractionDigits: usedParts.decimals,
+                    maximumFractionDigits: usedParts.decimals,
+                  }}
+                  respectMotionPreference={false}
+                />
+              ) : (
+                "—"
+              )}
             </span>
           </div>
           <div className="bg-sidebar-accent h-1.5 w-full overflow-hidden rounded-full">
-            <div className="bg-primary h-full rounded-full" style={{ width: `${usedPct}%` }} />
+            <motion.div
+              className="bg-primary h-full rounded-full"
+              initial={{ width: "0%" }}
+              animate={{ width: `${usedPct}%` }}
+              transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+            />
           </div>
         </Button>
 

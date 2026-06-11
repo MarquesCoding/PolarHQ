@@ -76,6 +76,7 @@ const StorageDialog = ({ open, onOpenChange }: StorageDialogProps) => {
                       minimumFractionDigits: parts.decimals,
                       maximumFractionDigits: parts.decimals,
                     }}
+                    respectMotionPreference={false}
                   />
                 </span>
                 <span className="text-muted-foreground text-sm">
@@ -92,7 +93,7 @@ const StorageDialog = ({ open, onOpenChange }: StorageDialogProps) => {
                   <motion.div
                     key={segment.app}
                     className={APP_META[segment.app].color}
-                    initial={{ width: 0 }}
+                    initial={{ width: "0%" }}
                     animate={{ width: `${(segment.bytes / denom) * 100}%` }}
                     transition={{ duration: 0.6, delay: index * 0.08, ease: [0.32, 0.72, 0, 1] }}
                   />
