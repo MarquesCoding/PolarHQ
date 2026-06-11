@@ -8,7 +8,7 @@ import StorageMeter from "@workspace/ui/components/storage-meter"
 import SuiteShell from "@workspace/ui/components/suite-shell"
 import SuiteSidebar, { type SuiteNavItem } from "@workspace/ui/components/suite-sidebar"
 import SuiteTitleBar from "@workspace/ui/components/suite-title-bar"
-import WorkspaceSwitcher from "@workspace/ui/components/workspace-switcher"
+import { Icon } from "@workspace/ui/components/icon"
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
 import { cn } from "@workspace/ui/lib/utils"
 
@@ -155,7 +155,19 @@ const PhotosDemo = () => {
         <SuiteSidebar
           collapsed={collapsed}
           items={NAV}
-          header={<WorkspaceSwitcher appName="PolarHQ" productName="Photos" icon="images-3" collapsed={collapsed} />}
+          header={
+            <div className={cn("flex items-center gap-2 rounded-lg p-1.5", collapsed && "justify-center")}>
+              <span className="bg-foreground text-background flex size-8 shrink-0 items-center justify-center rounded-lg">
+                <Icon name="images-3" className="size-5" />
+              </span>
+              {!collapsed ? (
+                <span className="flex min-w-0 flex-col text-left leading-tight">
+                  <span className="truncate text-sm font-semibold">PolarHQ</span>
+                  <span className="text-muted-foreground truncate text-xs">Photos</span>
+                </span>
+              ) : null}
+            </div>
+          }
           footer={<StorageMeter collapsed={collapsed} percent={42} label="4.2 GB of 10 GB" footer="v0.1.0 · build alpha" />}
         />
       }
