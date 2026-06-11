@@ -22,7 +22,7 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 
 ## Shell / navigation
 - [ ] Separate the app logo from the app dropdown; make the **logo a dropdown for workgroup selection**.
-- [ ] **Collapse sidebar** + better mobile support (consider shadcn sidebar).
+- [x] **Collapse sidebar** + better mobile support — `uiSlice` gains `sidebarCollapsed` (desktop hide) + `sidebarMobileOpen` (off-canvas drawer); `FlatShell` renders the sidebar as a fixed slide-in drawer with scrim below `md` and a collapsible in-flow column at `md+`; `FlatTopBar` gets a leading hamburger (mobile) / collapse toggle (desktop). Drawer closes on scrim click, Escape, and route change.
 - [x] Nicer **dark/light mode** transition — View Transitions circular reveal from the toggle; expands on, contracts on off (`fill: forwards` to avoid the end-of-animation flash).
 
 ## Dialogs / onboarding
@@ -41,3 +41,33 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 
 ## Infra
 - [x] release-please: workflow already declares `permissions: contents/pull-requests: write` **and** supports a PAT (`secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN`). The earlier failure was the **repo setting** "Allow GitHub Actions to create and approve pull requests" being off — flip that in Settings → Actions → General (or add a `RELEASE_PLEASE_TOKEN` PAT secret to bypass it). No code change needed.
+
+## Spacedrive-inspired (community references)
+Ideas the community surfaced from [Spacedrive](https://spacedrive.com) (cross-platform file explorer). Mapped to our Drive + Photos apps; ✓-marked sub-notes are things we already have in some form to build on, not blockers. None of these are committed scope yet — they're a research backlog to triage.
+
+### Drive — browsing & views
+- [ ] **Miller-column (cascading) view** for Drive: macOS-style multi-pane column browser where selecting a folder opens its children in the next column, with the full path visible at a glance. Add as a view mode beside the existing grid/list (`viewToggle`). Each column reuses `NodeCard`/`NodeTable` rows; the rightmost selection drives the inspector.
+- [ ] **Tabbed browsing**: multiple location tabs in one window (`Downloads | /home/… | Overview | +`), each with its own folder/scroll/selection state. Lets you keep Drive, an album, and the overview open at once.
+- [ ] **Richer grid view**: thumbnail tiles with the file **name + size** under each (Spacedrive's Downloads grid), generated previews for many file types (already have image/video thumbs — extend to PDFs/docs), and per-item kind glyphs.
+- [ ] **Smart/saved views in the sidebar**: first-class `Recents`, `Favorites`, `File Kinds` (filter by image/video/document/audio/archive), and saved searches — surfaced as sidebar entries like Spacedrive's `Overview / Recents / Favorites / File Kinds`.
+
+### Inspector panel (right-hand details)
+- [ ] **Unify into a tabbed inspector** across Drive + Photos: tabs for Info, Media preview, Location (map), Comments/Activity, History/Versions, More (⋯) — Spacedrive's `info · image · location · chat · history · ⋯` rail. We already have a Photos `InfoPanel` (file/date/camera/location/EXIF) and Drive versions — fold them into one shared component.
+- [ ] **Richer metadata sections**: Details (size/kind/extension), Dates (Taken/Captured/Created/Modified), **Image info** (dimensions, camera — we have EXIF), **Video info** (resolution, duration, captured date), Storage (path, "Local" indicator), Tags.
+- [ ] **Generated-derivatives panel**: list the artefacts we create for an asset (multiple thumbnail tiers — `grid@1x`, `grid@2x`, `detail@1x` — plus future ones), each with kind + size. Ties into our E2E thumbnail pipeline; would also house novelty derivatives (see 3D below).
+
+### Storage visualisation & library overview
+- [ ] **"Space" storage bubble view** (Spacedrive's signature): an interactive circle-pack / treemap of files & folders sized by bytes, zoomable, to *see* what's eating space — a visual companion to the new Storage dialog. Could live as a tab in `StorageDialog` or a dedicated `/drive/space` route. (We already compute per-app + largest-files via `GET /api/v1/drive/storage` — extend it to a folder-tree size aggregation.)
+- [ ] **Library Overview dashboard**: a landing dashboard with headline stats — library size, total capacity, free space, index size, preview-media size — a usage bar segmented by **file kind** (image/text/folder/other/unknown) with a legend, a by-kind histogram, and an "N total files / M unidentified" count. (Reuses the storage-stats endpoint; complements the per-app breakdown we already show.)
+- [ ] **Per-device & per-location cards**: storage gauges per device and per indexed location ("18.1 GB free of 31.5 GB", `LOCAL` badge). Maps loosely onto our device list + a future "locations" concept.
+
+### Photos / media
+- [ ] **Immersive fullscreen viewer polish**: edge-to-edge media viewer with keyboard nav (`ESC`/`Space` to close, `←/→` to navigate) and a clean overlaid control cluster — align our photo viewer with this. (We have a viewer; check the keyboard affordances + chrome.)
+- [ ] **Date-grouped "all media" view across sources**: Spacedrive's Photos-style grid groups by capture date across every location. We already group Photos by day — consider a unified media view that also pulls media out of Drive folders.
+- [ ] **3D / Gaussian-splat derivative** (stretch/novelty): generate a `.ply` gaussian splat from suitable photos and show a 3D viewer toggle in the viewer. Pure exploration — low priority, high wow-factor.
+
+### Background jobs
+- [ ] **Jobs panel**: a first-class queue of background work (uploads, thumbnail/preview generation, ML embedding/indexing, facial recognition) with per-job progress, pause/resume/retry — Spacedrive's `Sync / Jobs` sidebar. Directly complements the upload-progress + ML/embedding work already in flight.
+
+### Notes / fit
+- Spacedrive is a *local, multi-device* VDFS; we are a *server-hosted, E2E* suite — so device/volume/NAS-indexing concepts (`All Devices`, `Volumes`, `Locations`, offline-device badges) map only loosely. The **views, inspector, storage visualisation, overview dashboard, and jobs panel** are the directly-transferable wins; the distributed-filesystem parts are mostly out of scope.

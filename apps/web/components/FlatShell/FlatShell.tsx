@@ -1,10 +1,13 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { authClient } from "@lib/authClient"
 import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@lib/e2e"
 import { UploadProvider } from "@lib/uploadManager"
+import { useAppDispatch, useAppSelector } from "@store/hooks"
+import { setSidebarMobileOpen } from "@store/uiSlice"
+import { cn } from "@workspace/ui/lib/utils"
 import OnboardingCard from "@components/OnboardingCard/OnboardingCard"
 import Spinner from "@components/Spinner/Spinner"
 import UploadPanel from "@components/UploadPanel/UploadPanel"
@@ -30,9 +33,26 @@ interface FlatShellProps {
  */
 const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
   const router = useRouter()
+  const pathname = usePathname()
+  const dispatch = useAppDispatch()
+  const collapsed = useAppSelector((state) => state.ui.sidebarCollapsed)
+  const mobileOpen = useAppSelector((state) => state.ui.sidebarMobileOpen)
   const { data: session, isPending } = authClient.useSession()
   const [embedded, setEmbedded] = useState(false)
   const [unlockOpen, setUnlockOpen] = useState(false)
+
+  useEffect(() => {
+    dispatch(setSidebarMobileOpen(false))
+  }, [pathname, dispatch])
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") dispatch(setSidebarMobileOpen(false))
+    }
+    document.addEventListener("keydown", onKey)
+    return () => document.removeEventListener("keydown", onKey)
+  }, [mobileOpen, dispatch])
 
   useEffect(() => {
     try {
@@ -96,7 +116,23 @@ const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
   return (
     <UploadProvider>
       <div className="bg-background flex h-svh overflow-hidden select-none">
-        {sidebar}
+        {mobileOpen ? (
+          <div
+            aria-hidden
+            onClick={() => dispatch(setSidebarMobileOpen(false))}
+            className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          />
+        ) : null}
+        <div
+          className={cn(
+            "fixed inset-y-0 start-0 z-50 transition-transform duration-200 ease-out",
+            "md:static md:z-auto md:translate-x-0! md:transition-none",
+            mobileOpen ? "translate-x-0" : "-translate-x-full rtl:translate-x-full",
+            collapsed && "md:hidden",
+          )}
+        >
+          {sidebar}
+        </div>
         <div className="border-border flex min-w-0 flex-1 flex-col border-s">{content}</div>
       </div>
       <UploadPanel />

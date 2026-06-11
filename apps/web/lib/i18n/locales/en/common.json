@@ -119,6 +119,10 @@
     "toggleDarkMode": "Toggle dark mode",
     "unlimited": "Unlimited"
   },
+  "flatTopBar": {
+    "openSidebar": "Open menu",
+    "toggleSidebar": "Toggle sidebar"
+  },
   "importButton": {
     "import": "Import",
     "importFailed": "Could not import this file"
