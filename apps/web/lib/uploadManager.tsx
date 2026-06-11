@@ -22,7 +22,11 @@ import {
 import { detectBurstGroups } from "@lib/burst"
 import { isUnlocked } from "@lib/e2e"
 import { pairLivePhotos } from "@lib/motionPhoto"
-import { downloadDecryptedPhoto, uploadEncryptedMedia } from "@lib/photosE2e"
+import {
+  downloadDecryptedPhoto,
+  uploadEncryptedMedia,
+  uploadEncryptedMediaChunked,
+} from "@lib/photosE2e"
 import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@lib/download"
 import { deleteAssets, fetchProcessing, stackAssets } from "@lib/photos"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
@@ -297,9 +301,10 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
                 : uploadEncryptedDriveFile(target.parentId, file, options)
               ).then((node) => ({ node }) as UploadResponse)
             : target.kind === "photos" && isUnlocked() && isMediaFile(file)
-              ? uploadEncryptedMedia(file, motionByImage.get(file), options).then(
-                  (asset) => ({ asset, deduped: false }) as UploadResponse,
-                )
+              ? (file.size >= CHUNKED_UPLOAD_THRESHOLD
+                  ? uploadEncryptedMediaChunked(file, motionByImage.get(file), options)
+                  : uploadEncryptedMedia(file, motionByImage.get(file), options)
+                ).then((asset) => ({ asset, deduped: false }) as UploadResponse)
               : xhrUpload(file, target, options)
         return uploadPromise
           .then((response) => {
