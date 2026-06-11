@@ -22,6 +22,14 @@
     "beta": "ベータ",
     "soon": "近日公開"
   },
+  "apps": {
+    "admin": "管理",
+    "docs": "ドキュメント",
+    "drive": "ドライブ",
+    "photos": "写真",
+    "sheets": "Sheets",
+    "whiteboard": "ホワイトボード"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · ビルド {{build}}",
     "whatsNew": "新着情報"

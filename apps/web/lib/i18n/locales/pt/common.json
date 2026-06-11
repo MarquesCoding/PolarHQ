@@ -22,6 +22,14 @@
     "beta": "Beta",
     "soon": "Em breve"
   },
+  "apps": {
+    "admin": "Administração",
+    "docs": "Docs",
+    "drive": "Drive",
+    "photos": "Fotografias",
+    "sheets": "Sheets",
+    "whiteboard": "Quadro branco"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · compilação {{build}}",
     "whatsNew": "Novidades"

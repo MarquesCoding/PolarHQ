@@ -22,6 +22,14 @@
     "beta": "베타",
     "soon": "출시 예정"
   },
+  "apps": {
+    "admin": "관리자",
+    "docs": "문서",
+    "drive": "드라이브",
+    "photos": "사진",
+    "sheets": "Sheets",
+    "whiteboard": "화이트보드"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · 빌드 {{build}}",
     "whatsNew": "새로운 기능"

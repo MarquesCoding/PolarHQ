@@ -22,6 +22,14 @@
     "beta": "Бета",
     "soon": "Наскоро"
   },
+  "apps": {
+    "admin": "Администрација",
+    "docs": "Документи",
+    "drive": "Диск",
+    "photos": "Фотографии",
+    "sheets": "Табели",
+    "whiteboard": "Табла"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · верзија {{build}}",
     "whatsNew": "Што е ново"

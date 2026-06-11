@@ -22,6 +22,14 @@
     "beta": "Beta",
     "soon": "Sắp ra mắt"
   },
+  "apps": {
+    "admin": "Quản trị",
+    "docs": "Docs",
+    "drive": "Drive",
+    "photos": "Ảnh",
+    "sheets": "Sheets",
+    "whiteboard": "Bảng trắng"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · bản dựng {{build}}",
     "whatsNew": "Có gì mới"

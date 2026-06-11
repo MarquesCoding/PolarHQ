@@ -22,6 +22,14 @@
     "beta": "Beta",
     "soon": "Snart"
   },
+  "apps": {
+    "admin": "Admin",
+    "docs": "Dokument",
+    "drive": "Enhet",
+    "photos": "Foton",
+    "sheets": "Sheets",
+    "whiteboard": "Whiteboard"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · build {{build}}",
     "whatsNew": "Nyheter"

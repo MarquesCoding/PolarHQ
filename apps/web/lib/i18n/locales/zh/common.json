@@ -22,6 +22,14 @@
     "beta": "测试版",
     "soon": "即将推出"
   },
+  "apps": {
+    "admin": "管理后台",
+    "docs": "文档",
+    "drive": "云端硬盘",
+    "photos": "照片",
+    "sheets": "表格",
+    "whiteboard": "白板"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · 版本号 {{build}}",
     "whatsNew": "更新内容"

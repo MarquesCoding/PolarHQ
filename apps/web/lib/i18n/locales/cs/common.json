@@ -22,6 +22,14 @@
     "beta": "Beta",
     "soon": "Brzy"
   },
+  "apps": {
+    "admin": "Administrace",
+    "docs": "Dokumenty",
+    "drive": "Disk",
+    "photos": "Fotky",
+    "sheets": "Tabulky",
+    "whiteboard": "Tabule"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · sestavení {{build}}",
     "whatsNew": "Novinky"
@@ -126,9 +134,9 @@
     "saving": "Ukládání…"
   },
   "units": {
-    "items_one": "{{count}} položka",
     "items_few": "{{count}} položky",
     "items_many": "{{count}} položky",
+    "items_one": "{{count}} položka",
     "items_other": "{{count}} položek"
   },
   "uploadManager": {
@@ -142,9 +150,9 @@
     "activity": "Aktivita",
     "alreadyInLibrary": "Již v knihovně",
     "archiving": "Archivace…",
-    "archivingItems_one": "Archivace {{count}} položky",
     "archivingItems_few": "Archivace {{count}} položek",
     "archivingItems_many": "Archivace {{count}} položek",
+    "archivingItems_one": "Archivace {{count}} položky",
     "archivingItems_other": "Archivace {{count}} položek",
     "archivingProgress": "Archivace {{loaded}} z {{size}}",
     "bytesProgress": "{{loaded}} z {{size}}",
@@ -156,34 +164,34 @@
     "downloadFailed": "Stahování selhalo",
     "downloaded": "Staženo",
     "downloading": "Stahování…",
-    "downloadingItems_one": "Stahování {{count}} položky",
     "downloadingItems_few": "Stahování {{count}} položek",
     "downloadingItems_many": "Stahování {{count}} položek",
+    "downloadingItems_one": "Stahování {{count}} položky",
     "downloadingItems_other": "Stahování {{count}} položek",
     "expand": "Rozbalit",
     "failed": "Selhalo",
     "processing": "Zpracování…",
-    "processingItems_one": "Zpracování {{count}} položky",
     "processingItems_few": "Zpracování {{count}} položek",
     "processingItems_many": "Zpracování {{count}} položek",
+    "processingItems_one": "Zpracování {{count}} položky",
     "processingItems_other": "Zpracování {{count}} položek",
     "speed": "{{speed}}/s",
     "transcoding": "Překódování…",
     "uploading": "Nahrávání…",
-    "uploadingItems_one": "Nahrávání {{count}} položky",
     "uploadingItems_few": "Nahrávání {{count}} položek",
     "uploadingItems_many": "Nahrávání {{count}} položek",
+    "uploadingItems_one": "Nahrávání {{count}} položky",
     "uploadingItems_other": "Nahrávání {{count}} položek"
   },
   "useUploader": {
-    "alreadyInLibrary_one": "{{count}} je již ve vaší knihovně",
     "alreadyInLibrary_few": "{{count}} jsou již ve vaší knihovně",
     "alreadyInLibrary_many": "{{count}} je již ve vaší knihovně",
+    "alreadyInLibrary_one": "{{count}} je již ve vaší knihovně",
     "alreadyInLibrary_other": "{{count}} je již ve vaší knihovně",
     "uploadFailed": "Nepodařilo se nahrát {{name}}",
-    "uploaded_one": "Nahrána {{count}} fotka",
     "uploaded_few": "Nahrány {{count}} fotky",
     "uploaded_many": "Nahráno {{count}} fotky",
+    "uploaded_one": "Nahrána {{count}} fotka",
     "uploaded_other": "Nahráno {{count}} fotek"
   },
   "viewToggle": {

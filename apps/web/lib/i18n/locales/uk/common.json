@@ -22,6 +22,14 @@
     "beta": "Бета",
     "soon": "Незабаром"
   },
+  "apps": {
+    "admin": "Адміністрування",
+    "docs": "Документи",
+    "drive": "Диск",
+    "photos": "Фото",
+    "sheets": "Таблиці",
+    "whiteboard": "Дошка"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · збірка {{build}}",
     "whatsNew": "Що нового"
@@ -126,9 +134,9 @@
     "saving": "Збереження…"
   },
   "units": {
-    "items_one": "{{count}} елемент",
     "items_few": "{{count}} елементи",
     "items_many": "{{count}} елементів",
+    "items_one": "{{count}} елемент",
     "items_other": "{{count}} елемента"
   },
   "uploadManager": {
@@ -142,9 +150,9 @@
     "activity": "Активність",
     "alreadyInLibrary": "Уже в бібліотеці",
     "archiving": "Архівування…",
-    "archivingItems_one": "Архівування {{count}} елемента",
     "archivingItems_few": "Архівування {{count}} елементів",
     "archivingItems_many": "Архівування {{count}} елементів",
+    "archivingItems_one": "Архівування {{count}} елемента",
     "archivingItems_other": "Архівування {{count}} елемента",
     "archivingProgress": "Архівування {{loaded}} з {{size}}",
     "bytesProgress": "{{loaded}} з {{size}}",
@@ -156,34 +164,34 @@
     "downloadFailed": "Не вдалося завантажити",
     "downloaded": "Завантажено",
     "downloading": "Завантаження…",
-    "downloadingItems_one": "Завантаження {{count}} елемента",
     "downloadingItems_few": "Завантаження {{count}} елементів",
     "downloadingItems_many": "Завантаження {{count}} елементів",
+    "downloadingItems_one": "Завантаження {{count}} елемента",
     "downloadingItems_other": "Завантаження {{count}} елемента",
     "expand": "Розгорнути",
     "failed": "Помилка",
     "processing": "Обробка…",
-    "processingItems_one": "Обробка {{count}} елемента",
     "processingItems_few": "Обробка {{count}} елементів",
     "processingItems_many": "Обробка {{count}} елементів",
+    "processingItems_one": "Обробка {{count}} елемента",
     "processingItems_other": "Обробка {{count}} елемента",
     "speed": "{{speed}}/с",
     "transcoding": "Перекодування…",
     "uploading": "Вивантаження…",
-    "uploadingItems_one": "Вивантаження {{count}} елемента",
     "uploadingItems_few": "Вивантаження {{count}} елементів",
     "uploadingItems_many": "Вивантаження {{count}} елементів",
+    "uploadingItems_one": "Вивантаження {{count}} елемента",
     "uploadingItems_other": "Вивантаження {{count}} елемента"
   },
   "useUploader": {
-    "alreadyInLibrary_one": "{{count}} вже у вашій бібліотеці",
     "alreadyInLibrary_few": "{{count}} вже у вашій бібліотеці",
     "alreadyInLibrary_many": "{{count}} вже у вашій бібліотеці",
+    "alreadyInLibrary_one": "{{count}} вже у вашій бібліотеці",
     "alreadyInLibrary_other": "{{count}} вже у вашій бібліотеці",
     "uploadFailed": "Не вдалося вивантажити {{name}}",
-    "uploaded_one": "Вивантажено {{count}} фото",
     "uploaded_few": "Вивантажено {{count}} фото",
     "uploaded_many": "Вивантажено {{count}} фото",
+    "uploaded_one": "Вивантажено {{count}} фото",
     "uploaded_other": "Вивантажено {{count}} фото"
   },
   "viewToggle": {

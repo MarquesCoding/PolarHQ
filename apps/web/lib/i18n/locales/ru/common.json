@@ -22,6 +22,14 @@
     "beta": "Бета",
     "soon": "Скоро"
   },
+  "apps": {
+    "admin": "Администрирование",
+    "docs": "Документы",
+    "drive": "Диск",
+    "photos": "Фото",
+    "sheets": "Таблицы",
+    "whiteboard": "Доска"
+  },
   "changelog": {
     "versionBuild": "v{{version}} · сборка {{build}}",
     "whatsNew": "Что нового"
@@ -126,9 +134,9 @@
     "saving": "Сохранение…"
   },
   "units": {
-    "items_one": "{{count}} элемент",
     "items_few": "{{count}} элемента",
     "items_many": "{{count}} элементов",
+    "items_one": "{{count}} элемент",
     "items_other": "{{count}} элемента"
   },
   "uploadManager": {
@@ -142,9 +150,9 @@
     "activity": "Активность",
     "alreadyInLibrary": "Уже в библиотеке",
     "archiving": "Архивирование…",
-    "archivingItems_one": "Архивирование {{count}} элемента",
     "archivingItems_few": "Архивирование {{count}} элементов",
     "archivingItems_many": "Архивирование {{count}} элементов",
+    "archivingItems_one": "Архивирование {{count}} элемента",
     "archivingItems_other": "Архивирование {{count}} элементов",
     "archivingProgress": "Архивирование {{loaded}} из {{size}}",
     "bytesProgress": "{{loaded}} из {{size}}",
@@ -156,34 +164,34 @@
     "downloadFailed": "Не удалось скачать",
     "downloaded": "Скачано",
     "downloading": "Скачивание…",
-    "downloadingItems_one": "Скачивание {{count}} элемента",
     "downloadingItems_few": "Скачивание {{count}} элементов",
     "downloadingItems_many": "Скачивание {{count}} элементов",
+    "downloadingItems_one": "Скачивание {{count}} элемента",
     "downloadingItems_other": "Скачивание {{count}} элементов",
     "expand": "Развернуть",
     "failed": "Ошибка",
     "processing": "Обработка…",
-    "processingItems_one": "Обработка {{count}} элемента",
     "processingItems_few": "Обработка {{count}} элементов",
     "processingItems_many": "Обработка {{count}} элементов",
+    "processingItems_one": "Обработка {{count}} элемента",
     "processingItems_other": "Обработка {{count}} элементов",
     "speed": "{{speed}}/с",
     "transcoding": "Перекодирование…",
     "uploading": "Загрузка…",
-    "uploadingItems_one": "Загрузка {{count}} элемента",
     "uploadingItems_few": "Загрузка {{count}} элементов",
     "uploadingItems_many": "Загрузка {{count}} элементов",
+    "uploadingItems_one": "Загрузка {{count}} элемента",
     "uploadingItems_other": "Загрузка {{count}} элементов"
   },
   "useUploader": {
-    "alreadyInLibrary_one": "{{count}} уже в вашей библиотеке",
     "alreadyInLibrary_few": "{{count}} уже в вашей библиотеке",
     "alreadyInLibrary_many": "{{count}} уже в вашей библиотеке",
+    "alreadyInLibrary_one": "{{count}} уже в вашей библиотеке",
     "alreadyInLibrary_other": "{{count}} уже в вашей библиотеке",
     "uploadFailed": "Не удалось загрузить {{name}}",
-    "uploaded_one": "Загружено {{count}} фото",
     "uploaded_few": "Загружено {{count}} фото",
     "uploaded_many": "Загружено {{count}} фото",
+    "uploaded_one": "Загружено {{count}} фото",
     "uploaded_other": "Загружено {{count}} фото"
   },
   "viewToggle": {
