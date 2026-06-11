@@ -43,6 +43,13 @@ import StorageDialog from "@components/StorageDialog/StorageDialog"
 import { replayOnboarding } from "@components/OnboardingCard/OnboardingCard"
 import { APP_BUILD, APP_VERSION } from "@lib/env"
 
+/** Stagger the nav rows in on mount. Each app has its own layout/sidebar, so this replays exactly
+ *  when switching apps (not on within-app navigation, where the sidebar persists). */
+const navContainerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.04, delayChildren: 0.04 } },
+}
+
 interface FlatSidebarProps {
   /** Product name shown in the app-switcher header, e.g. "Photos". */
   productName: string
@@ -193,9 +200,14 @@ const FlatSidebar = ({
         <div className="pt-1" />
       )}
 
-      <nav className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3">
+      <motion.nav
+        variants={navContainerVariants}
+        initial="hidden"
+        animate="visible"
+        className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3"
+      >
         {children}
-      </nav>
+      </motion.nav>
 
       <div className="flex flex-col gap-2 p-3 pt-2">
         <Button

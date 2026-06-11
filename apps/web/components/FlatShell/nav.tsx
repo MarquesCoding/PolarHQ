@@ -4,12 +4,21 @@ import { type ReactNode } from "react"
 import Link from "next/link"
 import { Icon } from "@lib/icons"
 import { cn } from "@workspace/ui/lib/utils"
-import { motion } from "motion/react"
+import { type Variants, motion } from "motion/react"
 
 /** All nav rows across a sidebar share this layoutId so the active pill animates between them. */
 export const NAV_LAYOUT_ID = "flat-nav-active"
 
 const navSpring = { type: "spring" as const, stiffness: 520, damping: 40 }
+
+/** Entrance variant for a single sidebar row. The nav container (see `FlatSidebar`) staggers these
+ *  on mount, so the menu fans in when you switch between apps. */
+export const navItemVariants: Variants = {
+  hidden: { opacity: 0, x: -8 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.28, ease: [0.32, 0.72, 0, 1] } },
+}
+
+const MotionLink = motion.create(Link)
 
 export const ActiveBg = () => (
   <motion.span
@@ -20,9 +29,12 @@ export const ActiveBg = () => (
 )
 
 export const SectionLabel = ({ children }: { children: ReactNode }) => (
-  <p className="text-muted-foreground/70 px-2 pt-2 pb-1 text-[11px] font-medium tracking-wider uppercase">
+  <motion.p
+    variants={navItemVariants}
+    className="text-muted-foreground/70 px-2 pt-2 pb-1 text-[11px] font-medium tracking-wider uppercase"
+  >
     {children}
-  </p>
+  </motion.p>
 )
 
 export const navRowClass = (active: boolean, compact?: boolean): string =>
@@ -45,9 +57,10 @@ interface NavRowProps {
 }
 
 export const NavRow = ({ href, icon, label, active, badge, compact, newTab }: NavRowProps) => (
-  <Link
+  <MotionLink
     href={href}
     target={newTab ? "_blank" : undefined}
+    variants={navItemVariants}
     className={navRowClass(active, compact)}
   >
     {active ? <ActiveBg /> : null}
@@ -58,5 +71,5 @@ export const NavRow = ({ href, icon, label, active, badge, compact, newTab }: Na
         {badge}
       </span>
     ) : null}
-  </Link>
+  </MotionLink>
 )
