@@ -20,6 +20,30 @@ interface DetailsPanelProps {
 const ARCHIVE = /\.(zip|tar|gz|tgz|rar|7z|bz2|xz|dmg)$/i
 const DATABASE = /\.(db|sqlite|sqlite3|sql)$/i
 
+/** Map a node to one of the overview storage-kind keys, so the panel can show a friendly label
+ *  (Images / Videos / …) reusing the existing `overview.kinds.*` strings. */
+const storageKindKey = (node: DriveNode): string => {
+  const mime = node.mimeType ?? ""
+  const name = node.name.toLowerCase()
+  if (mime.startsWith("image/")) return "image"
+  if (mime.startsWith("video/")) return "video"
+  if (mime.startsWith("audio/")) return "audio"
+  if (
+    mime === "application/pdf" ||
+    /(word|presentation|spreadsheet|^text\/|vnd\.orbit|officedocument|oasis|msword|json)/.test(mime)
+  )
+    return "document"
+  if (ARCHIVE.test(name) || /(zip|tar|gzip|x-7z|x-rar|x-bzip)/.test(mime)) return "archive"
+  return "other"
+}
+
+/** Uppercase file extension for display, or undefined when the name has none. */
+const extensionOf = (name: string): string | undefined => {
+  const dot = name.lastIndexOf(".")
+  if (dot <= 0 || dot === name.length - 1) return undefined
+  return name.slice(dot + 1).toUpperCase()
+}
+
 const typeIcon = (node: DriveNode): { name: string; color: string } => {
   if (node.kind === "folder")
     return { name: node.special ? "folder-lock" : "folder", color: "text-blue-400" }
@@ -55,6 +79,7 @@ const Field = ({ label, value }: { label: string; value: ReactNode }) => (
 
 const SingleDetails = ({ node }: { node: DriveNode }) => {
   const { t } = useTranslation("drive")
+  const extension = node.kind === "file" ? extensionOf(node.name) : undefined
   return (
     <>
       <div className="flex flex-col items-center gap-3 text-center">
@@ -65,9 +90,18 @@ const SingleDetails = ({ node }: { node: DriveNode }) => {
       </div>
       <dl className="flex flex-col gap-3">
         <Field
+          label={t("detailsPanel.kind")}
+          value={
+            node.kind === "folder"
+              ? t("detailsPanel.folder")
+              : t(`overview.kinds.${storageKindKey(node)}`)
+          }
+        />
+        <Field
           label={t("detailsPanel.type")}
           value={node.kind === "folder" ? t("detailsPanel.folder") : (node.mimeType ?? t("detailsPanel.file"))}
         />
+        {extension ? <Field label={t("detailsPanel.extension")} value={extension} /> : null}
         {node.kind === "file" ? (
           <Field label={t("detailsPanel.size")} value={formatBytes(node.sizeBytes ?? 0)} />
         ) : null}
