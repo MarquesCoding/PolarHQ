@@ -53,3 +53,16 @@ export const monthShort = (date: Date): string =>
   fromCatalog("monthsShort", date.getMonth(), () =>
     date.toLocaleDateString(dateLocale(), { month: "short" }),
   )
+
+/** "15 Jun 2024" using catalog month names (browser-ICU-independent). */
+export const formatMediumDate = (value: string | number | Date): string => {
+  const d = new Date(value)
+  return `${d.getDate()} ${monthShort(d)} ${d.getFullYear()}`
+}
+
+/** "15 Jun 2024, 15:30" — catalog date + numeric time (numeric time is safe in every browser). */
+export const formatMediumDateTime = (value: string | number | Date): string => {
+  const d = new Date(value)
+  const time = d.toLocaleTimeString(dateLocale(), { hour: "2-digit", minute: "2-digit" })
+  return `${formatMediumDate(d)}, ${time}`
+}
