@@ -8,8 +8,22 @@ import DriveToolbar from "@pages/Drive/components/DriveToolbar/DriveToolbar"
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const { t } = useTranslation("drive")
+  const kindIcons: Record<string, string> = {
+    image: "photo",
+    video: "video",
+    audio: "music",
+    document: "document",
+    archive: "file-zip",
+    other: "file-text",
+  }
   const titles: TopBarTitle[] = [
     { match: (p) => p === "/drive/trash", label: t("driveNav.trash"), icon: "trash" },
+    { match: (p) => p === "/drive/recent", label: t("driveNav.recents"), icon: "calendar" },
+    ...Object.entries(kindIcons).map(([kind, icon]) => ({
+      match: (p: string) => p === `/drive/kind/${kind}`,
+      label: t(`overview.kinds.${kind}`),
+      icon,
+    })),
     { match: (p) => p === "/drive", label: t("driveNav.overview"), icon: "gauge" },
     { match: () => true, label: t("driveNav.myDrive"), icon: "folder" },
   ]

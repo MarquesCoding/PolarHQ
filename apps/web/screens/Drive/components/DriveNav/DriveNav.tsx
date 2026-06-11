@@ -12,9 +12,19 @@ import { NavRow, SectionLabel } from "@components/FlatShell"
 const isMyDrive = (pathname: string): boolean =>
   /^\/drive\/[^/]+$/.test(pathname) &&
   pathname !== "/drive/trash" &&
-  pathname !== "/drive/overview"
+  pathname !== "/drive/overview" &&
+  pathname !== "/drive/recent"
 
-/** Drive nav: My Drive / Trash plus the current folder's location trail. */
+const FILE_KINDS: { kind: string; icon: string }[] = [
+  { kind: "image", icon: "photo" },
+  { kind: "video", icon: "video" },
+  { kind: "audio", icon: "music" },
+  { kind: "document", icon: "document" },
+  { kind: "archive", icon: "file-zip" },
+]
+
+/** Drive nav: Overview / My Drive / Recents / Trash, the File-kinds smart views, and the current
+ *  folder's location trail. */
 const DriveNav = () => {
   const { t } = useTranslation("drive")
   const pathname = usePathname()
@@ -37,7 +47,25 @@ const DriveNav = () => {
         label={t("driveNav.myDrive")}
         active={isMyDrive(pathname)}
       />
+      <NavRow
+        href="/drive/recent"
+        icon="calendar"
+        label={t("driveNav.recents")}
+        active={pathname === "/drive/recent"}
+      />
       <NavRow href="/drive/trash" icon="trash" label={t("driveNav.trash")} active={pathname === "/drive/trash"} />
+
+      <SectionLabel>{t("driveNav.fileKinds")}</SectionLabel>
+      {FILE_KINDS.map(({ kind, icon }) => (
+        <NavRow
+          key={kind}
+          href={`/drive/kind/${kind}`}
+          icon={icon}
+          label={t(`overview.kinds.${kind}`)}
+          active={pathname === `/drive/kind/${kind}`}
+          compact
+        />
+      ))}
 
       {showLocation ? (
         <>

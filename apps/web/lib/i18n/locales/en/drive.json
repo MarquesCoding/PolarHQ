@@ -17,6 +17,7 @@
     "download": "Download",
     "dragOrUpload": "Drag files here or use Upload.",
     "extract": "Extract",
+    "libraryEmpty": "Nothing here yet.",
     "linkCopied": "Link copied",
     "move": "Move",
     "movedToFolder_one": "Moved {{count}} item to {{name}}",
@@ -55,9 +56,11 @@
   },
   "driveNav": {
     "drive": "Drive",
+    "fileKinds": "File kinds",
     "location": "Location",
     "myDrive": "My Drive",
     "overview": "Overview",
+    "recents": "Recents",
     "trash": "Trash"
   },
   "overview": {

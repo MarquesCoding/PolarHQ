@@ -4,10 +4,13 @@ import { useReducer, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useRouter } from "next/navigation"
 import {
+  type DriveListing,
   type DriveNode,
+  type LibrarySource,
   copyDriveNode,
   createShareLink,
   extractDriveNode,
+  fetchLibrary,
   fetchNodes,
   isArchiveName,
   moveDriveNode,
@@ -63,9 +66,10 @@ const ModelViewer = dynamic(() => import("@pages/Drive/components/ModelViewer/Mo
 
 interface BrowserProps {
   folderId?: string
+  source?: LibrarySource
 }
 
-const BrowserInner = ({ folderId }: BrowserProps) => {
+const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const { t } = useTranslation("drive")
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -89,8 +93,13 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   const [newFolderOpen, setNewFolderOpen] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
 
-  const queryKey = ["drive", "nodes", folderId ?? "root"]
-  const { data, isLoading } = useQuery({ queryKey, queryFn: () => fetchNodes(folderId) })
+  const queryKey = source
+    ? ["drive", "library", source.view, source.view === "kind" ? source.kind : ""]
+    : ["drive", "nodes", folderId ?? "root"]
+  const { data, isLoading } = useQuery<DriveListing | { children: DriveNode[] }>({
+    queryKey,
+    queryFn: () => (source ? fetchLibrary(source) : fetchNodes(folderId)),
+  })
 
   const invalidate = () => {
     void queryClient.invalidateQueries({ queryKey: ["drive"] })
@@ -98,22 +107,24 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
     void queryClient.invalidateQueries({ queryKey: ["docs"] })
   }
 
-  const parentId = data?.parent.id ?? null
-  const parentLocked = Boolean(data?.parent.locked) && !isFolderUnlocked(parentId ?? "")
+  const parent = data && "parent" in data ? data.parent : null
+  const parentId = parent?.id ?? null
+  const parentLocked = Boolean(parent?.locked) && !isFolderUnlocked(parentId ?? "")
   const children = data?.children ?? []
-  const visible = (
-    search ? children.filter((node) => node.name.toLowerCase().includes(search)) : children
-  )
-    .slice()
-    .sort((a, b) => {
-      if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
-      const rank = (node: DriveNode) => (node.special ? 0 : node.locked ? 1 : 2)
-      if (rank(a) !== rank(b)) return rank(a) - rank(b)
-      return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
-    })
+  const filtered = search
+    ? children.filter((node) => node.name.toLowerCase().includes(search))
+    : children
+  const visible = source
+    ? filtered
+    : filtered.slice().sort((a, b) => {
+        if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
+        const rank = (node: DriveNode) => (node.special ? 0 : node.locked ? 1 : 2)
+        if (rank(a) !== rank(b)) return rank(a) - rank(b)
+        return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
+      })
   const byId = new Map(children.map((node) => [node.id, node]))
 
-  const trail = data?.breadcrumb ?? []
+  const trail = data && "breadcrumb" in data ? data.breadcrumb : []
   const parentFolder = trail.length > 1 ? trail[trail.length - 2]! : null
   const parentHref = parentFolder
     ? trail.length === 2
@@ -274,20 +285,24 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
           if (!event.dataTransfer.types.includes(DRIVE_NODES_MIME)) return
           event.preventDefault()
           const raw = event.dataTransfer.getData(DRIVE_NODES_MIME)
-          if (!raw || !data?.parent) return
-          const dragged = (JSON.parse(raw) as string[]).filter((id) => id !== data.parent.id)
-          if (dragged.length > 0) void moveInto(data.parent, dragged)
+          if (!raw || !parent) return
+          const dragged = (JSON.parse(raw) as string[]).filter((id) => id !== parent.id)
+          if (dragged.length > 0) void moveInto(parent, dragged)
         }}
       >
         {isLoading ? (
           <PageSpinner />
-        ) : parentLocked && data ? (
-          <FolderLockGate node={data.parent} onUnlocked={forceTick} />
+        ) : parentLocked && parent ? (
+          <FolderLockGate node={parent} onUnlocked={forceTick} />
         ) : visible.length === 0 && !parentFolder ? (
           <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 text-center">
             <Icon name="folder-open" className="size-8" />
             <p className="text-sm">
-              {search ? t("browser.noMatches") : t("browser.dragOrUpload")}
+              {search
+                ? t("browser.noMatches")
+                : source
+                  ? t("browser.libraryEmpty")
+                  : t("browser.dragOrUpload")}
             </p>
           </div>
         ) : viewMode === "table" ? (
@@ -441,9 +456,9 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   )
 }
 
-const Browser = ({ folderId }: BrowserProps) => (
+const Browser = ({ folderId, source }: BrowserProps) => (
   <SelectionProvider>
-    <BrowserInner folderId={folderId} />
+    <BrowserInner folderId={folderId} source={source} />
   </SelectionProvider>
 )
 
