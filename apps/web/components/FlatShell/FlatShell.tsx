@@ -97,7 +97,7 @@ const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
     <UploadProvider>
       <div className="bg-background flex h-svh overflow-hidden select-none">
         {sidebar}
-        <div className="border-border flex min-w-0 flex-1 flex-col border-l">{content}</div>
+        <div className="border-border flex min-w-0 flex-1 flex-col border-s">{content}</div>
       </div>
       <UploadPanel />
       <OnboardingCard />

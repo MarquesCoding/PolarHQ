@@ -96,7 +96,7 @@ const FlatSidebar = ({
             render={
               <button
                 type="button"
-                className="hover:bg-sidebar-accent/50 -ml-1 flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1.5 text-left transition"
+                className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1.5 text-start transition"
               >
                 <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md">
                   <Image src={logo} alt="PolarHQ" width={28} height={28} className="size-7" />
@@ -112,7 +112,7 @@ const FlatSidebar = ({
                   </span>
                   <span className="text-muted-foreground truncate text-[11px]">PolarHQ</span>
                 </span>
-                <IconSelector className="text-muted-foreground ml-auto size-4 shrink-0" />
+                <IconSelector className="text-muted-foreground ms-auto size-4 shrink-0" />
               </button>
             }
           />
@@ -187,7 +187,7 @@ const FlatSidebar = ({
         <div className="panel rounded-lg p-2.5">
           <div className="mb-1.5 flex items-center justify-between text-xs">
             <span className="text-muted-foreground font-medium">{t("flatSidebar.storage")}</span>
-            <span className="text-muted-foreground tabular-nums">
+            <span dir="ltr" className="text-muted-foreground tabular-nums">
               {usage
                 ? `${formatBytes(usage.usedBytes)} / ${usage.quotaBytes ? formatBytes(usage.quotaBytes) : t("flatSidebar.unlimited")}`
                 : "—"}
@@ -203,7 +203,7 @@ const FlatSidebar = ({
             render={
               <button
                 type="button"
-                className="panel hover:border-ring/30 flex w-full items-center gap-2.5 rounded-lg p-2 text-left transition"
+                className="panel hover:border-ring/30 flex w-full items-center gap-2.5 rounded-lg p-2 text-start transition"
               >
                 <Avatar className="size-8">
                   <AvatarImage
@@ -222,7 +222,7 @@ const FlatSidebar = ({
                     {session?.user?.email}
                   </span>
                 </span>
-                <IconChevronDown className="text-muted-foreground ml-auto size-4 shrink-0" />
+                <IconChevronDown className="text-muted-foreground ms-auto size-4 shrink-0" />
               </button>
             }
           />
@@ -261,8 +261,8 @@ const FlatSidebar = ({
           >
             <span
               className={cn(
-                "bg-background absolute top-0.5 left-0.5 flex size-3 items-center justify-center rounded-full shadow transition-transform",
-                dark && "translate-x-3",
+                "bg-background absolute top-0.5 start-0.5 flex size-3 items-center justify-center rounded-full shadow transition-transform",
+                dark && "translate-x-3 rtl:-translate-x-3",
               )}
             >
               {dark ? (
