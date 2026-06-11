@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "開けませんでした。",
+    "deleted": "削除されました。変更を保存できません。",
+    "deletedNamed": "「{{name}}」は削除されました。変更を保存できません。",
+    "encrypted": "暗号化されています。",
+    "goBack": "戻る",
+    "unlock": "ロック解除"
+  },
+  "collabList": {
+    "createFailed": "作成できませんでした",
+    "deleteFailed": "削除できませんでした",
+    "download": "ダウンロード",
+    "empty": "まだ何もありません。",
+    "movedToTrash": "ゴミ箱に移動しました",
+    "noMatches": "検索条件に一致するものはありません。",
+    "rename": "名前を変更",
+    "sharedWithMe": "自分と共有",
+    "trash": "ゴミ箱"
+  },
+  "collabNav": {
+    "library": "ライブラリ"
+  },
+  "collabToolbar": {
+    "createFailed": "作成できませんでした"
+  }
+}

@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Đã tạo tài khoản quản trị",
+    "closedLabel": "Đã đóng — không nhận tài khoản mới",
+    "creating": "Đang tạo…",
+    "emailLabel": "Email",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "Nhập email hợp lệ",
+    "inviteOnlyLabel": "Chỉ qua lời mời — quản trị viên tạo tài khoản",
+    "nameLabel": "Tên của bạn",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "Bắt buộc nhập tên",
+    "openLabel": "Mở — ai cũng có thể đăng ký",
+    "passwordLabel": "Mật khẩu",
+    "passwordMin": "Dùng ít nhất 8 ký tự",
+    "passwordPlaceholder": "Ít nhất 8 ký tự",
+    "registrationModeLabel": "Ai có thể tạo tài khoản?",
+    "setupFailed": "Thiết lập thất bại",
+    "signInFailed": "Đăng nhập thất bại",
+    "submit": "Tạo quản trị viên và tiếp tục"
+  },
+  "createGroupsStep": {
+    "addGroup": "Thêm nhóm",
+    "adding": "Đang thêm…",
+    "couldNotCreate": "Không thể tạo nhóm",
+    "createdGroup": "Đã tạo nhóm “{{name}}”",
+    "descriptionLabel": "Mô tả (tùy chọn)",
+    "descriptionPlaceholder": "Dung lượng lớn hơn, tính năng sớm",
+    "finishSetup": "Hoàn tất thiết lập",
+    "groupNameLabel": "Tên nhóm",
+    "groupNamePlaceholder": "Người dùng nâng cao",
+    "intro": "Nhóm cho phép bạn gán vai trò và giới hạn dùng chung (như hạn mức lưu trữ) cho nhiều người dùng cùng lúc. Hãy tạo vài nhóm ngay bây giờ, hoặc bỏ qua và làm việc này sau trong phần cài đặt quản trị.",
+    "nameRequired": "Bắt buộc nhập tên nhóm",
+    "skipFinish": "Bỏ qua và hoàn tất"
+  },
+  "setup": {
+    "adminDescription": "Tạo tài khoản quản trị viên đầu tiên để bắt đầu.",
+    "groupsDescription": "Thiết lập nhóm cho người dùng của bạn (tùy chọn).",
+    "loading": "Đang tải…",
+    "welcome": "Chào mừng đến với {{name}}"
+  }
+}

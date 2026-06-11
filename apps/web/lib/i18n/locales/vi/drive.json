@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Drive của tôi"
+  },
+  "browser": {
+    "archive": "Lưu trữ",
+    "archiveExtracted": "Đã giải nén kho lưu trữ",
+    "archiveLabel_one": "Lưu trữ ({{count}} mục)",
+    "archiveLabel_other": "Lưu trữ ({{count}} mục)",
+    "copyCreated": "Đã tạo bản sao",
+    "couldNotCopy": "Không thể sao chép",
+    "couldNotCreate": "Không thể tạo",
+    "couldNotDelete": "Không thể xóa",
+    "couldNotExtract": "Không thể giải nén",
+    "couldNotMove": "Không thể di chuyển",
+    "couldNotOpenFile": "Không thể mở tệp này",
+    "download": "Tải xuống",
+    "dragOrUpload": "Kéo tệp vào đây hoặc dùng Tải lên.",
+    "extract": "Giải nén",
+    "linkCopied": "Đã sao chép liên kết",
+    "move": "Di chuyển",
+    "movedToFolder_one": "Đã di chuyển {{count}} mục vào {{name}}",
+    "movedToFolder_other": "Đã di chuyển {{count}} mục vào {{name}}",
+    "movedToTrash": "Đã chuyển vào thùng rác",
+    "noMatches": "Không có kết quả nào khớp với tìm kiếm của bạn.",
+    "open": "Mở",
+    "opening": "Đang mở…",
+    "rename": "Đổi tên",
+    "share": "Chia sẻ",
+    "trash": "Thùng rác"
+  },
+  "detailsPanel": {
+    "closeDetails": "Đóng chi tiết",
+    "created": "Đã tạo",
+    "empty": "Chọn một mục để xem chi tiết.",
+    "file": "Tệp",
+    "files": "Tệp",
+    "folder": "Thư mục",
+    "folders": "Thư mục",
+    "itemsSelected_one": "Đã chọn {{count}} mục",
+    "itemsSelected_other": "Đã chọn {{count}} mục",
+    "modified": "Đã sửa đổi",
+    "size": "Kích thước",
+    "title": "Chi tiết",
+    "totalSize": "Tổng kích thước",
+    "type": "Loại"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Tài liệu mới",
+    "newFolder": "Thư mục mới",
+    "newSpreadsheet": "Bảng tính mới",
+    "uploadFiles": "Tải tệp lên"
+  },
+  "driveNav": {
+    "drive": "Drive",
+    "location": "Vị trí",
+    "myDrive": "Drive của tôi",
+    "trash": "Thùng rác"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Không thể tạo",
+    "emptyTrash": "Dọn sạch thùng rác",
+    "emptyTrashConfirm": "Dọn sạch thùng rác?",
+    "new": "Tạo mới",
+    "newDocument": "Tài liệu mới",
+    "newFolder": "Thư mục mới",
+    "newSpreadsheet": "Bảng tính mới",
+    "toggleDetails": "Bật/tắt chi tiết",
+    "trashEmptied": "Đã dọn sạch thùng rác",
+    "uploadFiles": "Tải tệp lên"
+  },
+  "folderLockDialog": {
+    "cancel": "Hủy",
+    "confirmPasswordPlaceholder": "Xác nhận mật khẩu",
+    "folderLocked": "Đã khóa thư mục",
+    "folderPasswordPlaceholder": "Mật khẩu thư mục",
+    "incorrectPassword": "Mật khẩu không đúng.",
+    "lock": "Khóa",
+    "lockDescription": "Đặt mật khẩu để mở thư mục này. Mật khẩu kiểm soát quyền truy cập trên thiết bị này — tệp của bạn vẫn được mã hóa đầu cuối bất kể thế nào.",
+    "lockFolderTitle": "Khóa thư mục",
+    "lockRemoved": "Đã gỡ khóa",
+    "passwordsDontMatch": "Mật khẩu không khớp.",
+    "removeDescription": "Nhập mật khẩu thư mục để gỡ khóa.",
+    "removeLock": "Gỡ khóa",
+    "removeLockTitle": "Gỡ khóa",
+    "somethingWentWrong": "Đã xảy ra lỗi."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Nhập mật khẩu để xem nội dung.",
+    "incorrectPassword": "Mật khẩu không đúng.",
+    "locked": "“{{name}}” đã bị khóa",
+    "passwordPlaceholder": "Mật khẩu thư mục",
+    "unlock": "Mở khóa"
+  },
+  "imageViewer": {
+    "close": "Đóng",
+    "download": "Tải xuống",
+    "resetZoom": "Đặt lại thu phóng",
+    "zoomIn": "Phóng to",
+    "zoomOut": "Thu nhỏ"
+  },
+  "modelViewer": {
+    "autoRotate": "Tự động xoay",
+    "close": "Đóng",
+    "decryptError": "Không thể giải mã mô hình",
+    "loading": "Đang tải mô hình…",
+    "normals": "Pháp tuyến",
+    "openError": "Không thể mở tệp 3D này.",
+    "shaded": "Tô bóng",
+    "toggleGrid": "Bật/tắt lưới",
+    "toggleTextures": "Bật/tắt kết cấu",
+    "wireframe": "Khung dây"
+  },
+  "moveDialog": {
+    "cancel": "Hủy",
+    "move": "Di chuyển",
+    "moveFailed": "Không thể di chuyển",
+    "moved": "Đã di chuyển",
+    "myDrive": "Drive của tôi",
+    "title": "Di chuyển đến thư mục"
+  },
+  "newFolderDialog": {
+    "cancel": "Hủy",
+    "create": "Tạo",
+    "createError": "Không thể tạo thư mục",
+    "created": "Đã tạo thư mục",
+    "newFolder": "Thư mục mới",
+    "placeholder": "Tên thư mục",
+    "title": "Thư mục mới"
+  },
+  "nodeCard": {
+    "deselect": "Bỏ chọn",
+    "folder": "Thư mục",
+    "select": "Chọn"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Sao chép liên kết",
+    "details": "Chi tiết",
+    "download": "Tải xuống",
+    "extractHere": "Giải nén tại đây",
+    "lockFolder": "Khóa thư mục",
+    "makeCopy": "Tạo bản sao",
+    "moveToFolder": "Di chuyển đến thư mục",
+    "moveToTrash": "Chuyển vào thùng rác",
+    "open": "Mở",
+    "openInPhotos": "Mở trong Ảnh",
+    "removeLock": "Gỡ khóa",
+    "rename": "Đổi tên",
+    "share": "Chia sẻ",
+    "versionHistory": "Xem lịch sử phiên bản",
+    "view": "Xem",
+    "viewIn3d": "Xem ở chế độ 3D"
+  },
+  "nodeTable": {
+    "deselect": "Bỏ chọn",
+    "modified": "Đã sửa đổi",
+    "name": "Tên",
+    "select": "Chọn",
+    "selectAll": "Chọn tất cả",
+    "size": "Kích thước"
+  },
+  "parentCard": {
+    "parentFolder": "Thư mục cha"
+  },
+  "renameDialog": {
+    "cancel": "Hủy",
+    "couldNotRename": "Không thể đổi tên",
+    "renamed": "Đã đổi tên",
+    "save": "Lưu",
+    "title": "Đổi tên"
+  },
+  "shell": {
+    "search": "Tìm kiếm trong Drive"
+  },
+  "trash": {
+    "actionFailed": "Thao tác thất bại",
+    "deleteForever": "Xóa vĩnh viễn",
+    "empty": "Thùng rác trống.",
+    "permanentlyDeleted": "Đã xóa vĩnh viễn",
+    "restore": "Khôi phục",
+    "restored": "Đã khôi phục",
+    "retentionNotice": "Các mục ở đây sẽ bị xóa vĩnh viễn sau 30 ngày kể từ khi chuyển vào thùng rác.",
+    "title": "Thùng rác"
+  },
+  "versionHistoryDialog": {
+    "close": "Đóng",
+    "download": "Tải xuống phiên bản",
+    "empty": "Không có phiên bản trước. Tải lên lại tệp cùng tên để tạo một phiên bản.",
+    "loading": "Đang tải…",
+    "restore": "Khôi phục",
+    "restoreFailed": "Không thể khôi phục",
+    "restored": "Đã khôi phục phiên bản",
+    "title": "Lịch sử phiên bản",
+    "versionLabel": "Phiên bản {{number}}"
+  }
+}

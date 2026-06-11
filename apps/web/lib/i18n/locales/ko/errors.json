@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "작업에 실패했습니다",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Google 코드 교환에 실패했습니다.",
+    "gdriveConnectFailed": "Google Drive 연결에 실패했습니다.",
+    "gdriveNoRefreshToken": "Google에서 갱신 토큰을 반환하지 않았습니다(기존 액세스 권한을 해제한 후 다시 시도하세요).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET이 구성되지 않았습니다",
+    "invalidOauthState": "잘못된 OAuth 상태입니다."
+  },
+  "badRequest": "잘못된 요청입니다.",
+  "docs": {
+    "alreadyOwner": "이미 소유자입니다",
+    "emailRequired": "이메일을 입력하세요.",
+    "noPublicKey": "공개 키가 없습니다.",
+    "userNotFound": "해당 사용자를 찾을 수 없습니다"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "시스템 폴더는 삭제할 수 없습니다",
+    "cannotLockFolder": "이 폴더는 잠글 수 없습니다",
+    "cannotModifySystemFolder": "시스템 폴더는 수정할 수 없습니다",
+    "extractFailed": "압축을 풀 수 없습니다",
+    "fileRequired": "파일 항목은 필수입니다",
+    "photosMediaFilesOnly": "사진 폴더에는 미디어 파일만 업로드할 수 있습니다",
+    "photosMediaOnly": "사진 폴더에는 이미지, 동영상, 오디오만 업로드할 수 있습니다"
+  },
+  "forbidden": "이 작업을 수행할 권한이 없습니다.",
+  "generic": "문제가 발생했습니다.",
+  "invalidInput": "잘못된 입력입니다.",
+  "notFound": "찾을 수 없습니다.",
+  "photos": {
+    "fileRequired": "파일이 필요합니다.",
+    "stackNeedsTwoAssets": "스택으로 묶으려면 본인 사진을 두 장 이상 선택하세요."
+  },
+  "rateLimited": "요청이 너무 많습니다. 잠시 후 다시 시도하세요.",
+  "setup": {
+    "alreadyComplete": "설정이 이미 완료되었습니다",
+    "registrationDisabled": "이 인스턴스에서는 회원가입이 비활성화되어 있습니다"
+  },
+  "unauthorized": "이 작업을 수행하려면 로그인해야 합니다.",
+  "uploads": {
+    "tooLarge": "파일이 {{limit}} 업로드 제한을 초과합니다"
+  }
+}

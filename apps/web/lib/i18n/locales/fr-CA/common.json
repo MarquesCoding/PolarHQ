@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "Retour",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "create": "Créer",
+    "delete": "Supprimer",
+    "done": "Terminé",
+    "download": "Télécharger",
+    "getStarted": "Commencer",
+    "next": "Suivant",
+    "open": "Ouvrir",
+    "remove": "Retirer",
+    "rename": "Renommer",
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "share": "Partager",
+    "signOut": "Se déconnecter"
+  },
+  "appTile": {
+    "beta": "Bêta",
+    "soon": "Bientôt"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · version {{build}}",
+    "whatsNew": "Nouveautés"
+  },
+  "collabHeader": {
+    "anonymous": "Anonyme",
+    "notSavedYet": "Pas encore enregistré",
+    "save": "Enregistrer",
+    "savedAt": "Enregistré {{time}}",
+    "saving": "Enregistrement…",
+    "share": "Partager",
+    "title": "Titre"
+  },
+  "confirmButton": {
+    "confirm": "Confirmer"
+  },
+  "devicesDialog": {
+    "activeNow": "Actif maintenant",
+    "lastActive": "Dernière activité {{time}}",
+    "signOut": "Se déconnecter",
+    "signOutError": "Impossible de déconnecter cet appareil",
+    "signedOut": "Appareil déconnecté",
+    "thisDevice": "Cet appareil",
+    "title": "Appareils et sessions"
+  },
+  "dropZone": {
+    "dropToUpload": "Déposez pour téléverser"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Chaque modification que vous faites est enregistrée automatiquement et en toute sécurité dans Drive.",
+    "encrypted": "Chiffré",
+    "endToEndEncrypted": "Chiffré de bout en bout"
+  },
+  "flatSidebar": {
+    "account": "Compte",
+    "apps": "Applications",
+    "beta": "Bêta",
+    "devices": "Appareils",
+    "personalWorkspace": "Espace de travail personnel",
+    "replayIntro": "Revoir l'intro",
+    "settings": "Paramètres",
+    "signOut": "Se déconnecter",
+    "storage": "Stockage",
+    "toggleDarkMode": "Activer le mode sombre",
+    "unlimited": "Illimité"
+  },
+  "importButton": {
+    "import": "Importer",
+    "importFailed": "Impossible d'importer ce fichier"
+  },
+  "launcher": {
+    "loadingApps": "Chargement des applications…",
+    "ofQuota": "sur {{quota}}",
+    "signOut": "Se déconnecter",
+    "storage": "Stockage",
+    "versionBuild": "v{{version}} · version {{build}}",
+    "yourApps": "Vos applications"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Je l'ai enregistré — continuer",
+    "copied": "Code de récupération copié",
+    "copyAriaLabel": "Copier le code de récupération",
+    "description": "Votre compte est maintenant chiffré de bout en bout. Ce code de récupération est le seul moyen de récupérer vos données si vous oubliez votre mot de passe — conservez-le en lieu sûr. Nous ne pourrons pas vous le montrer à nouveau.",
+    "title": "Enregistrez votre code de récupération"
+  },
+  "selectionBar": {
+    "clearSelection": "Effacer la sélection",
+    "download": "Télécharger",
+    "downloadAllFrames": "Télécharger toutes les images ({{count}})",
+    "downloadCover": "Télécharger la couverture",
+    "downloadCovers": "Télécharger les couvertures ({{count}})",
+    "photoFilename": "Photo",
+    "photosZipFilename": "{{count}} photos.zip",
+    "share": "Partager",
+    "shareNameFallback": "photo"
+  },
+  "shareDialog": {
+    "cancel": "Annuler",
+    "copyLink": "Copier le lien",
+    "descriptionEncrypted": "Chiffré de bout en bout : la clé se trouve dans le lien et n'atteint jamais le serveur, donc seules les personnes ayant le lien peuvent le déchiffrer.",
+    "descriptionPublic": "Toute personne ayant ce lien peut télécharger le fichier.",
+    "directDownload": "Téléchargement direct",
+    "directDownloadHint": "Sauter la page d'accueil et télécharger immédiatement",
+    "expiresAfter": "Expire après",
+    "expiry1Day": "1 jour",
+    "expiry1Hour": "1 heure",
+    "expiry30Days": "30 jours",
+    "expiry7Days": "7 jours",
+    "generatingLink": "Génération du lien…",
+    "limitDownloads": "Limiter les téléchargements",
+    "limitDownloadsHint": "Désactiver le lien après un certain nombre de téléchargements",
+    "linkCopied": "Lien copié",
+    "maximumDownloads": "Nombre maximal de téléchargements",
+    "permanentLink": "Lien permanent",
+    "permanentLinkHint": "Garder ce lien actif jusqu'à ce que vous le supprimiez",
+    "title": "Partager « {{name}} »"
+  },
+  "state": {
+    "empty": "Rien ici pour l'instant",
+    "error": "Une erreur est survenue",
+    "loading": "Chargement…",
+    "saving": "Enregistrement…"
+  },
+  "units": {
+    "items_one": "{{count}} élément",
+    "items_other": "{{count}} éléments"
+  },
+  "uploadManager": {
+    "archiveFailed": "Échec de l'archivage",
+    "downloadFailed": "Échec du téléchargement",
+    "taskFailed": "Échec",
+    "unsupportedFileType": "Type de fichier non pris en charge",
+    "unsupportedFileTypeToast": "{{name}} est un type de fichier non pris en charge"
+  },
+  "uploadPanel": {
+    "activity": "Activité",
+    "alreadyInLibrary": "Déjà dans la bibliothèque",
+    "archiving": "Archivage…",
+    "archivingItems_one": "Archivage de {{count}} élément",
+    "archivingItems_other": "Archivage de {{count}} éléments",
+    "archivingProgress": "Archivage de {{loaded}} sur {{size}}",
+    "bytesProgress": "{{loaded}} sur {{size}}",
+    "clear": "Effacer",
+    "collapse": "Réduire",
+    "compressing": "Compression…",
+    "dismiss": "Ignorer",
+    "done": "Terminé",
+    "downloadFailed": "Échec du téléchargement",
+    "downloaded": "Téléchargé",
+    "downloading": "Téléchargement…",
+    "downloadingItems_one": "Téléchargement de {{count}} élément",
+    "downloadingItems_other": "Téléchargement de {{count}} éléments",
+    "expand": "Développer",
+    "failed": "Échec",
+    "processing": "Traitement…",
+    "processingItems_one": "Traitement de {{count}} élément",
+    "processingItems_other": "Traitement de {{count}} éléments",
+    "speed": "{{speed}}/s",
+    "transcoding": "Transcodage…",
+    "uploading": "Téléversement…",
+    "uploadingItems_one": "Téléversement de {{count}} élément",
+    "uploadingItems_other": "Téléversement de {{count}} éléments"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} déjà dans votre bibliothèque",
+    "alreadyInLibrary_other": "{{count}} déjà dans votre bibliothèque",
+    "uploadFailed": "Échec du téléversement de {{name}}",
+    "uploaded_one": "{{count}} photo téléversée",
+    "uploaded_other": "{{count}} photos téléversées"
+  },
+  "viewToggle": {
+    "gridView": "Vue en grille",
+    "tableView": "Vue en tableau"
+  }
+}

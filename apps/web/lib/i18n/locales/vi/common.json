@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "Quay lại",
+    "cancel": "Hủy",
+    "close": "Đóng",
+    "confirm": "Xác nhận",
+    "create": "Tạo",
+    "delete": "Xóa",
+    "done": "Xong",
+    "download": "Tải xuống",
+    "getStarted": "Bắt đầu",
+    "next": "Tiếp theo",
+    "open": "Mở",
+    "remove": "Gỡ bỏ",
+    "rename": "Đổi tên",
+    "retry": "Thử lại",
+    "save": "Lưu",
+    "share": "Chia sẻ",
+    "signOut": "Đăng xuất"
+  },
+  "appTile": {
+    "beta": "Beta",
+    "soon": "Sắp ra mắt"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · bản dựng {{build}}",
+    "whatsNew": "Có gì mới"
+  },
+  "collabHeader": {
+    "anonymous": "Ẩn danh",
+    "notSavedYet": "Chưa được lưu",
+    "save": "Lưu",
+    "savedAt": "Đã lưu {{time}}",
+    "saving": "Đang lưu…",
+    "share": "Chia sẻ",
+    "title": "Tiêu đề"
+  },
+  "confirmButton": {
+    "confirm": "Xác nhận"
+  },
+  "devicesDialog": {
+    "activeNow": "Đang hoạt động",
+    "lastActive": "Hoạt động lần cuối {{time}}",
+    "signOut": "Đăng xuất",
+    "signOutError": "Không thể đăng xuất thiết bị đó",
+    "signedOut": "Đã đăng xuất thiết bị",
+    "thisDevice": "Thiết bị này",
+    "title": "Thiết bị và phiên đăng nhập"
+  },
+  "dropZone": {
+    "dropToUpload": "Thả vào đây để tải lên"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Mọi thay đổi bạn thực hiện đều được tự động lưu an toàn vào Drive.",
+    "encrypted": "Đã mã hóa",
+    "endToEndEncrypted": "Mã hóa đầu cuối"
+  },
+  "flatSidebar": {
+    "account": "Tài khoản",
+    "apps": "Ứng dụng",
+    "beta": "Beta",
+    "devices": "Thiết bị",
+    "personalWorkspace": "Không gian làm việc cá nhân",
+    "replayIntro": "Xem lại phần giới thiệu",
+    "settings": "Cài đặt",
+    "signOut": "Đăng xuất",
+    "storage": "Bộ nhớ",
+    "toggleDarkMode": "Bật/tắt chế độ tối",
+    "unlimited": "Không giới hạn"
+  },
+  "importButton": {
+    "import": "Nhập",
+    "importFailed": "Không thể nhập tệp này"
+  },
+  "launcher": {
+    "loadingApps": "Đang tải ứng dụng…",
+    "ofQuota": "trên {{quota}}",
+    "signOut": "Đăng xuất",
+    "storage": "Bộ nhớ",
+    "versionBuild": "v{{version}} · bản dựng {{build}}",
+    "yourApps": "Ứng dụng của bạn"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Tôi đã lưu — tiếp tục",
+    "copied": "Đã sao chép mã khôi phục",
+    "copyAriaLabel": "Sao chép mã khôi phục",
+    "description": "Tài khoản của bạn hiện đã được mã hóa đầu cuối. Mã khôi phục này là cách duy nhất để khôi phục dữ liệu nếu bạn quên mật khẩu — hãy lưu giữ ở nơi an toàn. Chúng tôi không thể hiển thị lại mã này.",
+    "title": "Lưu mã khôi phục của bạn"
+  },
+  "selectionBar": {
+    "clearSelection": "Bỏ chọn",
+    "download": "Tải xuống",
+    "downloadAllFrames": "Tải xuống tất cả khung hình ({{count}})",
+    "downloadCover": "Tải xuống ảnh bìa",
+    "downloadCovers": "Tải xuống ảnh bìa ({{count}})",
+    "photoFilename": "Ảnh",
+    "photosZipFilename": "{{count}} ảnh.zip",
+    "share": "Chia sẻ",
+    "shareNameFallback": "ảnh"
+  },
+  "shareDialog": {
+    "cancel": "Hủy",
+    "copyLink": "Sao chép liên kết",
+    "descriptionEncrypted": "Mã hóa đầu cuối: khóa nằm trong liên kết và không bao giờ được gửi đến máy chủ, nên chỉ những người có liên kết mới giải mã được.",
+    "descriptionPublic": "Bất kỳ ai có liên kết này đều có thể tải xuống tệp.",
+    "directDownload": "Tải xuống trực tiếp",
+    "directDownloadHint": "Bỏ qua trang đích và tải xuống ngay lập tức",
+    "expiresAfter": "Hết hạn sau",
+    "expiry1Day": "1 ngày",
+    "expiry1Hour": "1 giờ",
+    "expiry30Days": "30 ngày",
+    "expiry7Days": "7 ngày",
+    "generatingLink": "Đang tạo liên kết…",
+    "limitDownloads": "Giới hạn lượt tải",
+    "limitDownloadsHint": "Vô hiệu hóa liên kết sau một số lượt tải nhất định",
+    "linkCopied": "Đã sao chép liên kết",
+    "maximumDownloads": "Số lượt tải tối đa",
+    "permanentLink": "Liên kết vĩnh viễn",
+    "permanentLinkHint": "Giữ liên kết này hoạt động cho đến khi bạn xóa nó",
+    "title": "Chia sẻ “{{name}}”"
+  },
+  "state": {
+    "empty": "Chưa có gì ở đây",
+    "error": "Đã xảy ra lỗi",
+    "loading": "Đang tải…",
+    "saving": "Đang lưu…"
+  },
+  "units": {
+    "items_one": "{{count}} mục",
+    "items_other": "{{count}} mục"
+  },
+  "uploadManager": {
+    "archiveFailed": "Lưu trữ thất bại",
+    "downloadFailed": "Tải xuống thất bại",
+    "taskFailed": "Thất bại",
+    "unsupportedFileType": "Loại tệp không được hỗ trợ",
+    "unsupportedFileTypeToast": "{{name}} là loại tệp không được hỗ trợ"
+  },
+  "uploadPanel": {
+    "activity": "Hoạt động",
+    "alreadyInLibrary": "Đã có trong thư viện",
+    "archiving": "Đang lưu trữ…",
+    "archivingItems_one": "Đang lưu trữ {{count}} mục",
+    "archivingItems_other": "Đang lưu trữ {{count}} mục",
+    "archivingProgress": "Đang lưu trữ {{loaded}} trên {{size}}",
+    "bytesProgress": "{{loaded}} trên {{size}}",
+    "clear": "Xóa",
+    "collapse": "Thu gọn",
+    "compressing": "Đang nén…",
+    "dismiss": "Bỏ qua",
+    "done": "Xong",
+    "downloadFailed": "Tải xuống thất bại",
+    "downloaded": "Đã tải xuống",
+    "downloading": "Đang tải xuống…",
+    "downloadingItems_one": "Đang tải xuống {{count}} mục",
+    "downloadingItems_other": "Đang tải xuống {{count}} mục",
+    "expand": "Mở rộng",
+    "failed": "Thất bại",
+    "processing": "Đang xử lý…",
+    "processingItems_one": "Đang xử lý {{count}} mục",
+    "processingItems_other": "Đang xử lý {{count}} mục",
+    "speed": "{{speed}}/giây",
+    "transcoding": "Đang chuyển mã…",
+    "uploading": "Đang tải lên…",
+    "uploadingItems_one": "Đang tải lên {{count}} mục",
+    "uploadingItems_other": "Đang tải lên {{count}} mục"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} đã có trong thư viện của bạn",
+    "alreadyInLibrary_other": "{{count}} đã có trong thư viện của bạn",
+    "uploadFailed": "Không thể tải lên {{name}}",
+    "uploaded_one": "Đã tải lên {{count}} ảnh",
+    "uploaded_other": "Đã tải lên {{count}} ảnh"
+  },
+  "viewToggle": {
+    "gridView": "Xem dạng lưới",
+    "tableView": "Xem dạng bảng"
+  }
+}

@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128개 항목",
+    "albumName": "이탈리아 '24",
+    "albumsBody": "사진을 앨범으로 묶고, 비공개 링크로 공유하세요. 보는 데는 계정이 필요 없습니다.",
+    "albumsTitle": "앨범과 공유 링크.",
+    "back": "뒤로",
+    "dismiss": "닫기",
+    "getStarted": "시작하기",
+    "linkCopied": "링크가 복사되었습니다",
+    "next": "다음",
+    "privateBody": "모든 사진, 문서, 파일은 종단 간 암호화됩니다. 키는 사용자만 가지고 있으며, 서버는 암호문만 볼 수 있습니다.",
+    "privateTitle": "기본적으로 비공개.",
+    "share": "공유",
+    "uploadBody": "사진을 아무 곳에나 끌어다 놓아 업로드하세요. Live Photos는 자동으로 짝지어지고, 연사 사진은 펼칠 수 있는 하나의 스택으로 묶입니다.",
+    "uploadTitle": "그냥 끌어다 놓으세요."
+  }
+}

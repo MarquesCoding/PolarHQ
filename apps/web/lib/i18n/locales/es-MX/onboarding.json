@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 elementos",
+    "albumName": "Italia '24",
+    "albumsBody": "Agrupa fotos en álbumes y comparte un enlace privado; no se necesita una cuenta para verlas.",
+    "albumsTitle": "Álbumes y enlaces para compartir.",
+    "back": "Atrás",
+    "dismiss": "Descartar",
+    "getStarted": "Comenzar",
+    "linkCopied": "Enlace copiado",
+    "next": "Siguiente",
+    "privateBody": "Cada foto, documento y archivo cuenta con cifrado de extremo a extremo. Solo tú tienes las claves; el servidor únicamente ve texto cifrado.",
+    "privateTitle": "Privado de forma predeterminada.",
+    "share": "Compartir",
+    "uploadBody": "Arrastra fotos a cualquier lugar para subirlas. Las Live Photos se emparejan y las ráfagas se agrupan automáticamente en una pila expandible.",
+    "uploadTitle": "Solo suéltalas aquí."
+  }
+}

@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "管理员账户已创建",
+    "closedLabel": "已关闭 — 不允许新账户",
+    "creating": "正在创建…",
+    "emailLabel": "邮箱",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "请输入有效的邮箱地址",
+    "inviteOnlyLabel": "仅限邀请 — 由管理员创建账户",
+    "nameLabel": "您的姓名",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "姓名为必填项",
+    "openLabel": "开放 — 任何人都可注册",
+    "passwordLabel": "密码",
+    "passwordMin": "请至少使用 8 个字符",
+    "passwordPlaceholder": "至少 8 个字符",
+    "registrationModeLabel": "谁可以创建账户？",
+    "setupFailed": "设置失败",
+    "signInFailed": "登录失败",
+    "submit": "创建管理员并继续"
+  },
+  "createGroupsStep": {
+    "addGroup": "添加群组",
+    "adding": "正在添加…",
+    "couldNotCreate": "无法创建群组",
+    "createdGroup": "已创建群组“{{name}}”",
+    "descriptionLabel": "描述（可选）",
+    "descriptionPlaceholder": "更大配额，抢先体验功能",
+    "finishSetup": "完成设置",
+    "groupNameLabel": "群组名称",
+    "groupNamePlaceholder": "高级用户",
+    "intro": "群组让您可以一次性为多个用户分配共享的角色和限制（如存储配额）。现在可以创建几个，或跳过此步骤稍后在管理员设置中操作。",
+    "nameRequired": "群组名称为必填项",
+    "skipFinish": "跳过并完成"
+  },
+  "setup": {
+    "adminDescription": "创建第一个管理员账户即可开始使用。",
+    "groupsDescription": "为您的用户设置群组（可选）。",
+    "loading": "正在加载…",
+    "welcome": "欢迎使用 {{name}}"
+  }
+}

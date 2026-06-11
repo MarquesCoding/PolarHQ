@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "管理者アカウントを作成しました",
+    "closedLabel": "クローズ — 新規アカウントの作成不可",
+    "creating": "作成中…",
+    "emailLabel": "メールアドレス",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "有効なメールアドレスを入力してください",
+    "inviteOnlyLabel": "招待制 — 管理者がアカウントを作成",
+    "nameLabel": "お名前",
+    "namePlaceholder": "山田 太郎",
+    "nameRequired": "名前は必須です",
+    "openLabel": "オープン — 誰でも登録可能",
+    "passwordLabel": "パスワード",
+    "passwordMin": "8文字以上で入力してください",
+    "passwordPlaceholder": "8文字以上",
+    "registrationModeLabel": "アカウントを作成できるユーザー",
+    "setupFailed": "セットアップに失敗しました",
+    "signInFailed": "サインインに失敗しました",
+    "submit": "管理者を作成して続行"
+  },
+  "createGroupsStep": {
+    "addGroup": "グループを追加",
+    "adding": "追加中…",
+    "couldNotCreate": "グループを作成できませんでした",
+    "createdGroup": "グループ「{{name}}」を作成しました",
+    "descriptionLabel": "説明（任意）",
+    "descriptionPlaceholder": "大容量のクォータ、先行機能",
+    "finishSetup": "セットアップを完了",
+    "groupNameLabel": "グループ名",
+    "groupNamePlaceholder": "パワーユーザー",
+    "intro": "グループを使うと、共有のロールや制限（ストレージのクォータなど）を多数のユーザーに一括で割り当てられます。今いくつか作成するか、スキップして後で管理設定から行うこともできます。",
+    "nameRequired": "グループ名は必須です",
+    "skipFinish": "スキップして完了"
+  },
+  "setup": {
+    "adminDescription": "最初の管理者アカウントを作成して開始します。",
+    "groupsDescription": "ユーザー向けのグループを設定します（任意）。",
+    "loading": "読み込み中…",
+    "welcome": "{{name}}へようこそ"
+  }
+}

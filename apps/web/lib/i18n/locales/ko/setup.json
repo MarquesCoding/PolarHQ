@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "관리자 계정이 생성되었습니다",
+    "closedLabel": "닫힘 — 신규 가입 불가",
+    "creating": "생성 중…",
+    "emailLabel": "이메일",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "유효한 이메일을 입력하세요",
+    "inviteOnlyLabel": "초대 전용 — 관리자가 계정을 생성",
+    "nameLabel": "이름",
+    "namePlaceholder": "홍길동",
+    "nameRequired": "이름은 필수입니다",
+    "openLabel": "공개 — 누구나 가입 가능",
+    "passwordLabel": "비밀번호",
+    "passwordMin": "8자 이상 사용하세요",
+    "passwordPlaceholder": "8자 이상",
+    "registrationModeLabel": "누가 계정을 생성할 수 있나요?",
+    "setupFailed": "설정에 실패했습니다",
+    "signInFailed": "로그인에 실패했습니다",
+    "submit": "관리자 생성 후 계속"
+  },
+  "createGroupsStep": {
+    "addGroup": "그룹 추가",
+    "adding": "추가 중…",
+    "couldNotCreate": "그룹을 생성할 수 없습니다",
+    "createdGroup": "“{{name}}” 그룹을 생성했습니다",
+    "descriptionLabel": "설명 (선택사항)",
+    "descriptionPlaceholder": "더 큰 할당량, 미리 사용 가능한 기능",
+    "finishSetup": "설정 완료",
+    "groupNameLabel": "그룹 이름",
+    "groupNamePlaceholder": "파워 유저",
+    "intro": "그룹을 사용하면 공유 역할과 제한(예: 저장공간 할당량)을 여러 사용자에게 한 번에 할당할 수 있습니다. 지금 몇 개를 만들거나, 건너뛰고 나중에 관리자 설정에서 진행하세요.",
+    "nameRequired": "그룹 이름은 필수입니다",
+    "skipFinish": "건너뛰고 완료"
+  },
+  "setup": {
+    "adminDescription": "시작하려면 첫 번째 관리자 계정을 생성하세요.",
+    "groupsDescription": "사용자를 위한 그룹을 설정하세요 (선택사항).",
+    "loading": "로딩 중…",
+    "welcome": "{{name}}에 오신 것을 환영합니다"
+  }
+}

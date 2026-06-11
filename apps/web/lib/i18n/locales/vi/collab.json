@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "Không thể mở mục này.",
+    "deleted": "Mục này đã bị xóa. Không thể lưu các thay đổi của bạn.",
+    "deletedNamed": "Mục này đã bị xóa — “{{name}}”. Không thể lưu các thay đổi của bạn.",
+    "encrypted": "Mục này đã được mã hóa.",
+    "goBack": "Quay lại",
+    "unlock": "Mở khóa"
+  },
+  "collabList": {
+    "createFailed": "Không thể tạo",
+    "deleteFailed": "Không thể xóa",
+    "download": "Tải xuống",
+    "empty": "Chưa có gì ở đây.",
+    "movedToTrash": "Đã chuyển vào thùng rác",
+    "noMatches": "Không có kết quả nào phù hợp với tìm kiếm của bạn.",
+    "rename": "Đổi tên",
+    "sharedWithMe": "Được chia sẻ với tôi",
+    "trash": "Thùng rác"
+  },
+  "collabNav": {
+    "library": "Thư viện"
+  },
+  "collabToolbar": {
+    "createFailed": "Không thể tạo"
+  }
+}

@@ -1,1 +1,22 @@
-{}
+{
+  "title": "账户",
+  "subtitle": "管理你的个人资料和偏好设置。",
+  "back": "返回",
+  "profile": "个人资料",
+  "name": "姓名",
+  "email": "电子邮箱",
+  "preferences": "偏好设置",
+  "language": "语言",
+  "languageHint": "选择界面所使用的语言。",
+  "appearance": "外观",
+  "appearanceHint": "在浅色和深色模式之间切换。",
+  "light": "浅色",
+  "dark": "深色",
+  "system": "跟随系统",
+  "security": "安全",
+  "devices": "设备与会话",
+  "devicesHint": "查看并退出已登录的设备。",
+  "manageDevices": "管理设备",
+  "signOut": "退出登录",
+  "languageChanged": "语言已更新"
+}

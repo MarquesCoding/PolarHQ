@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "操作に失敗しました",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Googleの認証コードの交換に失敗しました。",
+    "gdriveConnectFailed": "Google Driveへの接続に失敗しました。",
+    "gdriveNoRefreshToken": "Googleからリフレッシュトークンが返されませんでした（以前のアクセス権を取り消してから再試行してください）。",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET が設定されていません",
+    "invalidOauthState": "OAuthの状態が無効です。"
+  },
+  "badRequest": "不正なリクエストです。",
+  "docs": {
+    "alreadyOwner": "すでに所有者です",
+    "emailRequired": "メールアドレスを入力してください。",
+    "noPublicKey": "公開鍵がありません。",
+    "userNotFound": "ユーザーが見つかりません"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "システムフォルダーは削除できません",
+    "cannotLockFolder": "このフォルダーはロックできません",
+    "cannotModifySystemFolder": "システムフォルダーは変更できません",
+    "extractFailed": "アーカイブを展開できませんでした",
+    "fileRequired": "ファイルフィールドは必須です",
+    "photosMediaFilesOnly": "「写真」フォルダーにはメディアファイルのみ追加できます",
+    "photosMediaOnly": "「写真」フォルダーには画像、動画、音声のみ追加できます"
+  },
+  "forbidden": "この操作を行う権限がありません。",
+  "generic": "問題が発生しました。",
+  "invalidInput": "入力内容が無効です。",
+  "notFound": "見つかりませんでした。",
+  "photos": {
+    "fileRequired": "ファイルが必要です。",
+    "stackNeedsTwoAssets": "スタックするには、自分の写真を2枚以上選択してください。"
+  },
+  "rateLimited": "リクエストが多すぎます。しばらくしてからもう一度お試しください。",
+  "setup": {
+    "alreadyComplete": "セットアップはすでに完了しています",
+    "registrationDisabled": "このインスタンスでは新規登録が無効になっています"
+  },
+  "unauthorized": "この操作を行うにはサインインが必要です。",
+  "uploads": {
+    "tooLarge": "ファイルがアップロード上限の {{limit}} を超えています"
+  }
+}

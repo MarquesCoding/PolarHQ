@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "Thao tác thất bại",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Trao đổi mã Google thất bại.",
+    "gdriveConnectFailed": "Không thể kết nối Google Drive.",
+    "gdriveNoRefreshToken": "Google không trả về refresh token (hãy thu hồi quyền truy cập trước đó và thử lại).",
+    "gdriveNotConfigured": "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET chưa được cấu hình",
+    "invalidOauthState": "Trạng thái OAuth không hợp lệ."
+  },
+  "badRequest": "Yêu cầu không hợp lệ.",
+  "docs": {
+    "alreadyOwner": "Đã là chủ sở hữu",
+    "emailRequired": "Email là bắt buộc.",
+    "noPublicKey": "Không có khóa công khai.",
+    "userNotFound": "Không tìm thấy người dùng này"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "không thể xóa thư mục hệ thống",
+    "cannotLockFolder": "không thể khóa thư mục này",
+    "cannotModifySystemFolder": "không thể chỉnh sửa thư mục hệ thống",
+    "extractFailed": "không thể giải nén tệp lưu trữ",
+    "fileRequired": "trường tệp là bắt buộc",
+    "photosMediaFilesOnly": "Thư mục Ảnh chỉ chấp nhận tệp phương tiện",
+    "photosMediaOnly": "Thư mục Ảnh chỉ chấp nhận hình ảnh, video và âm thanh"
+  },
+  "forbidden": "Bạn không có quyền thực hiện thao tác này.",
+  "generic": "Đã xảy ra lỗi.",
+  "invalidInput": "Dữ liệu nhập không hợp lệ.",
+  "notFound": "Không tìm thấy.",
+  "photos": {
+    "fileRequired": "Cần có một tệp.",
+    "stackNeedsTwoAssets": "Chọn ít nhất hai ảnh của bạn để xếp chồng."
+  },
+  "rateLimited": "Quá nhiều yêu cầu. Vui lòng thử lại sau giây lát.",
+  "setup": {
+    "alreadyComplete": "Quá trình thiết lập đã hoàn tất",
+    "registrationDisabled": "việc đăng ký đã bị tắt trên phiên bản này"
+  },
+  "unauthorized": "Bạn cần đăng nhập để thực hiện thao tác này.",
+  "uploads": {
+    "tooLarge": "Tệp vượt quá giới hạn tải lên {{limit}}"
+  }
+}

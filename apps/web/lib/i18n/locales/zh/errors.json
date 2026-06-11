@@ -1,1 +1,43 @@
-{}
+{
+  "actionFailed": "操作失败",
+  "admin": {
+    "gdriveCodeExchangeFailed": "Google 授权码交换失败。",
+    "gdriveConnectFailed": "连接 Google Drive 失败。",
+    "gdriveNoRefreshToken": "Google 未返回刷新令牌（请撤销之前的授权后重试）。",
+    "gdriveNotConfigured": "尚未配置 GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET",
+    "invalidOauthState": "无效的 OAuth 状态。"
+  },
+  "badRequest": "请求无效。",
+  "docs": {
+    "alreadyOwner": "已经是所有者",
+    "emailRequired": "请输入电子邮件地址。",
+    "noPublicKey": "没有公钥。",
+    "userNotFound": "找不到该用户"
+  },
+  "drive": {
+    "cannotDeleteSystemFolder": "无法删除系统文件夹",
+    "cannotLockFolder": "无法锁定此文件夹",
+    "cannotModifySystemFolder": "无法修改系统文件夹",
+    "extractFailed": "无法解压压缩文件",
+    "fileRequired": "文件字段为必填项",
+    "photosMediaFilesOnly": "“照片”文件夹仅接受媒体文件",
+    "photosMediaOnly": "“照片”文件夹仅接受图片、视频和音频"
+  },
+  "forbidden": "你没有执行此操作的权限。",
+  "generic": "出错了。",
+  "invalidInput": "输入无效。",
+  "notFound": "未找到。",
+  "photos": {
+    "fileRequired": "请提供一个文件。",
+    "stackNeedsTwoAssets": "请至少选择两张你自己的照片进行堆叠。"
+  },
+  "rateLimited": "请求过于频繁，请稍后再试。",
+  "setup": {
+    "alreadyComplete": "初始化设置已完成",
+    "registrationDisabled": "此实例已禁用注册"
+  },
+  "unauthorized": "你需要先登录才能执行此操作。",
+  "uploads": {
+    "tooLarge": "文件超过 {{limit}} 的上传限制"
+  }
+}

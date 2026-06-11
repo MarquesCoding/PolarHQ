@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "내 드라이브"
+  },
+  "browser": {
+    "archive": "압축",
+    "archiveExtracted": "압축을 해제했습니다",
+    "archiveLabel_one": "압축 ({{count}}개 항목)",
+    "archiveLabel_other": "압축 ({{count}}개 항목)",
+    "copyCreated": "사본을 만들었습니다",
+    "couldNotCopy": "복사할 수 없습니다",
+    "couldNotCreate": "만들 수 없습니다",
+    "couldNotDelete": "삭제할 수 없습니다",
+    "couldNotExtract": "압축을 해제할 수 없습니다",
+    "couldNotMove": "이동할 수 없습니다",
+    "couldNotOpenFile": "이 파일을 열 수 없습니다",
+    "download": "다운로드",
+    "dragOrUpload": "여기로 파일을 끌어다 놓거나 업로드를 사용하세요.",
+    "extract": "압축 해제",
+    "linkCopied": "링크를 복사했습니다",
+    "move": "이동",
+    "movedToFolder_one": "{{count}}개 항목을 {{name}}(으)로 이동했습니다",
+    "movedToFolder_other": "{{count}}개 항목을 {{name}}(으)로 이동했습니다",
+    "movedToTrash": "휴지통으로 이동했습니다",
+    "noMatches": "검색 결과가 없습니다.",
+    "open": "열기",
+    "opening": "여는 중…",
+    "rename": "이름 변경",
+    "share": "공유",
+    "trash": "휴지통"
+  },
+  "detailsPanel": {
+    "closeDetails": "세부정보 닫기",
+    "created": "만든 날짜",
+    "empty": "세부정보를 보려면 항목을 선택하세요.",
+    "file": "파일",
+    "files": "파일",
+    "folder": "폴더",
+    "folders": "폴더",
+    "itemsSelected_one": "{{count}}개 항목 선택됨",
+    "itemsSelected_other": "{{count}}개 항목 선택됨",
+    "modified": "수정한 날짜",
+    "size": "크기",
+    "title": "세부정보",
+    "totalSize": "전체 크기",
+    "type": "유형"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "새 문서",
+    "newFolder": "새 폴더",
+    "newSpreadsheet": "새 스프레드시트",
+    "uploadFiles": "파일 업로드"
+  },
+  "driveNav": {
+    "drive": "드라이브",
+    "location": "위치",
+    "myDrive": "내 드라이브",
+    "trash": "휴지통"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "만들 수 없습니다",
+    "emptyTrash": "휴지통 비우기",
+    "emptyTrashConfirm": "휴지통을 비우시겠습니까?",
+    "new": "새로 만들기",
+    "newDocument": "새 문서",
+    "newFolder": "새 폴더",
+    "newSpreadsheet": "새 스프레드시트",
+    "toggleDetails": "세부정보 표시/숨기기",
+    "trashEmptied": "휴지통을 비웠습니다",
+    "uploadFiles": "파일 업로드"
+  },
+  "folderLockDialog": {
+    "cancel": "취소",
+    "confirmPasswordPlaceholder": "비밀번호 확인",
+    "folderLocked": "폴더를 잠갔습니다",
+    "folderPasswordPlaceholder": "폴더 비밀번호",
+    "incorrectPassword": "비밀번호가 올바르지 않습니다.",
+    "lock": "잠금",
+    "lockDescription": "이 폴더를 열 때 사용할 비밀번호를 설정하세요. 이 기기에서의 접근만 제한하며, 파일은 항상 종단 간 암호화된 상태로 유지됩니다.",
+    "lockFolderTitle": "폴더 잠금",
+    "lockRemoved": "잠금을 해제했습니다",
+    "passwordsDontMatch": "비밀번호가 일치하지 않습니다.",
+    "removeDescription": "잠금을 해제하려면 폴더 비밀번호를 입력하세요.",
+    "removeLock": "잠금 해제",
+    "removeLockTitle": "잠금 해제",
+    "somethingWentWrong": "문제가 발생했습니다."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "내용을 보려면 비밀번호를 입력하세요.",
+    "incorrectPassword": "비밀번호가 올바르지 않습니다.",
+    "locked": "“{{name}}”이(가) 잠겨 있습니다",
+    "passwordPlaceholder": "폴더 비밀번호",
+    "unlock": "잠금 해제"
+  },
+  "imageViewer": {
+    "close": "닫기",
+    "download": "다운로드",
+    "resetZoom": "확대/축소 초기화",
+    "zoomIn": "확대",
+    "zoomOut": "축소"
+  },
+  "modelViewer": {
+    "autoRotate": "자동 회전",
+    "close": "닫기",
+    "decryptError": "모델을 복호화할 수 없습니다",
+    "loading": "모델을 불러오는 중…",
+    "normals": "법선",
+    "openError": "이 3D 파일을 열 수 없습니다.",
+    "shaded": "셰이딩",
+    "toggleGrid": "격자 표시/숨기기",
+    "toggleTextures": "텍스처 표시/숨기기",
+    "wireframe": "와이어프레임"
+  },
+  "moveDialog": {
+    "cancel": "취소",
+    "move": "이동",
+    "moveFailed": "이동할 수 없습니다",
+    "moved": "이동했습니다",
+    "myDrive": "내 드라이브",
+    "title": "폴더로 이동"
+  },
+  "newFolderDialog": {
+    "cancel": "취소",
+    "create": "만들기",
+    "createError": "폴더를 만들 수 없습니다",
+    "created": "폴더를 만들었습니다",
+    "newFolder": "새 폴더",
+    "placeholder": "폴더 이름",
+    "title": "새 폴더"
+  },
+  "nodeCard": {
+    "deselect": "선택 해제",
+    "folder": "폴더",
+    "select": "선택"
+  },
+  "nodeContextMenu": {
+    "copyLink": "링크 복사",
+    "details": "세부정보",
+    "download": "다운로드",
+    "extractHere": "여기에 압축 해제",
+    "lockFolder": "폴더 잠금",
+    "makeCopy": "사본 만들기",
+    "moveToFolder": "폴더로 이동",
+    "moveToTrash": "휴지통으로 이동",
+    "open": "열기",
+    "openInPhotos": "사진에서 열기",
+    "removeLock": "잠금 해제",
+    "rename": "이름 변경",
+    "share": "공유",
+    "versionHistory": "버전 기록 보기",
+    "view": "보기",
+    "viewIn3d": "3D로 보기"
+  },
+  "nodeTable": {
+    "deselect": "선택 해제",
+    "modified": "수정한 날짜",
+    "name": "이름",
+    "select": "선택",
+    "selectAll": "모두 선택",
+    "size": "크기"
+  },
+  "parentCard": {
+    "parentFolder": "상위 폴더"
+  },
+  "renameDialog": {
+    "cancel": "취소",
+    "couldNotRename": "이름을 변경할 수 없습니다",
+    "renamed": "이름을 변경했습니다",
+    "save": "저장",
+    "title": "이름 변경"
+  },
+  "shell": {
+    "search": "드라이브 검색"
+  },
+  "trash": {
+    "actionFailed": "작업에 실패했습니다",
+    "deleteForever": "영구 삭제",
+    "empty": "휴지통이 비어 있습니다.",
+    "permanentlyDeleted": "영구적으로 삭제했습니다",
+    "restore": "복원",
+    "restored": "복원했습니다",
+    "retentionNotice": "여기에 있는 항목은 휴지통으로 이동한 지 30일 후에 영구적으로 삭제됩니다.",
+    "title": "휴지통"
+  },
+  "versionHistoryDialog": {
+    "close": "닫기",
+    "download": "버전 다운로드",
+    "empty": "이전 버전이 없습니다. 같은 이름으로 파일을 다시 업로드하면 버전이 생성됩니다.",
+    "loading": "불러오는 중…",
+    "restore": "복원",
+    "restoreFailed": "복원할 수 없습니다",
+    "restored": "버전을 복원했습니다",
+    "title": "버전 기록",
+    "versionLabel": "버전 {{number}}"
+  }
+}

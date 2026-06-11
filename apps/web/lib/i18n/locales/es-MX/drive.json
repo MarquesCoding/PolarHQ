@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Mi unidad"
+  },
+  "browser": {
+    "archive": "Archivo",
+    "archiveExtracted": "Archivo extraído",
+    "archiveLabel_one": "Archivo ({{count}} elemento)",
+    "archiveLabel_other": "Archivo ({{count}} elementos)",
+    "copyCreated": "Copia creada",
+    "couldNotCopy": "No se pudo copiar",
+    "couldNotCreate": "No se pudo crear",
+    "couldNotDelete": "No se pudo eliminar",
+    "couldNotExtract": "No se pudo extraer",
+    "couldNotMove": "No se pudo mover",
+    "couldNotOpenFile": "No se pudo abrir este archivo",
+    "download": "Descargar",
+    "dragOrUpload": "Arrastra los archivos aquí o usa Subir.",
+    "extract": "Extraer",
+    "linkCopied": "Enlace copiado",
+    "move": "Mover",
+    "movedToFolder_one": "Se movió {{count}} elemento a {{name}}",
+    "movedToFolder_other": "Se movieron {{count}} elementos a {{name}}",
+    "movedToTrash": "Movido a la papelera",
+    "noMatches": "No hay coincidencias con tu búsqueda.",
+    "open": "Abrir",
+    "opening": "Abriendo…",
+    "rename": "Cambiar nombre",
+    "share": "Compartir",
+    "trash": "Papelera"
+  },
+  "detailsPanel": {
+    "closeDetails": "Cerrar detalles",
+    "created": "Creado",
+    "empty": "Selecciona un elemento para ver sus detalles.",
+    "file": "Archivo",
+    "files": "Archivos",
+    "folder": "Carpeta",
+    "folders": "Carpetas",
+    "itemsSelected_one": "{{count}} elemento seleccionado",
+    "itemsSelected_other": "{{count}} elementos seleccionados",
+    "modified": "Modificado",
+    "size": "Tamaño",
+    "title": "Detalles",
+    "totalSize": "Tamaño total",
+    "type": "Tipo"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Nuevo documento",
+    "newFolder": "Nueva carpeta",
+    "newSpreadsheet": "Nueva hoja de cálculo",
+    "uploadFiles": "Subir archivos"
+  },
+  "driveNav": {
+    "drive": "Unidad",
+    "location": "Ubicación",
+    "myDrive": "Mi unidad",
+    "trash": "Papelera"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "No se pudo crear",
+    "emptyTrash": "Vaciar papelera",
+    "emptyTrashConfirm": "¿Vaciar la papelera?",
+    "new": "Nuevo",
+    "newDocument": "Nuevo documento",
+    "newFolder": "Nueva carpeta",
+    "newSpreadsheet": "Nueva hoja de cálculo",
+    "toggleDetails": "Mostrar u ocultar detalles",
+    "trashEmptied": "Papelera vaciada",
+    "uploadFiles": "Subir archivos"
+  },
+  "folderLockDialog": {
+    "cancel": "Cancelar",
+    "confirmPasswordPlaceholder": "Confirmar contraseña",
+    "folderLocked": "Carpeta bloqueada",
+    "folderPasswordPlaceholder": "Contraseña de la carpeta",
+    "incorrectPassword": "Contraseña incorrecta.",
+    "lock": "Bloquear",
+    "lockDescription": "Establece una contraseña para abrir esta carpeta. Controla el acceso en este dispositivo; tus archivos siguen cifrados de extremo a extremo de cualquier forma.",
+    "lockFolderTitle": "Bloquear carpeta",
+    "lockRemoved": "Bloqueo eliminado",
+    "passwordsDontMatch": "Las contraseñas no coinciden.",
+    "removeDescription": "Ingresa la contraseña de la carpeta para quitar su bloqueo.",
+    "removeLock": "Quitar bloqueo",
+    "removeLockTitle": "Quitar bloqueo",
+    "somethingWentWrong": "Algo salió mal."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Ingresa su contraseña para ver el contenido.",
+    "incorrectPassword": "Contraseña incorrecta.",
+    "locked": "“{{name}}” está bloqueada",
+    "passwordPlaceholder": "Contraseña de la carpeta",
+    "unlock": "Desbloquear"
+  },
+  "imageViewer": {
+    "close": "Cerrar",
+    "download": "Descargar",
+    "resetZoom": "Restablecer zoom",
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar"
+  },
+  "modelViewer": {
+    "autoRotate": "Rotación automática",
+    "close": "Cerrar",
+    "decryptError": "No se pudo descifrar el modelo",
+    "loading": "Cargando modelo…",
+    "normals": "Normales",
+    "openError": "No se pudo abrir este archivo 3D.",
+    "shaded": "Sombreado",
+    "toggleGrid": "Mostrar u ocultar cuadrícula",
+    "toggleTextures": "Mostrar u ocultar texturas",
+    "wireframe": "Estructura alámbrica"
+  },
+  "moveDialog": {
+    "cancel": "Cancelar",
+    "move": "Mover",
+    "moveFailed": "No se pudo mover",
+    "moved": "Movido",
+    "myDrive": "Mi unidad",
+    "title": "Mover a carpeta"
+  },
+  "newFolderDialog": {
+    "cancel": "Cancelar",
+    "create": "Crear",
+    "createError": "No se pudo crear la carpeta",
+    "created": "Carpeta creada",
+    "newFolder": "Nueva carpeta",
+    "placeholder": "Nombre de la carpeta",
+    "title": "Nueva carpeta"
+  },
+  "nodeCard": {
+    "deselect": "Anular selección",
+    "folder": "Carpeta",
+    "select": "Seleccionar"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Copiar enlace",
+    "details": "Detalles",
+    "download": "Descargar",
+    "extractHere": "Extraer aquí",
+    "lockFolder": "Bloquear carpeta",
+    "makeCopy": "Hacer una copia",
+    "moveToFolder": "Mover a carpeta",
+    "moveToTrash": "Mover a la papelera",
+    "open": "Abrir",
+    "openInPhotos": "Abrir en Fotos",
+    "removeLock": "Quitar bloqueo",
+    "rename": "Cambiar nombre",
+    "share": "Compartir",
+    "versionHistory": "Ver historial de versiones",
+    "view": "Ver",
+    "viewIn3d": "Ver en 3D"
+  },
+  "nodeTable": {
+    "deselect": "Anular selección",
+    "modified": "Modificado",
+    "name": "Nombre",
+    "select": "Seleccionar",
+    "selectAll": "Seleccionar todo",
+    "size": "Tamaño"
+  },
+  "parentCard": {
+    "parentFolder": "Carpeta principal"
+  },
+  "renameDialog": {
+    "cancel": "Cancelar",
+    "couldNotRename": "No se pudo cambiar el nombre",
+    "renamed": "Nombre cambiado",
+    "save": "Guardar",
+    "title": "Cambiar nombre"
+  },
+  "shell": {
+    "search": "Buscar en Drive"
+  },
+  "trash": {
+    "actionFailed": "La acción falló",
+    "deleteForever": "Eliminar permanentemente",
+    "empty": "La papelera está vacía.",
+    "permanentlyDeleted": "Eliminado permanentemente",
+    "restore": "Restaurar",
+    "restored": "Restaurado",
+    "retentionNotice": "Los elementos aquí se eliminan permanentemente 30 días después de enviarse a la papelera.",
+    "title": "Papelera"
+  },
+  "versionHistoryDialog": {
+    "close": "Cerrar",
+    "download": "Descargar versión",
+    "empty": "No hay versiones anteriores. Vuelve a subir un archivo con el mismo nombre para crear una.",
+    "loading": "Cargando…",
+    "restore": "Restaurar",
+    "restoreFailed": "No se pudo restaurar",
+    "restored": "Versión restaurada",
+    "title": "Historial de versiones",
+    "versionLabel": "Versión {{number}}"
+  }
+}

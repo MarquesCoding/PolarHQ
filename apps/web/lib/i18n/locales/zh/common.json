@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "返回",
+    "cancel": "取消",
+    "close": "关闭",
+    "confirm": "确认",
+    "create": "新建",
+    "delete": "删除",
+    "done": "完成",
+    "download": "下载",
+    "getStarted": "开始使用",
+    "next": "下一步",
+    "open": "打开",
+    "remove": "移除",
+    "rename": "重命名",
+    "retry": "重试",
+    "save": "保存",
+    "share": "分享",
+    "signOut": "退出登录"
+  },
+  "appTile": {
+    "beta": "测试版",
+    "soon": "即将推出"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · 版本号 {{build}}",
+    "whatsNew": "更新内容"
+  },
+  "collabHeader": {
+    "anonymous": "匿名",
+    "notSavedYet": "尚未保存",
+    "save": "保存",
+    "savedAt": "已于 {{time}} 保存",
+    "saving": "正在保存…",
+    "share": "分享",
+    "title": "标题"
+  },
+  "confirmButton": {
+    "confirm": "确认"
+  },
+  "devicesDialog": {
+    "activeNow": "当前在线",
+    "lastActive": "最后活动于 {{time}}",
+    "signOut": "退出登录",
+    "signOutError": "无法退出该设备",
+    "signedOut": "设备已退出登录",
+    "thisDevice": "此设备",
+    "title": "设备与会话"
+  },
+  "dropZone": {
+    "dropToUpload": "拖放以上传"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "你所做的每一处更改都会自动安全地保存到云盘。",
+    "encrypted": "已加密",
+    "endToEndEncrypted": "端到端加密"
+  },
+  "flatSidebar": {
+    "account": "账户",
+    "apps": "应用",
+    "beta": "测试版",
+    "devices": "设备",
+    "personalWorkspace": "个人工作区",
+    "replayIntro": "重播介绍",
+    "settings": "设置",
+    "signOut": "退出登录",
+    "storage": "存储空间",
+    "toggleDarkMode": "切换深色模式",
+    "unlimited": "无限制"
+  },
+  "importButton": {
+    "import": "导入",
+    "importFailed": "无法导入此文件"
+  },
+  "launcher": {
+    "loadingApps": "正在加载应用…",
+    "ofQuota": "/ {{quota}}",
+    "signOut": "退出登录",
+    "storage": "存储空间",
+    "versionBuild": "v{{version}} · 版本号 {{build}}",
+    "yourApps": "你的应用"
+  },
+  "recoveryCodeDialog": {
+    "continue": "我已保存 — 继续",
+    "copied": "恢复码已复制",
+    "copyAriaLabel": "复制恢复码",
+    "description": "你的账户现已启用端到端加密。如果你忘记了密码，此恢复码是恢复数据的唯一方式 — 请妥善保管。我们无法再次显示它。",
+    "title": "保存你的恢复码"
+  },
+  "selectionBar": {
+    "clearSelection": "清除选择",
+    "download": "下载",
+    "downloadAllFrames": "下载所有帧（{{count}}）",
+    "downloadCover": "下载封面",
+    "downloadCovers": "下载封面（{{count}}）",
+    "photoFilename": "照片",
+    "photosZipFilename": "{{count}} 张照片.zip",
+    "share": "分享",
+    "shareNameFallback": "照片"
+  },
+  "shareDialog": {
+    "cancel": "取消",
+    "copyLink": "复制链接",
+    "descriptionEncrypted": "端到端加密：密钥包含在链接中，永远不会传到服务器，因此只有拥有链接的人才能解密。",
+    "descriptionPublic": "任何拥有此链接的人都可以下载该文件。",
+    "directDownload": "直接下载",
+    "directDownloadHint": "跳过中间页面，立即开始下载",
+    "expiresAfter": "有效期",
+    "expiry1Day": "1 天",
+    "expiry1Hour": "1 小时",
+    "expiry30Days": "30 天",
+    "expiry7Days": "7 天",
+    "generatingLink": "正在生成链接…",
+    "limitDownloads": "限制下载次数",
+    "limitDownloadsHint": "达到指定下载次数后停用链接",
+    "linkCopied": "链接已复制",
+    "maximumDownloads": "最大下载次数",
+    "permanentLink": "永久链接",
+    "permanentLinkHint": "在你删除前一直保持此链接有效",
+    "title": "分享“{{name}}”"
+  },
+  "state": {
+    "empty": "这里还没有内容",
+    "error": "出了点问题",
+    "loading": "正在加载…",
+    "saving": "正在保存…"
+  },
+  "units": {
+    "items_one": "{{count}} 项",
+    "items_other": "{{count}} 项"
+  },
+  "uploadManager": {
+    "archiveFailed": "归档失败",
+    "downloadFailed": "下载失败",
+    "taskFailed": "失败",
+    "unsupportedFileType": "不支持的文件类型",
+    "unsupportedFileTypeToast": "{{name}} 是不支持的文件类型"
+  },
+  "uploadPanel": {
+    "activity": "活动",
+    "alreadyInLibrary": "已在媒体库中",
+    "archiving": "正在归档…",
+    "archivingItems_one": "正在归档 {{count}} 项",
+    "archivingItems_other": "正在归档 {{count}} 项",
+    "archivingProgress": "已归档 {{loaded}} / {{size}}",
+    "bytesProgress": "{{loaded}} / {{size}}",
+    "clear": "清除",
+    "collapse": "收起",
+    "compressing": "正在压缩…",
+    "dismiss": "忽略",
+    "done": "完成",
+    "downloadFailed": "下载失败",
+    "downloaded": "已下载",
+    "downloading": "正在下载…",
+    "downloadingItems_one": "正在下载 {{count}} 项",
+    "downloadingItems_other": "正在下载 {{count}} 项",
+    "expand": "展开",
+    "failed": "失败",
+    "processing": "正在处理…",
+    "processingItems_one": "正在处理 {{count}} 项",
+    "processingItems_other": "正在处理 {{count}} 项",
+    "speed": "{{speed}}/秒",
+    "transcoding": "正在转码…",
+    "uploading": "正在上传…",
+    "uploadingItems_one": "正在上传 {{count}} 项",
+    "uploadingItems_other": "正在上传 {{count}} 项"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} 项已在你的媒体库中",
+    "alreadyInLibrary_other": "{{count}} 项已在你的媒体库中",
+    "uploadFailed": "上传 {{name}} 失败",
+    "uploaded_one": "已上传 {{count}} 张照片",
+    "uploaded_other": "已上传 {{count}} 张照片"
+  },
+  "viewToggle": {
+    "gridView": "网格视图",
+    "tableView": "表格视图"
+  }
+}
