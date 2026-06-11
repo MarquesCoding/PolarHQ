@@ -26,6 +26,7 @@
   "forbidden": "You don’t have permission to do that.",
   "generic": "Something went wrong.",
   "invalidInput": "Invalid input.",
+  "network": "Network error — check your connection and try again.",
   "notFound": "Not found.",
   "photos": {
     "fileRequired": "A file is required.",
