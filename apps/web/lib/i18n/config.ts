@@ -2,7 +2,7 @@
 
 import i18n from "i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
-import resourcesToBackend from "i18next-resources-to-backend"
+import HttpBackend from "i18next-http-backend"
 import { initReactI18next } from "react-i18next"
 
 import { FALLBACKS, LOCALE_CODES, NAMESPACES } from "./locales"
@@ -22,10 +22,10 @@ import sheets from "./locales/en/sheets.json"
 import whiteboard from "./locales/en/whiteboard.json"
 
 /**
- * Every user-facing string lives in a namespaced catalog under locales/<lng>/. English is bundled
- * for an instant first paint and as the fallback; the other languages are lazy-loaded per
- * namespace via dynamic import when the user switches, so 20+ locales never bloat the main bundle.
- * The backend returns the same keys (never English prose), resolved via the `errors` namespace.
+ * English is bundled for an instant first paint and as the fallback. The other 20+ languages live
+ * as STATIC files under public/locales/<lng>/<ns>.json and are fetched on demand via the HTTP
+ * backend — keeping them out of the bundler entirely (a dynamic-import context over 280+ files
+ * pegged Turbopack). Backend errors return keys, resolved via the `errors` namespace.
  */
 export const defaultNS = "common"
 
@@ -47,16 +47,13 @@ const enBundle = {
 
 if (!i18n.isInitialized) {
   void i18n
-    .use(
-      resourcesToBackend(
-        (language: string, namespace: string) => import(`./locales/${language}/${namespace}.json`),
-      ),
-    )
+    .use(HttpBackend)
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
       resources: { en: enBundle },
       partialBundledLanguages: true,
+      backend: { loadPath: "/locales/{{lng}}/{{ns}}.json" },
       fallbackLng: FALLBACKS,
       supportedLngs: LOCALE_CODES,
       nonExplicitSupportedLngs: true,
