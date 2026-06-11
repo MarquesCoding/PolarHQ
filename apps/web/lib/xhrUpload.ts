@@ -19,6 +19,23 @@ export interface UploadOptions {
 }
 
 /**
+ * Retry on transient failures — network errors or 5xx — with exponential backoff, so a flaky
+ * connection doesn't kill a long chunked upload. 4xx (quota, bad input) is permanent and rethrown
+ * immediately. Re-runs must be idempotent (chunked part uploads are: same part number overwrites).
+ */
+export const retryOnTransient = async <T>(fn: () => Promise<T>, attempts = 4): Promise<T> => {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await fn()
+    } catch (error) {
+      const transient = error instanceof ApiError && (error.status === 0 || error.status >= 500)
+      if (!transient || attempt >= attempts - 1) throw error
+      await new Promise((resolve) => setTimeout(resolve, 500 * 2 ** attempt))
+    }
+  }
+}
+
+/**
  * POST a FormData with real upload-progress reporting. `fetch` can't expose upload progress, so
  * this uses XHR. On failure it mirrors `apiClient`: it parses the backend's `{ error, errorParams }`
  * body into an `ApiError` (so `apiErrorMessage` resolves a localised reason), tags network failures

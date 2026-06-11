@@ -24,7 +24,12 @@ import { API_URL } from "@lib/env"
 import { extractMotionVideo } from "@lib/motionPhoto"
 import { type Asset, type GridAsset, fetchStackMembers } from "@lib/photos"
 import { analyzeAudio, analyzeImage, analyzeVideo } from "@lib/thumbnails"
-import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
+import {
+  type UploadOptions,
+  type UploadProgress,
+  postFormWithProgress,
+  retryOnTransient,
+} from "@lib/xhrUpload"
 import exifr from "exifr"
 
 const encoder = new TextEncoder()
@@ -325,11 +330,13 @@ export const uploadEncryptedMediaChunked = async (
       const plain = new Uint8Array(await slice.arrayBuffer())
       const sealed = sealer.seal(plain, index === chunks - 1)
       const body = index === 0 ? concatBytes(sealer.prefix, sealed) : sealed
-      await apiFetch(`/api/v1/photos/assets/upload/${sessionId}/part?part=${index + 1}`, {
-        method: "POST",
-        body: body as BodyInit,
-        headers: { "content-type": "application/octet-stream" },
-      })
+      await retryOnTransient(() =>
+        apiFetch(`/api/v1/photos/assets/upload/${sessionId}/part?part=${index + 1}`, {
+          method: "POST",
+          body: body as BodyInit,
+          headers: { "content-type": "application/octet-stream" },
+        }),
+      )
       sent += slice.size
       const elapsed = (performance.now() - start) / 1000
       options?.onProgress?.({
