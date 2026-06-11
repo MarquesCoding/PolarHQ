@@ -131,25 +131,46 @@ export const secretstreamInit = (key: Uint8Array): StreamSealer => {
 export const isStreamBlob = (blob: Uint8Array): boolean =>
   blob.length >= STREAM_MAGIC.length && STREAM_MAGIC.every((byte, i) => blob[i] === byte)
 
-/** Decrypt a whole streaming blob into plaintext (whole-buffer; streaming-to-disk is a later phase). */
-export const secretstreamOpenAll = (blob: Uint8Array, key: Uint8Array): Uint8Array => {
-  const headerLen = sodium.crypto_secretstream_xchacha20poly1305_HEADERBYTES
-  const header = blob.slice(STREAM_MAGIC.length, STREAM_MAGIC.length + headerLen)
+/** Bytes of `STREAM_MAGIC ‖ header` at the start of a streaming blob. */
+export const streamPrefixSize = (): number =>
+  STREAM_MAGIC.length + sodium.crypto_secretstream_xchacha20poly1305_HEADERBYTES
+
+/** Size of one stored (encrypted) chunk: plaintext chunk + the AEAD tag. */
+export const streamCipherChunkSize = (): number =>
+  STREAM_CHUNK_SIZE + sodium.crypto_secretstream_xchacha20poly1305_ABYTES
+
+export interface StreamOpener {
+  open: (cipher: Uint8Array) => { message: Uint8Array; final: boolean }
+}
+
+/** Begin incremental decryption from a streaming blob's prefix (`STREAM_MAGIC ‖ header`). */
+export const secretstreamOpenInit = (prefix: Uint8Array, key: Uint8Array): StreamOpener => {
+  const header = prefix.slice(STREAM_MAGIC.length, streamPrefixSize())
   const state = sodium.crypto_secretstream_xchacha20poly1305_init_pull(header, key)
-  const cipherChunk = STREAM_CHUNK_SIZE + sodium.crypto_secretstream_xchacha20poly1305_ABYTES
+  return {
+    open: (cipher) => {
+      const result = sodium.crypto_secretstream_xchacha20poly1305_pull(state, cipher, null)
+      if (!result) throw new Error("stream decrypt failed")
+      return {
+        message: result.message,
+        final: result.tag === sodium.crypto_secretstream_xchacha20poly1305_TAG_FINAL,
+      }
+    },
+  }
+}
+
+/** Decrypt a whole streaming blob into plaintext (whole-buffer; use the streaming reader for big files). */
+export const secretstreamOpenAll = (blob: Uint8Array, key: Uint8Array): Uint8Array => {
+  const opener = secretstreamOpenInit(blob.slice(0, streamPrefixSize()), key)
+  const cipherChunk = streamCipherChunkSize()
   const parts: Uint8Array[] = []
-  let offset = STREAM_MAGIC.length + headerLen
+  let offset = streamPrefixSize()
   while (offset < blob.length) {
     const end = Math.min(offset + cipherChunk, blob.length)
-    const result = sodium.crypto_secretstream_xchacha20poly1305_pull(
-      state,
-      blob.slice(offset, end),
-      null,
-    )
-    if (!result) throw new Error("stream decrypt failed")
-    parts.push(result.message)
+    const { message, final } = opener.open(blob.slice(offset, end))
+    parts.push(message)
     offset = end
-    if (result.tag === sodium.crypto_secretstream_xchacha20poly1305_TAG_FINAL) break
+    if (final) break
   }
   const total = parts.reduce((sum, part) => sum + part.length, 0)
   const out = new Uint8Array(total)

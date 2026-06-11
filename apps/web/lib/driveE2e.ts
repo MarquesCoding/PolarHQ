@@ -3,11 +3,15 @@
 import { apiFetch } from "@lib/apiClient"
 import {
   STREAM_CHUNK_SIZE,
+  type StreamOpener,
   isStreamBlob,
   secretboxOpen,
   secretboxSeal,
   secretstreamInit,
   secretstreamOpenAll,
+  secretstreamOpenInit,
+  streamCipherChunkSize,
+  streamPrefixSize,
 } from "@lib/crypto"
 import { type DriveNode, decryptNodeName } from "@lib/drive"
 import {
@@ -163,8 +167,110 @@ export const fetchDecryptedThumbnail = async (nodeId: string): Promise<string | 
 }
 
 /** Download a Drive file, transparently decrypting it first if it's encrypted. */
+interface SaveWritable {
+  write: (data: Uint8Array) => Promise<void>
+  close: () => Promise<void>
+  abort?: (reason?: unknown) => Promise<void>
+}
+
+interface SaveCapableWindow {
+  showSaveFilePicker?: (options?: {
+    suggestedName?: string
+  }) => Promise<{ createWritable: () => Promise<SaveWritable> }>
+}
+
+const saveCapable = (): SaveCapableWindow => window as unknown as SaveCapableWindow
+
+/** Whether this browser can stream a download straight to disk (File System Access API). */
+export const supportsStreamingDownload = (): boolean =>
+  typeof saveCapable().showSaveFilePicker === "function"
+
+/**
+ * Stream-download a large encrypted Drive file straight to disk, decrypting chunk-by-chunk so the
+ * browser never holds the whole plaintext in memory. Returns `true` when it handled the download
+ * (including a user-cancelled save dialog), `false` to fall back to the in-memory path, and throws
+ * on a mid-stream failure (the partial file is discarded).
+ */
+export const downloadEncryptedDriveFileStreaming = async (node: DriveNode): Promise<boolean> => {
+  if (!node.encrypted || !node.downloadUrl || !supportsStreamingDownload()) return false
+  const key = await getDocContentKey(node.id)
+  if (!key) return false
+
+  let writable: SaveWritable
+  try {
+    const handle = await saveCapable().showSaveFilePicker!({ suggestedName: node.name })
+    writable = await handle.createWritable()
+  } catch {
+    return true
+  }
+
+  try {
+    const response = await fetch(node.downloadUrl, { credentials: "include" })
+    if (!response.ok || !response.body) {
+      await writable.abort?.()
+      return false
+    }
+    const reader = response.body.getReader()
+    const prefixSize = streamPrefixSize()
+    const cipherChunk = streamCipherChunkSize()
+    const pending: Uint8Array[] = []
+    let pendingLen = 0
+    const take = (count: number): Uint8Array => {
+      const out = new Uint8Array(count)
+      let filled = 0
+      while (filled < count) {
+        const head = pending[0]!
+        const need = count - filled
+        if (head.length <= need) {
+          out.set(head, filled)
+          filled += head.length
+          pending.shift()
+        } else {
+          out.set(head.subarray(0, need), filled)
+          filled += need
+          pending[0] = head.subarray(need)
+        }
+      }
+      pendingLen -= count
+      return out
+    }
+
+    let opener: StreamOpener | null = null
+    let done = false
+    for (;;) {
+      const { value, done: streamDone } = await reader.read()
+      if (value) {
+        pending.push(value)
+        pendingLen += value.length
+      }
+      if (!opener && pendingLen >= prefixSize) {
+        const prefix = take(prefixSize)
+        if (!isStreamBlob(prefix)) {
+          await writable.abort?.()
+          return false
+        }
+        opener = secretstreamOpenInit(prefix, key)
+      }
+      while (opener && !done && (pendingLen >= cipherChunk || (streamDone && pendingLen > 0))) {
+        const size = Math.min(cipherChunk, pendingLen)
+        if (size < cipherChunk && !streamDone) break
+        const { message, final } = opener.open(take(size))
+        await writable.write(message)
+        if (final) done = true
+      }
+      if (streamDone || done) break
+    }
+    await writable.close()
+    return true
+  } catch (error) {
+    await writable.abort?.().catch(() => undefined)
+    throw error
+  }
+}
+
 export const downloadDriveFile = async (node: DriveNode): Promise<void> => {
   if (node.kind !== "file" || !node.downloadUrl) return
+  if (node.encrypted && (await downloadEncryptedDriveFileStreaming(node))) return
   let href = node.downloadUrl
   let revoke = false
   if (node.encrypted) {
