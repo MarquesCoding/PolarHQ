@@ -1,1 +1,202 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Мій диск"
+  },
+  "browser": {
+    "archive": "Архів",
+    "archiveExtracted": "Архів розпаковано",
+    "archiveLabel_one": "Архів ({{count}} елемент)",
+    "archiveLabel_few": "Архів ({{count}} елементи)",
+    "archiveLabel_many": "Архів ({{count}} елементів)",
+    "archiveLabel_other": "Архів ({{count}} елементів)",
+    "copyCreated": "Копію створено",
+    "couldNotCopy": "Не вдалося скопіювати",
+    "couldNotCreate": "Не вдалося створити",
+    "couldNotDelete": "Не вдалося видалити",
+    "couldNotExtract": "Не вдалося розпакувати",
+    "couldNotMove": "Не вдалося перемістити",
+    "couldNotOpenFile": "Не вдалося відкрити цей файл",
+    "download": "Завантажити",
+    "dragOrUpload": "Перетягніть файли сюди або скористайтеся завантаженням.",
+    "extract": "Розпакувати",
+    "linkCopied": "Посилання скопійовано",
+    "move": "Перемістити",
+    "movedToFolder_one": "Переміщено {{count}} елемент до {{name}}",
+    "movedToFolder_few": "Переміщено {{count}} елементи до {{name}}",
+    "movedToFolder_many": "Переміщено {{count}} елементів до {{name}}",
+    "movedToFolder_other": "Переміщено {{count}} елементів до {{name}}",
+    "movedToTrash": "Переміщено в кошик",
+    "noMatches": "Нічого не знайдено за вашим запитом.",
+    "open": "Відкрити",
+    "opening": "Відкривання…",
+    "rename": "Перейменувати",
+    "share": "Поділитися",
+    "trash": "Кошик"
+  },
+  "detailsPanel": {
+    "closeDetails": "Закрити деталі",
+    "created": "Створено",
+    "empty": "Виберіть елемент, щоб переглянути його деталі.",
+    "file": "Файл",
+    "files": "Файли",
+    "folder": "Папка",
+    "folders": "Папки",
+    "itemsSelected_one": "Вибрано {{count}} елемент",
+    "itemsSelected_few": "Вибрано {{count}} елементи",
+    "itemsSelected_many": "Вибрано {{count}} елементів",
+    "itemsSelected_other": "Вибрано {{count}} елементів",
+    "modified": "Змінено",
+    "size": "Розмір",
+    "title": "Деталі",
+    "totalSize": "Загальний розмір",
+    "type": "Тип"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Новий документ",
+    "newFolder": "Нова папка",
+    "newSpreadsheet": "Нова таблиця",
+    "uploadFiles": "Завантажити файли"
+  },
+  "driveNav": {
+    "drive": "Диск",
+    "location": "Розташування",
+    "myDrive": "Мій диск",
+    "trash": "Кошик"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Не вдалося створити",
+    "emptyTrash": "Очистити кошик",
+    "emptyTrashConfirm": "Очистити кошик?",
+    "new": "Створити",
+    "newDocument": "Новий документ",
+    "newFolder": "Нова папка",
+    "newSpreadsheet": "Нова таблиця",
+    "toggleDetails": "Показати чи приховати деталі",
+    "trashEmptied": "Кошик очищено",
+    "uploadFiles": "Завантажити файли"
+  },
+  "folderLockDialog": {
+    "cancel": "Скасувати",
+    "confirmPasswordPlaceholder": "Підтвердьте пароль",
+    "folderLocked": "Папку заблоковано",
+    "folderPasswordPlaceholder": "Пароль папки",
+    "incorrectPassword": "Неправильний пароль.",
+    "lock": "Заблокувати",
+    "lockDescription": "Установіть пароль для відкриття цієї папки. Він обмежує доступ на цьому пристрої — ваші файли залишаються зашифрованими наскрізно в будь-якому разі.",
+    "lockFolderTitle": "Заблокувати папку",
+    "lockRemoved": "Блокування знято",
+    "passwordsDontMatch": "Паролі не збігаються.",
+    "removeDescription": "Введіть пароль папки, щоб зняти блокування.",
+    "removeLock": "Зняти блокування",
+    "removeLockTitle": "Зняти блокування",
+    "somethingWentWrong": "Щось пішло не так."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Введіть пароль, щоб переглянути вміст.",
+    "incorrectPassword": "Неправильний пароль.",
+    "locked": "«{{name}}» заблоковано",
+    "passwordPlaceholder": "Пароль папки",
+    "unlock": "Розблокувати"
+  },
+  "imageViewer": {
+    "close": "Закрити",
+    "download": "Завантажити",
+    "resetZoom": "Скинути масштаб",
+    "zoomIn": "Збільшити",
+    "zoomOut": "Зменшити"
+  },
+  "modelViewer": {
+    "autoRotate": "Автообертання",
+    "close": "Закрити",
+    "decryptError": "Не вдалося розшифрувати модель",
+    "loading": "Завантаження моделі…",
+    "normals": "Нормалі",
+    "openError": "Не вдалося відкрити цей 3D-файл.",
+    "shaded": "Із затіненням",
+    "toggleGrid": "Показати чи приховати сітку",
+    "toggleTextures": "Показати чи приховати текстури",
+    "wireframe": "Каркас"
+  },
+  "moveDialog": {
+    "cancel": "Скасувати",
+    "move": "Перемістити",
+    "moveFailed": "Не вдалося перемістити",
+    "moved": "Переміщено",
+    "myDrive": "Мій диск",
+    "title": "Перемістити до папки"
+  },
+  "newFolderDialog": {
+    "cancel": "Скасувати",
+    "create": "Створити",
+    "createError": "Не вдалося створити папку",
+    "created": "Папку створено",
+    "newFolder": "Нова папка",
+    "placeholder": "Назва папки",
+    "title": "Нова папка"
+  },
+  "nodeCard": {
+    "deselect": "Скасувати вибір",
+    "folder": "Папка",
+    "select": "Вибрати"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Скопіювати посилання",
+    "details": "Деталі",
+    "download": "Завантажити",
+    "extractHere": "Розпакувати сюди",
+    "lockFolder": "Заблокувати папку",
+    "makeCopy": "Створити копію",
+    "moveToFolder": "Перемістити до папки",
+    "moveToTrash": "Перемістити в кошик",
+    "open": "Відкрити",
+    "openInPhotos": "Відкрити у Фото",
+    "removeLock": "Зняти блокування",
+    "rename": "Перейменувати",
+    "share": "Поділитися",
+    "versionHistory": "Переглянути історію версій",
+    "view": "Переглянути",
+    "viewIn3d": "Переглянути в 3D"
+  },
+  "nodeTable": {
+    "deselect": "Скасувати вибір",
+    "modified": "Змінено",
+    "name": "Назва",
+    "select": "Вибрати",
+    "selectAll": "Вибрати все",
+    "size": "Розмір"
+  },
+  "parentCard": {
+    "parentFolder": "Батьківська папка"
+  },
+  "renameDialog": {
+    "cancel": "Скасувати",
+    "couldNotRename": "Не вдалося перейменувати",
+    "renamed": "Перейменовано",
+    "save": "Зберегти",
+    "title": "Перейменувати"
+  },
+  "shell": {
+    "search": "Пошук на диску"
+  },
+  "trash": {
+    "actionFailed": "Не вдалося виконати дію",
+    "deleteForever": "Видалити назавжди",
+    "empty": "Кошик порожній.",
+    "permanentlyDeleted": "Видалено назавжди",
+    "restore": "Відновити",
+    "restored": "Відновлено",
+    "retentionNotice": "Елементи тут остаточно видаляються через 30 днів після переміщення в кошик.",
+    "title": "Кошик"
+  },
+  "versionHistoryDialog": {
+    "close": "Закрити",
+    "download": "Завантажити версію",
+    "empty": "Попередніх версій немає. Завантажте файл із такою ж назвою повторно, щоб створити версію.",
+    "loading": "Завантаження…",
+    "restore": "Відновити",
+    "restoreFailed": "Не вдалося відновити",
+    "restored": "Версію відновлено",
+    "title": "Історія версій",
+    "versionLabel": "Версія {{number}}"
+  }
+}

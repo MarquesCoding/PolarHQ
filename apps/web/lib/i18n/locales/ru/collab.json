@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "Не удалось открыть.",
+    "deleted": "Этот элемент удалён. Изменения не сохранятся.",
+    "deletedNamed": "Этот элемент удалён — «{{name}}». Изменения не сохранятся.",
+    "encrypted": "Зашифровано.",
+    "goBack": "Назад",
+    "unlock": "Разблокировать"
+  },
+  "collabList": {
+    "createFailed": "Не удалось создать",
+    "deleteFailed": "Не удалось удалить",
+    "download": "Скачать",
+    "empty": "Здесь пока ничего нет.",
+    "movedToTrash": "Перемещено в корзину",
+    "noMatches": "По вашему запросу ничего не найдено.",
+    "rename": "Переименовать",
+    "sharedWithMe": "Доступные мне",
+    "trash": "Корзина"
+  },
+  "collabNav": {
+    "library": "Библиотека"
+  },
+  "collabToolbar": {
+    "createFailed": "Не удалось создать"
+  }
+}

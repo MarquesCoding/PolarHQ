@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "تم إنشاء حساب المسؤول",
+    "closedLabel": "مغلق — لا حسابات جديدة",
+    "creating": "جارٍ الإنشاء…",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "أدخل بريدًا إلكترونيًا صالحًا",
+    "inviteOnlyLabel": "بالدعوة فقط — المسؤولون ينشئون الحسابات",
+    "nameLabel": "اسمك",
+    "namePlaceholder": "آدا لوفلايس",
+    "nameRequired": "الاسم مطلوب",
+    "openLabel": "مفتوح — يمكن لأي شخص التسجيل",
+    "passwordLabel": "كلمة المرور",
+    "passwordMin": "استخدم 8 أحرف على الأقل",
+    "passwordPlaceholder": "8 أحرف على الأقل",
+    "registrationModeLabel": "من يمكنه إنشاء الحسابات؟",
+    "setupFailed": "فشل الإعداد",
+    "signInFailed": "فشل تسجيل الدخول",
+    "submit": "إنشاء المسؤول والمتابعة"
+  },
+  "createGroupsStep": {
+    "addGroup": "إضافة مجموعة",
+    "adding": "جارٍ الإضافة…",
+    "couldNotCreate": "تعذّر إنشاء المجموعة",
+    "createdGroup": "تم إنشاء المجموعة ”{{name}}“",
+    "descriptionLabel": "الوصف (اختياري)",
+    "descriptionPlaceholder": "حصة أكبر، ميزات مبكرة",
+    "finishSetup": "إنهاء الإعداد",
+    "groupNameLabel": "اسم المجموعة",
+    "groupNamePlaceholder": "المستخدمون المتقدمون",
+    "intro": "تتيح لك المجموعات تعيين أدوار وحدود مشتركة (مثل حصص التخزين) لعدد كبير من المستخدمين دفعةً واحدة. أنشئ بعضها الآن، أو تخطَّ هذه الخطوة وقم بها لاحقًا من إعدادات المسؤول.",
+    "nameRequired": "اسم المجموعة مطلوب",
+    "skipFinish": "تخطٍّ وإنهاء"
+  },
+  "setup": {
+    "adminDescription": "أنشئ حساب المسؤول الأول للبدء.",
+    "groupsDescription": "أعدّ مجموعات لمستخدميك (اختياري).",
+    "loading": "جارٍ التحميل…",
+    "welcome": "مرحبًا بك في {{name}}"
+  }
+}

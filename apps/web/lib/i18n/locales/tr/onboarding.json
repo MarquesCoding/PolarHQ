@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 öğe",
+    "albumName": "İtalya '24",
+    "albumsBody": "Fotoğrafları albümlerde toplayın, ardından özel bir bağlantıyla paylaşın — görüntülemek için hesap gerekmez.",
+    "albumsTitle": "Albümler ve paylaşılabilir bağlantılar.",
+    "back": "Geri",
+    "dismiss": "Kapat",
+    "getStarted": "Başlayın",
+    "linkCopied": "Bağlantı kopyalandı",
+    "next": "İleri",
+    "privateBody": "Her fotoğraf, belge ve dosya uçtan uca şifrelidir. Anahtarlar yalnızca sizde — sunucu yalnızca şifreli metni görür.",
+    "privateTitle": "Varsayılan olarak gizli.",
+    "share": "Paylaş",
+    "uploadBody": "Yüklemek için fotoğrafları herhangi bir yere sürükleyin. Live Photos eşleşir ve seri çekimler otomatik olarak genişletilebilir tek bir yığında toplanır.",
+    "uploadTitle": "Sadece içeri bırakın."
+  }
+}

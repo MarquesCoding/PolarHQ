@@ -1,1 +1,207 @@
-{}
+{
+  "actions": {
+    "back": "رجوع",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "confirm": "تأكيد",
+    "create": "إنشاء",
+    "delete": "حذف",
+    "done": "تم",
+    "download": "تنزيل",
+    "getStarted": "ابدأ الآن",
+    "next": "التالي",
+    "open": "فتح",
+    "remove": "إزالة",
+    "rename": "إعادة تسمية",
+    "retry": "إعادة المحاولة",
+    "save": "حفظ",
+    "share": "مشاركة",
+    "signOut": "تسجيل الخروج"
+  },
+  "appTile": {
+    "beta": "تجريبي",
+    "soon": "قريبًا"
+  },
+  "changelog": {
+    "versionBuild": "الإصدار {{version}} · بنية {{build}}",
+    "whatsNew": "الجديد"
+  },
+  "collabHeader": {
+    "anonymous": "مجهول",
+    "notSavedYet": "لم يُحفظ بعد",
+    "save": "حفظ",
+    "savedAt": "تم الحفظ {{time}}",
+    "saving": "جارٍ الحفظ…",
+    "share": "مشاركة",
+    "title": "العنوان"
+  },
+  "confirmButton": {
+    "confirm": "تأكيد"
+  },
+  "devicesDialog": {
+    "activeNow": "نشط الآن",
+    "lastActive": "آخر نشاط {{time}}",
+    "signOut": "تسجيل الخروج",
+    "signOutError": "تعذّر تسجيل الخروج من هذا الجهاز",
+    "signedOut": "تم تسجيل خروج الجهاز",
+    "thisDevice": "هذا الجهاز",
+    "title": "الأجهزة والجلسات"
+  },
+  "dropZone": {
+    "dropToUpload": "أفلِت للرفع"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "يُحفظ كل تغيير تجريه تلقائيًا وبأمان في Drive.",
+    "encrypted": "مشفّر",
+    "endToEndEncrypted": "مشفّر طرفًا إلى طرف"
+  },
+  "flatSidebar": {
+    "account": "الحساب",
+    "apps": "التطبيقات",
+    "beta": "تجريبي",
+    "devices": "الأجهزة",
+    "personalWorkspace": "مساحة العمل الشخصية",
+    "replayIntro": "إعادة تشغيل المقدمة",
+    "settings": "الإعدادات",
+    "signOut": "تسجيل الخروج",
+    "storage": "التخزين",
+    "toggleDarkMode": "تبديل الوضع الداكن",
+    "unlimited": "غير محدود"
+  },
+  "importButton": {
+    "import": "استيراد",
+    "importFailed": "تعذّر استيراد هذا الملف"
+  },
+  "launcher": {
+    "loadingApps": "جارٍ تحميل التطبيقات…",
+    "ofQuota": "من {{quota}}",
+    "signOut": "تسجيل الخروج",
+    "storage": "التخزين",
+    "versionBuild": "الإصدار {{version}} · بنية {{build}}",
+    "yourApps": "تطبيقاتك"
+  },
+  "recoveryCodeDialog": {
+    "continue": "لقد حفظته — متابعة",
+    "copied": "تم نسخ رمز الاسترداد",
+    "copyAriaLabel": "نسخ رمز الاسترداد",
+    "description": "أصبح حسابك الآن مشفّرًا طرفًا إلى طرف. رمز الاسترداد هذا هو الطريقة الوحيدة لاستعادة بياناتك إذا نسيت كلمة المرور — احفظه في مكان آمن. لن نتمكن من عرضه مرة أخرى.",
+    "title": "احفظ رمز الاسترداد"
+  },
+  "selectionBar": {
+    "clearSelection": "إلغاء التحديد",
+    "download": "تنزيل",
+    "downloadAllFrames": "تنزيل كل الإطارات ({{count}})",
+    "downloadCover": "تنزيل الغلاف",
+    "downloadCovers": "تنزيل الأغلفة ({{count}})",
+    "photoFilename": "صورة",
+    "photosZipFilename": "{{count}} صورة.zip",
+    "share": "مشاركة",
+    "shareNameFallback": "صورة"
+  },
+  "shareDialog": {
+    "cancel": "إلغاء",
+    "copyLink": "نسخ الرابط",
+    "descriptionEncrypted": "مشفّر طرفًا إلى طرف: يبقى المفتاح في الرابط ولا يصل إلى الخادم أبدًا، لذا لا يمكن فك تشفيره إلا لمن يملك الرابط.",
+    "descriptionPublic": "يمكن لأي شخص لديه هذا الرابط تنزيل الملف.",
+    "directDownload": "تنزيل مباشر",
+    "directDownloadHint": "تخطَّ صفحة الوصول ونزِّل فورًا",
+    "expiresAfter": "تنتهي صلاحيته بعد",
+    "expiry1Day": "يوم واحد",
+    "expiry1Hour": "ساعة واحدة",
+    "expiry30Days": "30 يومًا",
+    "expiry7Days": "7 أيام",
+    "generatingLink": "جارٍ إنشاء الرابط…",
+    "limitDownloads": "تحديد عدد التنزيلات",
+    "limitDownloadsHint": "تعطيل الرابط بعد عدد معيّن من التنزيلات",
+    "linkCopied": "تم نسخ الرابط",
+    "maximumDownloads": "الحد الأقصى للتنزيلات",
+    "permanentLink": "رابط دائم",
+    "permanentLinkHint": "أبقِ هذا الرابط نشطًا حتى تحذفه",
+    "title": "مشاركة ”{{name}}“"
+  },
+  "state": {
+    "empty": "لا يوجد شيء هنا بعد",
+    "error": "حدث خطأ ما",
+    "loading": "جارٍ التحميل…",
+    "saving": "جارٍ الحفظ…"
+  },
+  "units": {
+    "items_zero": "لا عناصر",
+    "items_one": "عنصر واحد",
+    "items_two": "عنصران",
+    "items_few": "{{count}} عناصر",
+    "items_many": "{{count}} عنصرًا",
+    "items_other": "{{count}} عنصر"
+  },
+  "uploadManager": {
+    "archiveFailed": "فشلت الأرشفة",
+    "downloadFailed": "فشل التنزيل",
+    "taskFailed": "فشل",
+    "unsupportedFileType": "نوع ملف غير مدعوم",
+    "unsupportedFileTypeToast": "{{name}} نوع ملف غير مدعوم"
+  },
+  "uploadPanel": {
+    "activity": "النشاط",
+    "alreadyInLibrary": "موجود بالفعل في المكتبة",
+    "archiving": "جارٍ الأرشفة…",
+    "archivingItems_zero": "جارٍ أرشفة لا عناصر",
+    "archivingItems_one": "جارٍ أرشفة عنصر واحد",
+    "archivingItems_two": "جارٍ أرشفة عنصرين",
+    "archivingItems_few": "جارٍ أرشفة {{count}} عناصر",
+    "archivingItems_many": "جارٍ أرشفة {{count}} عنصرًا",
+    "archivingItems_other": "جارٍ أرشفة {{count}} عنصر",
+    "archivingProgress": "جارٍ أرشفة {{loaded}} من {{size}}",
+    "bytesProgress": "{{loaded}} من {{size}}",
+    "clear": "مسح",
+    "collapse": "طي",
+    "compressing": "جارٍ الضغط…",
+    "dismiss": "تجاهل",
+    "done": "تم",
+    "downloadFailed": "فشل التنزيل",
+    "downloaded": "تم التنزيل",
+    "downloading": "جارٍ التنزيل…",
+    "downloadingItems_zero": "جارٍ تنزيل لا عناصر",
+    "downloadingItems_one": "جارٍ تنزيل عنصر واحد",
+    "downloadingItems_two": "جارٍ تنزيل عنصرين",
+    "downloadingItems_few": "جارٍ تنزيل {{count}} عناصر",
+    "downloadingItems_many": "جارٍ تنزيل {{count}} عنصرًا",
+    "downloadingItems_other": "جارٍ تنزيل {{count}} عنصر",
+    "expand": "توسيع",
+    "failed": "فشل",
+    "processing": "جارٍ المعالجة…",
+    "processingItems_zero": "جارٍ معالجة لا عناصر",
+    "processingItems_one": "جارٍ معالجة عنصر واحد",
+    "processingItems_two": "جارٍ معالجة عنصرين",
+    "processingItems_few": "جارٍ معالجة {{count}} عناصر",
+    "processingItems_many": "جارٍ معالجة {{count}} عنصرًا",
+    "processingItems_other": "جارٍ معالجة {{count}} عنصر",
+    "speed": "{{speed}}/ث",
+    "transcoding": "جارٍ إعادة الترميز…",
+    "uploading": "جارٍ الرفع…",
+    "uploadingItems_zero": "جارٍ رفع لا عناصر",
+    "uploadingItems_one": "جارٍ رفع عنصر واحد",
+    "uploadingItems_two": "جارٍ رفع عنصرين",
+    "uploadingItems_few": "جارٍ رفع {{count}} عناصر",
+    "uploadingItems_many": "جارٍ رفع {{count}} عنصرًا",
+    "uploadingItems_other": "جارٍ رفع {{count}} عنصر"
+  },
+  "useUploader": {
+    "alreadyInLibrary_zero": "لا عناصر موجودة بالفعل في مكتبتك",
+    "alreadyInLibrary_one": "عنصر واحد موجود بالفعل في مكتبتك",
+    "alreadyInLibrary_two": "عنصران موجودان بالفعل في مكتبتك",
+    "alreadyInLibrary_few": "{{count}} عناصر موجودة بالفعل في مكتبتك",
+    "alreadyInLibrary_many": "{{count}} عنصرًا موجودة بالفعل في مكتبتك",
+    "alreadyInLibrary_other": "{{count}} عنصر موجود بالفعل في مكتبتك",
+    "uploadFailed": "فشل رفع {{name}}",
+    "uploaded_zero": "لم تُرفع أي صور",
+    "uploaded_one": "تم رفع صورة واحدة",
+    "uploaded_two": "تم رفع صورتين",
+    "uploaded_few": "تم رفع {{count}} صور",
+    "uploaded_many": "تم رفع {{count}} صورة",
+    "uploaded_other": "تم رفع {{count}} صورة"
+  },
+  "viewToggle": {
+    "gridView": "عرض شبكي",
+    "tableView": "عرض جدولي"
+  }
+}

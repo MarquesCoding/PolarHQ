@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Yönetici hesabı oluşturuldu",
+    "closedLabel": "Kapalı — yeni hesap açılamaz",
+    "creating": "Oluşturuluyor…",
+    "emailLabel": "E-posta",
+    "emailPlaceholder": "yonetici@ornek.com",
+    "invalidEmail": "Geçerli bir e-posta girin",
+    "inviteOnlyLabel": "Yalnızca davetle — hesapları yöneticiler oluşturur",
+    "nameLabel": "Adınız",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "Ad gereklidir",
+    "openLabel": "Açık — herkes kaydolabilir",
+    "passwordLabel": "Parola",
+    "passwordMin": "En az 8 karakter kullanın",
+    "passwordPlaceholder": "En az 8 karakter",
+    "registrationModeLabel": "Hesapları kimler oluşturabilir?",
+    "setupFailed": "Kurulum başarısız",
+    "signInFailed": "Oturum açma başarısız",
+    "submit": "Yöneticiyi oluştur ve devam et"
+  },
+  "createGroupsStep": {
+    "addGroup": "Grup ekle",
+    "adding": "Ekleniyor…",
+    "couldNotCreate": "Grup oluşturulamadı",
+    "createdGroup": "“{{name}}” grubu oluşturuldu",
+    "descriptionLabel": "Açıklama (isteğe bağlı)",
+    "descriptionPlaceholder": "Daha büyük kota, erken özellikler",
+    "finishSetup": "Kurulumu tamamla",
+    "groupNameLabel": "Grup adı",
+    "groupNamePlaceholder": "Güçlü Kullanıcılar",
+    "intro": "Gruplar, paylaşılan rolleri ve sınırları (depolama kotaları gibi) birçok kullanıcıya aynı anda atamanıza olanak tanır. Şimdi birkaç tane oluşturun veya atlayıp bunu daha sonra yönetici ayarlarından yapın.",
+    "nameRequired": "Grup adı gereklidir",
+    "skipFinish": "Atla ve bitir"
+  },
+  "setup": {
+    "adminDescription": "Başlamak için ilk yönetici hesabını oluşturun.",
+    "groupsDescription": "Kullanıcılarınız için gruplar oluşturun (isteğe bağlı).",
+    "loading": "Yükleniyor…",
+    "welcome": "{{name}} uygulamasına hoş geldiniz"
+  }
+}

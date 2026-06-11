@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "إعادة",
+    "resetZoom": "إعادة تعيين التكبير",
+    "undo": "تراجع",
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير"
+  },
+  "propertiesPanel": {
+    "background": "الخلفية",
+    "bringForward": "إحضار إلى الأمام",
+    "bringToFront": "إحضار إلى المقدمة",
+    "layers": "الطبقات",
+    "opacity": "العتامة",
+    "sendBackward": "إرسال إلى الخلف",
+    "sendToBack": "إرسال إلى المؤخرة",
+    "stroke": "الحد",
+    "strokeWidth": "عرض الحد"
+  },
+  "shell": {
+    "myWhiteboards": "ألواحي البيضاء",
+    "newWhiteboard": "لوح أبيض جديد",
+    "product": "اللوح الأبيض",
+    "search": "البحث في الألواح البيضاء",
+    "whiteboards": "الألواح البيضاء"
+  },
+  "toolbar": {
+    "arrow": "سهم",
+    "diamond": "معيّن",
+    "draw": "رسم",
+    "ellipse": "بيضاوي",
+    "eraser": "ممحاة",
+    "line": "خط",
+    "pan": "تحريك",
+    "rectangle": "مستطيل",
+    "select": "تحديد",
+    "text": "نص"
+  },
+  "whiteboardList": {
+    "createLabel": "لوح أبيض جديد",
+    "title": "الألواح البيضاء"
+  }
+}

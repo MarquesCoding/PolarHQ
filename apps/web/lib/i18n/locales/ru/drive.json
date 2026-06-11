@@ -1,1 +1,202 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Мой диск"
+  },
+  "browser": {
+    "archive": "Архив",
+    "archiveExtracted": "Архив распакован",
+    "archiveLabel_one": "Архивировать ({{count}} элемент)",
+    "archiveLabel_few": "Архивировать ({{count}} элемента)",
+    "archiveLabel_many": "Архивировать ({{count}} элементов)",
+    "archiveLabel_other": "Архивировать ({{count}} элемента)",
+    "copyCreated": "Копия создана",
+    "couldNotCopy": "Не удалось скопировать",
+    "couldNotCreate": "Не удалось создать",
+    "couldNotDelete": "Не удалось удалить",
+    "couldNotExtract": "Не удалось распаковать",
+    "couldNotMove": "Не удалось переместить",
+    "couldNotOpenFile": "Не удалось открыть этот файл",
+    "download": "Скачать",
+    "dragOrUpload": "Перетащите файлы сюда или нажмите «Загрузить».",
+    "extract": "Распаковать",
+    "linkCopied": "Ссылка скопирована",
+    "move": "Переместить",
+    "movedToFolder_one": "{{count}} элемент перемещён в «{{name}}»",
+    "movedToFolder_few": "{{count}} элемента перемещены в «{{name}}»",
+    "movedToFolder_many": "{{count}} элементов перемещены в «{{name}}»",
+    "movedToFolder_other": "{{count}} элемента перемещены в «{{name}}»",
+    "movedToTrash": "Перемещено в корзину",
+    "noMatches": "Ничего не найдено по вашему запросу.",
+    "open": "Открыть",
+    "opening": "Открытие…",
+    "rename": "Переименовать",
+    "share": "Поделиться",
+    "trash": "Корзина"
+  },
+  "detailsPanel": {
+    "closeDetails": "Закрыть сведения",
+    "created": "Создано",
+    "empty": "Выберите элемент, чтобы посмотреть сведения о нём.",
+    "file": "Файл",
+    "files": "Файлы",
+    "folder": "Папка",
+    "folders": "Папки",
+    "itemsSelected_one": "Выбран {{count}} элемент",
+    "itemsSelected_few": "Выбрано {{count}} элемента",
+    "itemsSelected_many": "Выбрано {{count}} элементов",
+    "itemsSelected_other": "Выбрано {{count}} элемента",
+    "modified": "Изменено",
+    "size": "Размер",
+    "title": "Сведения",
+    "totalSize": "Общий размер",
+    "type": "Тип"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Новый документ",
+    "newFolder": "Новая папка",
+    "newSpreadsheet": "Новая таблица",
+    "uploadFiles": "Загрузить файлы"
+  },
+  "driveNav": {
+    "drive": "Диск",
+    "location": "Расположение",
+    "myDrive": "Мой диск",
+    "trash": "Корзина"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Не удалось создать",
+    "emptyTrash": "Очистить корзину",
+    "emptyTrashConfirm": "Очистить корзину?",
+    "new": "Создать",
+    "newDocument": "Новый документ",
+    "newFolder": "Новая папка",
+    "newSpreadsheet": "Новая таблица",
+    "toggleDetails": "Показать или скрыть сведения",
+    "trashEmptied": "Корзина очищена",
+    "uploadFiles": "Загрузить файлы"
+  },
+  "folderLockDialog": {
+    "cancel": "Отмена",
+    "confirmPasswordPlaceholder": "Подтвердите пароль",
+    "folderLocked": "Папка заблокирована",
+    "folderPasswordPlaceholder": "Пароль папки",
+    "incorrectPassword": "Неверный пароль.",
+    "lock": "Заблокировать",
+    "lockDescription": "Задайте пароль для открытия этой папки. Он ограничивает доступ только на этом устройстве — ваши файлы в любом случае остаются защищёнными сквозным шифрованием.",
+    "lockFolderTitle": "Заблокировать папку",
+    "lockRemoved": "Блокировка снята",
+    "passwordsDontMatch": "Пароли не совпадают.",
+    "removeDescription": "Введите пароль папки, чтобы снять блокировку.",
+    "removeLock": "Снять блокировку",
+    "removeLockTitle": "Снять блокировку",
+    "somethingWentWrong": "Что-то пошло не так."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Введите пароль, чтобы посмотреть содержимое.",
+    "incorrectPassword": "Неверный пароль.",
+    "locked": "Папка «{{name}}» заблокирована",
+    "passwordPlaceholder": "Пароль папки",
+    "unlock": "Разблокировать"
+  },
+  "imageViewer": {
+    "close": "Закрыть",
+    "download": "Скачать",
+    "resetZoom": "Сбросить масштаб",
+    "zoomIn": "Увеличить",
+    "zoomOut": "Уменьшить"
+  },
+  "modelViewer": {
+    "autoRotate": "Автоповорот",
+    "close": "Закрыть",
+    "decryptError": "Не удалось расшифровать модель",
+    "loading": "Загрузка модели…",
+    "normals": "Нормали",
+    "openError": "Не удалось открыть этот 3D-файл.",
+    "shaded": "С затенением",
+    "toggleGrid": "Показать или скрыть сетку",
+    "toggleTextures": "Показать или скрыть текстуры",
+    "wireframe": "Каркас"
+  },
+  "moveDialog": {
+    "cancel": "Отмена",
+    "move": "Переместить",
+    "moveFailed": "Не удалось переместить",
+    "moved": "Перемещено",
+    "myDrive": "Мой диск",
+    "title": "Переместить в папку"
+  },
+  "newFolderDialog": {
+    "cancel": "Отмена",
+    "create": "Создать",
+    "createError": "Не удалось создать папку",
+    "created": "Папка создана",
+    "newFolder": "Новая папка",
+    "placeholder": "Название папки",
+    "title": "Новая папка"
+  },
+  "nodeCard": {
+    "deselect": "Снять выбор",
+    "folder": "Папка",
+    "select": "Выбрать"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Скопировать ссылку",
+    "details": "Сведения",
+    "download": "Скачать",
+    "extractHere": "Распаковать здесь",
+    "lockFolder": "Заблокировать папку",
+    "makeCopy": "Создать копию",
+    "moveToFolder": "Переместить в папку",
+    "moveToTrash": "Переместить в корзину",
+    "open": "Открыть",
+    "openInPhotos": "Открыть в Фото",
+    "removeLock": "Снять блокировку",
+    "rename": "Переименовать",
+    "share": "Поделиться",
+    "versionHistory": "Показать историю версий",
+    "view": "Просмотреть",
+    "viewIn3d": "Просмотреть в 3D"
+  },
+  "nodeTable": {
+    "deselect": "Снять выбор",
+    "modified": "Изменено",
+    "name": "Название",
+    "select": "Выбрать",
+    "selectAll": "Выбрать всё",
+    "size": "Размер"
+  },
+  "parentCard": {
+    "parentFolder": "Родительская папка"
+  },
+  "renameDialog": {
+    "cancel": "Отмена",
+    "couldNotRename": "Не удалось переименовать",
+    "renamed": "Переименовано",
+    "save": "Сохранить",
+    "title": "Переименовать"
+  },
+  "shell": {
+    "search": "Поиск на диске"
+  },
+  "trash": {
+    "actionFailed": "Не удалось выполнить действие",
+    "deleteForever": "Удалить навсегда",
+    "empty": "Корзина пуста.",
+    "permanentlyDeleted": "Удалено навсегда",
+    "restore": "Восстановить",
+    "restored": "Восстановлено",
+    "retentionNotice": "Элементы здесь удаляются навсегда через 30 дней после перемещения в корзину.",
+    "title": "Корзина"
+  },
+  "versionHistoryDialog": {
+    "close": "Закрыть",
+    "download": "Скачать версию",
+    "empty": "Предыдущих версий нет. Загрузите файл с тем же названием повторно, чтобы создать новую версию.",
+    "loading": "Загрузка…",
+    "restore": "Восстановить",
+    "restoreFailed": "Не удалось восстановить",
+    "restored": "Версия восстановлена",
+    "title": "История версий",
+    "versionLabel": "Версия {{number}}"
+  }
+}

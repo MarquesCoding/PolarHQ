@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Повторити",
+    "resetZoom": "Скинути масштаб",
+    "undo": "Скасувати",
+    "zoomIn": "Збільшити",
+    "zoomOut": "Зменшити"
+  },
+  "propertiesPanel": {
+    "background": "Тло",
+    "bringForward": "Перемістити вперед",
+    "bringToFront": "На передній план",
+    "layers": "Шари",
+    "opacity": "Непрозорість",
+    "sendBackward": "Перемістити назад",
+    "sendToBack": "На задній план",
+    "stroke": "Обведення",
+    "strokeWidth": "Товщина обведення"
+  },
+  "shell": {
+    "myWhiteboards": "Мої дошки",
+    "newWhiteboard": "Нова дошка",
+    "product": "Дошка",
+    "search": "Пошук дошок",
+    "whiteboards": "Дошки"
+  },
+  "toolbar": {
+    "arrow": "Стрілка",
+    "diamond": "Ромб",
+    "draw": "Малювання",
+    "ellipse": "Еліпс",
+    "eraser": "Гумка",
+    "line": "Лінія",
+    "pan": "Панорамування",
+    "rectangle": "Прямокутник",
+    "select": "Вибір",
+    "text": "Текст"
+  },
+  "whiteboardList": {
+    "createLabel": "Нова дошка",
+    "title": "Дошки"
+  }
+}

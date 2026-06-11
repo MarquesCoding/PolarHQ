@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "Bu açılamadı.",
+    "deleted": "Bu silindi. Değişiklikleriniz kaydedilemez.",
+    "deletedNamed": "Bu silindi — “{{name}}”. Değişiklikleriniz kaydedilemez.",
+    "encrypted": "Bu şifreli.",
+    "goBack": "Geri dön",
+    "unlock": "Kilidi aç"
+  },
+  "collabList": {
+    "createFailed": "Oluşturulamadı",
+    "deleteFailed": "Silinemedi",
+    "download": "İndir",
+    "empty": "Burada henüz bir şey yok.",
+    "movedToTrash": "Çöpe taşındı",
+    "noMatches": "Aramanızla eşleşen bir şey yok.",
+    "rename": "Yeniden adlandır",
+    "sharedWithMe": "Benimle paylaşılanlar",
+    "trash": "Çöp"
+  },
+  "collabNav": {
+    "library": "Kitaplık"
+  },
+  "collabToolbar": {
+    "createFailed": "Oluşturulamadı"
+  }
+}

@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "تعذّر فتح هذا العنصر.",
+    "deleted": "تم حذف هذا العنصر. لا يمكن حفظ تغييراتك.",
+    "deletedNamed": "تم حذف هذا العنصر — ”{{name}}“. لا يمكن حفظ تغييراتك.",
+    "encrypted": "هذا العنصر مُشفّر.",
+    "goBack": "رجوع",
+    "unlock": "إلغاء القفل"
+  },
+  "collabList": {
+    "createFailed": "تعذّر الإنشاء",
+    "deleteFailed": "تعذّر الحذف",
+    "download": "تنزيل",
+    "empty": "لا يوجد شيء هنا بعد.",
+    "movedToTrash": "تم النقل إلى المهملات",
+    "noMatches": "لا توجد نتائج مطابقة لبحثك.",
+    "rename": "إعادة تسمية",
+    "sharedWithMe": "تمت مشاركتها معي",
+    "trash": "المهملات"
+  },
+  "collabNav": {
+    "library": "المكتبة"
+  },
+  "collabToolbar": {
+    "createFailed": "تعذّر الإنشاء"
+  }
+}

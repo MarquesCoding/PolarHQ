@@ -1,1 +1,193 @@
-{}
+{
+  "actions": {
+    "back": "Назад",
+    "cancel": "Скасувати",
+    "close": "Закрити",
+    "confirm": "Підтвердити",
+    "create": "Створити",
+    "delete": "Видалити",
+    "done": "Готово",
+    "download": "Завантажити",
+    "getStarted": "Почати",
+    "next": "Далі",
+    "open": "Відкрити",
+    "remove": "Прибрати",
+    "rename": "Перейменувати",
+    "retry": "Повторити",
+    "save": "Зберегти",
+    "share": "Поділитися",
+    "signOut": "Вийти"
+  },
+  "appTile": {
+    "beta": "Бета",
+    "soon": "Незабаром"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · збірка {{build}}",
+    "whatsNew": "Що нового"
+  },
+  "collabHeader": {
+    "anonymous": "Анонім",
+    "notSavedYet": "Ще не збережено",
+    "save": "Зберегти",
+    "savedAt": "Збережено {{time}}",
+    "saving": "Збереження…",
+    "share": "Поділитися",
+    "title": "Назва"
+  },
+  "confirmButton": {
+    "confirm": "Підтвердити"
+  },
+  "devicesDialog": {
+    "activeNow": "Активний зараз",
+    "lastActive": "Остання активність {{time}}",
+    "signOut": "Вийти",
+    "signOutError": "Не вдалося вийти з цього пристрою",
+    "signedOut": "Сеанс на пристрої завершено",
+    "thisDevice": "Цей пристрій",
+    "title": "Пристрої та сеанси"
+  },
+  "dropZone": {
+    "dropToUpload": "Перетягніть, щоб завантажити"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Кожна ваша зміна автоматично й безпечно зберігається на Диск.",
+    "encrypted": "Зашифровано",
+    "endToEndEncrypted": "Наскрізне шифрування"
+  },
+  "flatSidebar": {
+    "account": "Обліковий запис",
+    "apps": "Застосунки",
+    "beta": "Бета",
+    "devices": "Пристрої",
+    "personalWorkspace": "Особистий робочий простір",
+    "replayIntro": "Переглянути вступ ще раз",
+    "settings": "Налаштування",
+    "signOut": "Вийти",
+    "storage": "Сховище",
+    "toggleDarkMode": "Перемкнути темний режим",
+    "unlimited": "Без обмежень"
+  },
+  "importButton": {
+    "import": "Імпортувати",
+    "importFailed": "Не вдалося імпортувати цей файл"
+  },
+  "launcher": {
+    "loadingApps": "Завантаження застосунків…",
+    "ofQuota": "з {{quota}}",
+    "signOut": "Вийти",
+    "storage": "Сховище",
+    "versionBuild": "v{{version}} · збірка {{build}}",
+    "yourApps": "Ваші застосунки"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Я зберіг — продовжити",
+    "copied": "Код відновлення скопійовано",
+    "copyAriaLabel": "Скопіювати код відновлення",
+    "description": "Ваш обліковий запис тепер захищений наскрізним шифруванням. Цей код відновлення — єдиний спосіб відновити ваші дані, якщо ви забудете пароль, тож зберігайте його в надійному місці. Ми не зможемо показати його знову.",
+    "title": "Збережіть код відновлення"
+  },
+  "selectionBar": {
+    "clearSelection": "Зняти виділення",
+    "download": "Завантажити",
+    "downloadAllFrames": "Завантажити всі кадри ({{count}})",
+    "downloadCover": "Завантажити обкладинку",
+    "downloadCovers": "Завантажити обкладинки ({{count}})",
+    "photoFilename": "Фото",
+    "photosZipFilename": "{{count}} фото.zip",
+    "share": "Поділитися",
+    "shareNameFallback": "фото"
+  },
+  "shareDialog": {
+    "cancel": "Скасувати",
+    "copyLink": "Скопіювати посилання",
+    "descriptionEncrypted": "Наскрізне шифрування: ключ міститься в посиланні й ніколи не потрапляє на сервер, тож розшифрувати файл можуть лише ті, хто має посилання.",
+    "descriptionPublic": "Будь-хто з цим посиланням може завантажити файл.",
+    "directDownload": "Пряме завантаження",
+    "directDownloadHint": "Пропустити сторінку переходу й одразу завантажити",
+    "expiresAfter": "Термін дії спливає через",
+    "expiry1Day": "1 день",
+    "expiry1Hour": "1 годину",
+    "expiry30Days": "30 днів",
+    "expiry7Days": "7 днів",
+    "generatingLink": "Створення посилання…",
+    "limitDownloads": "Обмежити завантаження",
+    "limitDownloadsHint": "Вимкнути посилання після певної кількості завантажень",
+    "linkCopied": "Посилання скопійовано",
+    "maximumDownloads": "Максимум завантажень",
+    "permanentLink": "Постійне посилання",
+    "permanentLinkHint": "Залишати це посилання активним, доки ви його не видалите",
+    "title": "Поділитися «{{name}}»"
+  },
+  "state": {
+    "empty": "Тут поки що нічого немає",
+    "error": "Щось пішло не так",
+    "loading": "Завантаження…",
+    "saving": "Збереження…"
+  },
+  "units": {
+    "items_one": "{{count}} елемент",
+    "items_few": "{{count}} елементи",
+    "items_many": "{{count}} елементів",
+    "items_other": "{{count}} елемента"
+  },
+  "uploadManager": {
+    "archiveFailed": "Не вдалося заархівувати",
+    "downloadFailed": "Не вдалося завантажити",
+    "taskFailed": "Помилка",
+    "unsupportedFileType": "Непідтримуваний тип файлу",
+    "unsupportedFileTypeToast": "{{name}} — непідтримуваний тип файлу"
+  },
+  "uploadPanel": {
+    "activity": "Активність",
+    "alreadyInLibrary": "Уже в бібліотеці",
+    "archiving": "Архівування…",
+    "archivingItems_one": "Архівування {{count}} елемента",
+    "archivingItems_few": "Архівування {{count}} елементів",
+    "archivingItems_many": "Архівування {{count}} елементів",
+    "archivingItems_other": "Архівування {{count}} елемента",
+    "archivingProgress": "Архівування {{loaded}} з {{size}}",
+    "bytesProgress": "{{loaded}} з {{size}}",
+    "clear": "Очистити",
+    "collapse": "Згорнути",
+    "compressing": "Стиснення…",
+    "dismiss": "Відхилити",
+    "done": "Готово",
+    "downloadFailed": "Не вдалося завантажити",
+    "downloaded": "Завантажено",
+    "downloading": "Завантаження…",
+    "downloadingItems_one": "Завантаження {{count}} елемента",
+    "downloadingItems_few": "Завантаження {{count}} елементів",
+    "downloadingItems_many": "Завантаження {{count}} елементів",
+    "downloadingItems_other": "Завантаження {{count}} елемента",
+    "expand": "Розгорнути",
+    "failed": "Помилка",
+    "processing": "Обробка…",
+    "processingItems_one": "Обробка {{count}} елемента",
+    "processingItems_few": "Обробка {{count}} елементів",
+    "processingItems_many": "Обробка {{count}} елементів",
+    "processingItems_other": "Обробка {{count}} елемента",
+    "speed": "{{speed}}/с",
+    "transcoding": "Перекодування…",
+    "uploading": "Вивантаження…",
+    "uploadingItems_one": "Вивантаження {{count}} елемента",
+    "uploadingItems_few": "Вивантаження {{count}} елементів",
+    "uploadingItems_many": "Вивантаження {{count}} елементів",
+    "uploadingItems_other": "Вивантаження {{count}} елемента"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} вже у вашій бібліотеці",
+    "alreadyInLibrary_few": "{{count}} вже у вашій бібліотеці",
+    "alreadyInLibrary_many": "{{count}} вже у вашій бібліотеці",
+    "alreadyInLibrary_other": "{{count}} вже у вашій бібліотеці",
+    "uploadFailed": "Не вдалося вивантажити {{name}}",
+    "uploaded_one": "Вивантажено {{count}} фото",
+    "uploaded_few": "Вивантажено {{count}} фото",
+    "uploaded_many": "Вивантажено {{count}} фото",
+    "uploaded_other": "Вивантажено {{count}} фото"
+  },
+  "viewToggle": {
+    "gridView": "Сітка",
+    "tableView": "Таблиця"
+  }
+}
