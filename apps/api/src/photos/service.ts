@@ -152,6 +152,51 @@ export const ingestEncryptedAsset = async (
   return { asset, mirrorNodeId: mirror?.id ?? null }
 }
 
+/** Create an encrypted asset whose ciphertext is already stored (chunked upload completion). */
+export const ingestEncryptedAssetFromStorage = async (input: {
+  ownerId: string
+  assetId: string
+  storageKey: string
+  sizeBytes: number
+  mimeType: string
+  type: "image" | "video" | "audio"
+  width: number | null
+  height: number | null
+  durationMs: number | null
+  encryptedName: string | null
+  encryptedLocation: string | null
+  encryptedExif: string | null
+  placeholderName: string
+  takenAt: Date | null
+}): Promise<{ asset: Asset; mirrorNodeId: string | null }> => {
+  const inserted = await db
+    .insert(schema.assets)
+    .values({
+      id: input.assetId,
+      ownerId: input.ownerId,
+      checksum: createId(),
+      originalFilename: input.placeholderName,
+      encryptedName: input.encryptedName,
+      encryptedLocation: input.encryptedLocation,
+      encryptedExif: input.encryptedExif,
+      encrypted: true,
+      mimeType: input.mimeType,
+      type: input.type,
+      sizeBytes: input.sizeBytes,
+      width: input.width,
+      height: input.height,
+      durationMs: input.durationMs,
+      storageKey: input.storageKey,
+      status: "ready",
+      takenAt: input.takenAt,
+    })
+    .returning()
+  const asset = inserted[0]
+  if (!asset) throw new Error("Failed to insert asset")
+  const mirror = await ensurePhotosDriveNode(input.ownerId, asset).catch(() => null)
+  return { asset, mirrorNodeId: mirror?.id ?? null }
+}
+
 /** Store an encrypted ML embedding for an owned asset (upsert by asset+kind). */
 export const setEmbedding = async (
   ownerId: string,

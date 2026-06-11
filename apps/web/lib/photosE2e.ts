@@ -1,6 +1,14 @@
 "use client"
 
-import { secretboxOpen, secretboxSeal } from "@lib/crypto"
+import { apiFetch } from "@lib/apiClient"
+import {
+  STREAM_CHUNK_SIZE,
+  isStreamBlob,
+  secretboxOpen,
+  secretboxSeal,
+  secretstreamInit,
+  secretstreamOpenAll,
+} from "@lib/crypto"
 import {
   createContentKey,
   decryptName,
@@ -158,15 +166,18 @@ const putThumbnail = (url: string, body: Uint8Array): Promise<Response> =>
  * and send the dimensions/duration/takenAt/filename the grid needs (the server can't read
  * the ciphertext). The server stores only opaque bytes and runs no media processing.
  */
-export const uploadEncryptedMedia = async (
-  file: File,
-  motionFile?: File,
-  options?: UploadOptions,
-): Promise<Asset> => {
-  const key = createContentKey()
-  const source = isHeic(file) ? ((await convertHeicToJpeg(file)) ?? file) : file
-  const original = new Uint8Array(await source.arrayBuffer())
+interface AnalyzedMedia {
+  source: File
+  thumbnail: Uint8Array | null
+  width?: number
+  height?: number
+  durationMs?: number
+  metadata: ExtractedMetadata
+}
 
+/** Decode/transcode + extract the thumbnail, dimensions, duration and EXIF for a media file. */
+const analyzeMedia = async (file: File): Promise<AnalyzedMedia> => {
+  const source = isHeic(file) ? ((await convertHeicToJpeg(file)) ?? file) : file
   let thumbnail: Uint8Array | null = null
   let width: number | undefined
   let height: number | undefined
@@ -184,6 +195,60 @@ export const uploadEncryptedMedia = async (
     height = i.height
     metadata = await extractEncryptedMetadata(file)
   }
+  return { source, thumbnail, width, height, durationMs, metadata }
+}
+
+/** Store the content key, upload the encrypted thumbnail/poster + motion clip, and index images. */
+const attachAssetExtras = async (
+  file: File,
+  source: File,
+  asset: Asset,
+  mirrorNodeId: string | null,
+  key: Uint8Array,
+  thumbnail: Uint8Array | null,
+  motionFile?: File,
+): Promise<void> => {
+  await storeContentKey(asset.id, key)
+  if (mirrorNodeId) await storeContentKey(mirrorNodeId, key)
+
+  if (thumbnail) {
+    const encryptedThumb = secretboxSeal(thumbnail, key)
+    await putThumbnail(`${API_URL}/api/v1/photos/assets/${asset.id}/thumbnail`, encryptedThumb)
+    if (mirrorNodeId)
+      await putThumbnail(`${API_URL}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, encryptedThumb)
+  }
+
+  if (source.type.startsWith("image/")) {
+    const motionBytes = motionFile
+      ? new Uint8Array(await motionFile.arrayBuffer())
+      : await extractMotionVideo(file).catch(() => null)
+    if (motionBytes) {
+      await putThumbnail(
+        `${API_URL}/api/v1/photos/assets/${asset.id}/motion`,
+        secretboxSeal(motionBytes, key),
+      ).catch(() => undefined)
+    }
+    void import("@lib/photoIndex")
+      .then((index) => index.embedAndStore(asset.id, source))
+      .catch(() => undefined)
+  }
+}
+
+const concatBytes = (a: Uint8Array, b: Uint8Array): Uint8Array => {
+  const out = new Uint8Array(a.length + b.length)
+  out.set(a)
+  out.set(b, a.length)
+  return out
+}
+
+export const uploadEncryptedMedia = async (
+  file: File,
+  motionFile?: File,
+  options?: UploadOptions,
+): Promise<Asset> => {
+  const key = createContentKey()
+  const { source, thumbnail, width, height, durationMs, metadata } = await analyzeMedia(file)
+  const original = new Uint8Array(await source.arrayBuffer())
 
   const encryptedName = encryptName(source.name)
   const form = new FormData()
@@ -209,32 +274,79 @@ export const uploadEncryptedMedia = async (
     mirrorNodeId: string | null
   }>(`${API_URL}/api/v1/photos/assets`, form, options)
 
-  await storeContentKey(asset.id, key)
-  if (mirrorNodeId) await storeContentKey(mirrorNodeId, key)
-
-  if (thumbnail) {
-    const encryptedThumb = secretboxSeal(thumbnail, key)
-    await putThumbnail(`${API_URL}/api/v1/photos/assets/${asset.id}/thumbnail`, encryptedThumb)
-    if (mirrorNodeId)
-      await putThumbnail(`${API_URL}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, encryptedThumb)
-  }
-
-  if (source.type.startsWith("image/")) {
-    const motionBytes = motionFile
-      ? new Uint8Array(await motionFile.arrayBuffer())
-      : await extractMotionVideo(file).catch(() => null)
-    if (motionBytes) {
-      await putThumbnail(
-        `${API_URL}/api/v1/photos/assets/${asset.id}/motion`,
-        secretboxSeal(motionBytes, key),
-      ).catch(() => undefined)
-    }
-    void import("@lib/photoIndex")
-      .then((index) => index.embedAndStore(asset.id, source))
-      .catch(() => undefined)
-  }
-
+  await attachAssetExtras(file, source, asset, mirrorNodeId, key, thumbnail, motionFile)
   return asset
+}
+
+/**
+ * Upload large media end-to-end encrypted in streaming chunks (mirrors the Drive path) so the
+ * browser never holds the whole file/ciphertext in memory. Metadata (dimensions/duration/EXIF)
+ * is sent at session start; the encrypted original streams as multipart parts.
+ */
+export const uploadEncryptedMediaChunked = async (
+  file: File,
+  motionFile?: File,
+  options?: UploadOptions,
+): Promise<Asset> => {
+  const key = createContentKey()
+  const { source, thumbnail, width, height, durationMs, metadata } = await analyzeMedia(file)
+  const sealer = secretstreamInit(key)
+  const encryptedName = encryptName(source.name)
+
+  const { sessionId } = await apiFetch<{ sessionId: string; assetId: string }>(
+    "/api/v1/photos/assets/upload/initiate",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        mimeType: source.type || "application/octet-stream",
+        totalSize: source.size,
+        width: width ?? null,
+        height: height ?? null,
+        durationMs: durationMs ?? null,
+        encryptedName: encryptedName ?? null,
+        encryptedLocation: metadata.encryptedLocation ?? null,
+        encryptedExif: metadata.encryptedExif ?? null,
+        placeholderName: encryptedName ? encryptedPlaceholder() : source.name,
+        takenAtMs: metadata.takenAtMs ?? (file.lastModified || null),
+      }),
+    },
+  )
+
+  try {
+    const chunks = Math.max(1, Math.ceil(source.size / STREAM_CHUNK_SIZE))
+    const start = performance.now()
+    let sent = 0
+    for (let index = 0; index < chunks; index += 1) {
+      const offset = index * STREAM_CHUNK_SIZE
+      const slice = source.slice(offset, Math.min(offset + STREAM_CHUNK_SIZE, source.size))
+      const plain = new Uint8Array(await slice.arrayBuffer())
+      const sealed = sealer.seal(plain, index === chunks - 1)
+      const body = index === 0 ? concatBytes(sealer.prefix, sealed) : sealed
+      await apiFetch(`/api/v1/photos/assets/upload/${sessionId}/part?part=${index + 1}`, {
+        method: "POST",
+        body: body as BodyInit,
+        headers: { "content-type": "application/octet-stream" },
+      })
+      sent += slice.size
+      const elapsed = (performance.now() - start) / 1000
+      options?.onProgress?.({
+        loaded: sent,
+        total: source.size,
+        speed: elapsed > 0 ? sent / elapsed : 0,
+      })
+    }
+    const { asset, mirrorNodeId } = await apiFetch<{
+      asset: Asset
+      mirrorNodeId: string | null
+    }>(`/api/v1/photos/assets/upload/${sessionId}/complete`, { method: "POST" })
+    await attachAssetExtras(file, source, asset, mirrorNodeId, key, thumbnail, motionFile)
+    return asset
+  } catch (error) {
+    await apiFetch(`/api/v1/photos/assets/upload/${sessionId}/abort`, { method: "POST" }).catch(
+      () => undefined,
+    )
+    throw error
+  }
 }
 
 /** Fetch + decrypt an asset's motion-photo clip into an object URL (or null if it has none). */
@@ -297,7 +409,8 @@ export const fetchDecryptedPhotoOriginal = async (
   })
   if (!response.ok) return null
   try {
-    const plain = secretboxOpen(new Uint8Array(await response.arrayBuffer()), key)
+    const bytes = new Uint8Array(await response.arrayBuffer())
+    const plain = isStreamBlob(bytes) ? secretstreamOpenAll(bytes, key) : secretboxOpen(bytes, key)
     return URL.createObjectURL(new Blob([plain as BlobPart], { type: mimeType || "image/jpeg" }))
   } catch {
     return null

@@ -11,9 +11,17 @@ const createArchive = createRequire(import.meta.url)("archiver") as (
   format: Format,
   options?: ArchiverOptions,
 ) => Archiver
+import { resolveLimit } from "@workspace/auth"
+import { createId } from "@paralleldrive/cuid2"
 import { getSessionUser } from "../context"
-import { readUploadForm } from "../uploads"
+import { formatBytes, readUploadForm } from "../uploads"
 import { createShareForAsset } from "../drive/service"
+import {
+  deletePhotoUploadSession,
+  getPhotoUploadSession,
+  savePhotoUploadSession,
+  type PhotoUploadSession,
+} from "./uploadSession"
 import * as albums from "./albums"
 import { serializeAsset, serializeGridAssets } from "./serialize"
 import {
@@ -26,6 +34,7 @@ import {
   getStackCounts,
   getStackMembers,
   ingestEncryptedAsset,
+  ingestEncryptedAssetFromStorage,
   ingestUpload,
   listAssets,
   listEmbeddings,
@@ -120,6 +129,121 @@ photosRoutes.post("/assets", async (c) => {
   const asset = await serializeAsset(result.asset)
   if (!result.deduped) await notify(c.get("userId"))
   return c.json({ asset, deduped: result.deduped }, result.deduped ? 200 : 201)
+})
+
+photosRoutes.post("/assets/upload/initiate", async (c) => {
+  const userId = c.get("userId")
+  const parsed = await parse(
+    c,
+    z.object({
+      mimeType: z.string().min(1),
+      totalSize: z.number().int().nonnegative(),
+      width: z.number().int().nullish(),
+      height: z.number().int().nullish(),
+      durationMs: z.number().int().nullish(),
+      encryptedName: z.string().nullish(),
+      encryptedLocation: z.string().nullish(),
+      encryptedExif: z.string().nullish(),
+      placeholderName: z.string().min(1),
+      takenAtMs: z.number().int().nullish(),
+    }),
+  )
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
+
+  const maxBytes = await resolveLimit(userId, "upload.maxFileBytes")
+  if (typeof maxBytes === "number" && parsed.data.totalSize > maxBytes) {
+    return c.json({ error: "uploads.tooLarge", errorParams: { limit: formatBytes(maxBytes) } }, 413)
+  }
+
+  const mime = parsed.data.mimeType
+  const type = mime.startsWith("video/") ? "video" : mime.startsWith("audio/") ? "audio" : "image"
+  const assetId = createId()
+  const storageKey = assetObjectKeys(userId, assetId, ".bin").original
+  const multipartUploadId = await storage().createMultipart(storageKey, "application/octet-stream")
+
+  const sessionId = createId()
+  const session: PhotoUploadSession = {
+    ownerId: userId,
+    assetId,
+    storageKey,
+    multipartUploadId,
+    parts: [],
+    bytes: 0,
+    mimeType: mime,
+    type,
+    width: parsed.data.width ?? null,
+    height: parsed.data.height ?? null,
+    durationMs: parsed.data.durationMs ?? null,
+    encryptedName: parsed.data.encryptedName ?? null,
+    encryptedLocation: parsed.data.encryptedLocation ?? null,
+    encryptedExif: parsed.data.encryptedExif ?? null,
+    placeholderName: parsed.data.placeholderName,
+    takenAtMs: parsed.data.takenAtMs ?? null,
+  }
+  await savePhotoUploadSession(sessionId, session)
+  return c.json({ sessionId, assetId }, 201)
+})
+
+photosRoutes.post("/assets/upload/:sessionId/part", async (c) => {
+  const userId = c.get("userId")
+  const session = await getPhotoUploadSession(c.req.param("sessionId"))
+  if (!session || session.ownerId !== userId) return c.json({ error: "notFound" }, 404)
+
+  const partNumber = Number(c.req.query("part"))
+  if (!Number.isInteger(partNumber) || partNumber < 1) return c.json({ error: "invalidInput" }, 400)
+
+  const body = Buffer.from(await c.req.arrayBuffer())
+  const part = await storage().uploadPart(
+    session.storageKey,
+    session.multipartUploadId,
+    partNumber,
+    body,
+  )
+  session.parts.push(part)
+  session.bytes += body.length
+  await savePhotoUploadSession(c.req.param("sessionId"), session)
+  return c.json({ ok: true })
+})
+
+photosRoutes.post("/assets/upload/:sessionId/complete", async (c) => {
+  const userId = c.get("userId")
+  const sessionId = c.req.param("sessionId")
+  const session = await getPhotoUploadSession(sessionId)
+  if (!session || session.ownerId !== userId) return c.json({ error: "notFound" }, 404)
+  if (session.parts.length === 0) return c.json({ error: "invalidInput" }, 400)
+
+  await storage().completeMultipart(session.storageKey, session.multipartUploadId, session.parts)
+  const { asset, mirrorNodeId } = await ingestEncryptedAssetFromStorage({
+    ownerId: userId,
+    assetId: session.assetId,
+    storageKey: session.storageKey,
+    sizeBytes: session.bytes,
+    mimeType: session.mimeType,
+    type: session.type,
+    width: session.width,
+    height: session.height,
+    durationMs: session.durationMs,
+    encryptedName: session.encryptedName,
+    encryptedLocation: session.encryptedLocation,
+    encryptedExif: session.encryptedExif,
+    placeholderName: session.placeholderName,
+    takenAt: session.takenAtMs ? new Date(session.takenAtMs) : null,
+  })
+  await deletePhotoUploadSession(sessionId)
+  await notify(userId)
+  return c.json({ asset: await serializeAsset(asset), mirrorNodeId, deduped: false }, 201)
+})
+
+photosRoutes.post("/assets/upload/:sessionId/abort", async (c) => {
+  const userId = c.get("userId")
+  const sessionId = c.req.param("sessionId")
+  const session = await getPhotoUploadSession(sessionId)
+  if (!session || session.ownerId !== userId) return c.json({ ok: true })
+  await storage()
+    .abortMultipart(session.storageKey, session.multipartUploadId)
+    .catch(() => undefined)
+  await deletePhotoUploadSession(sessionId)
+  return c.json({ ok: true })
 })
 
 photosRoutes.get("/assets", async (c) => {
