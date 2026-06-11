@@ -49,7 +49,7 @@ const PhotosNav = () => {
                   variant="ghost"
                   size="icon"
                   aria-label={albumsOpen ? t("photosNav.collapse") : t("photosNav.expand")}
-                  className="relative -mr-1 size-5"
+                  className="relative -me-1 size-5"
                   onClick={() => setAlbumsOpen((value) => !value)}
                 >
                   <IconChevronRight
@@ -58,7 +58,7 @@ const PhotosNav = () => {
                 </Button>
               </div>
               {albumsOpen ? (
-                <ul className="border-border/50 mt-0.5 ml-[18px] flex flex-col gap-0.5 border-l pl-2.5">
+                <ul className="border-border/50 mt-0.5 ms-[18px] flex flex-col gap-0.5 border-s ps-2.5">
                   {albums.slice(0, 8).map((album) => (
                     <li key={album.id}>
                       <Link
