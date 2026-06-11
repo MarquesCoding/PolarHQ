@@ -46,6 +46,45 @@
   "confirmButton": {
     "confirm": "Potvrdit"
   },
+  "dates": {
+    "monthsLong": [
+      "leden",
+      "únor",
+      "březen",
+      "duben",
+      "květen",
+      "červen",
+      "červenec",
+      "srpen",
+      "září",
+      "říjen",
+      "listopad",
+      "prosinec"
+    ],
+    "monthsShort": [
+      "led",
+      "úno",
+      "bře",
+      "dub",
+      "kvě",
+      "čvn",
+      "čvc",
+      "srp",
+      "zář",
+      "říj",
+      "lis",
+      "pro"
+    ],
+    "weekdaysLong": [
+      "neděle",
+      "pondělí",
+      "úterý",
+      "středa",
+      "čtvrtek",
+      "pátek",
+      "sobota"
+    ]
+  },
   "devicesDialog": {
     "activeNow": "Aktivní nyní",
     "lastActive": "Naposledy aktivní {{time}}",

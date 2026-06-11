@@ -46,6 +46,45 @@
   "confirmButton": {
     "confirm": "Bevestigen"
   },
+  "dates": {
+    "monthsLong": [
+      "januari",
+      "februari",
+      "maart",
+      "april",
+      "mei",
+      "juni",
+      "juli",
+      "augustus",
+      "september",
+      "oktober",
+      "november",
+      "december"
+    ],
+    "monthsShort": [
+      "jan",
+      "feb",
+      "mrt",
+      "apr",
+      "mei",
+      "jun",
+      "jul",
+      "aug",
+      "sep",
+      "okt",
+      "nov",
+      "dec"
+    ],
+    "weekdaysLong": [
+      "zondag",
+      "maandag",
+      "dinsdag",
+      "woensdag",
+      "donderdag",
+      "vrijdag",
+      "zaterdag"
+    ]
+  },
   "devicesDialog": {
     "activeNow": "Nu actief",
     "lastActive": "Laatst actief {{time}}",

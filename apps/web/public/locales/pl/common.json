@@ -46,6 +46,45 @@
   "confirmButton": {
     "confirm": "Potwierdź"
   },
+  "dates": {
+    "monthsLong": [
+      "styczeń",
+      "luty",
+      "marzec",
+      "kwiecień",
+      "maj",
+      "czerwiec",
+      "lipiec",
+      "sierpień",
+      "wrzesień",
+      "październik",
+      "listopad",
+      "grudzień"
+    ],
+    "monthsShort": [
+      "sty",
+      "lut",
+      "mar",
+      "kwi",
+      "maj",
+      "cze",
+      "lip",
+      "sie",
+      "wrz",
+      "paź",
+      "lis",
+      "gru"
+    ],
+    "weekdaysLong": [
+      "niedziela",
+      "poniedziałek",
+      "wtorek",
+      "środa",
+      "czwartek",
+      "piątek",
+      "sobota"
+    ]
+  },
   "devicesDialog": {
     "activeNow": "Aktywne teraz",
     "lastActive": "Ostatnia aktywność {{time}}",
