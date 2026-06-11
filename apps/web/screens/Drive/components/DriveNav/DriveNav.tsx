@@ -2,12 +2,17 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { driveFolderIdFromPath, fetchNodes } from "@lib/drive"
+import {
+  deleteSavedSearch,
+  driveFolderIdFromPath,
+  fetchNodes,
+  fetchSavedSearches,
+} from "@lib/drive"
 import { Icon } from "@lib/icons"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { cn } from "@workspace/ui/lib/utils"
-import { NavRow, SectionLabel } from "@components/FlatShell"
+import { NavRow, SectionLabel, navRowClass } from "@components/FlatShell"
 
 const isMyDrive = (pathname: string): boolean =>
   /^\/drive\/[^/]+$/.test(pathname) &&
@@ -29,14 +34,24 @@ const FILE_KINDS: { kind: string; icon: string }[] = [
 const DriveNav = () => {
   const { t } = useTranslation("drive")
   const pathname = usePathname()
+  const queryClient = useQueryClient()
   const folderId = driveFolderIdFromPath(pathname)
   const { data } = useQuery({
     queryKey: ["drive", "nodes", folderId ?? "root"],
     queryFn: () => fetchNodes(folderId ?? undefined),
     enabled: folderId !== null,
   })
+  const { data: searches = [] } = useQuery({
+    queryKey: ["drive", "searches"],
+    queryFn: fetchSavedSearches,
+  })
   const trail = data?.breadcrumb ?? []
   const showLocation = folderId !== null && trail.length > 1
+
+  const removeSearch = async (id: string) => {
+    await deleteSavedSearch(id)
+    void queryClient.invalidateQueries({ queryKey: ["drive", "searches"] })
+  }
 
   return (
     <>
@@ -73,6 +88,34 @@ const DriveNav = () => {
           compact
         />
       ))}
+
+      {searches.length > 0 ? (
+        <>
+          <SectionLabel>{t("driveNav.savedSearches")}</SectionLabel>
+          {searches.map((search) => {
+            const active = pathname === `/drive/search/${search.id}`
+            return (
+              <div key={search.id} className="group/sr relative flex items-center">
+                <Link
+                  href={`/drive/search/${search.id}`}
+                  className={cn(navRowClass(active, true), "min-w-0 flex-1 pr-7", active && "bg-sidebar-accent/60")}
+                >
+                  <Icon name="search" className="relative size-4 shrink-0" />
+                  <span className="relative truncate">{search.name}</span>
+                </Link>
+                <button
+                  type="button"
+                  aria-label={t("driveNav.removeSearch")}
+                  onClick={() => void removeSearch(search.id)}
+                  className="text-muted-foreground hover:text-foreground absolute right-1.5 flex size-5 items-center justify-center rounded opacity-0 transition group-hover/sr:opacity-100"
+                >
+                  <Icon name="xmark" className="size-3.5" />
+                </button>
+              </div>
+            )
+          })}
+        </>
+      ) : null}
 
       {showLocation ? (
         <>

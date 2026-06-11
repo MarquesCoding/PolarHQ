@@ -20,15 +20,18 @@ import {
   type DriveNode,
   type DriveShare,
   type DriveVersion,
+  type SavedSearch,
   type StorageKind,
   archiveNodes,
   breadcrumb,
+  createSavedSearch,
   clearNodeLock,
   copyNode,
   createDriveFileFromStorage,
   createFolder,
   createShare,
   deleteNode,
+  deleteSavedSearch,
   newDriveStorageKey,
   ensurePhotosDriveNode,
   ensureUserRoots,
@@ -43,6 +46,7 @@ import {
   listChildren,
   listFolders,
   listLibrary,
+  listSavedSearches,
   listTrash,
   purgeExpiredTrash,
   listVersions,
@@ -109,6 +113,13 @@ const serializeShare = (share: DriveShare) => ({
   downloadCount: share.downloadCount,
 })
 
+const serializeSavedSearch = (search: SavedSearch) => ({
+  id: search.id,
+  name: search.name,
+  encryptedName: search.encryptedName,
+  createdAt: search.createdAt,
+})
+
 const serializeVersion = (version: DriveVersion) => ({
   id: version.id,
   name: version.name,
@@ -147,15 +158,39 @@ driveRoutes.get("/storage", async (c) => {
 driveRoutes.get("/library", async (c) => {
   const userId = c.get("userId")
   const view = c.req.query("view")
-  if (view !== "recent" && view !== "kind" && view !== "favorites")
+  if (view !== "recent" && view !== "kind" && view !== "favorites" && view !== "all")
     return c.json({ error: "drive.library.invalidView" }, 400)
   const kind = c.req.query("kind") as StorageKind | undefined
-  const nodes = await listLibrary(userId, view, kind)
+  const nodes = await listLibrary(userId, view, kind, view === "all" ? 1000 : 200)
   const encrypted = await nodesWithKeys(
     userId,
     nodes.map((n) => n.id),
   )
   return c.json({ children: nodes.map((n) => serializeNode(n, encrypted)) })
+})
+
+driveRoutes.get("/searches", async (c) => {
+  const searches = await listSavedSearches(c.get("userId"))
+  return c.json({ searches: searches.map(serializeSavedSearch) })
+})
+
+driveRoutes.post("/searches", async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({ name: z.string().min(1), encryptedName: z.string().nullish() }),
+  )
+  if (!parsed.success) return c.json({ error: "drive.search.invalid" }, 400)
+  const search = await createSavedSearch(
+    c.get("userId"),
+    parsed.data.name,
+    parsed.data.encryptedName ?? null,
+  )
+  return c.json({ search: serializeSavedSearch(search) }, 201)
+})
+
+driveRoutes.delete("/searches/:id", async (c) => {
+  await deleteSavedSearch(c.get("userId"), c.req.param("id"))
+  return c.json({ ok: true })
 })
 
 driveRoutes.post("/nodes/:id/favorite", async (c) => {

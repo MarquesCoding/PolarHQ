@@ -83,3 +83,19 @@ export const versions = drive.table(
   },
   (t) => [index("drive_versions_node_idx").on(t.nodeId, t.createdAt)],
 )
+
+/** Saved searches pinned to the sidebar. The query is a node name, so it is E2E-encrypted with the
+ *  same metadata key (`name` holds a placeholder when `encryptedName` is set). */
+export const savedSearches = drive.table(
+  "saved_searches",
+  {
+    id: id(),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    encryptedName: text("encrypted_name"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("drive_saved_searches_owner_idx").on(t.ownerId, t.createdAt)],
+)

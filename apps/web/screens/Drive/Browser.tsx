@@ -10,6 +10,7 @@ import {
   copyDriveNode,
   createShareLink,
   extractDriveNode,
+  createSavedSearch,
   fetchLibrary,
   fetchNodes,
   isArchiveName,
@@ -30,6 +31,7 @@ import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setDriveDetailsOpen } from "@store/uiSlice"
 import {
   IconArchive,
+  IconBookmark,
   IconExternalLink,
   IconFileExport,
   IconPencil,
@@ -81,7 +83,8 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const dispatch = useAppDispatch()
   const viewMode = useAppSelector((state) => state.ui.viewMode)
   const detailsOpen = useAppSelector((state) => state.ui.driveDetailsOpen)
-  const search = useAppSelector((state) => state.ui.searchQuery).trim().toLowerCase()
+  const searchRaw = useAppSelector((state) => state.ui.searchQuery).trim()
+  const search = searchRaw.toLowerCase()
 
   const [renaming, setRenaming] = useState<DriveNode | null>(null)
   const [moving, setMoving] = useState<string[] | null>(null)
@@ -96,8 +99,15 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const [newFolderOpen, setNewFolderOpen] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
 
+  const sourceKey = !source
+    ? ""
+    : source.view === "kind"
+      ? source.kind
+      : source.view === "search"
+        ? source.query
+        : ""
   const queryKey = source
-    ? ["drive", "library", source.view, source.view === "kind" ? source.kind : ""]
+    ? ["drive", "library", source.view, sourceKey]
     : ["drive", "nodes", folderId ?? "root"]
   const { data, isLoading } = useQuery<DriveListing | { children: DriveNode[] }>({
     queryKey,
@@ -219,6 +229,17 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     }
   }
 
+  const saveSearch = async () => {
+    if (!searchRaw) return
+    try {
+      await createSavedSearch(searchRaw)
+      void queryClient.invalidateQueries({ queryKey: ["drive", "searches"] })
+      toast.success(t("browser.searchSaved"))
+    } catch {
+      toast.error(t("browser.couldNotSaveSearch"))
+    }
+  }
+
   const archive = (ids: string[]) => {
     if (!parentId || ids.length === 0) return
     upload.archive(t("browser.archiveLabel", { count: ids.length }), ids, parentId)
@@ -305,6 +326,17 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
           if (dragged.length > 0) void moveInto(parent, dragged)
         }}
       >
+        {search && !source ? (
+          <div className="border-border/60 mb-3 flex items-center justify-between gap-2 rounded-lg border px-3 py-1.5 text-sm">
+            <span className="text-muted-foreground min-w-0 truncate">
+              {t("browser.resultsFor", { query: searchRaw })}
+            </span>
+            <Button variant="ghost" size="sm" onClick={() => void saveSearch()}>
+              <IconBookmark className="size-4" />
+              {t("browser.saveSearch")}
+            </Button>
+          </div>
+        ) : null}
         {isLoading ? (
           <PageSpinner />
         ) : parentLocked && parent ? (

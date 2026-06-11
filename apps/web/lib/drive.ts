@@ -83,11 +83,13 @@ export interface DriveUploadResult {
 /** List a folder's contents. `parent` is a node id, or null/"root" for My Drive. */
 export type LibraryView = "recent" | "kind" | "favorites"
 
-/** A parentless, cross-folder file listing for the sidebar smart views (Recents / Favorites / a file kind). */
+/** A parentless, cross-folder listing for the sidebar smart views (Recents / Favorites / a file
+ *  kind / a saved search). Search runs client-side over decrypted names, since names are E2E. */
 export type LibrarySource =
   | { view: "recent" }
   | { view: "favorites" }
   | { view: "kind"; kind: StorageKind }
+  | { view: "search"; query: string }
 
 /** Star or unstar a node; favorites surface in the cross-folder Favorites smart view. */
 export const setNodeFavorite = (id: string, favorite: boolean): Promise<{ node: DriveNode }> =>
@@ -96,13 +98,52 @@ export const setNodeFavorite = (id: string, favorite: boolean): Promise<{ node: 
     body: JSON.stringify({ favorite }),
   })
 
-/** Fetch a flat smart-view listing (most-recent files, or all files of one kind). */
+/** Fetch a flat smart-view listing. Recents/Favorites/Kind filter server-side; Search pulls the
+ *  full file set and filters by decrypted name in the browser (names never reach the server). */
 export const fetchLibrary = async (source: LibrarySource): Promise<{ children: DriveNode[] }> => {
+  if (source.view === "search") {
+    const listing = await apiFetch<{ children: DriveNode[] }>("/api/v1/drive/library?view=all")
+    const decrypted = listing.children.map(decryptNodeName)
+    const query = source.query.trim().toLowerCase()
+    return {
+      children: query
+        ? decrypted.filter((node) => node.name.toLowerCase().includes(query))
+        : decrypted,
+    }
+  }
   const params = new URLSearchParams({ view: source.view })
   if (source.view === "kind") params.set("kind", source.kind)
   const listing = await apiFetch<{ children: DriveNode[] }>(`/api/v1/drive/library?${params}`)
   return { children: listing.children.map(decryptNodeName) }
 }
+
+/** A search query pinned to the sidebar; `name` is the (decryptable) query text. */
+export interface SavedSearch {
+  id: string
+  name: string
+  encryptedName?: string | null
+  createdAt: string
+}
+
+export const fetchSavedSearches = async (): Promise<SavedSearch[]> => {
+  const { searches } = await apiFetch<{ searches: SavedSearch[] }>("/api/v1/drive/searches")
+  return searches.map((search) => ({ ...search, name: decryptNodeName(search).name }))
+}
+
+/** Persist a search query as a sidebar entry, E2E-encrypting the query text with the metadata key. */
+export const createSavedSearch = (query: string): Promise<{ search: SavedSearch }> => {
+  const encryptedName = encryptName(query)
+  return apiFetch<{ search: SavedSearch }>("/api/v1/drive/searches", {
+    method: "POST",
+    body: JSON.stringify({
+      name: encryptedName ? encryptedPlaceholder() : query,
+      encryptedName: encryptedName ?? undefined,
+    }),
+  })
+}
+
+export const deleteSavedSearch = (id: string): Promise<{ ok: boolean }> =>
+  apiFetch<{ ok: boolean }>(`/api/v1/drive/searches/${id}`, { method: "DELETE" })
 
 export const fetchNodes = async (parent?: string | null): Promise<DriveListing> => {
   const listing = await apiFetch<DriveListing>(
@@ -121,9 +162,9 @@ export const fetchNodes = async (parent?: string | null): Promise<DriveListing> 
  */
 export const driveFolderIdFromPath = (pathname: string): string | undefined | null => {
   if (pathname === "/drive/files") return undefined
-  if (pathname.startsWith("/drive/kind/")) return null
+  if (pathname.startsWith("/drive/kind/") || pathname.startsWith("/drive/search/")) return null
   const match = pathname.match(/^\/drive\/([^/]+)$/)
-  const reserved = ["trash", "overview", "files", "recent", "favorites", "kind"]
+  const reserved = ["trash", "overview", "files", "recent", "favorites", "kind", "search"]
   if (!match || reserved.includes(match[1]!)) return null
   return match[1]
 }

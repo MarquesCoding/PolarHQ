@@ -29,6 +29,10 @@
     "movedToFolder_other": "Moved {{count}} items to {{name}}",
     "movedToTrash": "Moved to trash",
     "noMatches": "Nothing matches your search.",
+    "couldNotSaveSearch": "Could not save search",
+    "resultsFor": "Results for “{{query}}”",
+    "saveSearch": "Save search",
+    "searchSaved": "Search saved",
     "open": "Open",
     "opening": "Opening…",
     "rename": "Rename",
@@ -67,6 +71,8 @@
     "myDrive": "My Drive",
     "overview": "Overview",
     "recents": "Recents",
+    "removeSearch": "Remove saved search",
+    "savedSearches": "Saved searches",
     "trash": "Trash"
   },
   "overview": {
