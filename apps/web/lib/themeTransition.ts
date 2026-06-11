@@ -38,10 +38,7 @@ export const applyThemeWithReveal = (
       {
         duration: 480,
         easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-        // Hold the final clip until the transition layers are torn down — without `forwards` the
-        // clip snaps back to its default (full circle) for a frame and the old theme flashes back.
         fill: "forwards",
-        // Reverse shrinks the OUTGOING layer (lifted above via data-vt-reverse); forward grows the new one.
         pseudoElement: reverse ? "::view-transition-old(root)" : "::view-transition-new(root)",
       },
     )

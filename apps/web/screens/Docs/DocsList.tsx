@@ -78,7 +78,6 @@ const DocsListInner = () => {
   }
 
   const trash = async (ids: string[]) => {
-    // Only the owner can trash a document; shared ones are skipped.
     const toTrash = ids.filter((id) => byId.get(id)?.owner)
     if (toTrash.length === 0) return
     try {

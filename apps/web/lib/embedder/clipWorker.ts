@@ -1,4 +1,3 @@
-/// <reference lib="webworker" />
 
 import {
   AutoProcessor,

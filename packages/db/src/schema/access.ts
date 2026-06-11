@@ -50,7 +50,6 @@ export const groupMembers = core.table(
   (t) => [primaryKey({ columns: [t.groupId, t.userId] })],
 )
 
-
 export const roles = core.table("roles", {
   id: id(),
   name: text("name").notNull(),
@@ -164,7 +163,6 @@ export const backupSettings = core.table("backup_settings", {
   accessKeyId: text("access_key_id"),
   secretAccessKey: text("secret_access_key"),
   forcePathStyle: boolean("force_path_style").notNull().default(true),
-  // Google Drive destination: the OAuth refresh token (encrypted) and target folder.
   gdriveRefreshToken: text("gdrive_refresh_token"),
   gdriveFolderId: text("gdrive_folder_id"),
   frequencyHours: integer("frequency_hours").notNull().default(24),

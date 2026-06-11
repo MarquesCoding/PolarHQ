@@ -157,7 +157,6 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   }
 
   const moveInto = async (folder: DriveNode, ids: string[]) => {
-    // Ignore items already in the target folder (e.g. dropping onto the current directory).
     const toMove = ids.filter((id) => byId.get(id)?.parentId !== folder.id)
     if (toMove.length === 0) return
     try {

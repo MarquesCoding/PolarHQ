@@ -50,8 +50,6 @@ app.use(
     origin: (origin, c) => {
       if (!origin) return config.web.url
       if (config.web.origins.includes(origin)) return origin
-      // Allow same-origin requests (Origin host == the Host hit) — safe behind
-      // the proxy and lets any access address work without config.
       const host = c.req.header("host")
       try {
         if (host && new URL(origin).host === host) return origin

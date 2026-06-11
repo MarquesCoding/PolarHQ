@@ -164,8 +164,6 @@ export const uploadEncryptedMedia = async (
   options?: UploadOptions,
 ): Promise<Asset> => {
   const key = createContentKey()
-  // HEIC can't be decoded/displayed by browsers, so transcode to JPEG up front; EXIF is still
-  // read from the original HEIC, which exifr handles.
   const source = isHeic(file) ? ((await convertHeicToJpeg(file)) ?? file) : file
   const original = new Uint8Array(await source.arrayBuffer())
 

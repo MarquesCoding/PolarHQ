@@ -119,8 +119,6 @@ export const useCollabDocument = (nodeId: string): CollabDocument => {
     if (status !== "ready") return
     const onUpdate = () => {
       dirtyRef.current = true
-      // Yjs observers can fire mid-render (e.g. while React is rendering an editor that
-      // reads the doc); defer the React state update so we never setState during render.
       queueMicrotask(() => setSaveState("dirty"))
       clearTimeout(saveTimer.current)
       saveTimer.current = setTimeout(() => void flush(), 800)
@@ -143,9 +141,6 @@ export const useCollabDocument = (nodeId: string): CollabDocument => {
     setReload((value) => value + 1)
   }, [])
 
-  // If the document is trashed/deleted (in another tab or by a collaborator), the user's
-  // tabs get a generic "drive changed" event — re-validate and flip to a deleted state so the
-  // open editor can warn instead of silently editing a ghost.
   useLiveEvents((event) => {
     if (event.type !== "drive.node.changed" || status !== "ready") return
     void fetchDoc(nodeId).catch(() => setStatus("deleted"))

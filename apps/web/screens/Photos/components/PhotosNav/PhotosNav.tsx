@@ -19,7 +19,6 @@ const isActive = (pathname: string, href: string): boolean =>
 const PhotosNav = () => {
   const { t } = useTranslation("photos")
   const pathname = usePathname()
-  // Built inside render so the labels re-translate when the language changes.
   const NAV = [
     { href: "/photos", label: t("photosNav.allPhotos"), icon: "images-3" },
     { href: "/photos/albums", label: t("photosNav.albums"), icon: "album-3" },

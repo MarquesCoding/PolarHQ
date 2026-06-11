@@ -212,8 +212,6 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     void queryClient.invalidateQueries({ queryKey: ["drive"] })
   }, [queryClient])
 
-  // Coalesce refetches during a big batch — invalidating once per finished file
-  // (hundreds of times) hammers the feed; at most once per ~800ms is plenty.
   const invalidateTimer = useRef<number | null>(null)
   const scheduleInvalidate = useCallback(() => {
     if (invalidateTimer.current !== null) return
@@ -227,7 +225,6 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     (files: FileList | File[], target: UploadTarget = { kind: "photos" }) => {
       const all = Array.from(files)
       const motionByImage = new Map<File, File>()
-      // Resolved asset id per uploaded file, used to auto-stack detected burst groups afterwards.
       const resolvedIds = new Map<File, string>()
       let queue = all
       let burstGroups: Promise<File[][]> = Promise.resolve([])
@@ -237,7 +234,6 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
         for (const entry of uploads) if (entry.motion) motionByImage.set(entry.file, entry.motion)
         burstGroups = detectBurstGroups(queue).catch(() => [])
       }
-      // Register every file in the tray up front, collecting the ones to upload.
       const jobs: { id: string; file: File }[] = []
       for (const file of queue) {
         const id = nextId()
@@ -308,8 +304,6 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
           .finally(() => requests.current.delete(id))
       }
 
-      // Bounded concurrency: firing every upload at once trips
-      // net::ERR_INSUFFICIENT_RESOURCES on large (hundreds-of-files) batches.
       const CONCURRENCY = 4
       let cursor = 0
       const runners = Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, async () => {
@@ -320,9 +314,6 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
         }
       })
       void Promise.all(runners).then(async () => {
-        // Collapse each detected burst into a stack once its frames have asset ids; the
-        // first (earliest) frame becomes the cover. Members already in the library (deduped)
-        // still carry an id, so they're folded in too.
         const groups = await burstGroups
         let stacked = false
         for (const group of groups) {

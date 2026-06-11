@@ -102,14 +102,11 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
   const zoom = useZoomPan(asset?.id)
   const activeThumbRef = useRef<HTMLButtonElement | null>(null)
 
-  // Keep the active frame visible in the filmstrip as you arrow through a long burst.
   useEffect(() => {
     if (!filmstrip) return
     activeThumbRef.current?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" })
   }, [index, filmstrip])
 
-  // If the open photo is removed (trashed in another tab or by a collaborator), the feed
-  // refetches and this index falls off the end — close rather than show a blank viewer.
   useEffect(() => {
     if (!asset) onClose()
   }, [asset, onClose])

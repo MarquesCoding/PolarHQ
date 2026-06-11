@@ -61,7 +61,6 @@ const SignIn = () => {
         toast.error(result.error.message ?? t("signIn.signInFailed"))
         return
       }
-      // We control the redirect from here so encryption keys unlock first.
       manualRedirect.current = true
       try {
         await e2eReady()
@@ -73,7 +72,6 @@ const SignIn = () => {
           setRecoveryCode(setup.recoveryCode)
         }
       } catch {
-        // Encryption setup is best-effort; never block sign-in on it.
         router.replace("/")
       }
     },

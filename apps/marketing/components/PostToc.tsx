@@ -17,7 +17,6 @@ const PostToc = () => {
   const [atFooter, setAtFooter] = useState(false)
   const [footerH, setFooterH] = useState(0)
 
-  // Park above the footer (absolute) instead of sitting on it (fixed) once it's in view.
   useEffect(() => {
     const footer = document.querySelector("footer")
     if (!footer) return

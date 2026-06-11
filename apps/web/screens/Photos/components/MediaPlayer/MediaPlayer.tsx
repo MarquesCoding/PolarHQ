@@ -204,7 +204,6 @@ const MediaPlayer = ({ kind, src, poster, name }: MediaPlayerProps) => {
         <Icon name="music" className="text-muted-foreground size-16" />
         {name ? <p className="max-w-full truncate text-sm font-medium">{name}</p> : null}
         {controlBar}
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <audio ref={mediaRef} src={src} autoPlay />
       </div>
     )
@@ -222,7 +221,6 @@ const MediaPlayer = ({ kind, src, poster, name }: MediaPlayerProps) => {
         if (playing) setControlsShown(false)
       }}
     >
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video
         ref={mediaRef}
         src={src}

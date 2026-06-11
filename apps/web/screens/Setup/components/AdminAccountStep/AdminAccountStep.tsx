@@ -21,7 +21,6 @@ import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 import { z } from "zod"
 
-
 interface AdminAccountStepProps {
   onComplete: () => void
 }
@@ -70,8 +69,6 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
         if (signIn.error) throw new Error(signIn.error.message ?? t("adminAccountStep.signInFailed"))
         toast.success(t("adminAccountStep.accountCreated"))
 
-        // Bootstrap end-to-end encryption with the account password right away,
-        // so the user never sees a separate "set up encryption" prompt later.
         try {
           await e2eReady()
           if (await isEnrolled()) {
