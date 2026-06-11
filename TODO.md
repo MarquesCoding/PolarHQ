@@ -7,6 +7,8 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 - [x] **No hardcoded user-facing strings in the web app** — Photos, Drive, Docs, Sheets, Whiteboard, Collab, Admin, shared components, Launcher, Setup, SignIn, lib toasts, and the 6 app shell layouts all use keys (~1,000 keys across 13 namespaces). All 110 t()-using files verified to resolve; tsc clean.
 - [x] Backend returns **stable error keys**, never English prose; `apiErrorMessage()` maps them (shared HTTP keys + area-scoped domain keys + errorParams interpolation). 25 error keys; api+web tsc clean.
 - [x] Lint guard: `react/jsx-no-literals` (with a symbol/shortcut allowlist) + a `no-restricted-syntax` rule banning literal `toast()` text, scoped to apps/web. App passes clean (0 violations). 1,131 catalog keys total; all 117 t()-using files resolve.
+- [x] **Language selector + My Account page** (`/account`), reachable from the account menu; lazy-loads non-English catalogs via dynamic import; `<html lang/dir>` synced (RTL for Arabic).
+- [x] **21 languages translated** (fr, de, es, es-MX, fr-CA, it, pt, nl, sv, pl, cs, mk, ru, uk, tr, hi, ar, ja, ko, zh, vi) — 273 catalog files, locale-correct CLDR plurals (Slavic _few/_many, Arabic _zero/_two/_few/_many), all validated for JSON + key coverage + placeholders.
 
 ## Quick UI wins
 - [x] **Trash page**: move "Empty trash" to the top bar, remove the top gap, tell users photos auto-delete after 30 days. — via shared TopBarActions portal + a notice banner.
