@@ -127,6 +127,14 @@
     "permanentLinkHint": "Håll länken aktiv tills du tar bort den",
     "title": "Dela ”{{name}}”"
   },
+  "sizeControl": {
+    "lessSpacing": "Mindre avstånd",
+    "moreSpacing": "Större avstånd",
+    "photoSize": "Fotostorlek",
+    "roundedCorners": "Rundade hörn",
+    "spacing": "Avstånd",
+    "squareTiles": "Fyrkantiga rutor"
+  },
   "state": {
     "empty": "Inget här än",
     "error": "Något gick fel",

@@ -127,6 +127,14 @@
     "permanentLinkHint": "Diesen Link aktiv halten, bis du ihn löschst",
     "title": "„{{name}}“ teilen"
   },
+  "sizeControl": {
+    "lessSpacing": "Weniger Abstand",
+    "moreSpacing": "Mehr Abstand",
+    "photoSize": "Fotogröße",
+    "roundedCorners": "Abgerundete Ecken",
+    "spacing": "Abstand",
+    "squareTiles": "Quadratische Kacheln"
+  },
   "state": {
     "empty": "Hier ist noch nichts",
     "error": "Etwas ist schiefgelaufen",

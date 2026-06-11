@@ -127,6 +127,14 @@
     "permanentLinkHint": "Ссылка остаётся активной, пока вы её не удалите",
     "title": "Поделиться «{{name}}»"
   },
+  "sizeControl": {
+    "lessSpacing": "Меньше интервал",
+    "moreSpacing": "Больше интервал",
+    "photoSize": "Размер фото",
+    "roundedCorners": "Скруглённые углы",
+    "spacing": "Интервал",
+    "squareTiles": "Квадратные плитки"
+  },
   "state": {
     "empty": "Здесь пока ничего нет",
     "error": "Что-то пошло не так",

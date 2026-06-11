@@ -127,6 +127,14 @@
     "permanentLinkHint": "Mantieni questo link attivo finché non lo elimini",
     "title": "Condividi “{{name}}”"
   },
+  "sizeControl": {
+    "lessSpacing": "Riduci spaziatura",
+    "moreSpacing": "Aumenta spaziatura",
+    "photoSize": "Dimensione foto",
+    "roundedCorners": "Angoli arrotondati",
+    "spacing": "Spaziatura",
+    "squareTiles": "Riquadri quadrati"
+  },
   "state": {
     "empty": "Ancora niente qui",
     "error": "Qualcosa è andato storto",

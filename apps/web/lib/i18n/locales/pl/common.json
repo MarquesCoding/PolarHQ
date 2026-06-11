@@ -127,6 +127,14 @@
     "permanentLinkHint": "Zachowaj ten link aktywny, dopóki go nie usuniesz",
     "title": "Udostępnij „{{name}}”"
   },
+  "sizeControl": {
+    "lessSpacing": "Mniejsze odstępy",
+    "moreSpacing": "Większe odstępy",
+    "photoSize": "Rozmiar zdjęcia",
+    "roundedCorners": "Zaokrąglone rogi",
+    "spacing": "Odstępy",
+    "squareTiles": "Kwadratowe kafelki"
+  },
   "state": {
     "empty": "Nic tu jeszcze nie ma",
     "error": "Coś poszło nie tak",

@@ -127,6 +127,14 @@
     "permanentLinkHint": "أبقِ هذا الرابط نشطًا حتى تحذفه",
     "title": "مشاركة ”{{name}}“"
   },
+  "sizeControl": {
+    "lessSpacing": "تباعد أقل",
+    "moreSpacing": "تباعد أكبر",
+    "photoSize": "حجم الصورة",
+    "roundedCorners": "زوايا دائرية",
+    "spacing": "التباعد",
+    "squareTiles": "مربعات متساوية"
+  },
   "state": {
     "empty": "لا يوجد شيء هنا بعد",
     "error": "حدث خطأ ما",

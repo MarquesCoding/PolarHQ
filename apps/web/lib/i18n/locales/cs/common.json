@@ -127,6 +127,14 @@
     "permanentLinkHint": "Ponechat tento odkaz aktivní, dokud jej nesmažete",
     "title": "Sdílet „{{name}}“"
   },
+  "sizeControl": {
+    "lessSpacing": "Menší mezery",
+    "moreSpacing": "Větší mezery",
+    "photoSize": "Velikost fotek",
+    "roundedCorners": "Zaoblené rohy",
+    "spacing": "Mezery",
+    "squareTiles": "Čtvercové dlaždice"
+  },
   "state": {
     "empty": "Zatím tu nic není",
     "error": "Něco se pokazilo",

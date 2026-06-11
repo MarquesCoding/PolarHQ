@@ -127,6 +127,14 @@
     "permanentLinkHint": "Manter esta ligação ativa até a eliminar",
     "title": "Partilhar “{{name}}”"
   },
+  "sizeControl": {
+    "lessSpacing": "Menos espaçamento",
+    "moreSpacing": "Mais espaçamento",
+    "photoSize": "Tamanho da foto",
+    "roundedCorners": "Cantos arredondados",
+    "spacing": "Espaçamento",
+    "squareTiles": "Mosaicos quadrados"
+  },
   "state": {
     "empty": "Ainda não há nada aqui",
     "error": "Algo correu mal",

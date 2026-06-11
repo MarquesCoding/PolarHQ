@@ -127,6 +127,14 @@
     "permanentLinkHint": "इस लिंक को तब तक सक्रिय रखें जब तक आप इसे हटा न दें",
     "title": "“{{name}}” साझा करें"
   },
+  "sizeControl": {
+    "lessSpacing": "कम अंतराल",
+    "moreSpacing": "अधिक अंतराल",
+    "photoSize": "फ़ोटो का आकार",
+    "roundedCorners": "गोल किनारे",
+    "spacing": "अंतराल",
+    "squareTiles": "वर्गाकार टाइल"
+  },
   "state": {
     "empty": "यहाँ अभी कुछ नहीं है",
     "error": "कुछ गलत हो गया",

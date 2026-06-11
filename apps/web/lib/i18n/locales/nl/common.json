@@ -127,6 +127,14 @@
     "permanentLinkHint": "Houd deze link actief totdat je hem verwijdert",
     "title": "“{{name}}” delen"
   },
+  "sizeControl": {
+    "lessSpacing": "Minder tussenruimte",
+    "moreSpacing": "Meer tussenruimte",
+    "photoSize": "Fotogrootte",
+    "roundedCorners": "Afgeronde hoeken",
+    "spacing": "Tussenruimte",
+    "squareTiles": "Vierkante tegels"
+  },
   "state": {
     "empty": "Hier is nog niets",
     "error": "Er is iets misgegaan",
