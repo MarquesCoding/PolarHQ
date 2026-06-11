@@ -1,6 +1,7 @@
 import { Readable } from "node:stream"
 import { extname } from "node:path"
 import { createGunzip } from "node:zlib"
+import { resolveLimit } from "@workspace/auth"
 import { createId } from "@paralleldrive/cuid2"
 import { db, schema } from "@workspace/db"
 import { storage } from "@workspace/storage"
@@ -978,4 +979,89 @@ export const restoreVersion = async (
     .returning()
   await db.delete(schema.versions).where(eq(schema.versions.id, versionId))
   return updated[0]!
+}
+
+const DOC_MIME = "application/vnd.orbit.doc"
+const SHEET_MIME = "application/vnd.orbit.sheet"
+const BOARD_MIME = "application/vnd.orbit.board"
+
+/** Which suite app a stored file belongs to, used for the storage breakdown. */
+export type StorageApp = "photos" | "drive" | "docs" | "sheets" | "whiteboard"
+
+const appForMime = (mime: string | null, photoAssetId: string | null): StorageApp => {
+  if (mime === DOC_MIME) return "docs"
+  if (mime === SHEET_MIME) return "sheets"
+  if (mime === BOARD_MIME) return "whiteboard"
+  if (photoAssetId || (mime && /^(image|video|audio)\//.test(mime))) return "photos"
+  return "drive"
+}
+
+export interface StorageStats {
+  usedBytes: number
+  quotaBytes: number | null
+  breakdown: { app: StorageApp; bytes: number; count: number }[]
+  largest: {
+    id: string
+    name: string
+    encryptedName: string | null
+    mimeType: string | null
+    sizeBytes: number
+    app: StorageApp
+  }[]
+}
+
+/**
+ * Account storage usage broken down by suite app, plus the largest individual files. The Drive
+ * node table is the canonical store (Photos assets are mirrored as drive nodes), so summing
+ * non-trashed file nodes gives one true total with no double counting.
+ */
+export const getStorageStats = async (ownerId: string): Promise<StorageStats> => {
+  const files = await db
+    .select({
+      id: schema.nodes.id,
+      name: schema.nodes.name,
+      encryptedName: schema.nodes.encryptedName,
+      mimeType: schema.nodes.mimeType,
+      sizeBytes: schema.nodes.sizeBytes,
+      photoAssetId: schema.nodes.photoAssetId,
+    })
+    .from(schema.nodes)
+    .where(
+      and(
+        eq(schema.nodes.ownerId, ownerId),
+        eq(schema.nodes.kind, "file"),
+        isNull(schema.nodes.trashedAt),
+      ),
+    )
+
+  const totals = new Map<StorageApp, { bytes: number; count: number }>()
+  let usedBytes = 0
+  for (const file of files) {
+    const bytes = file.sizeBytes ?? 0
+    usedBytes += bytes
+    const app = appForMime(file.mimeType, file.photoAssetId)
+    const current = totals.get(app) ?? { bytes: 0, count: 0 }
+    current.bytes += bytes
+    current.count += 1
+    totals.set(app, current)
+  }
+
+  const breakdown = [...totals.entries()]
+    .map(([app, value]) => ({ app, bytes: value.bytes, count: value.count }))
+    .sort((a, b) => b.bytes - a.bytes)
+
+  const largest = [...files]
+    .sort((a, b) => (b.sizeBytes ?? 0) - (a.sizeBytes ?? 0))
+    .slice(0, 8)
+    .map((file) => ({
+      id: file.id,
+      name: file.name,
+      encryptedName: file.encryptedName,
+      mimeType: file.mimeType,
+      sizeBytes: file.sizeBytes ?? 0,
+      app: appForMime(file.mimeType, file.photoAssetId),
+    }))
+
+  const quota = await resolveLimit(ownerId, "storage.quota.bytes")
+  return { usedBytes, quotaBytes: typeof quota === "number" ? quota : null, breakdown, largest }
 }
