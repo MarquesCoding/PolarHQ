@@ -7,7 +7,7 @@ import type { DriveNode } from "@lib/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import type { SelectionApi } from "@lib/selection"
-import { IconChevronDown, IconChevronUp } from "@tabler/icons-react"
+import { IconChevronDown, IconChevronUp, IconStarFilled } from "@tabler/icons-react"
 import {
   type ColumnDef,
   type SortingState,
@@ -274,6 +274,9 @@ const NodeTable = ({
                 className={cn("size-4 shrink-0", isFolder ? "text-blue-400" : "text-muted-foreground")}
               />
               <span className="truncate">{node.name}</span>
+              {node.favorite ? (
+                <IconStarFilled className="size-3.5 shrink-0 text-amber-400" />
+              ) : null}
             </div>
             <span className="text-muted-foreground tabular-nums">
               {isFolder ? "—" : formatBytes(node.sizeBytes ?? 0)}
