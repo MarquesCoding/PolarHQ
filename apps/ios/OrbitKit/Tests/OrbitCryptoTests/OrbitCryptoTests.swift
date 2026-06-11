@@ -32,6 +32,16 @@ final class OrbitCryptoTests: XCTestCase {
         XCTAssertEqual(OrbitCrypto.toBase64(plain), v.expected)
     }
 
+    /// Decrypts a streaming (secretstream) blob the web sealed — the chunked-upload parity gate.
+    func testOpensSecretstream() throws {
+        let v = vectors.secretstreamOpen
+        let blob = try OrbitCrypto.fromBase64(v.blob)
+        let plain = try OrbitCrypto.secretstreamOpen(blob, key: try OrbitCrypto.fromBase64(v.key))
+        XCTAssertEqual(OrbitCrypto.toBase64(plain), v.expected)
+        XCTAssertTrue(OrbitCrypto.isStreamBlob(blob))
+        XCTAssertFalse(OrbitCrypto.isStreamBlob(try OrbitCrypto.fromBase64(vectors.secretboxOpen.blob)))
+    }
+
     func testOpensSealedBox() throws {
         let v = vectors.sealedBoxOpen
         let pair = OrbitCrypto.Keypair(
@@ -83,6 +93,7 @@ struct Vectors: Decodable {
         let expected: String
     }
     struct SecretboxOpen: Decodable { let key: String; let blob: String; let expected: String }
+    struct SecretstreamOpen: Decodable { let key: String; let blob: String; let expected: String }
     struct SealedBoxOpen: Decodable {
         let publicKey: String
         let privateKey: String
@@ -106,6 +117,7 @@ struct Vectors: Decodable {
 
     let deriveKey: [Derive]
     let secretboxOpen: SecretboxOpen
+    let secretstreamOpen: SecretstreamOpen
     let sealedBoxOpen: SealedBoxOpen
     let unlockChain: UnlockChain
 }

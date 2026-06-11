@@ -65,6 +65,43 @@ public enum OrbitCrypto {
         return Data(sealed)
     }
 
+    /// Magic prefix ("PSS1") marking the web's streaming (secretstream) chunked-upload format.
+    private static let streamMagic: [UInt8] = [0x50, 0x53, 0x53, 0x31]
+    /// Plaintext bytes per chunk — must match the web's `STREAM_CHUNK_SIZE`.
+    private static let streamChunkSize = 8 * 1024 * 1024
+
+    /// Whether a stored blob is the streaming (secretstream) format vs a legacy secretbox blob.
+    public static func isStreamBlob(_ blob: Data) -> Bool {
+        blob.count >= streamMagic.count && Array(blob.prefix(streamMagic.count)) == streamMagic
+    }
+
+    /// Decrypt a whole streaming blob (`PSS1‖header‖fixed-size chunks`) into plaintext, matching
+    /// the web's `secretstreamOpenAll` so large chunk-uploaded files are readable on iOS.
+    public static func secretstreamOpen(_ blob: Data, key: Data) throws -> Data {
+        let stream = sodium.secretStream.xchacha20poly1305
+        let headerLen = SecretStream.XChaCha20Poly1305.HeaderBytes
+        let prefixLen = streamMagic.count + headerLen
+        let bytes = [UInt8](blob)
+        guard bytes.count >= prefixLen else { throw CryptoError.decryptFailed }
+        let header = Array(bytes[streamMagic.count..<prefixLen])
+        guard let puller = stream.initPull(secretKey: [UInt8](key), header: header) else {
+            throw CryptoError.decryptFailed
+        }
+        let cipherChunk = streamChunkSize + SecretStream.XChaCha20Poly1305.ABytes
+        var out = [UInt8]()
+        var offset = prefixLen
+        while offset < bytes.count {
+            let end = min(offset + cipherChunk, bytes.count)
+            guard let (message, tag) = puller.pull(cipherText: Array(bytes[offset..<end])) else {
+                throw CryptoError.decryptFailed
+            }
+            out.append(contentsOf: message)
+            offset = end
+            if tag == .FINAL { break }
+        }
+        return Data(out)
+    }
+
     /// Open an anonymous sealed box addressed to a keypair (used to unwrap the meta key
     /// and per-asset content keys).
     public static func sealedBoxOpen(_ sealed: Data, keypair: Keypair) throws -> Data {
