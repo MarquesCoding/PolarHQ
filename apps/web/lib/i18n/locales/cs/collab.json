@@ -1,1 +1,27 @@
-{}
+{
+  "collabBoundary": {
+    "couldNotOpen": "Tohle se nepodařilo otevřít.",
+    "deleted": "Tohle bylo smazáno. Vaše změny nelze uložit.",
+    "deletedNamed": "Tohle bylo smazáno — „{{name}}“. Vaše změny nelze uložit.",
+    "encrypted": "Tohle je zašifrované.",
+    "goBack": "Zpět",
+    "unlock": "Odemknout"
+  },
+  "collabList": {
+    "createFailed": "Nepodařilo se vytvořit",
+    "deleteFailed": "Nepodařilo se smazat",
+    "download": "Stáhnout",
+    "empty": "Zatím tu nic není.",
+    "movedToTrash": "Přesunuto do koše",
+    "noMatches": "Vašemu hledání nic neodpovídá.",
+    "rename": "Přejmenovat",
+    "sharedWithMe": "Sdíleno se mnou",
+    "trash": "Koš"
+  },
+  "collabNav": {
+    "library": "Knihovna"
+  },
+  "collabToolbar": {
+    "createFailed": "Nepodařilo se vytvořit"
+  }
+}

@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Opnieuw",
+    "resetZoom": "Zoom herstellen",
+    "undo": "Ongedaan maken",
+    "zoomIn": "Inzoomen",
+    "zoomOut": "Uitzoomen"
+  },
+  "propertiesPanel": {
+    "background": "Achtergrond",
+    "bringForward": "Naar voren halen",
+    "bringToFront": "Naar voorgrond",
+    "layers": "Lagen",
+    "opacity": "Dekking",
+    "sendBackward": "Naar achteren sturen",
+    "sendToBack": "Naar achtergrond",
+    "stroke": "Lijn",
+    "strokeWidth": "Lijndikte"
+  },
+  "shell": {
+    "myWhiteboards": "Mijn whiteboards",
+    "newWhiteboard": "Nieuw whiteboard",
+    "product": "Whiteboard",
+    "search": "Whiteboards zoeken",
+    "whiteboards": "Whiteboards"
+  },
+  "toolbar": {
+    "arrow": "Pijl",
+    "diamond": "Ruit",
+    "draw": "Tekenen",
+    "ellipse": "Ellips",
+    "eraser": "Gum",
+    "line": "Lijn",
+    "pan": "Verschuiven",
+    "rectangle": "Rechthoek",
+    "select": "Selecteren",
+    "text": "Tekst"
+  },
+  "whiteboardList": {
+    "createLabel": "Nieuw whiteboard",
+    "title": "Whiteboards"
+  }
+}

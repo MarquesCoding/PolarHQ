@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "Назад",
+    "cancel": "Откажи",
+    "close": "Затвори",
+    "confirm": "Потврди",
+    "create": "Создади",
+    "delete": "Избриши",
+    "done": "Готово",
+    "download": "Преземи",
+    "getStarted": "Започни",
+    "next": "Следно",
+    "open": "Отвори",
+    "remove": "Отстрани",
+    "rename": "Преименувај",
+    "retry": "Обиди се повторно",
+    "save": "Зачувај",
+    "share": "Сподели",
+    "signOut": "Одјави се"
+  },
+  "appTile": {
+    "beta": "Бета",
+    "soon": "Наскоро"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · верзија {{build}}",
+    "whatsNew": "Што е ново"
+  },
+  "collabHeader": {
+    "anonymous": "Анонимен",
+    "notSavedYet": "Сè уште не е зачувано",
+    "save": "Зачувај",
+    "savedAt": "Зачувано {{time}}",
+    "saving": "Се зачувува…",
+    "share": "Сподели",
+    "title": "Наслов"
+  },
+  "confirmButton": {
+    "confirm": "Потврди"
+  },
+  "devicesDialog": {
+    "activeNow": "Активен сега",
+    "lastActive": "Последна активност {{time}}",
+    "signOut": "Одјави се",
+    "signOutError": "Не можеше да се одјави тој уред",
+    "signedOut": "Уредот е одјавен",
+    "thisDevice": "Овој уред",
+    "title": "Уреди и сесии"
+  },
+  "dropZone": {
+    "dropToUpload": "Пуштете за прикачување"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Секоја промена што ја правите автоматски и безбедно се зачувува на Drive.",
+    "encrypted": "Шифрирано",
+    "endToEndEncrypted": "Целосно шифрирано (end-to-end)"
+  },
+  "flatSidebar": {
+    "account": "Сметка",
+    "apps": "Апликации",
+    "beta": "Бета",
+    "devices": "Уреди",
+    "personalWorkspace": "Личен работен простор",
+    "replayIntro": "Повтори вовед",
+    "settings": "Поставки",
+    "signOut": "Одјави се",
+    "storage": "Простор",
+    "toggleDarkMode": "Промени темна тема",
+    "unlimited": "Неограничено"
+  },
+  "importButton": {
+    "import": "Увези",
+    "importFailed": "Не можеше да се увезе оваа датотека"
+  },
+  "launcher": {
+    "loadingApps": "Се вчитуваат апликации…",
+    "ofQuota": "од {{quota}}",
+    "signOut": "Одјави се",
+    "storage": "Простор",
+    "versionBuild": "v{{version}} · верзија {{build}}",
+    "yourApps": "Вашите апликации"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Го зачував — продолжи",
+    "copied": "Кодот за обновување е копиран",
+    "copyAriaLabel": "Копирај код за обновување",
+    "description": "Вашата сметка сега е целосно шифрирана (end-to-end). Овој код за обновување е единствениот начин да ги обновите вашите податоци ако ја заборавите лозинката — чувајте го на безбедно место. Не можеме повторно да го прикажеме.",
+    "title": "Зачувајте го вашиот код за обновување"
+  },
+  "selectionBar": {
+    "clearSelection": "Исчисти избор",
+    "download": "Преземи",
+    "downloadAllFrames": "Преземи ги сите рамки ({{count}})",
+    "downloadCover": "Преземи насловна",
+    "downloadCovers": "Преземи насловни ({{count}})",
+    "photoFilename": "Фотографија",
+    "photosZipFilename": "{{count}} фотографии.zip",
+    "share": "Сподели",
+    "shareNameFallback": "фотографија"
+  },
+  "shareDialog": {
+    "cancel": "Откажи",
+    "copyLink": "Копирај врска",
+    "descriptionEncrypted": "Целосно шифрирано (end-to-end): клучот живее во врската и никогаш не стигнува до серверот, па само луѓето со врската можат да го дешифрираат.",
+    "descriptionPublic": "Секој со оваа врска може да ја преземе датотеката.",
+    "directDownload": "Директно преземање",
+    "directDownloadHint": "Прескокни ја целната страница и преземи веднаш",
+    "expiresAfter": "Истекува по",
+    "expiry1Day": "1 ден",
+    "expiry1Hour": "1 час",
+    "expiry30Days": "30 дена",
+    "expiry7Days": "7 дена",
+    "generatingLink": "Се генерира врска…",
+    "limitDownloads": "Ограничи преземања",
+    "limitDownloadsHint": "Оневозможи ја врската по одреден број преземања",
+    "linkCopied": "Врската е копирана",
+    "maximumDownloads": "Максимален број преземања",
+    "permanentLink": "Трајна врска",
+    "permanentLinkHint": "Задржи ја оваа врска активна додека не ја избришеш",
+    "title": "Сподели „{{name}}“"
+  },
+  "state": {
+    "empty": "Сè уште нема ништо тука",
+    "error": "Нешто тргна наопаку",
+    "loading": "Се вчитува…",
+    "saving": "Се зачувува…"
+  },
+  "units": {
+    "items_one": "{{count}} ставка",
+    "items_other": "{{count}} ставки"
+  },
+  "uploadManager": {
+    "archiveFailed": "Архивирањето не успеа",
+    "downloadFailed": "Преземањето не успеа",
+    "taskFailed": "Не успеа",
+    "unsupportedFileType": "Неподдржан тип на датотека",
+    "unsupportedFileTypeToast": "{{name}} е неподдржан тип на датотека"
+  },
+  "uploadPanel": {
+    "activity": "Активност",
+    "alreadyInLibrary": "Веќе во библиотеката",
+    "archiving": "Се архивира…",
+    "archivingItems_one": "Се архивира {{count}} ставка",
+    "archivingItems_other": "Се архивираат {{count}} ставки",
+    "archivingProgress": "Се архивира {{loaded}} од {{size}}",
+    "bytesProgress": "{{loaded}} од {{size}}",
+    "clear": "Исчисти",
+    "collapse": "Собери",
+    "compressing": "Се компресира…",
+    "dismiss": "Отфрли",
+    "done": "Готово",
+    "downloadFailed": "Преземањето не успеа",
+    "downloaded": "Преземено",
+    "downloading": "Се презема…",
+    "downloadingItems_one": "Се презема {{count}} ставка",
+    "downloadingItems_other": "Се преземаат {{count}} ставки",
+    "expand": "Прошири",
+    "failed": "Не успеа",
+    "processing": "Се обработува…",
+    "processingItems_one": "Се обработува {{count}} ставка",
+    "processingItems_other": "Се обработуваат {{count}} ставки",
+    "speed": "{{speed}}/с",
+    "transcoding": "Се транскодира…",
+    "uploading": "Се прикачува…",
+    "uploadingItems_one": "Се прикачува {{count}} ставка",
+    "uploadingItems_other": "Се прикачуваат {{count}} ставки"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} веќе е во вашата библиотека",
+    "alreadyInLibrary_other": "{{count}} веќе се во вашата библиотека",
+    "uploadFailed": "Не успеа прикачувањето на {{name}}",
+    "uploaded_one": "Прикачена {{count}} фотографија",
+    "uploaded_other": "Прикачени {{count}} фотографии"
+  },
+  "viewToggle": {
+    "gridView": "Преглед во мрежа",
+    "tableView": "Преглед во табела"
+  }
+}

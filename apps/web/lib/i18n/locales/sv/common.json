@@ -1,1 +1,179 @@
-{}
+{
+  "actions": {
+    "back": "Tillbaka",
+    "cancel": "Avbryt",
+    "close": "Stäng",
+    "confirm": "Bekräfta",
+    "create": "Skapa",
+    "delete": "Ta bort",
+    "done": "Klar",
+    "download": "Ladda ner",
+    "getStarted": "Kom igång",
+    "next": "Nästa",
+    "open": "Öppna",
+    "remove": "Ta bort",
+    "rename": "Byt namn",
+    "retry": "Försök igen",
+    "save": "Spara",
+    "share": "Dela",
+    "signOut": "Logga ut"
+  },
+  "appTile": {
+    "beta": "Beta",
+    "soon": "Snart"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · build {{build}}",
+    "whatsNew": "Nyheter"
+  },
+  "collabHeader": {
+    "anonymous": "Anonym",
+    "notSavedYet": "Inte sparad än",
+    "save": "Spara",
+    "savedAt": "Sparad {{time}}",
+    "saving": "Sparar…",
+    "share": "Dela",
+    "title": "Titel"
+  },
+  "confirmButton": {
+    "confirm": "Bekräfta"
+  },
+  "devicesDialog": {
+    "activeNow": "Aktiv nu",
+    "lastActive": "Senast aktiv {{time}}",
+    "signOut": "Logga ut",
+    "signOutError": "Det gick inte att logga ut den enheten",
+    "signedOut": "Enheten utloggad",
+    "thisDevice": "Den här enheten",
+    "title": "Enheter och sessioner"
+  },
+  "dropZone": {
+    "dropToUpload": "Släpp för att ladda upp"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Varje ändring du gör sparas automatiskt och säkert till Drive.",
+    "encrypted": "Krypterad",
+    "endToEndEncrypted": "Totalsträckskrypterad"
+  },
+  "flatSidebar": {
+    "account": "Konto",
+    "apps": "Appar",
+    "beta": "Beta",
+    "devices": "Enheter",
+    "personalWorkspace": "Personlig arbetsyta",
+    "replayIntro": "Spela upp introt igen",
+    "settings": "Inställningar",
+    "signOut": "Logga ut",
+    "storage": "Lagring",
+    "toggleDarkMode": "Växla mörkt läge",
+    "unlimited": "Obegränsat"
+  },
+  "importButton": {
+    "import": "Importera",
+    "importFailed": "Det gick inte att importera den här filen"
+  },
+  "launcher": {
+    "loadingApps": "Läser in appar…",
+    "ofQuota": "av {{quota}}",
+    "signOut": "Logga ut",
+    "storage": "Lagring",
+    "versionBuild": "v{{version}} · build {{build}}",
+    "yourApps": "Dina appar"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Jag har sparat den – fortsätt",
+    "copied": "Återställningskod kopierad",
+    "copyAriaLabel": "Kopiera återställningskod",
+    "description": "Ditt konto är nu totalsträckskrypterat. Den här återställningskoden är enda sättet att återställa dina data om du glömmer ditt lösenord – förvara den på ett säkert ställe. Vi kan inte visa den igen.",
+    "title": "Spara din återställningskod"
+  },
+  "selectionBar": {
+    "clearSelection": "Avmarkera allt",
+    "download": "Ladda ner",
+    "downloadAllFrames": "Ladda ner alla bildrutor ({{count}})",
+    "downloadCover": "Ladda ner omslag",
+    "downloadCovers": "Ladda ner omslag ({{count}})",
+    "photoFilename": "Foto",
+    "photosZipFilename": "{{count}} foton.zip",
+    "share": "Dela",
+    "shareNameFallback": "foto"
+  },
+  "shareDialog": {
+    "cancel": "Avbryt",
+    "copyLink": "Kopiera länk",
+    "descriptionEncrypted": "Totalsträckskrypterad: nyckeln finns i länken och når aldrig servern, så bara personer med länken kan dekryptera den.",
+    "descriptionPublic": "Alla med den här länken kan ladda ner filen.",
+    "directDownload": "Direkt nedladdning",
+    "directDownloadHint": "Hoppa över landningssidan och ladda ner direkt",
+    "expiresAfter": "Upphör efter",
+    "expiry1Day": "1 dag",
+    "expiry1Hour": "1 timme",
+    "expiry30Days": "30 dagar",
+    "expiry7Days": "7 dagar",
+    "generatingLink": "Skapar länk…",
+    "limitDownloads": "Begränsa nedladdningar",
+    "limitDownloadsHint": "Inaktivera länken efter ett visst antal nedladdningar",
+    "linkCopied": "Länk kopierad",
+    "maximumDownloads": "Högsta antal nedladdningar",
+    "permanentLink": "Permanent länk",
+    "permanentLinkHint": "Håll länken aktiv tills du tar bort den",
+    "title": "Dela ”{{name}}”"
+  },
+  "state": {
+    "empty": "Inget här än",
+    "error": "Något gick fel",
+    "loading": "Läser in…",
+    "saving": "Sparar…"
+  },
+  "units": {
+    "items_one": "{{count}} objekt",
+    "items_other": "{{count}} objekt"
+  },
+  "uploadManager": {
+    "archiveFailed": "Arkivering misslyckades",
+    "downloadFailed": "Nedladdning misslyckades",
+    "taskFailed": "Misslyckades",
+    "unsupportedFileType": "Filtypen stöds inte",
+    "unsupportedFileTypeToast": "{{name}} är en filtyp som inte stöds"
+  },
+  "uploadPanel": {
+    "activity": "Aktivitet",
+    "alreadyInLibrary": "Finns redan i biblioteket",
+    "archiving": "Arkiverar…",
+    "archivingItems_one": "Arkiverar {{count}} objekt",
+    "archivingItems_other": "Arkiverar {{count}} objekt",
+    "archivingProgress": "Arkiverar {{loaded}} av {{size}}",
+    "bytesProgress": "{{loaded}} av {{size}}",
+    "clear": "Rensa",
+    "collapse": "Fäll ihop",
+    "compressing": "Komprimerar…",
+    "dismiss": "Avfärda",
+    "done": "Klar",
+    "downloadFailed": "Nedladdning misslyckades",
+    "downloaded": "Nedladdad",
+    "downloading": "Laddar ner…",
+    "downloadingItems_one": "Laddar ner {{count}} objekt",
+    "downloadingItems_other": "Laddar ner {{count}} objekt",
+    "expand": "Expandera",
+    "failed": "Misslyckades",
+    "processing": "Bearbetar…",
+    "processingItems_one": "Bearbetar {{count}} objekt",
+    "processingItems_other": "Bearbetar {{count}} objekt",
+    "speed": "{{speed}}/s",
+    "transcoding": "Omkodar…",
+    "uploading": "Laddar upp…",
+    "uploadingItems_one": "Laddar upp {{count}} objekt",
+    "uploadingItems_other": "Laddar upp {{count}} objekt"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} finns redan i ditt bibliotek",
+    "alreadyInLibrary_other": "{{count}} finns redan i ditt bibliotek",
+    "uploadFailed": "Det gick inte att ladda upp {{name}}",
+    "uploaded_one": "Laddade upp {{count}} foto",
+    "uploaded_other": "Laddade upp {{count}} foton"
+  },
+  "viewToggle": {
+    "gridView": "Rutnätsvy",
+    "tableView": "Tabellvy"
+  }
+}

@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 objekt",
+    "albumName": "Italien '24",
+    "albumsBody": "Samla foton i album och dela sedan en privat länk – inget konto krävs för att titta.",
+    "albumsTitle": "Album och delbara länkar.",
+    "back": "Tillbaka",
+    "dismiss": "Avfärda",
+    "getStarted": "Kom igång",
+    "linkCopied": "Länk kopierad",
+    "next": "Nästa",
+    "privateBody": "Varje foto, dokument och fil är totalsträckskrypterad. Bara du har nycklarna – servern ser aldrig något annat än krypterad text.",
+    "privateTitle": "Privat som standard.",
+    "share": "Dela",
+    "uploadBody": "Dra foton var som helst för att ladda upp. Live-foton paras ihop och serietagningar samlas automatiskt i en utfällbar stapel.",
+    "uploadTitle": "Släpp dem bara här."
+  }
+}

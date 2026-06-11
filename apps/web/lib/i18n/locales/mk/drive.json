@@ -1,1 +1,196 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Мој диск"
+  },
+  "browser": {
+    "archive": "Архива",
+    "archiveExtracted": "Архивата е извлечена",
+    "archiveLabel_one": "Архива ({{count}} ставка)",
+    "archiveLabel_other": "Архива ({{count}} ставки)",
+    "copyCreated": "Копијата е создадена",
+    "couldNotCopy": "Не може да се копира",
+    "couldNotCreate": "Не може да се создаде",
+    "couldNotDelete": "Не може да се избрише",
+    "couldNotExtract": "Не може да се извлече",
+    "couldNotMove": "Не може да се премести",
+    "couldNotOpenFile": "Оваа датотека не може да се отвори",
+    "download": "Преземи",
+    "dragOrUpload": "Повлечете датотеки тука или користете Прикачи.",
+    "extract": "Извлечи",
+    "linkCopied": "Врската е копирана",
+    "move": "Премести",
+    "movedToFolder_one": "{{count}} ставка е преместена во {{name}}",
+    "movedToFolder_other": "{{count}} ставки се преместени во {{name}}",
+    "movedToTrash": "Преместено во корпата",
+    "noMatches": "Ништо не одговара на вашето пребарување.",
+    "open": "Отвори",
+    "opening": "Се отвора…",
+    "rename": "Преименувај",
+    "share": "Сподели",
+    "trash": "Корпа"
+  },
+  "detailsPanel": {
+    "closeDetails": "Затвори детали",
+    "created": "Создадено",
+    "empty": "Изберете ставка за да ги видите нејзините детали.",
+    "file": "Датотека",
+    "files": "Датотеки",
+    "folder": "Папка",
+    "folders": "Папки",
+    "itemsSelected_one": "{{count}} избрана ставка",
+    "itemsSelected_other": "{{count}} избрани ставки",
+    "modified": "Изменето",
+    "size": "Големина",
+    "title": "Детали",
+    "totalSize": "Вкупна големина",
+    "type": "Тип"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Нов документ",
+    "newFolder": "Нова папка",
+    "newSpreadsheet": "Нова табела",
+    "uploadFiles": "Прикачи датотеки"
+  },
+  "driveNav": {
+    "drive": "Диск",
+    "location": "Локација",
+    "myDrive": "Мој диск",
+    "trash": "Корпа"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Не може да се создаде",
+    "emptyTrash": "Испразни корпа",
+    "emptyTrashConfirm": "Да се испразни корпата?",
+    "new": "Ново",
+    "newDocument": "Нов документ",
+    "newFolder": "Нова папка",
+    "newSpreadsheet": "Нова табела",
+    "toggleDetails": "Прикажи/сокриј детали",
+    "trashEmptied": "Корпата е испразнета",
+    "uploadFiles": "Прикачи датотеки"
+  },
+  "folderLockDialog": {
+    "cancel": "Откажи",
+    "confirmPasswordPlaceholder": "Потврди ја лозинката",
+    "folderLocked": "Папката е заклучена",
+    "folderPasswordPlaceholder": "Лозинка за папката",
+    "incorrectPassword": "Погрешна лозинка.",
+    "lock": "Заклучи",
+    "lockDescription": "Поставете лозинка за отворање на оваа папка. Таа го ограничува пристапот на овој уред — вашите датотеки остануваат целосно шифрирани од крај до крај без оглед на тоа.",
+    "lockFolderTitle": "Заклучи папка",
+    "lockRemoved": "Заклучувањето е отстрането",
+    "passwordsDontMatch": "Лозинките не се совпаѓаат.",
+    "removeDescription": "Внесете ја лозинката на папката за да го отстраните заклучувањето.",
+    "removeLock": "Отстрани заклучување",
+    "removeLockTitle": "Отстрани заклучување",
+    "somethingWentWrong": "Нешто тргна наопаку."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Внесете ја лозинката за да ја видите содржината.",
+    "incorrectPassword": "Погрешна лозинка.",
+    "locked": "„{{name}}“ е заклучена",
+    "passwordPlaceholder": "Лозинка за папката",
+    "unlock": "Отклучи"
+  },
+  "imageViewer": {
+    "close": "Затвори",
+    "download": "Преземи",
+    "resetZoom": "Ресетирај зум",
+    "zoomIn": "Зголеми",
+    "zoomOut": "Намали"
+  },
+  "modelViewer": {
+    "autoRotate": "Автоматско ротирање",
+    "close": "Затвори",
+    "decryptError": "Моделот не може да се дешифрира",
+    "loading": "Се вчитува модел…",
+    "normals": "Нормали",
+    "openError": "Оваа 3D датотека не може да се отвори.",
+    "shaded": "Засенчено",
+    "toggleGrid": "Прикажи/сокриј мрежа",
+    "toggleTextures": "Прикажи/сокриј текстури",
+    "wireframe": "Жичен модел"
+  },
+  "moveDialog": {
+    "cancel": "Откажи",
+    "move": "Премести",
+    "moveFailed": "Не може да се премести",
+    "moved": "Преместено",
+    "myDrive": "Мој диск",
+    "title": "Премести во папка"
+  },
+  "newFolderDialog": {
+    "cancel": "Откажи",
+    "create": "Создади",
+    "createError": "Папката не може да се создаде",
+    "created": "Папката е создадена",
+    "newFolder": "Нова папка",
+    "placeholder": "Име на папката",
+    "title": "Нова папка"
+  },
+  "nodeCard": {
+    "deselect": "Поништи избор",
+    "folder": "Папка",
+    "select": "Избери"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Копирај врска",
+    "details": "Детали",
+    "download": "Преземи",
+    "extractHere": "Извлечи тука",
+    "lockFolder": "Заклучи папка",
+    "makeCopy": "Направи копија",
+    "moveToFolder": "Премести во папка",
+    "moveToTrash": "Премести во корпа",
+    "open": "Отвори",
+    "openInPhotos": "Отвори во Фотографии",
+    "removeLock": "Отстрани заклучување",
+    "rename": "Преименувај",
+    "share": "Сподели",
+    "versionHistory": "Прикажи историја на верзии",
+    "view": "Прегледај",
+    "viewIn3d": "Прегледај во 3D"
+  },
+  "nodeTable": {
+    "deselect": "Поништи избор",
+    "modified": "Изменето",
+    "name": "Име",
+    "select": "Избери",
+    "selectAll": "Избери ги сите",
+    "size": "Големина"
+  },
+  "parentCard": {
+    "parentFolder": "Надредена папка"
+  },
+  "renameDialog": {
+    "cancel": "Откажи",
+    "couldNotRename": "Не може да се преименува",
+    "renamed": "Преименувано",
+    "save": "Зачувај",
+    "title": "Преименувај"
+  },
+  "shell": {
+    "search": "Пребарувај на дискот"
+  },
+  "trash": {
+    "actionFailed": "Дејството не успеа",
+    "deleteForever": "Избриши засекогаш",
+    "empty": "Корпата е празна.",
+    "permanentlyDeleted": "Трајно избришано",
+    "restore": "Врати",
+    "restored": "Вратено",
+    "retentionNotice": "Ставките тука се трајно бришат 30 дена откако се преместени во корпата.",
+    "title": "Корпа"
+  },
+  "versionHistoryDialog": {
+    "close": "Затвори",
+    "download": "Преземи верзија",
+    "empty": "Нема претходни верзии. Повторно прикачете датотека со исто име за да создадете една.",
+    "loading": "Се вчитува…",
+    "restore": "Врати",
+    "restoreFailed": "Не може да се врати",
+    "restored": "Верзијата е вратена",
+    "title": "Историја на верзии",
+    "versionLabel": "Верзија {{number}}"
+  }
+}

@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Utworzono konto administratora",
+    "closedLabel": "Zamknięta — brak nowych kont",
+    "creating": "Tworzenie…",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "Podaj prawidłowy adres e-mail",
+    "inviteOnlyLabel": "Tylko na zaproszenie — administratorzy tworzą konta",
+    "nameLabel": "Twoje imię",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "Imię jest wymagane",
+    "openLabel": "Otwarta — każdy może się zarejestrować",
+    "passwordLabel": "Hasło",
+    "passwordMin": "Użyj co najmniej 8 znaków",
+    "passwordPlaceholder": "Co najmniej 8 znaków",
+    "registrationModeLabel": "Kto może tworzyć konta?",
+    "setupFailed": "Konfiguracja nie powiodła się",
+    "signInFailed": "Logowanie nie powiodło się",
+    "submit": "Utwórz administratora i kontynuuj"
+  },
+  "createGroupsStep": {
+    "addGroup": "Dodaj grupę",
+    "adding": "Dodawanie…",
+    "couldNotCreate": "Nie udało się utworzyć grupy",
+    "createdGroup": "Utworzono grupę „{{name}}”",
+    "descriptionLabel": "Opis (opcjonalnie)",
+    "descriptionPlaceholder": "Większy limit, wczesny dostęp do funkcji",
+    "finishSetup": "Zakończ konfigurację",
+    "groupNameLabel": "Nazwa grupy",
+    "groupNamePlaceholder": "Użytkownicy zaawansowani",
+    "intro": "Grupy pozwalają przypisać wspólne role i limity (np. limity miejsca) wielu użytkownikom naraz. Utwórz kilka teraz albo pomiń i zrób to później w ustawieniach administratora.",
+    "nameRequired": "Nazwa grupy jest wymagana",
+    "skipFinish": "Pomiń i zakończ"
+  },
+  "setup": {
+    "adminDescription": "Utwórz pierwsze konto administratora, aby rozpocząć.",
+    "groupsDescription": "Skonfiguruj grupy dla swoich użytkowników (opcjonalnie).",
+    "loading": "Wczytywanie…",
+    "welcome": "Witamy w {{name}}"
+  }
+}

@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Konto",
+  "subtitle": "Zarządzaj swoim profilem i preferencjami.",
+  "back": "Wstecz",
+  "profile": "Profil",
+  "name": "Imię i nazwisko",
+  "email": "E-mail",
+  "preferences": "Preferencje",
+  "language": "Język",
+  "languageHint": "Wybierz język używany w całym interfejsie.",
+  "appearance": "Wygląd",
+  "appearanceHint": "Przełączaj między trybem jasnym i ciemnym.",
+  "light": "Jasny",
+  "dark": "Ciemny",
+  "system": "Systemowy",
+  "security": "Bezpieczeństwo",
+  "devices": "Urządzenia i sesje",
+  "devicesHint": "Przejrzyj i wyloguj zalogowane urządzenia.",
+  "manageDevices": "Zarządzaj urządzeniami",
+  "signOut": "Wyloguj się",
+  "languageChanged": "Zaktualizowano język"
+}

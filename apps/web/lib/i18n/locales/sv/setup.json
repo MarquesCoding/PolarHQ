@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Administratörskonto skapat",
+    "closedLabel": "Stängt – inga nya konton",
+    "creating": "Skapar…",
+    "emailLabel": "E-post",
+    "emailPlaceholder": "admin@exempel.se",
+    "invalidEmail": "Ange en giltig e-postadress",
+    "inviteOnlyLabel": "Endast inbjudan – administratörer skapar konton",
+    "nameLabel": "Ditt namn",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "Namn krävs",
+    "openLabel": "Öppet – vem som helst kan registrera sig",
+    "passwordLabel": "Lösenord",
+    "passwordMin": "Använd minst 8 tecken",
+    "passwordPlaceholder": "Minst 8 tecken",
+    "registrationModeLabel": "Vem kan skapa konton?",
+    "setupFailed": "Konfigurationen misslyckades",
+    "signInFailed": "Inloggningen misslyckades",
+    "submit": "Skapa administratör och fortsätt"
+  },
+  "createGroupsStep": {
+    "addGroup": "Lägg till grupp",
+    "adding": "Lägger till…",
+    "couldNotCreate": "Det gick inte att skapa gruppen",
+    "createdGroup": "Skapade gruppen ”{{name}}”",
+    "descriptionLabel": "Beskrivning (valfritt)",
+    "descriptionPlaceholder": "Större kvot, tidiga funktioner",
+    "finishSetup": "Slutför konfigurationen",
+    "groupNameLabel": "Gruppnamn",
+    "groupNamePlaceholder": "Avancerade användare",
+    "intro": "Med grupper kan du tilldela delade roller och begränsningar (som lagringskvoter) till många användare samtidigt. Skapa några nu, eller hoppa över och gör det senare i administratörsinställningarna.",
+    "nameRequired": "Gruppnamn krävs",
+    "skipFinish": "Hoppa över och slutför"
+  },
+  "setup": {
+    "adminDescription": "Skapa det första administratörskontot för att komma igång.",
+    "groupsDescription": "Konfigurera grupper för dina användare (valfritt).",
+    "loading": "Laddar…",
+    "welcome": "Välkommen till {{name}}"
+  }
+}

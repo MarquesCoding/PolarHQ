@@ -1,1 +1,202 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Mój Dysk"
+  },
+  "browser": {
+    "archive": "Archiwum",
+    "archiveExtracted": "Wypakowano archiwum",
+    "archiveLabel_one": "Archiwum ({{count}} element)",
+    "archiveLabel_few": "Archiwum ({{count}} elementy)",
+    "archiveLabel_many": "Archiwum ({{count}} elementów)",
+    "archiveLabel_other": "Archiwum ({{count}} elementu)",
+    "copyCreated": "Utworzono kopię",
+    "couldNotCopy": "Nie udało się skopiować",
+    "couldNotCreate": "Nie udało się utworzyć",
+    "couldNotDelete": "Nie udało się usunąć",
+    "couldNotExtract": "Nie udało się wypakować",
+    "couldNotMove": "Nie udało się przenieść",
+    "couldNotOpenFile": "Nie udało się otworzyć tego pliku",
+    "download": "Pobierz",
+    "dragOrUpload": "Przeciągnij pliki tutaj lub użyj przycisku Prześlij.",
+    "extract": "Wypakuj",
+    "linkCopied": "Skopiowano link",
+    "move": "Przenieś",
+    "movedToFolder_one": "Przeniesiono {{count}} element do {{name}}",
+    "movedToFolder_few": "Przeniesiono {{count}} elementy do {{name}}",
+    "movedToFolder_many": "Przeniesiono {{count}} elementów do {{name}}",
+    "movedToFolder_other": "Przeniesiono {{count}} elementu do {{name}}",
+    "movedToTrash": "Przeniesiono do kosza",
+    "noMatches": "Brak wyników dla Twojego wyszukiwania.",
+    "open": "Otwórz",
+    "opening": "Otwieranie…",
+    "rename": "Zmień nazwę",
+    "share": "Udostępnij",
+    "trash": "Kosz"
+  },
+  "detailsPanel": {
+    "closeDetails": "Zamknij szczegóły",
+    "created": "Utworzono",
+    "empty": "Wybierz element, aby zobaczyć jego szczegóły.",
+    "file": "Plik",
+    "files": "Pliki",
+    "folder": "Folder",
+    "folders": "Foldery",
+    "itemsSelected_one": "Wybrano {{count}} element",
+    "itemsSelected_few": "Wybrano {{count}} elementy",
+    "itemsSelected_many": "Wybrano {{count}} elementów",
+    "itemsSelected_other": "Wybrano {{count}} elementu",
+    "modified": "Zmodyfikowano",
+    "size": "Rozmiar",
+    "title": "Szczegóły",
+    "totalSize": "Rozmiar całkowity",
+    "type": "Typ"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Nowy dokument",
+    "newFolder": "Nowy folder",
+    "newSpreadsheet": "Nowy arkusz kalkulacyjny",
+    "uploadFiles": "Prześlij pliki"
+  },
+  "driveNav": {
+    "drive": "Dysk",
+    "location": "Lokalizacja",
+    "myDrive": "Mój Dysk",
+    "trash": "Kosz"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Nie udało się utworzyć",
+    "emptyTrash": "Opróżnij kosz",
+    "emptyTrashConfirm": "Opróżnić kosz?",
+    "new": "Nowy",
+    "newDocument": "Nowy dokument",
+    "newFolder": "Nowy folder",
+    "newSpreadsheet": "Nowy arkusz kalkulacyjny",
+    "toggleDetails": "Przełącz szczegóły",
+    "trashEmptied": "Opróżniono kosz",
+    "uploadFiles": "Prześlij pliki"
+  },
+  "folderLockDialog": {
+    "cancel": "Anuluj",
+    "confirmPasswordPlaceholder": "Potwierdź hasło",
+    "folderLocked": "Folder zablokowany",
+    "folderPasswordPlaceholder": "Hasło folderu",
+    "incorrectPassword": "Nieprawidłowe hasło.",
+    "lock": "Zablokuj",
+    "lockDescription": "Ustaw hasło, aby otworzyć ten folder. Ogranicza ono dostęp na tym urządzeniu — Twoje pliki pozostają w pełni szyfrowane end-to-end niezależnie od tego.",
+    "lockFolderTitle": "Zablokuj folder",
+    "lockRemoved": "Usunięto blokadę",
+    "passwordsDontMatch": "Hasła nie są zgodne.",
+    "removeDescription": "Wprowadź hasło folderu, aby usunąć jego blokadę.",
+    "removeLock": "Usuń blokadę",
+    "removeLockTitle": "Usuń blokadę",
+    "somethingWentWrong": "Coś poszło nie tak."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Wprowadź hasło, aby wyświetlić zawartość.",
+    "incorrectPassword": "Nieprawidłowe hasło.",
+    "locked": "„{{name}}” jest zablokowany",
+    "passwordPlaceholder": "Hasło folderu",
+    "unlock": "Odblokuj"
+  },
+  "imageViewer": {
+    "close": "Zamknij",
+    "download": "Pobierz",
+    "resetZoom": "Resetuj powiększenie",
+    "zoomIn": "Powiększ",
+    "zoomOut": "Pomniejsz"
+  },
+  "modelViewer": {
+    "autoRotate": "Automatyczny obrót",
+    "close": "Zamknij",
+    "decryptError": "Nie udało się odszyfrować modelu",
+    "loading": "Wczytywanie modelu…",
+    "normals": "Normalne",
+    "openError": "Nie udało się otworzyć tego pliku 3D.",
+    "shaded": "Cieniowany",
+    "toggleGrid": "Przełącz siatkę",
+    "toggleTextures": "Przełącz tekstury",
+    "wireframe": "Siatka krawędzi"
+  },
+  "moveDialog": {
+    "cancel": "Anuluj",
+    "move": "Przenieś",
+    "moveFailed": "Nie udało się przenieść",
+    "moved": "Przeniesiono",
+    "myDrive": "Mój Dysk",
+    "title": "Przenieś do folderu"
+  },
+  "newFolderDialog": {
+    "cancel": "Anuluj",
+    "create": "Utwórz",
+    "createError": "Nie udało się utworzyć folderu",
+    "created": "Utworzono folder",
+    "newFolder": "Nowy folder",
+    "placeholder": "Nazwa folderu",
+    "title": "Nowy folder"
+  },
+  "nodeCard": {
+    "deselect": "Odznacz",
+    "folder": "Folder",
+    "select": "Zaznacz"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Kopiuj link",
+    "details": "Szczegóły",
+    "download": "Pobierz",
+    "extractHere": "Wypakuj tutaj",
+    "lockFolder": "Zablokuj folder",
+    "makeCopy": "Utwórz kopię",
+    "moveToFolder": "Przenieś do folderu",
+    "moveToTrash": "Przenieś do kosza",
+    "open": "Otwórz",
+    "openInPhotos": "Otwórz w Zdjęciach",
+    "removeLock": "Usuń blokadę",
+    "rename": "Zmień nazwę",
+    "share": "Udostępnij",
+    "versionHistory": "Zobacz historię wersji",
+    "view": "Wyświetl",
+    "viewIn3d": "Wyświetl w 3D"
+  },
+  "nodeTable": {
+    "deselect": "Odznacz",
+    "modified": "Zmodyfikowano",
+    "name": "Nazwa",
+    "select": "Zaznacz",
+    "selectAll": "Zaznacz wszystko",
+    "size": "Rozmiar"
+  },
+  "parentCard": {
+    "parentFolder": "Folder nadrzędny"
+  },
+  "renameDialog": {
+    "cancel": "Anuluj",
+    "couldNotRename": "Nie udało się zmienić nazwy",
+    "renamed": "Zmieniono nazwę",
+    "save": "Zapisz",
+    "title": "Zmień nazwę"
+  },
+  "shell": {
+    "search": "Przeszukaj Dysk"
+  },
+  "trash": {
+    "actionFailed": "Akcja nie powiodła się",
+    "deleteForever": "Usuń trwale",
+    "empty": "Kosz jest pusty.",
+    "permanentlyDeleted": "Trwale usunięto",
+    "restore": "Przywróć",
+    "restored": "Przywrócono",
+    "retentionNotice": "Elementy są trwale usuwane 30 dni po przeniesieniu do kosza.",
+    "title": "Kosz"
+  },
+  "versionHistoryDialog": {
+    "close": "Zamknij",
+    "download": "Pobierz wersję",
+    "empty": "Brak wcześniejszych wersji. Prześlij ponownie plik o tej samej nazwie, aby ją utworzyć.",
+    "loading": "Wczytywanie…",
+    "restore": "Przywróć",
+    "restoreFailed": "Nie udało się przywrócić",
+    "restored": "Przywrócono wersję",
+    "title": "Historia wersji",
+    "versionLabel": "Wersja {{number}}"
+  }
+}

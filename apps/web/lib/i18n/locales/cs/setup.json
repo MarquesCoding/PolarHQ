@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Účet správce byl vytvořen",
+    "closedLabel": "Uzavřeno — žádné nové účty",
+    "creating": "Vytváření…",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "admin@example.com",
+    "invalidEmail": "Zadejte platný e-mail",
+    "inviteOnlyLabel": "Pouze na pozvání — účty vytváří správci",
+    "nameLabel": "Vaše jméno",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "Jméno je povinné",
+    "openLabel": "Otevřeno — kdokoli se může zaregistrovat",
+    "passwordLabel": "Heslo",
+    "passwordMin": "Použijte alespoň 8 znaků",
+    "passwordPlaceholder": "Alespoň 8 znaků",
+    "registrationModeLabel": "Kdo může vytvářet účty?",
+    "setupFailed": "Nastavení se nezdařilo",
+    "signInFailed": "Přihlášení se nezdařilo",
+    "submit": "Vytvořit správce a pokračovat"
+  },
+  "createGroupsStep": {
+    "addGroup": "Přidat skupinu",
+    "adding": "Přidávání…",
+    "couldNotCreate": "Skupinu se nepodařilo vytvořit",
+    "createdGroup": "Skupina „{{name}}“ byla vytvořena",
+    "descriptionLabel": "Popis (volitelné)",
+    "descriptionPlaceholder": "Větší kvóta, předběžné funkce",
+    "finishSetup": "Dokončit nastavení",
+    "groupNameLabel": "Název skupiny",
+    "groupNamePlaceholder": "Pokročilí uživatelé",
+    "intro": "Skupiny umožňují přiřadit sdílené role a limity (například kvóty úložiště) více uživatelům najednou. Vytvořte několik nyní, nebo tento krok přeskočte a proveďte jej později v nastavení správce.",
+    "nameRequired": "Název skupiny je povinný",
+    "skipFinish": "Přeskočit a dokončit"
+  },
+  "setup": {
+    "adminDescription": "Začněte vytvořením prvního účtu správce.",
+    "groupsDescription": "Nastavte skupiny pro vaše uživatele (volitelné).",
+    "loading": "Načítání…",
+    "welcome": "Vítejte v {{name}}"
+  }
+}

@@ -1,1 +1,18 @@
-{}
+{
+  "onboardingCard": {
+    "albumItems": "128 položek",
+    "albumName": "Itálie '24",
+    "albumsBody": "Seskupujte fotky do alb a sdílejte je soukromým odkazem — k zobrazení není potřeba žádný účet.",
+    "albumsTitle": "Alba a sdílené odkazy.",
+    "back": "Zpět",
+    "dismiss": "Zavřít",
+    "getStarted": "Začít",
+    "linkCopied": "Odkaz zkopírován",
+    "next": "Další",
+    "privateBody": "Každá fotka, dokument i soubor jsou šifrovány end-to-end. Klíče máte jen vy — server vždy vidí pouze šifrovaný text.",
+    "privateTitle": "Soukromé už ve výchozím nastavení.",
+    "share": "Sdílet",
+    "uploadBody": "Fotky nahrajete přetažením kamkoliv. Live Photos se spárují a sekvence se automaticky sbalí do jednoho rozbalitelného stohu.",
+    "uploadTitle": "Stačí je sem přetáhnout."
+  }
+}

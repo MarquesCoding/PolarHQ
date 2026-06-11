@@ -1,1 +1,193 @@
-{}
+{
+  "actions": {
+    "back": "Wstecz",
+    "cancel": "Anuluj",
+    "close": "Zamknij",
+    "confirm": "Potwierdź",
+    "create": "Utwórz",
+    "delete": "Usuń",
+    "done": "Gotowe",
+    "download": "Pobierz",
+    "getStarted": "Rozpocznij",
+    "next": "Dalej",
+    "open": "Otwórz",
+    "remove": "Usuń",
+    "rename": "Zmień nazwę",
+    "retry": "Spróbuj ponownie",
+    "save": "Zapisz",
+    "share": "Udostępnij",
+    "signOut": "Wyloguj się"
+  },
+  "appTile": {
+    "beta": "Beta",
+    "soon": "Wkrótce"
+  },
+  "changelog": {
+    "versionBuild": "v{{version}} · kompilacja {{build}}",
+    "whatsNew": "Co nowego"
+  },
+  "collabHeader": {
+    "anonymous": "Anonimowy",
+    "notSavedYet": "Jeszcze nie zapisano",
+    "save": "Zapisz",
+    "savedAt": "Zapisano {{time}}",
+    "saving": "Zapisywanie…",
+    "share": "Udostępnij",
+    "title": "Tytuł"
+  },
+  "confirmButton": {
+    "confirm": "Potwierdź"
+  },
+  "devicesDialog": {
+    "activeNow": "Aktywne teraz",
+    "lastActive": "Ostatnia aktywność {{time}}",
+    "signOut": "Wyloguj się",
+    "signOutError": "Nie udało się wylogować tego urządzenia",
+    "signedOut": "Urządzenie wylogowane",
+    "thisDevice": "To urządzenie",
+    "title": "Urządzenia i sesje"
+  },
+  "dropZone": {
+    "dropToUpload": "Upuść, aby przesłać"
+  },
+  "encryptedBadge": {
+    "defaultDescription": "Każda wprowadzona zmiana jest automatycznie i bezpiecznie zapisywana na Dysku.",
+    "encrypted": "Zaszyfrowane",
+    "endToEndEncrypted": "Szyfrowanie typu end-to-end"
+  },
+  "flatSidebar": {
+    "account": "Konto",
+    "apps": "Aplikacje",
+    "beta": "Beta",
+    "devices": "Urządzenia",
+    "personalWorkspace": "Obszar osobisty",
+    "replayIntro": "Odtwórz wprowadzenie",
+    "settings": "Ustawienia",
+    "signOut": "Wyloguj się",
+    "storage": "Pamięć",
+    "toggleDarkMode": "Przełącz tryb ciemny",
+    "unlimited": "Bez limitu"
+  },
+  "importButton": {
+    "import": "Importuj",
+    "importFailed": "Nie udało się zaimportować tego pliku"
+  },
+  "launcher": {
+    "loadingApps": "Ładowanie aplikacji…",
+    "ofQuota": "z {{quota}}",
+    "signOut": "Wyloguj się",
+    "storage": "Pamięć",
+    "versionBuild": "v{{version}} · kompilacja {{build}}",
+    "yourApps": "Twoje aplikacje"
+  },
+  "recoveryCodeDialog": {
+    "continue": "Zapisałem(-am) — kontynuuj",
+    "copied": "Skopiowano kod odzyskiwania",
+    "copyAriaLabel": "Kopiuj kod odzyskiwania",
+    "description": "Twoje konto jest teraz szyfrowane end-to-end. Ten kod odzyskiwania to jedyny sposób na odzyskanie danych, jeśli zapomnisz hasła — przechowuj go w bezpiecznym miejscu. Nie pokażemy go ponownie.",
+    "title": "Zapisz swój kod odzyskiwania"
+  },
+  "selectionBar": {
+    "clearSelection": "Wyczyść zaznaczenie",
+    "download": "Pobierz",
+    "downloadAllFrames": "Pobierz wszystkie klatki ({{count}})",
+    "downloadCover": "Pobierz okładkę",
+    "downloadCovers": "Pobierz okładki ({{count}})",
+    "photoFilename": "Zdjęcie",
+    "photosZipFilename": "{{count}} zdjęć.zip",
+    "share": "Udostępnij",
+    "shareNameFallback": "zdjęcie"
+  },
+  "shareDialog": {
+    "cancel": "Anuluj",
+    "copyLink": "Kopiuj link",
+    "descriptionEncrypted": "Szyfrowanie end-to-end: klucz znajduje się w linku i nigdy nie trafia na serwer, więc tylko osoby mające link mogą go odszyfrować.",
+    "descriptionPublic": "Każda osoba z tym linkiem może pobrać plik.",
+    "directDownload": "Bezpośrednie pobieranie",
+    "directDownloadHint": "Pomiń stronę docelową i pobierz od razu",
+    "expiresAfter": "Wygasa po",
+    "expiry1Day": "1 dzień",
+    "expiry1Hour": "1 godzina",
+    "expiry30Days": "30 dni",
+    "expiry7Days": "7 dni",
+    "generatingLink": "Generowanie linku…",
+    "limitDownloads": "Ogranicz pobrania",
+    "limitDownloadsHint": "Wyłącz link po określonej liczbie pobrań",
+    "linkCopied": "Skopiowano link",
+    "maximumDownloads": "Maksymalna liczba pobrań",
+    "permanentLink": "Link stały",
+    "permanentLinkHint": "Zachowaj ten link aktywny, dopóki go nie usuniesz",
+    "title": "Udostępnij „{{name}}”"
+  },
+  "state": {
+    "empty": "Nic tu jeszcze nie ma",
+    "error": "Coś poszło nie tak",
+    "loading": "Ładowanie…",
+    "saving": "Zapisywanie…"
+  },
+  "units": {
+    "items_one": "{{count}} element",
+    "items_few": "{{count}} elementy",
+    "items_many": "{{count}} elementów",
+    "items_other": "{{count}} elementu"
+  },
+  "uploadManager": {
+    "archiveFailed": "Archiwizacja nie powiodła się",
+    "downloadFailed": "Pobieranie nie powiodło się",
+    "taskFailed": "Niepowodzenie",
+    "unsupportedFileType": "Nieobsługiwany typ pliku",
+    "unsupportedFileTypeToast": "{{name}} to nieobsługiwany typ pliku"
+  },
+  "uploadPanel": {
+    "activity": "Aktywność",
+    "alreadyInLibrary": "Już w bibliotece",
+    "archiving": "Archiwizowanie…",
+    "archivingItems_one": "Archiwizowanie {{count}} elementu",
+    "archivingItems_few": "Archiwizowanie {{count}} elementów",
+    "archivingItems_many": "Archiwizowanie {{count}} elementów",
+    "archivingItems_other": "Archiwizowanie {{count}} elementu",
+    "archivingProgress": "Archiwizowanie {{loaded}} z {{size}}",
+    "bytesProgress": "{{loaded}} z {{size}}",
+    "clear": "Wyczyść",
+    "collapse": "Zwiń",
+    "compressing": "Kompresowanie…",
+    "dismiss": "Odrzuć",
+    "done": "Gotowe",
+    "downloadFailed": "Pobieranie nie powiodło się",
+    "downloaded": "Pobrano",
+    "downloading": "Pobieranie…",
+    "downloadingItems_one": "Pobieranie {{count}} elementu",
+    "downloadingItems_few": "Pobieranie {{count}} elementów",
+    "downloadingItems_many": "Pobieranie {{count}} elementów",
+    "downloadingItems_other": "Pobieranie {{count}} elementu",
+    "expand": "Rozwiń",
+    "failed": "Niepowodzenie",
+    "processing": "Przetwarzanie…",
+    "processingItems_one": "Przetwarzanie {{count}} elementu",
+    "processingItems_few": "Przetwarzanie {{count}} elementów",
+    "processingItems_many": "Przetwarzanie {{count}} elementów",
+    "processingItems_other": "Przetwarzanie {{count}} elementu",
+    "speed": "{{speed}}/s",
+    "transcoding": "Transkodowanie…",
+    "uploading": "Przesyłanie…",
+    "uploadingItems_one": "Przesyłanie {{count}} elementu",
+    "uploadingItems_few": "Przesyłanie {{count}} elementów",
+    "uploadingItems_many": "Przesyłanie {{count}} elementów",
+    "uploadingItems_other": "Przesyłanie {{count}} elementu"
+  },
+  "useUploader": {
+    "alreadyInLibrary_one": "{{count}} już w Twojej bibliotece",
+    "alreadyInLibrary_few": "{{count}} już w Twojej bibliotece",
+    "alreadyInLibrary_many": "{{count}} już w Twojej bibliotece",
+    "alreadyInLibrary_other": "{{count}} już w Twojej bibliotece",
+    "uploadFailed": "Nie udało się przesłać {{name}}",
+    "uploaded_one": "Przesłano {{count}} zdjęcie",
+    "uploaded_few": "Przesłano {{count}} zdjęcia",
+    "uploaded_many": "Przesłano {{count}} zdjęć",
+    "uploaded_other": "Przesłano {{count}} zdjęcia"
+  },
+  "viewToggle": {
+    "gridView": "Widok siatki",
+    "tableView": "Widok tabeli"
+  }
+}

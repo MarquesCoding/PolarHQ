@@ -1,1 +1,202 @@
-{}
+{
+  "breadcrumbs": {
+    "myDrive": "Můj disk"
+  },
+  "browser": {
+    "archive": "Archiv",
+    "archiveExtracted": "Archiv rozbalen",
+    "archiveLabel_one": "Archivovat ({{count}} položku)",
+    "archiveLabel_few": "Archivovat ({{count}} položky)",
+    "archiveLabel_many": "Archivovat ({{count}} položky)",
+    "archiveLabel_other": "Archivovat ({{count}} položek)",
+    "copyCreated": "Kopie vytvořena",
+    "couldNotCopy": "Nepodařilo se zkopírovat",
+    "couldNotCreate": "Nepodařilo se vytvořit",
+    "couldNotDelete": "Nepodařilo se odstranit",
+    "couldNotExtract": "Nepodařilo se rozbalit",
+    "couldNotMove": "Nepodařilo se přesunout",
+    "couldNotOpenFile": "Tento soubor se nepodařilo otevřít",
+    "download": "Stáhnout",
+    "dragOrUpload": "Přetáhněte sem soubory nebo použijte Nahrát.",
+    "extract": "Rozbalit",
+    "linkCopied": "Odkaz zkopírován",
+    "move": "Přesunout",
+    "movedToFolder_one": "{{count}} položka přesunuta do {{name}}",
+    "movedToFolder_few": "{{count}} položky přesunuty do {{name}}",
+    "movedToFolder_many": "{{count}} položky přesunuto do {{name}}",
+    "movedToFolder_other": "{{count}} položek přesunuto do {{name}}",
+    "movedToTrash": "Přesunuto do koše",
+    "noMatches": "Vašemu hledání nic neodpovídá.",
+    "open": "Otevřít",
+    "opening": "Otevírání…",
+    "rename": "Přejmenovat",
+    "share": "Sdílet",
+    "trash": "Koš"
+  },
+  "detailsPanel": {
+    "closeDetails": "Zavřít podrobnosti",
+    "created": "Vytvořeno",
+    "empty": "Vyberte položku pro zobrazení jejích podrobností.",
+    "file": "Soubor",
+    "files": "Soubory",
+    "folder": "Složka",
+    "folders": "Složky",
+    "itemsSelected_one": "{{count}} položka vybrána",
+    "itemsSelected_few": "{{count}} položky vybrány",
+    "itemsSelected_many": "{{count}} položky vybráno",
+    "itemsSelected_other": "{{count}} položek vybráno",
+    "modified": "Změněno",
+    "size": "Velikost",
+    "title": "Podrobnosti",
+    "totalSize": "Celková velikost",
+    "type": "Typ"
+  },
+  "driveBackgroundMenu": {
+    "newDocument": "Nový dokument",
+    "newFolder": "Nová složka",
+    "newSpreadsheet": "Nová tabulka",
+    "uploadFiles": "Nahrát soubory"
+  },
+  "driveNav": {
+    "drive": "Disk",
+    "location": "Umístění",
+    "myDrive": "Můj disk",
+    "trash": "Koš"
+  },
+  "driveTopActions": {
+    "couldNotCreate": "Nepodařilo se vytvořit",
+    "emptyTrash": "Vysypat koš",
+    "emptyTrashConfirm": "Vysypat koš?",
+    "new": "Nový",
+    "newDocument": "Nový dokument",
+    "newFolder": "Nová složka",
+    "newSpreadsheet": "Nová tabulka",
+    "toggleDetails": "Přepnout podrobnosti",
+    "trashEmptied": "Koš vysypán",
+    "uploadFiles": "Nahrát soubory"
+  },
+  "folderLockDialog": {
+    "cancel": "Zrušit",
+    "confirmPasswordPlaceholder": "Potvrďte heslo",
+    "folderLocked": "Složka uzamčena",
+    "folderPasswordPlaceholder": "Heslo složky",
+    "incorrectPassword": "Nesprávné heslo.",
+    "lock": "Uzamknout",
+    "lockDescription": "Nastavte heslo pro otevření této složky. Chrání přístup na tomto zařízení — vaše soubory zůstávají bez ohledu na to koncově šifrované.",
+    "lockFolderTitle": "Uzamknout složku",
+    "lockRemoved": "Zámek odstraněn",
+    "passwordsDontMatch": "Hesla se neshodují.",
+    "removeDescription": "Pro odstranění zámku zadejte heslo složky.",
+    "removeLock": "Odstranit zámek",
+    "removeLockTitle": "Odstranit zámek",
+    "somethingWentWrong": "Něco se pokazilo."
+  },
+  "folderLockGate": {
+    "enterPasswordHint": "Pro zobrazení obsahu zadejte heslo.",
+    "incorrectPassword": "Nesprávné heslo.",
+    "locked": "„{{name}}“ je uzamčeno",
+    "passwordPlaceholder": "Heslo složky",
+    "unlock": "Odemknout"
+  },
+  "imageViewer": {
+    "close": "Zavřít",
+    "download": "Stáhnout",
+    "resetZoom": "Obnovit přiblížení",
+    "zoomIn": "Přiblížit",
+    "zoomOut": "Oddálit"
+  },
+  "modelViewer": {
+    "autoRotate": "Automatické otáčení",
+    "close": "Zavřít",
+    "decryptError": "Model se nepodařilo dešifrovat",
+    "loading": "Načítání modelu…",
+    "normals": "Normály",
+    "openError": "Tento 3D soubor se nepodařilo otevřít.",
+    "shaded": "Stínovaný",
+    "toggleGrid": "Přepnout mřížku",
+    "toggleTextures": "Přepnout textury",
+    "wireframe": "Drátový model"
+  },
+  "moveDialog": {
+    "cancel": "Zrušit",
+    "move": "Přesunout",
+    "moveFailed": "Nepodařilo se přesunout",
+    "moved": "Přesunuto",
+    "myDrive": "Můj disk",
+    "title": "Přesunout do složky"
+  },
+  "newFolderDialog": {
+    "cancel": "Zrušit",
+    "create": "Vytvořit",
+    "createError": "Složku se nepodařilo vytvořit",
+    "created": "Složka vytvořena",
+    "newFolder": "Nová složka",
+    "placeholder": "Název složky",
+    "title": "Nová složka"
+  },
+  "nodeCard": {
+    "deselect": "Zrušit výběr",
+    "folder": "Složka",
+    "select": "Vybrat"
+  },
+  "nodeContextMenu": {
+    "copyLink": "Kopírovat odkaz",
+    "details": "Podrobnosti",
+    "download": "Stáhnout",
+    "extractHere": "Rozbalit sem",
+    "lockFolder": "Uzamknout složku",
+    "makeCopy": "Vytvořit kopii",
+    "moveToFolder": "Přesunout do složky",
+    "moveToTrash": "Přesunout do koše",
+    "open": "Otevřít",
+    "openInPhotos": "Otevřít ve Fotkách",
+    "removeLock": "Odstranit zámek",
+    "rename": "Přejmenovat",
+    "share": "Sdílet",
+    "versionHistory": "Zobrazit historii verzí",
+    "view": "Zobrazit",
+    "viewIn3d": "Zobrazit ve 3D"
+  },
+  "nodeTable": {
+    "deselect": "Zrušit výběr",
+    "modified": "Změněno",
+    "name": "Název",
+    "select": "Vybrat",
+    "selectAll": "Vybrat vše",
+    "size": "Velikost"
+  },
+  "parentCard": {
+    "parentFolder": "Nadřazená složka"
+  },
+  "renameDialog": {
+    "cancel": "Zrušit",
+    "couldNotRename": "Nepodařilo se přejmenovat",
+    "renamed": "Přejmenováno",
+    "save": "Uložit",
+    "title": "Přejmenovat"
+  },
+  "shell": {
+    "search": "Prohledat Disk"
+  },
+  "trash": {
+    "actionFailed": "Akce se nezdařila",
+    "deleteForever": "Smazat navždy",
+    "empty": "Koš je prázdný.",
+    "permanentlyDeleted": "Trvale smazáno",
+    "restore": "Obnovit",
+    "restored": "Obnoveno",
+    "retentionNotice": "Položky zde jsou trvale smazány 30 dní po přesunutí do koše.",
+    "title": "Koš"
+  },
+  "versionHistoryDialog": {
+    "close": "Zavřít",
+    "download": "Stáhnout verzi",
+    "empty": "Žádné předchozí verze. Novou vytvoříte nahráním souboru se stejným názvem.",
+    "loading": "Načítání…",
+    "restore": "Obnovit",
+    "restoreFailed": "Nepodařilo se obnovit",
+    "restored": "Verze obnovena",
+    "title": "Historie verzí",
+    "versionLabel": "Verze {{number}}"
+  }
+}

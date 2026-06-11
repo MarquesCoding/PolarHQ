@@ -1,1 +1,42 @@
-{}
+{
+  "adminAccountStep": {
+    "accountCreated": "Beheerdersaccount aangemaakt",
+    "closedLabel": "Gesloten — geen nieuwe accounts",
+    "creating": "Aanmaken…",
+    "emailLabel": "E-mailadres",
+    "emailPlaceholder": "beheerder@voorbeeld.com",
+    "invalidEmail": "Voer een geldig e-mailadres in",
+    "inviteOnlyLabel": "Alleen op uitnodiging — beheerders maken accounts aan",
+    "nameLabel": "Je naam",
+    "namePlaceholder": "Ada Lovelace",
+    "nameRequired": "Naam is verplicht",
+    "openLabel": "Open — iedereen kan zich registreren",
+    "passwordLabel": "Wachtwoord",
+    "passwordMin": "Gebruik minstens 8 tekens",
+    "passwordPlaceholder": "Minstens 8 tekens",
+    "registrationModeLabel": "Wie mag accounts aanmaken?",
+    "setupFailed": "Installatie mislukt",
+    "signInFailed": "Aanmelden mislukt",
+    "submit": "Beheerder aanmaken en doorgaan"
+  },
+  "createGroupsStep": {
+    "addGroup": "Groep toevoegen",
+    "adding": "Toevoegen…",
+    "couldNotCreate": "Kon groep niet aanmaken",
+    "createdGroup": "Groep “{{name}}” aangemaakt",
+    "descriptionLabel": "Beschrijving (optioneel)",
+    "descriptionPlaceholder": "Grotere quota, vroege functies",
+    "finishSetup": "Installatie voltooien",
+    "groupNameLabel": "Groepsnaam",
+    "groupNamePlaceholder": "Power-gebruikers",
+    "intro": "Met groepen kun je gedeelde rollen en limieten (zoals opslagquota) in één keer aan meerdere gebruikers toewijzen. Maak er nu een paar aan, of sla dit over en doe het later in de beheerinstellingen.",
+    "nameRequired": "Groepsnaam is verplicht",
+    "skipFinish": "Overslaan en voltooien"
+  },
+  "setup": {
+    "adminDescription": "Maak het eerste beheerdersaccount aan om te beginnen.",
+    "groupsDescription": "Stel groepen in voor je gebruikers (optioneel).",
+    "loading": "Laden…",
+    "welcome": "Welkom bij {{name}}"
+  }
+}

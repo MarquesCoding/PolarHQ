@@ -1,1 +1,43 @@
-{}
+{
+  "boardCanvas": {
+    "redo": "Gör om",
+    "resetZoom": "Återställ zoom",
+    "undo": "Ångra",
+    "zoomIn": "Zooma in",
+    "zoomOut": "Zooma ut"
+  },
+  "propertiesPanel": {
+    "background": "Bakgrund",
+    "bringForward": "Flytta framåt",
+    "bringToFront": "Flytta längst fram",
+    "layers": "Lager",
+    "opacity": "Opacitet",
+    "sendBackward": "Flytta bakåt",
+    "sendToBack": "Flytta längst bak",
+    "stroke": "Kontur",
+    "strokeWidth": "Konturbredd"
+  },
+  "shell": {
+    "myWhiteboards": "Mina whiteboards",
+    "newWhiteboard": "Ny whiteboard",
+    "product": "Whiteboard",
+    "search": "Sök whiteboards",
+    "whiteboards": "Whiteboards"
+  },
+  "toolbar": {
+    "arrow": "Pil",
+    "diamond": "Romb",
+    "draw": "Rita",
+    "ellipse": "Ellips",
+    "eraser": "Suddgummi",
+    "line": "Linje",
+    "pan": "Panorera",
+    "rectangle": "Rektangel",
+    "select": "Markera",
+    "text": "Text"
+  },
+  "whiteboardList": {
+    "createLabel": "Ny whiteboard",
+    "title": "Whiteboards"
+  }
+}
