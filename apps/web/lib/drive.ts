@@ -46,6 +46,25 @@ const nameFields = (
     : { name: encryptedPlaceholder(), encryptedName, sharedName }
 }
 
+export type StorageApp = "photos" | "drive" | "docs" | "sheets" | "whiteboard"
+
+export interface StorageStats {
+  usedBytes: number
+  quotaBytes: number | null
+  breakdown: { app: StorageApp; bytes: number; count: number }[]
+  largest: {
+    id: string
+    name: string
+    encryptedName: string | null
+    mimeType: string | null
+    sizeBytes: number
+    app: StorageApp
+  }[]
+}
+
+export const fetchStorageStats = (): Promise<StorageStats> =>
+  apiFetch<StorageStats>("/api/v1/drive/storage")
+
 export interface DriveListing {
   parent: DriveNode
   breadcrumb: DriveNode[]

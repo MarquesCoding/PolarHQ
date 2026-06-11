@@ -23,6 +23,7 @@ import {
   ensureUserRoots,
   extractArchive,
   getNode,
+  getStorageStats,
   getNodeLock,
   setNodeLock,
   getVersion,
@@ -123,6 +124,10 @@ driveRoutes.get("/nodes", async (c) => {
     breadcrumb: trail.map((n) => serializeNode(n)),
     children: children.map((n) => serializeNode(n, encrypted)),
   })
+})
+
+driveRoutes.get("/storage", async (c) => {
+  return c.json(await getStorageStats(c.get("userId")))
 })
 
 driveRoutes.post("/nodes/folder", async (c) => {

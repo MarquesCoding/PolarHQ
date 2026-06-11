@@ -7,9 +7,9 @@ import logo from "../../public/logo.png"
 import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
 import { lockKeys } from "@lib/e2e"
+import { fetchStorageStats } from "@lib/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
-import { fetchUsage } from "@lib/photos"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setSearchQuery } from "@store/uiSlice"
 import { applyThemeWithReveal } from "@lib/themeTransition"
@@ -23,6 +23,7 @@ import {
 } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +36,7 @@ import { useTheme } from "next-themes"
 import { useTranslation } from "react-i18next"
 import Changelog from "@components/Changelog/Changelog"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
+import StorageDialog from "@components/StorageDialog/StorageDialog"
 import { replayOnboarding } from "@components/OnboardingCard/OnboardingCard"
 import { APP_BUILD, APP_VERSION } from "@lib/env"
 
@@ -72,8 +74,9 @@ const FlatSidebar = ({
   const { resolvedTheme, setTheme } = useTheme()
 
   const { data: apps } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
-  const { data: usage } = useQuery({ queryKey: ["photos", "usage"], queryFn: fetchUsage })
+  const { data: usage } = useQuery({ queryKey: ["drive", "storage"], queryFn: fetchStorageStats })
   const [devicesOpen, setDevicesOpen] = useState(false)
+  const [storageOpen, setStorageOpen] = useState(false)
 
   const signOut = async () => {
     lockKeys()
@@ -184,7 +187,12 @@ const FlatSidebar = ({
 
       {/* Bottom: usage + account + version + theme */}
       <div className="flex flex-col gap-2 p-3 pt-2">
-        <div className="panel rounded-lg p-2.5">
+        <Button
+          variant="ghost"
+          onClick={() => setStorageOpen(true)}
+          aria-label={t("storageDialog.open")}
+          className="panel hover:border-ring/30 flex h-auto w-full flex-col items-stretch gap-0 rounded-lg p-2.5 text-start transition [background-clip:padding-box,border-box]!"
+        >
           <div className="mb-1.5 flex items-center justify-between text-xs">
             <span className="text-muted-foreground font-medium">{t("flatSidebar.storage")}</span>
             <span dir="ltr" className="text-muted-foreground tabular-nums">
@@ -196,7 +204,7 @@ const FlatSidebar = ({
           <div className="bg-sidebar-accent h-1.5 w-full overflow-hidden rounded-full">
             <div className="bg-primary h-full rounded-full" style={{ width: `${usedPct}%` }} />
           </div>
-        </div>
+        </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -276,6 +284,7 @@ const FlatSidebar = ({
       </div>
 
       <DevicesDialog open={devicesOpen} onOpenChange={setDevicesOpen} />
+      <StorageDialog open={storageOpen} onOpenChange={setStorageOpen} />
     </aside>
   )
 }

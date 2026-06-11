@@ -26,7 +26,7 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 - [x] Nicer **dark/light mode** transition — View Transitions circular reveal from the toggle; expands on, contracts on off (`fill: forwards` to avoid the end-of-animation flash).
 
 ## Dialogs / onboarding
-- [ ] **Storage dialog**: largest file, which app uses most storage, breakdown.
+- [x] **Storage dialog**: largest file, which app uses most storage, breakdown. — `GET /api/v1/drive/storage` (per-app breakdown + largest files from the canonical Drive node table); `StorageDialog` opened from the sidebar storage card (segmented usage bar, by-app legend, largest-files list with decrypted names).
 - [x] **First-run onboarding card** (bottom-right, full-app scrim), animated demos of three flows using the real `PhotoTile`/`Button` components + a fake cursor that taps; dismiss persisted in localStorage; "Replay intro" in the account menu.
 
 ## Larger features
@@ -35,5 +35,8 @@ Tracking the batch of frontend + infra changes. Checked = done & committed.
 - [ ] **Suggestive albums** on the albums page.
 - [x] **S3 / MinIO** option for docker-compose — prod compose gains an opt-in `minio` profile (+ bucket init) and a commented S3 env block; fs stays default. Backend already supported `STORAGE_DRIVER=s3`. Pick one: disk / bundled MinIO / external S3.
 
+## Reliability / errors
+- [ ] **Better upload-failure errors in the frontend**: large uploads (e.g. a 6GB file) can fail with no surfaced reason. Show *why* it failed — server quota/limit (413/507), network/timeout, multipart abort, size-cap — with a clear, localised toast/inline message and a retry. Distinguish backend rejections (mapped error keys) from network errors; consider chunked/resumable upload for very large files.
+
 ## Infra
-- [ ] release-please: confirm workflow declares `contents`/`pull-requests: write` (or switch to a PAT) so the release PR opens.
+- [x] release-please: workflow already declares `permissions: contents/pull-requests: write` **and** supports a PAT (`secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN`). The earlier failure was the **repo setting** "Allow GitHub Actions to create and approve pull requests" being off — flip that in Settings → Actions → General (or add a `RELEASE_PLEASE_TOKEN` PAT secret to bypass it). No code change needed.
