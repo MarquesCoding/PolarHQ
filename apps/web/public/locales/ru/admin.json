@@ -10,8 +10,7 @@
     "overview": "Обзор",
     "roles": "Роли",
     "settings": "Настройки",
-    "users": "Пользователи",
-    "workgroups": "Рабочие группы"
+    "users": "Пользователи"
   },
   "apps": {
     "comingSoon": "Скоро",
@@ -205,34 +204,5 @@
     "userActions": "Действия с пользователем",
     "userBanned": "Пользователь заблокирован",
     "userUnbanned": "Пользователь разблокирован"
-  },
-  "workgroupDetailSheet": {
-    "add": "Добавить",
-    "addGroupPlaceholder": "Добавить группу…",
-    "groupAddError": "Не удалось добавить группу",
-    "groupAdded": "Группа добавлена",
-    "groupRemoveError": "Не удалось удалить группу",
-    "groupRemoved": "Группа удалена",
-    "groupsCount": "Группы · {{count}}",
-    "instancePlaceholder": "Экземпляр: {{value}}",
-    "limitOverrides": "Переопределения лимитов",
-    "noGroups": "Групп пока нет.",
-    "overrideRemoveError": "Не удалось удалить переопределение",
-    "overrideRemoved": "Переопределение удалено",
-    "overrideSaveError": "Не удалось сохранить переопределение",
-    "overrideSaved": "Переопределение «{{label}}» сохранено",
-    "removeGroup": "Удалить {{name}}",
-    "reset": "Сбросить",
-    "save": "Сохранить",
-    "unlimited": "без ограничений"
-  },
-  "workgroups": {
-    "create": "Создать",
-    "createError": "Не удалось создать рабочую группу",
-    "created": "Рабочая группа создана",
-    "description": "Объединяйте несколько групп в отдел. Роли и лимиты рабочей группы применяются ко всем в её группах.",
-    "empty": "Рабочих групп пока нет.",
-    "namePlaceholder": "Название новой рабочей группы",
-    "title": "Рабочие группы"
   }
 }

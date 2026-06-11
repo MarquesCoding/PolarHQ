@@ -15,7 +15,6 @@ const AdminNav = () => {
     { href: "/admin", label: t("adminNav.overview"), icon: "gauge" },
     { href: "/admin/users", label: t("adminNav.users"), icon: "users" },
     { href: "/admin/groups", label: t("adminNav.groups"), icon: "users-group" },
-    { href: "/admin/workgroups", label: t("adminNav.workgroups"), icon: "buildings" },
     { href: "/admin/roles", label: t("adminNav.roles"), icon: "user-shield" },
     { href: "/admin/apps", label: t("adminNav.apps"), icon: "apps" },
     { href: "/admin/limits", label: t("adminNav.limits"), icon: "sliders" },

@@ -156,41 +156,6 @@ export const fetchAdminGroups = (): Promise<AdminGroup[]> =>
 export const fetchAdminGroup = (id: string): Promise<AdminGroupDetail> =>
   apiFetch<{ group: AdminGroupDetail }>(`/api/v1/admin/groups/${id}`).then((r) => r.group)
 
-export interface AdminWorkgroup {
-  id: string
-  name: string
-  description: string | null
-  createdAt: string
-}
-
-export interface AdminWorkgroupDetail extends AdminWorkgroup {
-  groups: { id: string; name: string }[]
-  limits: GroupLimit[]
-}
-
-export const fetchAdminWorkgroups = (): Promise<AdminWorkgroup[]> =>
-  apiFetch<{ workgroups: AdminWorkgroup[] }>("/api/v1/admin/workgroups").then((r) => r.workgroups)
-
-export const fetchAdminWorkgroup = (id: string): Promise<AdminWorkgroupDetail> =>
-  apiFetch<{ workgroup: AdminWorkgroupDetail }>(`/api/v1/admin/workgroups/${id}`).then(
-    (r) => r.workgroup,
-  )
-
-export const createAdminWorkgroup = (name: string, description?: string): Promise<unknown> =>
-  apiFetch("/api/v1/admin/workgroups", {
-    method: "POST",
-    body: JSON.stringify({ name, description }),
-  })
-
-export const addWorkgroupGroup = (workgroupId: string, groupId: string): Promise<unknown> =>
-  apiFetch(`/api/v1/admin/workgroups/${workgroupId}/groups`, {
-    method: "POST",
-    body: JSON.stringify({ groupId }),
-  })
-
-export const removeWorkgroupGroup = (workgroupId: string, groupId: string): Promise<unknown> =>
-  apiFetch(`/api/v1/admin/workgroups/${workgroupId}/groups/${groupId}`, { method: "DELETE" })
-
 export const createAdminGroup = (name: string, description?: string): Promise<unknown> =>
   apiFetch("/api/v1/admin/groups", {
     method: "POST",
@@ -243,7 +208,7 @@ export const unassignRole = (userId: string, roleId: string): Promise<unknown> =
     body: JSON.stringify({ userId, roleId }),
   })
 
-export type LimitSubject = "user" | "group" | "workgroup" | "instance"
+export type LimitSubject = "user" | "group" | "instance"
 
 export const setLimitFor = (
   subjectType: LimitSubject,

@@ -10,8 +10,7 @@
     "overview": "نظرة عامة",
     "roles": "الأدوار",
     "settings": "الإعدادات",
-    "users": "المستخدمون",
-    "workgroups": "مجموعات العمل"
+    "users": "المستخدمون"
   },
   "apps": {
     "comingSoon": "قريباً",
@@ -205,34 +204,5 @@
     "userActions": "إجراءات المستخدم",
     "userBanned": "تم حظر المستخدم",
     "userUnbanned": "تم إلغاء حظر المستخدم"
-  },
-  "workgroupDetailSheet": {
-    "add": "إضافة",
-    "addGroupPlaceholder": "إضافة مجموعة…",
-    "groupAddError": "تعذّر إضافة المجموعة",
-    "groupAdded": "تمت إضافة المجموعة",
-    "groupRemoveError": "تعذّر إزالة المجموعة",
-    "groupRemoved": "تمت إزالة المجموعة",
-    "groupsCount": "المجموعات · {{count}}",
-    "instancePlaceholder": "النسخة: {{value}}",
-    "limitOverrides": "تجاوزات الحدود",
-    "noGroups": "لا توجد مجموعات بعد.",
-    "overrideRemoveError": "تعذّرت إزالة التجاوز",
-    "overrideRemoved": "تمت إزالة التجاوز",
-    "overrideSaveError": "تعذّر حفظ التجاوز",
-    "overrideSaved": "تم حفظ تجاوز {{label}}",
-    "removeGroup": "إزالة {{name}}",
-    "reset": "إعادة تعيين",
-    "save": "حفظ",
-    "unlimited": "غير محدود"
-  },
-  "workgroups": {
-    "create": "إنشاء",
-    "createError": "تعذّر إنشاء مجموعة العمل",
-    "created": "تم إنشاء مجموعة العمل",
-    "description": "اجمع عدة مجموعات في قسم واحد. تنطبق الأدوار والحدود على مجموعة العمل على كل من في مجموعاتها.",
-    "empty": "لا توجد مجموعات عمل بعد.",
-    "namePlaceholder": "اسم مجموعة العمل الجديدة",
-    "title": "مجموعات العمل"
   }
 }

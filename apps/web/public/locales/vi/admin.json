@@ -10,8 +10,7 @@
     "overview": "Tổng quan",
     "roles": "Vai trò",
     "settings": "Cài đặt",
-    "users": "Người dùng",
-    "workgroups": "Nhóm làm việc"
+    "users": "Người dùng"
   },
   "apps": {
     "comingSoon": "Sắp ra mắt",
@@ -205,34 +204,5 @@
     "userActions": "Hành động người dùng",
     "userBanned": "Đã cấm người dùng",
     "userUnbanned": "Đã bỏ cấm người dùng"
-  },
-  "workgroupDetailSheet": {
-    "add": "Thêm",
-    "addGroupPlaceholder": "Thêm nhóm…",
-    "groupAddError": "Không thể thêm nhóm",
-    "groupAdded": "Đã thêm nhóm",
-    "groupRemoveError": "Không thể xóa nhóm",
-    "groupRemoved": "Đã xóa nhóm",
-    "groupsCount": "Nhóm · {{count}}",
-    "instancePlaceholder": "Phiên bản: {{value}}",
-    "limitOverrides": "Ghi đè giới hạn",
-    "noGroups": "Chưa có nhóm nào.",
-    "overrideRemoveError": "Không thể xóa mục ghi đè",
-    "overrideRemoved": "Đã xóa mục ghi đè",
-    "overrideSaveError": "Không thể lưu mục ghi đè",
-    "overrideSaved": "Đã lưu mục ghi đè {{label}}",
-    "removeGroup": "Xóa {{name}}",
-    "reset": "Đặt lại",
-    "save": "Lưu",
-    "unlimited": "không giới hạn"
-  },
-  "workgroups": {
-    "create": "Tạo",
-    "createError": "Không thể tạo nhóm làm việc",
-    "created": "Đã tạo nhóm làm việc",
-    "description": "Gom nhiều nhóm thành một phòng ban. Vai trò và giới hạn của nhóm làm việc áp dụng cho mọi người trong các nhóm của nó.",
-    "empty": "Chưa có nhóm làm việc nào.",
-    "namePlaceholder": "Tên nhóm làm việc mới",
-    "title": "Nhóm làm việc"
   }
 }

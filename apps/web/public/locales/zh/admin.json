@@ -10,8 +10,7 @@
     "overview": "概览",
     "roles": "角色",
     "settings": "设置",
-    "users": "用户",
-    "workgroups": "工作组"
+    "users": "用户"
   },
   "apps": {
     "comingSoon": "敬请期待",
@@ -205,34 +204,5 @@
     "userActions": "用户操作",
     "userBanned": "用户已封禁",
     "userUnbanned": "用户已解除封禁"
-  },
-  "workgroupDetailSheet": {
-    "add": "添加",
-    "addGroupPlaceholder": "添加群组…",
-    "groupAddError": "无法添加该群组",
-    "groupAdded": "群组已添加",
-    "groupRemoveError": "无法移除该群组",
-    "groupRemoved": "群组已移除",
-    "groupsCount": "群组 · {{count}}",
-    "instancePlaceholder": "实例：{{value}}",
-    "limitOverrides": "限额覆盖",
-    "noGroups": "暂无群组。",
-    "overrideRemoveError": "无法移除该覆盖项",
-    "overrideRemoved": "覆盖项已移除",
-    "overrideSaveError": "无法保存该覆盖项",
-    "overrideSaved": "{{label}} 覆盖项已保存",
-    "removeGroup": "移除 {{name}}",
-    "reset": "重置",
-    "save": "保存",
-    "unlimited": "无限制"
-  },
-  "workgroups": {
-    "create": "创建",
-    "createError": "无法创建该工作组",
-    "created": "工作组已创建",
-    "description": "将多个群组归入一个部门。工作组上的角色和限额会应用到其所有群组中的每个人。",
-    "empty": "暂无工作组。",
-    "namePlaceholder": "新工作组名称",
-    "title": "工作组"
   }
 }

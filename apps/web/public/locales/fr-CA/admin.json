@@ -10,8 +10,7 @@
     "overview": "Aperçu",
     "roles": "Rôles",
     "settings": "Paramètres",
-    "users": "Utilisateurs",
-    "workgroups": "Groupes de travail"
+    "users": "Utilisateurs"
   },
   "apps": {
     "comingSoon": "À venir",
@@ -205,34 +204,5 @@
     "userActions": "Actions sur l'utilisateur",
     "userBanned": "Utilisateur banni",
     "userUnbanned": "Bannissement de l'utilisateur levé"
-  },
-  "workgroupDetailSheet": {
-    "add": "Ajouter",
-    "addGroupPlaceholder": "Ajouter un groupe…",
-    "groupAddError": "Impossible d'ajouter le groupe",
-    "groupAdded": "Groupe ajouté",
-    "groupRemoveError": "Impossible de retirer le groupe",
-    "groupRemoved": "Groupe retiré",
-    "groupsCount": "Groupes · {{count}}",
-    "instancePlaceholder": "Instance : {{value}}",
-    "limitOverrides": "Remplacements de limites",
-    "noGroups": "Aucun groupe pour l'instant.",
-    "overrideRemoveError": "Impossible de retirer le remplacement",
-    "overrideRemoved": "Remplacement retiré",
-    "overrideSaveError": "Impossible d'enregistrer le remplacement",
-    "overrideSaved": "Remplacement {{label}} enregistré",
-    "removeGroup": "Retirer {{name}}",
-    "reset": "Réinitialiser",
-    "save": "Enregistrer",
-    "unlimited": "illimité"
-  },
-  "workgroups": {
-    "create": "Créer",
-    "createError": "Impossible de créer le groupe de travail",
-    "created": "Groupe de travail créé",
-    "description": "Réunissez plusieurs groupes en un département. Les rôles et les limites d'un groupe de travail s'appliquent à tous les membres de ses groupes.",
-    "empty": "Aucun groupe de travail pour l'instant.",
-    "namePlaceholder": "Nom du nouveau groupe de travail",
-    "title": "Groupes de travail"
   }
 }

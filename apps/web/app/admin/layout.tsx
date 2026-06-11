@@ -10,7 +10,6 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const titles: TopBarTitle[] = [
     { match: (p) => p.startsWith("/admin/users"), label: t("adminNav.users"), icon: "users" },
     { match: (p) => p.startsWith("/admin/groups"), label: t("adminNav.groups"), icon: "users-group" },
-    { match: (p) => p.startsWith("/admin/workgroups"), label: t("adminNav.workgroups"), icon: "buildings" },
     { match: (p) => p.startsWith("/admin/roles"), label: t("adminNav.roles"), icon: "user-shield" },
     { match: (p) => p.startsWith("/admin/apps"), label: t("adminNav.apps"), icon: "apps" },
     { match: (p) => p.startsWith("/admin/limits"), label: t("adminNav.limits"), icon: "sliders" },

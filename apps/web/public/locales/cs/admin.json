@@ -10,8 +10,7 @@
     "overview": "Přehled",
     "roles": "Role",
     "settings": "Nastavení",
-    "users": "Uživatelé",
-    "workgroups": "Pracovní skupiny"
+    "users": "Uživatelé"
   },
   "apps": {
     "comingSoon": "Již brzy",
@@ -205,34 +204,5 @@
     "userActions": "Akce uživatele",
     "userBanned": "Uživatel zablokován",
     "userUnbanned": "Uživatel odblokován"
-  },
-  "workgroupDetailSheet": {
-    "add": "Přidat",
-    "addGroupPlaceholder": "Přidat skupinu…",
-    "groupAddError": "Skupinu se nepodařilo přidat",
-    "groupAdded": "Skupina přidána",
-    "groupRemoveError": "Skupinu se nepodařilo odebrat",
-    "groupRemoved": "Skupina odebrána",
-    "groupsCount": "Skupiny · {{count}}",
-    "instancePlaceholder": "Instance: {{value}}",
-    "limitOverrides": "Přepsání limitů",
-    "noGroups": "Zatím žádné skupiny.",
-    "overrideRemoveError": "Přepsání se nepodařilo odebrat",
-    "overrideRemoved": "Přepsání odebráno",
-    "overrideSaveError": "Přepsání se nepodařilo uložit",
-    "overrideSaved": "Přepsání {{label}} uloženo",
-    "removeGroup": "Odebrat {{name}}",
-    "reset": "Resetovat",
-    "save": "Uložit",
-    "unlimited": "neomezeno"
-  },
-  "workgroups": {
-    "create": "Vytvořit",
-    "createError": "Pracovní skupinu se nepodařilo vytvořit",
-    "created": "Pracovní skupina vytvořena",
-    "description": "Seskupte několik skupin do oddělení. Role a limity pracovní skupiny platí pro všechny v jejích skupinách.",
-    "empty": "Zatím žádné pracovní skupiny.",
-    "namePlaceholder": "Název nové pracovní skupiny",
-    "title": "Pracovní skupiny"
   }
 }

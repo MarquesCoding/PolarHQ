@@ -107,7 +107,7 @@ const FlatSidebar = ({
 
   return (
     <Sidebar collapsible="offcanvas">
-      {/* App switcher — replaces the global app rail + workgroup dropdown */}
+      {/* App switcher — replaces the global app rail */}
       <div className="border-border flex h-14 shrink-0 items-center border-b px-3">
         <DropdownMenu>
           <DropdownMenuTrigger

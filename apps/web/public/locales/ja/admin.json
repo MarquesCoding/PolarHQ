@@ -10,8 +10,7 @@
     "overview": "概要",
     "roles": "ロール",
     "settings": "設定",
-    "users": "ユーザー",
-    "workgroups": "ワークグループ"
+    "users": "ユーザー"
   },
   "apps": {
     "comingSoon": "近日公開",
@@ -205,34 +204,5 @@
     "userActions": "ユーザー操作",
     "userBanned": "ユーザーを BAN しました",
     "userUnbanned": "ユーザーの BAN を解除しました"
-  },
-  "workgroupDetailSheet": {
-    "add": "追加",
-    "addGroupPlaceholder": "グループを追加…",
-    "groupAddError": "グループを追加できませんでした",
-    "groupAdded": "グループを追加しました",
-    "groupRemoveError": "グループを削除できませんでした",
-    "groupRemoved": "グループを削除しました",
-    "groupsCount": "グループ · {{count}}",
-    "instancePlaceholder": "インスタンス: {{value}}",
-    "limitOverrides": "制限の上書き",
-    "noGroups": "まだグループがありません。",
-    "overrideRemoveError": "上書きを削除できませんでした",
-    "overrideRemoved": "上書きを削除しました",
-    "overrideSaveError": "上書きを保存できませんでした",
-    "overrideSaved": "{{label}} の上書きを保存しました",
-    "removeGroup": "{{name}} を削除",
-    "reset": "リセット",
-    "save": "保存",
-    "unlimited": "無制限"
-  },
-  "workgroups": {
-    "create": "作成",
-    "createError": "ワークグループを作成できませんでした",
-    "created": "ワークグループを作成しました",
-    "description": "複数のグループをまとめて部門にします。ワークグループのロールと制限は、その配下のグループに属する全員に適用されます。",
-    "empty": "まだワークグループがありません。",
-    "namePlaceholder": "新しいワークグループ名",
-    "title": "ワークグループ"
   }
 }

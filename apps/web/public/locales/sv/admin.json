@@ -10,8 +10,7 @@
     "overview": "Översikt",
     "roles": "Roller",
     "settings": "Inställningar",
-    "users": "Användare",
-    "workgroups": "Arbetsgrupper"
+    "users": "Användare"
   },
   "apps": {
     "comingSoon": "Kommer snart",
@@ -205,34 +204,5 @@
     "userActions": "Användaråtgärder",
     "userBanned": "Användare bannlyst",
     "userUnbanned": "Bannlysning hävd"
-  },
-  "workgroupDetailSheet": {
-    "add": "Lägg till",
-    "addGroupPlaceholder": "Lägg till en grupp…",
-    "groupAddError": "Det gick inte att lägga till gruppen",
-    "groupAdded": "Grupp tillagd",
-    "groupRemoveError": "Det gick inte att ta bort gruppen",
-    "groupRemoved": "Grupp borttagen",
-    "groupsCount": "Grupper · {{count}}",
-    "instancePlaceholder": "Instans: {{value}}",
-    "limitOverrides": "Åsidosatta gränser",
-    "noGroups": "Inga grupper ännu.",
-    "overrideRemoveError": "Det gick inte att ta bort åsidosättningen",
-    "overrideRemoved": "Åsidosättning borttagen",
-    "overrideSaveError": "Det gick inte att spara åsidosättningen",
-    "overrideSaved": "Åsidosättning av {{label}} sparad",
-    "removeGroup": "Ta bort {{name}}",
-    "reset": "Återställ",
-    "save": "Spara",
-    "unlimited": "obegränsat"
-  },
-  "workgroups": {
-    "create": "Skapa",
-    "createError": "Det gick inte att skapa arbetsgruppen",
-    "created": "Arbetsgrupp skapad",
-    "description": "Slå samman flera grupper till en avdelning. Roller och gränser på en arbetsgrupp gäller alla i dess grupper.",
-    "empty": "Inga arbetsgrupper ännu.",
-    "namePlaceholder": "Nytt arbetsgruppsnamn",
-    "title": "Arbetsgrupper"
   }
 }

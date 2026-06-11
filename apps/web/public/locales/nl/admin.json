@@ -10,8 +10,7 @@
     "overview": "Overzicht",
     "roles": "Rollen",
     "settings": "Instellingen",
-    "users": "Gebruikers",
-    "workgroups": "Werkgroepen"
+    "users": "Gebruikers"
   },
   "apps": {
     "comingSoon": "Binnenkort beschikbaar",
@@ -205,34 +204,5 @@
     "userActions": "Gebruikersacties",
     "userBanned": "Gebruiker verbannen",
     "userUnbanned": "Verbanning van gebruiker opgeheven"
-  },
-  "workgroupDetailSheet": {
-    "add": "Toevoegen",
-    "addGroupPlaceholder": "Groep toevoegen…",
-    "groupAddError": "Kan de groep niet toevoegen",
-    "groupAdded": "Groep toegevoegd",
-    "groupRemoveError": "Kan de groep niet verwijderen",
-    "groupRemoved": "Groep verwijderd",
-    "groupsCount": "Groepen · {{count}}",
-    "instancePlaceholder": "Instantie: {{value}}",
-    "limitOverrides": "Limietuitzonderingen",
-    "noGroups": "Nog geen groepen.",
-    "overrideRemoveError": "Kan de uitzondering niet verwijderen",
-    "overrideRemoved": "Uitzondering verwijderd",
-    "overrideSaveError": "Kan de uitzondering niet opslaan",
-    "overrideSaved": "Uitzondering {{label}} opgeslagen",
-    "removeGroup": "{{name}} verwijderen",
-    "reset": "Opnieuw instellen",
-    "save": "Opslaan",
-    "unlimited": "onbeperkt"
-  },
-  "workgroups": {
-    "create": "Aanmaken",
-    "createError": "Kan de werkgroep niet aanmaken",
-    "created": "Werkgroep aangemaakt",
-    "description": "Bundel meerdere groepen in een afdeling. Rollen en limieten op een werkgroep gelden voor iedereen in de bijbehorende groepen.",
-    "empty": "Nog geen werkgroepen.",
-    "namePlaceholder": "Naam van nieuwe werkgroep",
-    "title": "Werkgroepen"
   }
 }

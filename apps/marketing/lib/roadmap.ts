@@ -46,7 +46,6 @@ export const ROADMAP: RoadmapColumn[] = [
       { title: "Android app", description: "A native client to match iOS, sharing the same crypto core." },
       { title: "Background & offline", description: "Background upload and offline caching on mobile." },
       { title: "S3 backups", description: "Scheduled encrypted backups to any S3-compatible bucket." },
-      { title: "Workgroups", description: "Shared spaces and per-group storage limits." },
     ],
   },
   {

@@ -10,8 +10,7 @@
     "overview": "Panoramica",
     "roles": "Ruoli",
     "settings": "Impostazioni",
-    "users": "Utenti",
-    "workgroups": "Reparti"
+    "users": "Utenti"
   },
   "apps": {
     "comingSoon": "Disponibile a breve",
@@ -205,34 +204,5 @@
     "userActions": "Azioni utente",
     "userBanned": "Utente bannato",
     "userUnbanned": "Ban dell'utente rimosso"
-  },
-  "workgroupDetailSheet": {
-    "add": "Aggiungi",
-    "addGroupPlaceholder": "Aggiungi un gruppo…",
-    "groupAddError": "Impossibile aggiungere il gruppo",
-    "groupAdded": "Gruppo aggiunto",
-    "groupRemoveError": "Impossibile rimuovere il gruppo",
-    "groupRemoved": "Gruppo rimosso",
-    "groupsCount": "Gruppi · {{count}}",
-    "instancePlaceholder": "Istanza: {{value}}",
-    "limitOverrides": "Sostituzioni dei limiti",
-    "noGroups": "Nessun gruppo finora.",
-    "overrideRemoveError": "Impossibile rimuovere la sostituzione",
-    "overrideRemoved": "Sostituzione rimossa",
-    "overrideSaveError": "Impossibile salvare la sostituzione",
-    "overrideSaved": "Sostituzione di {{label}} salvata",
-    "removeGroup": "Rimuovi {{name}}",
-    "reset": "Reimposta",
-    "save": "Salva",
-    "unlimited": "illimitato"
-  },
-  "workgroups": {
-    "create": "Crea",
-    "createError": "Impossibile creare il reparto",
-    "created": "Reparto creato",
-    "description": "Raggruppa più gruppi in un reparto. Ruoli e limiti di un reparto si applicano a tutti gli utenti dei suoi gruppi.",
-    "empty": "Nessun reparto finora.",
-    "namePlaceholder": "Nome del nuovo reparto",
-    "title": "Reparti"
   }
 }

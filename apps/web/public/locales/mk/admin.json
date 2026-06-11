@@ -10,8 +10,7 @@
     "overview": "Преглед",
     "roles": "Улоги",
     "settings": "Поставки",
-    "users": "Корисници",
-    "workgroups": "Работни групи"
+    "users": "Корисници"
   },
   "apps": {
     "comingSoon": "Наскоро",
@@ -205,34 +204,5 @@
     "userActions": "Дејства за корисник",
     "userBanned": "Корисникот е забранет",
     "userUnbanned": "Забраната на корисникот е укината"
-  },
-  "workgroupDetailSheet": {
-    "add": "Додади",
-    "addGroupPlaceholder": "Додади група…",
-    "groupAddError": "Групата не можеше да се додаде",
-    "groupAdded": "Групата е додадена",
-    "groupRemoveError": "Групата не можеше да се отстрани",
-    "groupRemoved": "Групата е отстранета",
-    "groupsCount": "Групи · {{count}}",
-    "instancePlaceholder": "Инстанца: {{value}}",
-    "limitOverrides": "Прескокнувања на ограничувања",
-    "noGroups": "Сè уште нема групи.",
-    "overrideRemoveError": "Прескокнувањето не можеше да се отстрани",
-    "overrideRemoved": "Прескокнувањето е отстрането",
-    "overrideSaveError": "Прескокнувањето не можеше да се зачува",
-    "overrideSaved": "Прескокнувањето за {{label}} е зачувано",
-    "removeGroup": "Отстрани {{name}}",
-    "reset": "Ресетирај",
-    "save": "Зачувај",
-    "unlimited": "неограничено"
-  },
-  "workgroups": {
-    "create": "Создади",
-    "createError": "Работната група не можеше да се создаде",
-    "created": "Работната група е создадена",
-    "description": "Групирај неколку групи во оддел. Улогите и ограничувањата на работна група важат за сите во нејзините групи.",
-    "empty": "Сè уште нема работни групи.",
-    "namePlaceholder": "Име на нова работна група",
-    "title": "Работни групи"
   }
 }

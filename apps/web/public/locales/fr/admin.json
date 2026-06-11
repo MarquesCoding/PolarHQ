@@ -10,8 +10,7 @@
     "overview": "Vue d'ensemble",
     "roles": "Rôles",
     "settings": "Paramètres",
-    "users": "Utilisateurs",
-    "workgroups": "Services"
+    "users": "Utilisateurs"
   },
   "apps": {
     "comingSoon": "Bientôt disponible",
@@ -205,34 +204,5 @@
     "userActions": "Actions sur l'utilisateur",
     "userBanned": "Utilisateur banni",
     "userUnbanned": "Utilisateur réintégré"
-  },
-  "workgroupDetailSheet": {
-    "add": "Ajouter",
-    "addGroupPlaceholder": "Ajouter un groupe…",
-    "groupAddError": "Impossible d'ajouter le groupe",
-    "groupAdded": "Groupe ajouté",
-    "groupRemoveError": "Impossible de retirer le groupe",
-    "groupRemoved": "Groupe retiré",
-    "groupsCount": "Groupes · {{count}}",
-    "instancePlaceholder": "Instance : {{value}}",
-    "limitOverrides": "Limites personnalisées",
-    "noGroups": "Aucun groupe pour le moment.",
-    "overrideRemoveError": "Impossible de retirer la limite personnalisée",
-    "overrideRemoved": "Limite personnalisée retirée",
-    "overrideSaveError": "Impossible d'enregistrer la limite personnalisée",
-    "overrideSaved": "Limite personnalisée « {{label}} » enregistrée",
-    "removeGroup": "Retirer {{name}}",
-    "reset": "Réinitialiser",
-    "save": "Enregistrer",
-    "unlimited": "illimité"
-  },
-  "workgroups": {
-    "create": "Créer",
-    "createError": "Impossible de créer le service",
-    "created": "Service créé",
-    "description": "Rassemblez plusieurs groupes au sein d'un service. Les rôles et limites d'un service s'appliquent à toutes les personnes de ses groupes.",
-    "empty": "Aucun service pour le moment.",
-    "namePlaceholder": "Nom du nouveau service",
-    "title": "Services"
   }
 }
