@@ -1,8 +1,8 @@
 "use client"
 
 import { apiFetch } from "@lib/apiClient"
+import { uploadStreamingParts } from "@lib/chunkedUpload"
 import {
-  STREAM_CHUNK_SIZE,
   isStreamBlob,
   secretboxOpen,
   secretboxSeal,
@@ -24,12 +24,7 @@ import { API_URL } from "@lib/env"
 import { extractMotionVideo } from "@lib/motionPhoto"
 import { type Asset, type GridAsset, fetchStackMembers } from "@lib/photos"
 import { analyzeAudio, analyzeImage, analyzeVideo } from "@lib/thumbnails"
-import {
-  type UploadOptions,
-  type UploadProgress,
-  postFormWithProgress,
-  retryOnTransient,
-} from "@lib/xhrUpload"
+import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
 import exifr from "exifr"
 
 const encoder = new TextEncoder()
@@ -242,13 +237,6 @@ const attachAssetExtras = async (
   }
 }
 
-const concatBytes = (a: Uint8Array, b: Uint8Array): Uint8Array => {
-  const out = new Uint8Array(a.length + b.length)
-  out.set(a)
-  out.set(b, a.length)
-  return out
-}
-
 export const uploadEncryptedMedia = async (
   file: File,
   motionFile?: File,
@@ -321,30 +309,12 @@ export const uploadEncryptedMediaChunked = async (
   )
 
   try {
-    const chunks = Math.max(1, Math.ceil(source.size / STREAM_CHUNK_SIZE))
-    const start = performance.now()
-    let sent = 0
-    for (let index = 0; index < chunks; index += 1) {
-      const offset = index * STREAM_CHUNK_SIZE
-      const slice = source.slice(offset, Math.min(offset + STREAM_CHUNK_SIZE, source.size))
-      const plain = new Uint8Array(await slice.arrayBuffer())
-      const sealed = sealer.seal(plain, index === chunks - 1)
-      const body = index === 0 ? concatBytes(sealer.prefix, sealed) : sealed
-      await retryOnTransient(() =>
-        apiFetch(`/api/v1/photos/assets/upload/${sessionId}/part?part=${index + 1}`, {
-          method: "POST",
-          body: body as BodyInit,
-          headers: { "content-type": "application/octet-stream" },
-        }),
-      )
-      sent += slice.size
-      const elapsed = (performance.now() - start) / 1000
-      options?.onProgress?.({
-        loaded: sent,
-        total: source.size,
-        speed: elapsed > 0 ? sent / elapsed : 0,
-      })
-    }
+    await uploadStreamingParts(
+      source,
+      sealer,
+      (partNumber) => `/api/v1/photos/assets/upload/${sessionId}/part?part=${partNumber}`,
+      options,
+    )
     const { asset, mirrorNodeId } = await apiFetch<{
       asset: Asset
       mirrorNodeId: string | null

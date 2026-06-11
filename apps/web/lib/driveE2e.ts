@@ -1,8 +1,8 @@
 "use client"
 
 import { apiFetch } from "@lib/apiClient"
+import { uploadStreamingParts } from "@lib/chunkedUpload"
 import {
-  STREAM_CHUNK_SIZE,
   isStreamBlob,
   secretboxOpen,
   secretboxSeal,
@@ -20,12 +20,7 @@ import {
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 import { generateImageThumbnail } from "@lib/thumbnails"
-import {
-  type UploadOptions,
-  type UploadProgress,
-  postFormWithProgress,
-  retryOnTransient,
-} from "@lib/xhrUpload"
+import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
 
 /**
  * Upload a file end-to-end encrypted: encrypt the bytes with a fresh content key,
@@ -77,13 +72,6 @@ export const uploadEncryptedDriveFile = async (
   return { ...decryptNodeName(node), encrypted: true }
 }
 
-const concatBytes = (a: Uint8Array, b: Uint8Array): Uint8Array => {
-  const out = new Uint8Array(a.length + b.length)
-  out.set(a)
-  out.set(b, a.length)
-  return out
-}
-
 /** Files at or above this size upload in streaming chunks instead of one in-memory blob. */
 export const CHUNKED_UPLOAD_THRESHOLD = 64 * 1024 * 1024
 
@@ -116,30 +104,12 @@ export const uploadEncryptedDriveFileChunked = async (
   )
 
   try {
-    const chunks = Math.max(1, Math.ceil(file.size / STREAM_CHUNK_SIZE))
-    const start = performance.now()
-    let sent = 0
-    for (let index = 0; index < chunks; index += 1) {
-      const offset = index * STREAM_CHUNK_SIZE
-      const slice = file.slice(offset, Math.min(offset + STREAM_CHUNK_SIZE, file.size))
-      const plain = new Uint8Array(await slice.arrayBuffer())
-      const sealed = sealer.seal(plain, index === chunks - 1)
-      const body = index === 0 ? concatBytes(sealer.prefix, sealed) : sealed
-      await retryOnTransient(() =>
-        apiFetch(`/api/v1/drive/nodes/upload/${sessionId}/part?part=${index + 1}`, {
-          method: "POST",
-          body: body as BodyInit,
-          headers: { "content-type": "application/octet-stream" },
-        }),
-      )
-      sent += slice.size
-      const elapsed = (performance.now() - start) / 1000
-      options?.onProgress?.({
-        loaded: sent,
-        total: file.size,
-        speed: elapsed > 0 ? sent / elapsed : 0,
-      })
-    }
+    await uploadStreamingParts(
+      file,
+      sealer,
+      (partNumber) => `/api/v1/drive/nodes/upload/${sessionId}/part?part=${partNumber}`,
+      options,
+    )
     const { node } = await apiFetch<{ node: DriveNode }>(
       `/api/v1/drive/nodes/upload/${sessionId}/complete`,
       { method: "POST" },
