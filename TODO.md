@@ -64,7 +64,7 @@ Ideas the community surfaced from [Spacedrive](https://spacedrive.com) (cross-pl
 
 ### Inspector panel (right-hand details)
 - [ ] **Unify into a tabbed inspector** across Drive + Photos: tabs for Info, Media preview, Location (map), Comments/Activity, History/Versions, More (⋯) — Spacedrive's `info · image · location · chat · history · ⋯` rail. We already have a Photos `InfoPanel` (file/date/camera/location/EXIF) and Drive versions — fold them into one shared component.
-- [ ] **Richer metadata sections**: Details (size/kind/extension), Dates (Taken/Captured/Created/Modified), **Image info** (dimensions, camera — we have EXIF), **Video info** (resolution, duration, captured date), Storage (path, "Local" indicator), Tags.
+- [~] **Richer metadata sections**: the Photos InfoPanel now shows **Kind** (Image/Video/Audio) and **Duration** (video/audio), with megapixels gated to images; dimensions + full EXIF camera info + location map already present. _Remaining: extension, a captured-vs-created date split, a Storage section (path/"Local"), and Tags._
 - [ ] **Generated-derivatives panel**: list the artefacts we create for an asset (multiple thumbnail tiers — `grid@1x`, `grid@2x`, `detail@1x` — plus future ones), each with kind + size. Ties into our E2E thumbnail pipeline; would also house novelty derivatives (see 3D below).
 
 ### Storage visualisation & library overview
