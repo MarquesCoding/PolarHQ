@@ -10,7 +10,9 @@ import { cn } from "@workspace/ui/lib/utils"
 import { NavRow, SectionLabel } from "@components/FlatShell"
 
 const isMyDrive = (pathname: string): boolean =>
-  pathname === "/drive" || (/^\/drive\/[^/]+$/.test(pathname) && pathname !== "/drive/trash")
+  /^\/drive\/[^/]+$/.test(pathname) &&
+  pathname !== "/drive/trash" &&
+  pathname !== "/drive/overview"
 
 /** Drive nav: My Drive / Trash plus the current folder's location trail. */
 const DriveNav = () => {
@@ -28,7 +30,13 @@ const DriveNav = () => {
   return (
     <>
       <SectionLabel>{t("driveNav.drive")}</SectionLabel>
-      <NavRow href="/drive" icon="folder" label={t("driveNav.myDrive")} active={isMyDrive(pathname)} />
+      <NavRow href="/drive" icon="gauge" label={t("driveNav.overview")} active={pathname === "/drive"} />
+      <NavRow
+        href="/drive/files"
+        icon="folder"
+        label={t("driveNav.myDrive")}
+        active={isMyDrive(pathname)}
+      />
       <NavRow href="/drive/trash" icon="trash" label={t("driveNav.trash")} active={pathname === "/drive/trash"} />
 
       {showLocation ? (
@@ -37,7 +45,7 @@ const DriveNav = () => {
           {trail.map((node, index) => (
             <Link
               key={node.id}
-              href={index === 0 ? "/drive" : `/drive/${node.id}`}
+              href={index === 0 ? "/drive/files" : `/drive/${node.id}`}
               style={{ paddingLeft: `${0.625 + index * 0.85}rem` }}
               className={cn(
                 "flex items-center gap-1.5 rounded-md py-1 pr-2 text-[13px] transition",

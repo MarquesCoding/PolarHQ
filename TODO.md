@@ -69,7 +69,7 @@ Ideas the community surfaced from [Spacedrive](https://spacedrive.com) (cross-pl
 
 ### Storage visualisation & library overview
 - [ ] **"Space" storage bubble view** (Spacedrive's signature): an interactive circle-pack / treemap of files & folders sized by bytes, zoomable, to *see* what's eating space — a visual companion to the new Storage dialog. Could live as a tab in `StorageDialog` or a dedicated `/drive/space` route. (We already compute per-app + largest-files via `GET /api/v1/drive/storage` — extend it to a folder-tree size aggregation.)
-- [ ] **Library Overview dashboard**: a landing dashboard with headline stats — library size, total capacity, free space, index size, preview-media size — a usage bar segmented by **file kind** (image/text/folder/other/unknown) with a legend, a by-kind histogram, and an "N total files / M unidentified" count. (Reuses the storage-stats endpoint; complements the per-app breakdown we already show.)
+- [x] **Library Overview dashboard** — now the **default Drive landing** (`/drive`); the file browser moved to `/drive/files`, nav order is Overview → My Drive → Trash. Headline stats (library size, capacity, free space, total files), a usage bar segmented by **file kind** with a legend + per-kind bars, a by-app breakdown of cards, and the largest files. Extended `GET /api/v1/drive/storage` with a by-kind aggregation (image/video/audio/document/archive/other). Verified `/drive` + `/drive/files` serve 200.
 - [ ] **Per-device & per-location cards**: storage gauges per device and per indexed location ("18.1 GB free of 31.5 GB", `LOCAL` badge). Maps loosely onto our device list + a future "locations" concept.
 
 ### Photos / media

@@ -55,7 +55,30 @@
     "drive": "Drive",
     "location": "Location",
     "myDrive": "My Drive",
+    "overview": "Overview",
     "trash": "Trash"
+  },
+  "overview": {
+    "title": "Library overview",
+    "librarySize": "Library size",
+    "capacity": "Capacity",
+    "freeSpace": "Free space",
+    "totalFiles": "Total files",
+    "unlimited": "Unlimited",
+    "byKind": "Storage by file kind",
+    "byApp": "Storage by app",
+    "largest": "Largest files",
+    "noFiles": "No files stored yet",
+    "files_one": "{{count}} file",
+    "files_other": "{{count}} files",
+    "kinds": {
+      "image": "Images",
+      "video": "Videos",
+      "audio": "Audio",
+      "document": "Documents",
+      "archive": "Archives",
+      "other": "Other"
+    }
   },
   "driveTopActions": {
     "couldNotCreate": "Could not create",
