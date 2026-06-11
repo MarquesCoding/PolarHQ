@@ -76,6 +76,8 @@ export interface DownloadItem {
   id: string
   name: string
   encrypted: boolean
+  /** Ciphertext size in bytes; large files stream straight to disk on download. */
+  size?: number
 }
 
 interface UploadManagerApi {
@@ -391,7 +393,14 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
       const encrypted = downloads.filter((d) => d.encrypted)
       const plain = downloads.filter((d) => !d.encrypted)
       const run = async () => {
-        for (const item of encrypted) await downloadDecryptedPhoto(item.id, item.name)
+        for (const item of encrypted)
+          await downloadDecryptedPhoto(item.id, item.name, item.size ?? 0, (progress) =>
+            update(id, {
+              loaded: progress.loaded,
+              size: progress.total || (item.size ?? 0),
+              speed: progress.speed,
+            }),
+          )
         if (plain.length === 1) await downloadAsset(plain[0]!.id, plain[0]!.name, onProgress)
         else if (plain.length > 1) await downloadAssetsZip(plain.map((p) => p.id), onProgress)
       }

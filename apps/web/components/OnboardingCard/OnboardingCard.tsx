@@ -37,6 +37,7 @@ const sample = (id: string, thumb: string, extra: Partial<GridAsset> = {}): Grid
   mimeType: "image/jpeg",
   type: "image",
   status: "ready",
+  sizeBytes: 0,
   width: 120,
   height: 120,
   durationMs: null,

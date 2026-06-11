@@ -161,7 +161,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
   const displayName =
     (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
   const download = () =>
-    upload.download(displayName, [{ id: asset.id, name: displayName, encrypted: asset.encrypted }])
+    upload.download(displayName, [
+      { id: asset.id, name: displayName, encrypted: asset.encrypted, size: asset.sizeBytes },
+    ])
 
   const copyImage = async () => {
     if (asset.type !== "image") return

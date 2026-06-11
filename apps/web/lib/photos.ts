@@ -67,6 +67,7 @@ export interface GridAsset {
   mimeType: string
   type: "image" | "video" | "audio"
   status: AssetStatus
+  sizeBytes: number
   width: number | null
   height: number | null
   durationMs: number | null

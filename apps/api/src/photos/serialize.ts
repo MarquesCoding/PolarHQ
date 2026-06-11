@@ -41,6 +41,7 @@ export interface GridAssetDto {
   mimeType: string
   type: Asset["type"]
   status: Asset["status"]
+  sizeBytes: number
   width: number | null
   height: number | null
   durationMs: number | null
@@ -63,6 +64,7 @@ export const serializeGridAsset = (asset: Asset, stackCount = 0): GridAssetDto =
   mimeType: asset.mimeType,
   type: asset.type,
   status: asset.status,
+  sizeBytes: asset.sizeBytes,
   width: asset.width,
   height: asset.height,
   durationMs: asset.durationMs,
