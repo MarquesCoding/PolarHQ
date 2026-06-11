@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import { type ReactNode, useEffect, useState } from "react"
 import { authClient } from "@lib/authClient"
 import { type DocMeta } from "@lib/docs"
@@ -111,7 +112,7 @@ const CollabHeader = ({
       ? t("collabHeader.saving")
       : lastSavedAt
         ? t("collabHeader.savedAt", {
-            time: new Date(lastSavedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            time: new Date(lastSavedAt).toLocaleTimeString(dateLocale(), { hour: "2-digit", minute: "2-digit" }),
           })
         : t("collabHeader.notSavedYet")
 

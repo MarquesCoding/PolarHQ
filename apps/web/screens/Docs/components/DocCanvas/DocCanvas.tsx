@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import Link from "next/link"
@@ -70,7 +71,7 @@ interface DocCanvasProps {
 }
 
 const formatTime = (ms: number): string =>
-  new Date(ms).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  new Date(ms).toLocaleTimeString(dateLocale(), { hour: "2-digit", minute: "2-digit" })
 
 const CARET_COLORS = [
   "#ef4444",

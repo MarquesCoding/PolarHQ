@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import type { MouseEvent } from "react"
 import { formatBytes } from "@lib/format"
 import type { DocMeta } from "@lib/docs"
@@ -65,7 +66,7 @@ const DocCard = ({ doc, selected, onOpen, onSelect, onToggle, iconName = "docume
         {doc.name}
       </span>
       <span className="text-muted-foreground px-1 text-xs">
-        {new Date(doc.updatedAt).toLocaleDateString()} · {formatBytes(doc.sizeBytes ?? 0)}
+        {new Date(doc.updatedAt).toLocaleDateString(dateLocale())} · {formatBytes(doc.sizeBytes ?? 0)}
       </span>
     </div>
   </div>

@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import Link from "next/link"
@@ -108,7 +109,7 @@ const SheetTopBar = ({
       ? t("sheetTopBar.saving")
       : lastSavedAt
         ? t("sheetTopBar.savedAt", {
-            time: new Date(lastSavedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            time: new Date(lastSavedAt).toLocaleTimeString(dateLocale(), { hour: "2-digit", minute: "2-digit" }),
           })
         : t("sheetTopBar.allChangesSaved")
 

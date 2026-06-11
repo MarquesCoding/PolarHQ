@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import { type DriveNode, fetchVersions, restoreDriveVersion } from "@lib/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
@@ -66,7 +67,7 @@ const VersionHistoryDialog = ({ node, open, onOpenChange, onDone }: VersionHisto
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{t("versionHistoryDialog.versionLabel", { number: versions.length - index })}</p>
                   <p className="text-muted-foreground text-xs">
-                    {new Date(version.createdAt).toLocaleString()} · {formatBytes(version.sizeBytes ?? 0)}
+                    {new Date(version.createdAt).toLocaleString(dateLocale())} · {formatBytes(version.sizeBytes ?? 0)}
                   </p>
                 </div>
                 <a

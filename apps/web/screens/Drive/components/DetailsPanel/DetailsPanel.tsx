@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import type { ReactNode } from "react"
 import type { DriveNode } from "@lib/drive"
 import { formatBytes } from "@lib/format"
@@ -70,8 +71,8 @@ const SingleDetails = ({ node }: { node: DriveNode }) => {
         {node.kind === "file" ? (
           <Field label={t("detailsPanel.size")} value={formatBytes(node.sizeBytes ?? 0)} />
         ) : null}
-        <Field label={t("detailsPanel.created")} value={new Date(node.createdAt).toLocaleString()} />
-        <Field label={t("detailsPanel.modified")} value={new Date(node.updatedAt).toLocaleString()} />
+        <Field label={t("detailsPanel.created")} value={new Date(node.createdAt).toLocaleString(dateLocale())} />
+        <Field label={t("detailsPanel.modified")} value={new Date(node.updatedAt).toLocaleString(dateLocale())} />
       </dl>
     </>
   )

@@ -1,5 +1,6 @@
 "use client"
 
+import { dateLocale } from "@lib/i18n/format"
 import type { ReactNode } from "react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -70,7 +71,7 @@ const renderMarkdown = (content: string): ReactNode[] => {
 }
 
 const formatDate = (iso: string): string =>
-  new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+  new Date(iso).toLocaleDateString(dateLocale(), { year: "numeric", month: "short", day: "numeric" })
 
 const ReleaseEntry = ({ release }: { release: Release }) => (
   <section className="border-border border-b pb-6 last:border-0 last:pb-0">
