@@ -53,7 +53,7 @@ const formatEta = (seconds: number): string =>
     ? t("common:uploadPanel.etaSeconds", { seconds: Math.ceil(seconds) })
     : t("common:uploadPanel.etaMinutes", { minutes: Math.ceil(seconds / 60) })
 
-const uploadingText = (item: UploadItem): string => {
+const progressText = (item: UploadItem, fallback: string): string => {
   if (item.size > 0 && item.loaded > 0) {
     const percent = Math.min(100, Math.round((item.loaded / item.size) * 100))
     const parts = [t("common:uploadPanel.percentDone", { percent })]
@@ -66,7 +66,7 @@ const uploadingText = (item: UploadItem): string => {
   }
   return item.speed > 0
     ? t("common:uploadPanel.speed", { speed: formatBytes(item.speed) })
-    : t("common:uploadPanel.uploading")
+    : fallback
 }
 
 const statusText = (item: UploadItem): string => {
@@ -89,17 +89,12 @@ const statusText = (item: UploadItem): string => {
       case "error":
         return item.error ?? t("common:uploadPanel.downloadFailed")
       default:
-        return item.size > 0
-          ? t("common:uploadPanel.bytesProgress", {
-              loaded: formatBytes(item.loaded),
-              size: formatBytes(item.size),
-            })
-          : t("common:uploadPanel.downloading")
+        return progressText(item, t("common:uploadPanel.downloading"))
     }
   }
   switch (item.status) {
     case "uploading":
-      return uploadingText(item)
+      return progressText(item, t("common:uploadPanel.uploading"))
     case "processing":
       return item.mediaType === "video"
         ? t("common:uploadPanel.transcoding")

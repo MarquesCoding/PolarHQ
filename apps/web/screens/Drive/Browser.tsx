@@ -124,7 +124,10 @@ const BrowserInner = ({ folderId }: BrowserProps) => {
   const downloadIds = (ids: string[]) => {
     for (const id of ids) {
       const node = byId.get(id)
-      if (node) void downloadDriveFile(node)
+      if (node)
+        upload.downloadFile(node.name, node.sizeBytes ?? 0, (onProgress) =>
+          downloadDriveFile(node, (progress) => onProgress(progress.loaded, progress.speed)),
+        )
     }
   }
 
