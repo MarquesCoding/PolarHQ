@@ -36,6 +36,24 @@ export interface SizeControlProps {
   triggerIcon?: ReactNode
   minIcon?: ReactNode
   maxIcon?: ReactNode
+  /** Localisable labels — the design system stays copy-free; apps pass translated strings. */
+  labels?: Partial<{
+    photoSize: string
+    spacing: string
+    lessSpacing: string
+    moreSpacing: string
+    squareTiles: string
+    roundedCorners: string
+  }>
+}
+
+const DEFAULT_LABELS = {
+  photoSize: "Photo size",
+  spacing: "Spacing",
+  lessSpacing: "Less spacing",
+  moreSpacing: "More spacing",
+  squareTiles: "Square tiles",
+  roundedCorners: "Rounded corners",
 }
 
 const SizeControl = ({
@@ -53,7 +71,9 @@ const SizeControl = ({
   triggerIcon = <Icon name="image-scale" className="size-5" />,
   minIcon = <Icon name="image-upscale" className="text-muted-foreground size-4 shrink-0" />,
   maxIcon = <Icon name="image-scale" className="text-muted-foreground size-5 shrink-0" />,
+  labels: labelsProp,
 }: SizeControlProps) => {
+  const labels = { ...DEFAULT_LABELS, ...labelsProp }
   const [internalOpen, setInternalOpen] = useState(defaultOpen ?? false)
   const [scrubbing, setScrubbing] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -96,7 +116,7 @@ const SizeControl = ({
       <Button
         variant="ghost"
         size="icon-sm"
-        aria-label="Photo size"
+        aria-label={labels.photoSize}
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
@@ -153,12 +173,12 @@ const SizeControl = ({
               <>
                 <Separator />
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Spacing</span>
+                  <span className="text-sm">{labels.spacing}</span>
                   <div className="flex items-center gap-1">
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label="Less spacing"
+                      aria-label={labels.lessSpacing}
                       onClick={() => onGapChange(Math.max(0, gap - 2))}
                     >
                       <IconMinus className="size-4" />
@@ -167,7 +187,7 @@ const SizeControl = ({
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label="More spacing"
+                      aria-label={labels.moreSpacing}
                       onClick={() => onGapChange(Math.min(16, gap + 2))}
                     >
                       <IconPlus className="size-4" />
@@ -179,7 +199,7 @@ const SizeControl = ({
 
             {onSquareChange ? (
               <div className="flex items-center justify-between">
-                <span className="text-sm">Square tiles</span>
+                <span className="text-sm">{labels.squareTiles}</span>
                 <Switch checked={square} onCheckedChange={onSquareChange} />
               </div>
             ) : null}

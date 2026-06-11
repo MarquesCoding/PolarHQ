@@ -230,7 +230,8 @@ interface PhotoGridProps {
 }
 
 const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
-  const { i18n } = useTranslation()
+  // Subscribe to language + catalog-loaded events so day labels re-render (see layout memo).
+  useTranslation()
   const selection = useSelection()
   const containerRef = useRef<HTMLDivElement>(null)
   const reachEndRef = useRef(onReachEnd)
@@ -277,8 +278,10 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   )
   const layout = useMemo(
     () => buildLayout(sortedGridAssets, width, rowHeight, gap, square === 1),
-    // i18n.language so the day labels rebuild when the UI language changes.
-    [sortedGridAssets, width, rowHeight, gap, square, i18n.language],
+    // dateLocale() (the resolved locale) so the day labels rebuild both when the language
+    // changes AND when the lazy-loaded catalog resolves the locale (en -> mk) on first load.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sortedGridAssets, width, rowHeight, gap, square, dateLocale()],
   )
 
   useEffect(() => {
