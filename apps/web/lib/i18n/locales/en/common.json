@@ -120,6 +120,7 @@
     "unlimited": "Unlimited"
   },
   "flatTopBar": {
+    "search": "Search…",
     "toggleSidebar": "Toggle sidebar"
   },
   "importButton": {
