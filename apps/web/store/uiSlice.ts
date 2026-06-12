@@ -1,6 +1,6 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit"
 
-export type ViewMode = "grid" | "table"
+export type ViewMode = "grid" | "table" | "columns"
 
 export interface UiState {
   activeAppId: string | null
