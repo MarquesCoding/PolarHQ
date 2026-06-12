@@ -79,7 +79,12 @@ const StorageTreemap = ({ files }: { files: StorageStats["largest"] }) => {
 
 const StorageOverview = () => {
   const { t } = useTranslation("drive")
-  const { data } = useQuery({ queryKey: ["drive", "storage"], queryFn: fetchStorageStats })
+  const { data } = useQuery({
+    queryKey: ["drive", "storage"],
+    queryFn: fetchStorageStats,
+    staleTime: 0,
+    refetchOnMount: "always",
+  })
 
   const used = data?.usedBytes ?? 0
   const quota = data?.quotaBytes ?? null
