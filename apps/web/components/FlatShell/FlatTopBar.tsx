@@ -1,8 +1,6 @@
 "use client"
 
 import { type ReactNode } from "react"
-import { usePathname } from "next/navigation"
-import { Icon } from "@lib/icons"
 import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import { useTranslation } from "react-i18next"
 
@@ -17,28 +15,21 @@ export interface TopBarTitle {
 export const TOPBAR_SLOT_ID = "flat-topbar-slot"
 
 interface FlatTopBarProps {
-  /** Ordered title entries; the first match (falling back to the first entry) is shown. */
-  titles: TopBarTitle[]
+  /** Retained for layout compatibility; the title/app name is no longer shown in the bar. */
+  titles?: TopBarTitle[]
   /** Optional right-aligned controls (toolbars, size controls, create buttons…). */
   extra?: ReactNode
 }
 
-/** Shared flat top bar: a route-aware icon + title on the left, app controls on the right.
- *  Pages can also teleport their own controls in via <TopBarActions> (the slot div below). */
-const FlatTopBar = ({ titles, extra }: FlatTopBarProps) => {
-  const pathname = usePathname()
+/** Shared flat top bar: just the sidebar toggle on the left and app controls on the right — the
+ *  app/view name lives in the sidebar, so it isn't repeated here. Pages can teleport their own
+ *  controls in via <TopBarActions> (the slot div below). */
+const FlatTopBar = ({ extra }: FlatTopBarProps) => {
   const { t } = useTranslation("common")
-  const current = titles.find((entry) => entry.match(pathname)) ?? titles[0]
 
   return (
     <header className="border-border bg-sidebar flex h-14 shrink-0 items-center gap-2.5 border-b px-4">
       <SidebarTrigger className="-ms-1" aria-label={t("flatTopBar.toggleSidebar")} />
-      {current ? (
-        <>
-          <Icon name={current.icon} className="text-muted-foreground size-[18px]" />
-          <span className="text-sm font-medium">{current.label}</span>
-        </>
-      ) : null}
       <div className="ms-auto flex items-center gap-2">
         <div id={TOPBAR_SLOT_ID} className="flex items-center gap-2 empty:hidden" />
         {extra}
