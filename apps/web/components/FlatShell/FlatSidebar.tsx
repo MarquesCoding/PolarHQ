@@ -13,14 +13,7 @@ import { Icon } from "@lib/icons"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setSearchQuery } from "@store/uiSlice"
 import { applyThemeWithReveal } from "@lib/themeTransition"
-import {
-  IconChevronDown,
-  IconLogout,
-  IconMoon,
-  IconSearch,
-  IconSelector,
-  IconSun,
-} from "@tabler/icons-react"
+import { IconChevronDown, IconLogout, IconMoon, IconSearch, IconSun } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
@@ -114,48 +107,26 @@ const FlatSidebar = ({
 
   return (
     <Sidebar collapsible="offcanvas">
-      <div className="border-border flex h-14 shrink-0 items-center border-b px-3">
+      <div className="border-border flex h-11 shrink-0 items-center border-b px-3">
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <button
                 type="button"
-                className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1.5 text-start transition"
+                className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-1.5 rounded-lg px-2 py-1.5 text-start transition"
               >
-                <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md">
-                  <Image src={logo} alt="PolarHQ" width={28} height={28} className="size-7" />
-                </span>
-                <span className="flex min-w-0 flex-col leading-tight">
-                  <span className="flex items-center gap-1.5">
-                    <span className="truncate text-sm font-semibold">{productName}</span>
-                    {beta ? (
-                      <span className="bg-primary/15 text-primary rounded px-1 py-px text-[9px] font-semibold tracking-wide uppercase">
-                        {t("flatSidebar.beta")}
-                      </span>
-                    ) : null}
+                <Image src={logo} alt="PolarHQ" width={20} height={20} className="size-5 shrink-0" />
+                <span className="truncate text-sm font-semibold">{productName}</span>
+                {beta ? (
+                  <span className="bg-primary/15 text-primary rounded px-1 py-px text-[9px] font-semibold tracking-wide uppercase">
+                    {t("flatSidebar.beta")}
                   </span>
-                  <span className="text-muted-foreground truncate text-[11px]">PolarHQ</span>
-                </span>
-                <IconSelector className="text-muted-foreground ms-auto size-4 shrink-0" />
+                ) : null}
+                <IconChevronDown className="text-muted-foreground ms-auto size-4 shrink-0" />
               </button>
             }
           />
-          <DropdownMenuContent align="start" sideOffset={6} className="w-64 p-2">
-            <div className="flex items-center gap-2.5 px-1 pt-0.5 pb-2">
-              <span className="flex size-8 items-center justify-center overflow-hidden rounded-lg">
-                <Image src={logo} alt="PolarHQ" width={32} height={32} className="size-8" />
-              </span>
-              <span className="flex min-w-0 flex-col leading-tight">
-                <span className="truncate text-sm font-semibold">PolarHQ</span>
-                <span className="text-muted-foreground truncate text-[11px]">
-                  {t("flatSidebar.personalWorkspace")}
-                </span>
-              </span>
-            </div>
-            <div className="depth-divider mb-1" />
-            <p className="text-muted-foreground/70 px-1.5 pt-1.5 pb-1 text-[11px] font-medium tracking-wider uppercase">
-              {t("flatSidebar.apps")}
-            </p>
+          <DropdownMenuContent align="start" sideOffset={6} className="w-52 p-1.5">
             {(apps ?? [])
               .filter((app) => app.available && app.route !== "/" && app.id !== "admin")
               .map((app) => {
@@ -164,15 +135,14 @@ const FlatSidebar = ({
                   <DropdownMenuItem
                     key={app.id}
                     onClick={() => router.push(app.route)}
-                    className="gap-2.5 py-1.5"
+                    className={cn("gap-2.5 py-1.5", current && "bg-sidebar-accent")}
                   >
-                    <span className="bg-sidebar-accent flex size-7 shrink-0 items-center justify-center rounded-md">
-                      <Icon name={app.icon} className="size-4" />
+                    <span className="bg-sidebar-accent flex size-6 shrink-0 items-center justify-center rounded-md">
+                      <Icon name={app.icon} className="size-3.5" />
                     </span>
                     <span className="min-w-0 flex-1 truncate font-medium">
                       {t(`apps.${app.id}`, { defaultValue: app.name })}
                     </span>
-                    {current ? <span className="bg-primary size-2 rounded-full" /> : null}
                   </DropdownMenuItem>
                 )
               })}

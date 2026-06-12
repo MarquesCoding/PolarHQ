@@ -28,7 +28,7 @@ const FlatTopBar = ({ extra }: FlatTopBarProps) => {
   const { t } = useTranslation("common")
 
   return (
-    <header className="border-border bg-sidebar flex h-14 shrink-0 items-center gap-2.5 border-b px-4">
+    <header className="border-border bg-sidebar flex h-11 shrink-0 items-center gap-2.5 border-b px-4">
       <SidebarTrigger className="-ms-1" aria-label={t("flatTopBar.toggleSidebar")} />
       <div className="ms-auto flex items-center gap-2">
         <div id={TOPBAR_SLOT_ID} className="flex items-center gap-2 empty:hidden" />
