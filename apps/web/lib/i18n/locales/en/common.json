@@ -111,7 +111,6 @@
     "apps": "Apps",
     "beta": "Beta",
     "devices": "Devices",
-    "jobs": "Jobs",
     "personalWorkspace": "Personal workspace",
     "replayIntro": "Replay intro",
     "settings": "Settings",
@@ -126,14 +125,6 @@
   "importButton": {
     "import": "Import",
     "importFailed": "Could not import this file"
-  },
-  "jobs": {
-    "active": "Active · {{count}}",
-    "clearFinished": "Clear finished",
-    "empty": "No background jobs.",
-    "finished": "Finished",
-    "subtitle": "Uploads, downloads and processing happening across your apps.",
-    "title": "Background jobs"
   },
   "launcher": {
     "loadingApps": "Loading apps…",
