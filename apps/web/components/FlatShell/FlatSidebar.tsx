@@ -94,16 +94,17 @@ const FlatSidebar = ({ productName, beta, children }: FlatSidebarProps) => {
 
   return (
     <Sidebar collapsible="offcanvas">
-      <div className="flex h-11 shrink-0 items-center px-3">
+      // IMAGE HERE
+      <Image src={logo} alt="PolarHQ" width={18} height={18} />
+      <div className="flex h-11 shrink-0 items-center px-3 pb-4 pt-18">
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <button
                 type="button"
-                className="border-border/60 hover:bg-sidebar-accent/40 flex min-w-0 flex-1 items-center gap-1.5 rounded-lg border px-2 py-1 text-start transition"
+                className="border-border/60 bg-background hover:bg-sidebar-accent/50 flex min-w-0 flex-1 items-center gap-2.5 rounded-lg border px-2.5 py-2 text-start transition"
               >
-                <Image src={logo} alt="PolarHQ" width={20} height={20} className="size-5 shrink-0" />
-                <span className="truncate text-sm font-semibold">{productName}</span>
+                <span className="truncate text-sm font-medium">{productName}</span>
                 {beta ? (
                   <span className="bg-primary/15 text-primary rounded px-1 py-px text-[9px] font-semibold tracking-wide uppercase">
                     {t("flatSidebar.beta")}

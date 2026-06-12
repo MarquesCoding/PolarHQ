@@ -34,30 +34,30 @@ const FlatTopBar = ({ extra, searchable = true }: FlatTopBarProps) => {
   const query = useAppSelector((state) => state.ui.searchQuery)
 
   return (
-    <header className="border-border bg-sidebar flex h-11 shrink-0 items-center gap-2.5 border-b px-4">
-      <SidebarTrigger className="-ms-1" aria-label={t("flatTopBar.toggleSidebar")} />
+    <header className="border-border bg-sidebar grid h-11 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2.5 border-b px-4">
+      <div className="flex items-center">
+        <SidebarTrigger className="-ms-1" aria-label={t("flatTopBar.toggleSidebar")} />
+      </div>
 
       {searchable ? (
-        <div className="flex flex-1 justify-center">
-          <div className="bg-sidebar-accent/40 focus-within:border-ring/40 flex w-full max-w-md items-center gap-2 rounded-lg border border-transparent px-2.5 py-1">
-            <IconSearch className="text-muted-foreground size-4 shrink-0" />
-            <input
-              value={query}
-              onChange={(event) => dispatch(setSearchQuery(event.target.value))}
-              placeholder={t("flatTopBar.search")}
-              className="placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-sm outline-none"
-            />
-            <span className="text-muted-foreground/70 hidden items-center gap-0.5 sm:flex">
-              <kbd className="bg-sidebar text-muted-foreground/80 rounded px-1 text-[10px]">⌘</kbd>
-              <kbd className="bg-sidebar text-muted-foreground/80 rounded px-1 text-[10px]">K</kbd>
-            </span>
-          </div>
+        <div className="bg-sidebar-accent/40 focus-within:border-ring/40 flex w-[min(28rem,55vw)] items-center gap-2 justify-self-center rounded-lg border border-transparent px-2.5 py-1">
+          <IconSearch className="text-muted-foreground size-4 shrink-0" />
+          <input
+            value={query}
+            onChange={(event) => dispatch(setSearchQuery(event.target.value))}
+            placeholder={t("flatTopBar.search")}
+            className="placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-sm outline-none"
+          />
+          <span className="text-muted-foreground/70 hidden items-center gap-0.5 sm:flex">
+            <kbd className="bg-sidebar text-muted-foreground/80 rounded px-1 text-[10px]">⌘</kbd>
+            <kbd className="bg-sidebar text-muted-foreground/80 rounded px-1 text-[10px]">K</kbd>
+          </span>
         </div>
       ) : (
-        <div className="flex-1" />
+        <div />
       )}
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-end gap-2">
         <div id={TOPBAR_SLOT_ID} className="flex items-center gap-2 empty:hidden" />
         {extra}
       </div>
