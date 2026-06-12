@@ -1,9 +1,7 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
-import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
-import logo from "../../public/logo.png"
 import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
 import { lockKeys } from "@lib/e2e"
@@ -95,7 +93,7 @@ const FlatSidebar = ({ productName, beta, children }: FlatSidebarProps) => {
   return (
     <Sidebar collapsible="offcanvas">
       <div className="flex shrink-0 items-center gap-2 px-4 pt-4 pb-1">
-        <Image src={logo} alt={APP_NAME} width={22} height={22} className="size-[22px] shrink-0" />
+        <img src="/logo.png" alt={APP_NAME} className="size-[22px] shrink-0 rounded-md" />
         <span className="text-sm font-semibold tracking-tight">{APP_NAME}</span>
       </div>
       <div className="flex h-11 shrink-0 items-center px-3 pb-2">
