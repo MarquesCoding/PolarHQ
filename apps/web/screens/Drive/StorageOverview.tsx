@@ -1,17 +1,11 @@
 "use client"
 
-import { type Device, fetchDevices, timeAgo } from "@lib/account"
 import { authClient } from "@lib/authClient"
 import { type StorageKind, decryptNodeName, fetchStorageStats } from "@lib/drive"
 import { bytesParts, formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { squarify } from "@lib/treemap"
-import {
-  IconDeviceDesktop,
-  IconDeviceLaptop,
-  IconDeviceMobile,
-  IconWorld,
-} from "@tabler/icons-react"
+import { IconDevices } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
@@ -32,21 +26,6 @@ const APP_META: Record<StorageApp, { color: string; icon: string }> = {
   docs: { color: "bg-indigo-500", icon: "file-text" },
   sheets: { color: "bg-emerald-500", icon: "table" },
   whiteboard: { color: "bg-pink-500", icon: "palette" },
-}
-
-const deviceIcon = (platform: Device["platform"]) => {
-  switch (platform) {
-    case "ios":
-    case "android":
-      return <IconDeviceMobile className="size-5" />
-    case "mac":
-      return <IconDeviceLaptop className="size-5" />
-    case "windows":
-    case "linux":
-      return <IconDeviceDesktop className="size-5" />
-    default:
-      return <IconWorld className="size-5" />
-  }
 }
 
 /** Bold section heading with a count chip, à la Spacedrive's `Devices ①` / `Locations ⑤`. */
@@ -161,14 +140,11 @@ const StorageOverview = () => {
     staleTime: 0,
     refetchOnMount: "always",
   })
-  const { data: deviceData } = useQuery({ queryKey: ["devices"], queryFn: fetchDevices })
-
   const used = data?.usedBytes ?? 0
   const quota = data?.quotaBytes ?? null
   const free = quota != null ? Math.max(0, quota - used) : null
   const totalFiles = data?.kinds.reduce((sum, k) => sum + k.count, 0) ?? 0
   const denom = quota && quota > 0 ? quota : Math.max(used, 1)
-  const devices = deviceData?.devices ?? []
   const workspaceName = session?.user?.name ?? t("overview.yourLibrary")
 
   return (
@@ -194,25 +170,18 @@ const StorageOverview = () => {
         </div>
       </section>
 
-      {devices.length > 0 ? (
-        <section>
-          <SectionHeader title={t("overview.devices")} count={devices.length} />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-            {devices.map((device) => (
-              <div key={device.id} className="panel flex flex-col gap-2 rounded-xl p-4">
-                <span className="bg-muted flex size-9 items-center justify-center rounded-lg">
-                  {deviceIcon(device.platform)}
-                </span>
-                <span className="truncate text-sm font-medium">{device.label}</span>
-                <span className="text-muted-foreground text-xs">
-                  {t("overview.activeAgo", { time: timeAgo(device.lastActive) })}
-                </span>
-                {device.current ? <Badge>{t("overview.thisDevice")}</Badge> : null}
-              </div>
-            ))}
+      <section>
+        <SectionHeader title={t("overview.devices")} />
+        <div className="border-border/70 flex items-center gap-4 rounded-xl border border-dashed p-5">
+          <span className="bg-muted flex size-12 shrink-0 items-center justify-center rounded-xl">
+            <IconDevices className="text-muted-foreground size-6" />
+          </span>
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <span className="text-sm font-medium">{t("overview.p2pSync")}</span>
+            <span className="text-muted-foreground text-xs">{t("overview.comingSoon")}</span>
           </div>
-        </section>
-      ) : null}
+        </div>
+      </section>
 
       <section>
         <SectionHeader title={t("overview.apps")} count={data?.breakdown.length} />
