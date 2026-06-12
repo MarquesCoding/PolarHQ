@@ -9,10 +9,10 @@ import { useUploadManager } from "@lib/uploadManager"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setDriveDetailsOpen } from "@store/uiSlice"
 import {
-  IconDots,
   IconFilePlus,
   IconFolderPlus,
   IconInfoCircle,
+  IconPlus,
   IconTable,
   IconTrashX,
   IconUpload,
@@ -109,7 +109,7 @@ const DriveTopActions = () => {
         <DropdownMenuTrigger
           render={
             <Button variant="ghost" size="icon-sm" aria-label={t("driveTopActions.new")} disabled={!parentId}>
-              <IconDots className="size-4" />
+              <IconPlus className="size-4" />
             </Button>
           }
         />
