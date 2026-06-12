@@ -4,11 +4,9 @@ import { type ReactNode, useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { authClient } from "@lib/authClient"
 import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@lib/e2e"
-import { UploadProvider } from "@lib/uploadManager"
 import { SidebarProvider, useSidebar } from "@workspace/ui/components/sidebar"
 import OnboardingCard from "@components/OnboardingCard/OnboardingCard"
 import Spinner from "@components/Spinner/Spinner"
-import UploadPanel from "@components/UploadPanel/UploadPanel"
 import UnlockDialog from "@pages/Docs/components/UnlockDialog/UnlockDialog"
 
 /** Stationary overlay slot id — content that must not scroll (e.g. the Photos timeline rail)
@@ -97,30 +95,26 @@ const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
 
   if (embedded) {
     return (
-      <UploadProvider>
-        <SidebarProvider className="bg-background h-svh overflow-hidden select-none">
-          {content}
-        </SidebarProvider>
-        <UploadPanel />
-      </UploadProvider>
+      <SidebarProvider className="bg-background h-svh overflow-hidden select-none">
+        {content}
+      </SidebarProvider>
     )
   }
 
   return (
-    <UploadProvider>
+    <>
       <SidebarProvider className="bg-background h-svh overflow-hidden select-none">
         <CloseSidebarOnNavigate />
         {sidebar}
         <div className="flex min-w-0 flex-1 flex-col">{content}</div>
       </SidebarProvider>
-      <UploadPanel />
       <OnboardingCard />
       <UnlockDialog
         open={unlockOpen}
         onOpenChange={setUnlockOpen}
         onUnlocked={() => setUnlockOpen(false)}
       />
-    </UploadProvider>
+    </>
   )
 }
 

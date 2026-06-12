@@ -11,6 +11,7 @@ import {
 } from "react"
 import { API_URL } from "@lib/env"
 import { ApiError } from "@lib/apiClient"
+import { authClient } from "@lib/authClient"
 import { apiErrorMessage } from "@lib/i18n/apiError"
 import { type UploadOptions, postFormWithProgress } from "@lib/xhrUpload"
 import { archiveDriveNodes } from "@lib/drive"
@@ -177,6 +178,8 @@ const xhrUpload = (
 
 export const UploadProvider = ({ children }: { children: ReactNode }) => {
   const { t } = useTranslation("common")
+  const { data: session } = authClient.useSession()
+  const authed = Boolean(session?.user)
   const [items, setItems] = useState<UploadItem[]>([])
   const readyAssets = useRef<Set<string>>(new Set())
   const itemsRef = useRef<UploadItem[]>([])
@@ -189,6 +192,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
   }, [items])
 
   useEffect(() => {
+    if (!authed) return
     void fetchProcessing()
       .then(({ assets }) => {
         if (assets.length === 0) return
@@ -211,7 +215,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
         })
       })
       .catch(() => undefined)
-  }, [])
+  }, [authed])
 
   useEffect(() => {
     if (items.length === 0) return
@@ -571,7 +575,7 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
     },
     [invalidate],
   )
-  useLiveEvents(onEvent)
+  useLiveEvents(onEvent, authed)
 
   return (
     <UploadContext.Provider

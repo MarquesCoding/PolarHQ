@@ -20,12 +20,14 @@ const safeParse = (data: unknown): LiveEvent | null => {
 /**
  * Subscribe to the server's WebSocket event stream (no polling). Reconnects on
  * drop. The callback is held in a ref so the socket isn't torn down on re-render.
+ * Pass `enabled = false` (e.g. while signed out) to skip connecting entirely.
  */
-export const useLiveEvents = (onEvent: (event: LiveEvent) => void): void => {
+export const useLiveEvents = (onEvent: (event: LiveEvent) => void, enabled = true): void => {
   const handlerRef = useRef(onEvent)
   handlerRef.current = onEvent
 
   useEffect(() => {
+    if (!enabled) return
     const url = `${API_URL.replace(/^http/, "ws")}/ws`
     let socket: WebSocket | null = null
     let closed = false
@@ -49,5 +51,5 @@ export const useLiveEvents = (onEvent: (event: LiveEvent) => void): void => {
       if (retry) clearTimeout(retry)
       socket?.close()
     }
-  }, [])
+  }, [enabled])
 }
