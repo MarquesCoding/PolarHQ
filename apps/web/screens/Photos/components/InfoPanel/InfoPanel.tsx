@@ -6,8 +6,10 @@ import { decryptName, decryptWithMetaKey } from "@lib/e2e"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { type AssetExif, fetchAsset } from "@lib/photos"
+import { IconInfoCircle, IconMapPin } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
+import Inspector, { type InspectorTab } from "@components/Inspector/Inspector"
 
 const PhotoLocationMap = dynamic(
   () => import("@pages/Photos/components/PhotoLocationMap/PhotoLocationMap"),
@@ -139,63 +141,79 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
   )
   const hasLocation = latitude != null && longitude != null
 
-  return (
-    <div className="scrollbar-slim flex h-full w-full flex-col gap-5 overflow-y-auto p-5">
-      <h2 className="text-base font-semibold">{t("infoPanel.details")}</h2>
+  const tabs: InspectorTab[] = [
+    {
+      id: "info",
+      label: t("infoPanel.details"),
+      icon: <IconInfoCircle className="size-4" />,
+      content: (
+        <div className="flex flex-col gap-5 p-5">
+          <Section icon="file-text" title={t("infoPanel.file")}>
+            <Row
+              label={t("infoPanel.name")}
+              value={(asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename}
+            />
+            <Row label={t("infoPanel.kind")} value={kindLabel} />
+            <Row label={t("infoPanel.type")} value={asset.mimeType} />
+            <Row label={t("infoPanel.size")} value={formatBytes(asset.sizeBytes)} />
+            <Row label={t("infoPanel.dimensions")} value={dimensions} />
+            {isImage ? <Row label={t("infoPanel.resolution")} value={megapixels} /> : null}
+            <Row label={t("infoPanel.duration")} value={duration} />
+          </Section>
 
-      <Section icon="file-text" title={t("infoPanel.file")}>
-        <Row
-          label={t("infoPanel.name")}
-          value={(asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename}
-        />
-        <Row label={t("infoPanel.kind")} value={kindLabel} />
-        <Row label={t("infoPanel.type")} value={asset.mimeType} />
-        <Row label={t("infoPanel.size")} value={formatBytes(asset.sizeBytes)} />
-        <Row label={t("infoPanel.dimensions")} value={dimensions} />
-        {isImage ? <Row label={t("infoPanel.resolution")} value={megapixels} /> : null}
-        <Row label={t("infoPanel.duration")} value={duration} />
-      </Section>
+          <Section icon="calendar" title={t("infoPanel.date")}>
+            <Row label={t("infoPanel.taken")} value={taken} />
+            <Row label={t("infoPanel.added")} value={added} />
+          </Section>
 
-      <Section icon="calendar" title={t("infoPanel.date")}>
-        <Row label={t("infoPanel.taken")} value={taken} />
-        <Row label={t("infoPanel.added")} value={added} />
-      </Section>
+          {hasCamera ? (
+            <Section icon="camera" title={t("infoPanel.camera")}>
+              <Row label={t("infoPanel.camera")} value={camera || undefined} />
+              <Row label={t("infoPanel.lens")} value={exif?.lens} />
+              <Row label={t("infoPanel.iso")} value={exif?.iso ? `ISO ${exif.iso}` : undefined} />
+              <Row label={t("infoPanel.aperture")} value={exif?.fNumber ? `ƒ/${exif.fNumber}` : undefined} />
+              <Row label={t("infoPanel.shutter")} value={formatShutter(exif?.exposureTime)} />
+              <Row label={t("infoPanel.focalLength")} value={focal} />
+              <Row label={t("infoPanel.exposure")} value={exposureComp} />
+              <Row label={t("infoPanel.metering")} value={asText(exif?.meteringMode)} />
+              <Row label={t("infoPanel.whiteBalance")} value={asText(exif?.whiteBalance)} />
+              <Row label={t("infoPanel.flash")} value={asText(exif?.flash)} />
+              <Row label={t("infoPanel.program")} value={asText(exif?.exposureProgram)} />
+              <Row label={t("infoPanel.software")} value={exif?.software} />
+            </Section>
+          ) : null}
+        </div>
+      ),
+    },
+    ...(hasLocation
+      ? [
+          {
+            id: "location",
+            label: t("infoPanel.location"),
+            icon: <IconMapPin className="size-4" />,
+            content: (
+              <div className="flex flex-col gap-1 p-5">
+                <PhotoLocationMap lat={latitude} lng={longitude} />
+                <Row
+                  label={t("infoPanel.coordinates")}
+                  value={`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`}
+                />
+                <a
+                  href={`https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=15/${latitude}/${longitude}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary py-1.5 text-sm underline-offset-2 hover:underline"
+                >
+                  {t("infoPanel.viewOnMap")}
+                </a>
+              </div>
+            ),
+          },
+        ]
+      : []),
+  ]
 
-      {hasCamera ? (
-        <Section icon="camera" title={t("infoPanel.camera")}>
-          <Row label={t("infoPanel.camera")} value={camera || undefined} />
-          <Row label={t("infoPanel.lens")} value={exif?.lens} />
-          <Row label={t("infoPanel.iso")} value={exif?.iso ? `ISO ${exif.iso}` : undefined} />
-          <Row label={t("infoPanel.aperture")} value={exif?.fNumber ? `ƒ/${exif.fNumber}` : undefined} />
-          <Row label={t("infoPanel.shutter")} value={formatShutter(exif?.exposureTime)} />
-          <Row label={t("infoPanel.focalLength")} value={focal} />
-          <Row label={t("infoPanel.exposure")} value={exposureComp} />
-          <Row label={t("infoPanel.metering")} value={asText(exif?.meteringMode)} />
-          <Row label={t("infoPanel.whiteBalance")} value={asText(exif?.whiteBalance)} />
-          <Row label={t("infoPanel.flash")} value={asText(exif?.flash)} />
-          <Row label={t("infoPanel.program")} value={asText(exif?.exposureProgram)} />
-          <Row label={t("infoPanel.software")} value={exif?.software} />
-        </Section>
-      ) : null}
-
-      {hasLocation ? (
-        <Section icon="map-pin" title={t("infoPanel.location")}>
-          <div className="pt-1.5">
-            <PhotoLocationMap lat={latitude} lng={longitude} />
-          </div>
-          <Row label={t("infoPanel.coordinates")} value={`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`} />
-          <a
-            href={`https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=15/${latitude}/${longitude}`}
-            target="_blank"
-            rel="noreferrer"
-            className="text-primary py-1.5 text-sm underline-offset-2 hover:underline"
-          >
-            {t("infoPanel.viewOnMap")}
-          </a>
-        </Section>
-      ) : null}
-    </div>
-  )
+  return <Inspector tabs={tabs} />
 }
 
 export default InfoPanel

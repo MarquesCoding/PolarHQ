@@ -2,14 +2,17 @@
 
 import { dateLocale } from "@lib/i18n/format"
 import type { ReactNode } from "react"
-import type { DriveNode } from "@lib/drive"
+import { type DriveNode, fetchVersions } from "@lib/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
-import { IconX } from "@tabler/icons-react"
+import { IconHistory, IconInfoCircle, IconX } from "@tabler/icons-react"
+import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
+import Inspector, { type InspectorTab } from "@components/Inspector/Inspector"
+import Spinner from "@components/Spinner/Spinner"
 
 interface DetailsPanelProps {
   open: boolean
@@ -112,6 +115,69 @@ const SingleDetails = ({ node }: { node: DriveNode }) => {
   )
 }
 
+/** Read-only version history for a file node (restore lives in the version dialog). */
+const VersionsTab = ({ nodeId }: { nodeId: string }) => {
+  const { t } = useTranslation("drive")
+  const { data, isLoading } = useQuery({
+    queryKey: ["drive", "versions", nodeId],
+    queryFn: () => fetchVersions(nodeId),
+  })
+  const versions = data?.versions ?? []
+  return (
+    <div className="flex flex-col gap-2 p-5">
+      {isLoading ? (
+        <div className="flex justify-center p-4">
+          <Spinner className="size-4" />
+        </div>
+      ) : versions.length === 0 ? (
+        <p className="text-muted-foreground text-sm">{t("detailsPanel.noVersions")}</p>
+      ) : (
+        versions.map((version) => (
+          <div
+            key={version.id}
+            className="border-border/50 flex flex-col gap-0.5 border-b pb-2 last:border-0"
+          >
+            <span className="text-sm">
+              {new Date(version.createdAt).toLocaleString(dateLocale())}
+            </span>
+            <span className="text-muted-foreground text-xs tabular-nums">
+              {formatBytes(version.sizeBytes ?? 0)}
+            </span>
+          </div>
+        ))
+      )}
+    </div>
+  )
+}
+
+/** Single-selection inspector: an Info tab, plus a History (versions) tab for files. */
+const SingleInspector = ({ node }: { node: DriveNode }) => {
+  const { t } = useTranslation("drive")
+  const tabs: InspectorTab[] = [
+    {
+      id: "info",
+      label: t("detailsPanel.title"),
+      icon: <IconInfoCircle className="size-4" />,
+      content: (
+        <div className="flex flex-col gap-5 p-5">
+          <SingleDetails node={node} />
+        </div>
+      ),
+    },
+    ...(node.kind === "file"
+      ? [
+          {
+            id: "history",
+            label: t("detailsPanel.history"),
+            icon: <IconHistory className="size-4" />,
+            content: <VersionsTab nodeId={node.id} />,
+          },
+        ]
+      : []),
+  ]
+  return <Inspector tabs={tabs} />
+}
+
 const StackedDetails = ({ nodes }: { nodes: DriveNode[] }) => {
   const { t } = useTranslation("drive")
   const folders = nodes.filter((node) => node.kind === "folder").length
@@ -157,8 +223,8 @@ const DetailsPanel = ({ open, nodes, onClose }: DetailsPanelProps) => {
       style={{ borderLeftWidth: open ? undefined : 0 }}
       className="border-border/60 sticky top-0 h-[calc(100svh-4.5rem)] shrink-0 self-start overflow-hidden border-l"
     >
-      <div className="flex h-full w-72 flex-col gap-5 overflow-y-auto p-5">
-        <div className="flex items-center justify-between">
+      <div className="flex h-full w-72 flex-col">
+        <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <h2 className="text-sm font-medium">{t("detailsPanel.title")}</h2>
           <Button
             variant="ghost"
@@ -170,13 +236,17 @@ const DetailsPanel = ({ open, nodes, onClose }: DetailsPanelProps) => {
           </Button>
         </div>
 
-        {nodes.length === 0 ? (
-          <p className="text-muted-foreground text-sm">{t("detailsPanel.empty")}</p>
-        ) : nodes.length === 1 ? (
-          <SingleDetails node={nodes[0]!} />
-        ) : (
-          <StackedDetails nodes={nodes} />
-        )}
+        <div className="min-h-0 flex-1">
+          {nodes.length === 0 ? (
+            <p className="text-muted-foreground p-5 text-sm">{t("detailsPanel.empty")}</p>
+          ) : nodes.length === 1 ? (
+            <SingleInspector node={nodes[0]!} />
+          ) : (
+            <div className="scrollbar-slim flex flex-col gap-5 overflow-y-auto p-5">
+              <StackedDetails nodes={nodes} />
+            </div>
+          )}
+        </div>
       </div>
     </motion.aside>
   )
