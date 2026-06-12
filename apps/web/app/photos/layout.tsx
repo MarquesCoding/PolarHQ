@@ -11,7 +11,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <FlatShell
       sidebar={
-        <FlatSidebar productName={t("shell.product")} beta>
+        <FlatSidebar productName={t("shell.product")} beta searchPlaceholder={t("shell.search")}>
           <PhotosNav />
         </FlatSidebar>
       }

@@ -22,11 +22,11 @@ const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <FlatShell
       sidebar={
-        <FlatSidebar productName={t("shell.product")}>
+        <FlatSidebar productName={t("shell.product")} searchPlaceholder={t("shell.search")} searchable={false}>
           <AdminNav />
         </FlatSidebar>
       }
-      topBar={<FlatTopBar titles={titles} searchable={false} />}
+      topBar={<FlatTopBar titles={titles} />}
     >
       {children}
     </FlatShell>
