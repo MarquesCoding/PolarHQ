@@ -1,15 +1,26 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
+import logo from "../../public/logo.png"
 import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
 import { lockKeys } from "@lib/e2e"
 import { fetchStorageStats } from "@lib/drive"
 import { bytesParts, formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
+import { useAppDispatch, useAppSelector } from "@store/hooks"
+import { setSearchQuery } from "@store/uiSlice"
 import { applyThemeWithReveal } from "@lib/themeTransition"
-import { IconChevronDown, IconLogout, IconMoon, IconSun } from "@tabler/icons-react"
+import {
+  IconChevronDown,
+  IconLogout,
+  IconMoon,
+  IconSearch,
+  IconSelector,
+  IconSun,
+} from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
@@ -30,7 +41,7 @@ import Changelog from "@components/Changelog/Changelog"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 import StorageDialog from "@components/StorageDialog/StorageDialog"
 import { replayOnboarding } from "@components/OnboardingCard/OnboardingCard"
-import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
+import { APP_BUILD, APP_VERSION } from "@lib/env"
 
 /** Stagger the nav rows in on mount. Each app has its own layout/sidebar, so this replays exactly
  *  when switching apps (not on within-app navigation, where the sidebar persists). */
@@ -44,20 +55,31 @@ interface FlatSidebarProps {
   productName: string
   /** Whether to show a Beta chip beside the product name. */
   beta?: boolean
+  /** Placeholder for the sidebar search field. */
+  searchPlaceholder: string
+  /** Whether the search field dispatches into the shared `ui.searchQuery` (default true). */
+  searchable?: boolean
   /** The nav content — built with the shared `NavRow`/`SectionLabel` primitives. */
   children: ReactNode
 }
 
 /**
  * Shared "flat" sidebar chrome used by every app: a single full-height column with the
- * app switcher, a nav slot, and the usage / account / version / theme footer. Apps supply only
- * their own nav rows as `children`; everything else is identical across apps. (Search lives in the
- * top bar.)
+ * app switcher, sidebar search, a nav slot, and the usage / account / version / theme footer.
+ * Apps supply only their own nav rows as `children`; everything else is identical across apps.
  */
-const FlatSidebar = ({ productName, beta, children }: FlatSidebarProps) => {
+const FlatSidebar = ({
+  productName,
+  beta,
+  searchPlaceholder,
+  searchable = true,
+  children,
+}: FlatSidebarProps) => {
   const { t } = useTranslation("common")
   const pathname = usePathname()
   const router = useRouter()
+  const dispatch = useAppDispatch()
+  const query = useAppSelector((state) => state.ui.searchQuery)
   const { data: session } = authClient.useSession()
   const { resolvedTheme, setTheme } = useTheme()
 
@@ -92,29 +114,48 @@ const FlatSidebar = ({ productName, beta, children }: FlatSidebarProps) => {
 
   return (
     <Sidebar collapsible="offcanvas">
-      <div className="flex shrink-0 items-center gap-2 px-4 pt-4 pb-1">
-        <img src="/logo.png" alt={APP_NAME} className="size-[22px] shrink-0 rounded-md" />
-        <span className="text-sm font-semibold tracking-tight">{APP_NAME}</span>
-      </div>
-      <div className="flex h-11 shrink-0 items-center px-3 pb-2">
+      <div className="border-border flex h-14 shrink-0 items-center border-b px-3">
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <button
                 type="button"
-                className="border-border/60 bg-background hover:bg-sidebar-accent/50 flex min-w-0 flex-1 items-center gap-2.5 rounded-lg border px-2.5 py-2 text-start transition"
+                className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1.5 text-start transition"
               >
-                <span className="truncate text-sm font-medium">{productName}</span>
-                {beta ? (
-                  <span className="bg-primary/15 text-primary rounded px-1 py-px text-[9px] font-semibold tracking-wide uppercase">
-                    {t("flatSidebar.beta")}
+                <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md">
+                  <Image src={logo} alt="PolarHQ" width={28} height={28} className="size-7" />
+                </span>
+                <span className="flex min-w-0 flex-col leading-tight">
+                  <span className="flex items-center gap-1.5">
+                    <span className="truncate text-sm font-semibold">{productName}</span>
+                    {beta ? (
+                      <span className="bg-primary/15 text-primary rounded px-1 py-px text-[9px] font-semibold tracking-wide uppercase">
+                        {t("flatSidebar.beta")}
+                      </span>
+                    ) : null}
                   </span>
-                ) : null}
-                <IconChevronDown className="text-muted-foreground ms-auto size-4 shrink-0" />
+                  <span className="text-muted-foreground truncate text-[11px]">PolarHQ</span>
+                </span>
+                <IconSelector className="text-muted-foreground ms-auto size-4 shrink-0" />
               </button>
             }
           />
-          <DropdownMenuContent align="start" sideOffset={6} className="w-52 p-1.5">
+          <DropdownMenuContent align="start" sideOffset={6} className="w-64 p-2">
+            <div className="flex items-center gap-2.5 px-1 pt-0.5 pb-2">
+              <span className="flex size-8 items-center justify-center overflow-hidden rounded-lg">
+                <Image src={logo} alt="PolarHQ" width={32} height={32} className="size-8" />
+              </span>
+              <span className="flex min-w-0 flex-col leading-tight">
+                <span className="truncate text-sm font-semibold">PolarHQ</span>
+                <span className="text-muted-foreground truncate text-[11px]">
+                  {t("flatSidebar.personalWorkspace")}
+                </span>
+              </span>
+            </div>
+            <div className="depth-divider mb-1" />
+            <p className="text-muted-foreground/70 px-1.5 pt-1.5 pb-1 text-[11px] font-medium tracking-wider uppercase">
+              {t("flatSidebar.apps")}
+            </p>
             {(apps ?? [])
               .filter((app) => app.available && app.route !== "/" && app.id !== "admin")
               .map((app) => {
@@ -123,14 +164,15 @@ const FlatSidebar = ({ productName, beta, children }: FlatSidebarProps) => {
                   <DropdownMenuItem
                     key={app.id}
                     onClick={() => router.push(app.route)}
-                    className={cn("gap-2.5 py-1.5", current && "bg-sidebar-accent")}
+                    className="gap-2.5 py-1.5"
                   >
-                    <span className="bg-sidebar-accent flex size-6 shrink-0 items-center justify-center rounded-md">
-                      <Icon name={app.icon} className="size-3.5" />
+                    <span className="bg-sidebar-accent flex size-7 shrink-0 items-center justify-center rounded-md">
+                      <Icon name={app.icon} className="size-4" />
                     </span>
                     <span className="min-w-0 flex-1 truncate font-medium">
                       {t(`apps.${app.id}`, { defaultValue: app.name })}
                     </span>
+                    {current ? <span className="bg-primary size-2 rounded-full" /> : null}
                   </DropdownMenuItem>
                 )
               })}
@@ -138,11 +180,31 @@ const FlatSidebar = ({ productName, beta, children }: FlatSidebarProps) => {
         </DropdownMenu>
       </div>
 
+      {searchable ? (
+        <div className="px-3 pt-3 pb-2">
+          <div className="bg-sidebar-accent/40 focus-within:border-ring/40 flex items-center gap-2 rounded-lg border border-transparent px-2.5 py-1.5">
+            <IconSearch className="text-muted-foreground size-4 shrink-0" />
+            <input
+              value={query}
+              onChange={(event) => dispatch(setSearchQuery(event.target.value))}
+              placeholder={searchPlaceholder}
+              className="placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-sm outline-none"
+            />
+            <span className="text-muted-foreground/70 hidden items-center gap-0.5 sm:flex">
+              <kbd className="bg-sidebar text-muted-foreground/80 rounded px-1 text-[10px]">⌘</kbd>
+              <kbd className="bg-sidebar text-muted-foreground/80 rounded px-1 text-[10px]">K</kbd>
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="pt-1" />
+      )}
+
       <motion.nav
         variants={navContainerVariants}
         initial="hidden"
         animate="visible"
-        className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3 pt-2"
+        className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3"
       >
         {children}
       </motion.nav>
