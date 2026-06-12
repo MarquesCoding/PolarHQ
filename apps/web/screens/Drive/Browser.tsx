@@ -56,6 +56,7 @@ import { is3DModelName } from "@lib/model3dExt"
 import FolderLockDialog from "@pages/Drive/components/FolderLockDialog/FolderLockDialog"
 import FolderLockGate from "@pages/Drive/components/FolderLockGate/FolderLockGate"
 import ImageViewer from "@pages/Drive/components/ImageViewer/ImageViewer"
+import MillerView from "@pages/Drive/components/MillerView/MillerView"
 import MoveDialog from "@pages/Drive/components/MoveDialog/MoveDialog"
 import NewFolderDialog from "@pages/Drive/components/NewFolderDialog/NewFolderDialog"
 import { DRIVE_NODES_MIME } from "@pages/Drive/components/NodeCard/NodeCard"
@@ -352,6 +353,13 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
                   : t("browser.dragOrUpload")}
             </p>
           </div>
+        ) : viewMode === "columns" && !source ? (
+          <MillerView
+            rootFolderId={folderId}
+            selection={selection}
+            onOpen={open}
+            actions={actions}
+          />
         ) : viewMode === "table" ? (
           <NodeTable
             nodes={visible}

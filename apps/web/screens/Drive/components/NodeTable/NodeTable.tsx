@@ -34,7 +34,7 @@ interface NodeTableProps {
   actions?: DriveNodeActions
 }
 
-const iconFor = (node: DriveNode): string => {
+export const iconFor = (node: DriveNode): string => {
   if (node.kind === "folder")
     return node.special ? "folder-shield" : node.locked ? "folder-key" : "folder"
   const name = node.name.toLowerCase()

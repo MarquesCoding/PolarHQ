@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
+import { driveFolderIdFromPath } from "@lib/drive"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useAppSelector } from "@store/hooks"
 import DriveTopActions from "@pages/Drive/components/DriveTopActions/DriveTopActions"
@@ -14,10 +15,11 @@ const DriveToolbar = () => {
   const viewMode = useAppSelector((state) => state.ui.viewMode)
   const [tileSize, setTileSize] = usePersistentNumber("drive.tileSize", 150)
   const isOverview = pathname === "/drive"
+  const isFolderBrowser = driveFolderIdFromPath(pathname) !== null
 
   return (
     <div className="flex items-center gap-2">
-      {!isOverview ? <ViewToggle /> : null}
+      {!isOverview ? <ViewToggle columns={isFolderBrowser} /> : null}
       {!isOverview && viewMode === "grid" ? (
         <SizeControl value={tileSize} onChange={setTileSize} />
       ) : null}

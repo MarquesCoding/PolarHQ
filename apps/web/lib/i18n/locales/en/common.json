@@ -259,6 +259,7 @@
     "uploaded_other": "Uploaded {{count}} photos"
   },
   "viewToggle": {
+    "columnsView": "Column view",
     "gridView": "Grid view",
     "tableView": "Table view"
   }

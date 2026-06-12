@@ -141,6 +141,9 @@
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out"
   },
+  "millerView": {
+    "empty": "Empty folder"
+  },
   "modelViewer": {
     "autoRotate": "Auto-rotate",
     "close": "Close",
