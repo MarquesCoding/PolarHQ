@@ -8,7 +8,6 @@ import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
 import { lockKeys } from "@lib/e2e"
 import { fetchStorageStats } from "@lib/drive"
-import { useUploadManager } from "@lib/uploadManager"
 import { bytesParts, formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
@@ -40,8 +39,6 @@ import { useTheme } from "next-themes"
 import { useTranslation } from "react-i18next"
 import Changelog from "@components/Changelog/Changelog"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
-import JobsDialog from "@components/JobsDialog/JobsDialog"
-import Spinner from "@components/Spinner/Spinner"
 import StorageDialog from "@components/StorageDialog/StorageDialog"
 import { replayOnboarding } from "@components/OnboardingCard/OnboardingCard"
 import { APP_BUILD, APP_VERSION } from "@lib/env"
@@ -90,11 +87,6 @@ const FlatSidebar = ({
   const { data: usage } = useQuery({ queryKey: ["drive", "storage"], queryFn: fetchStorageStats })
   const [devicesOpen, setDevicesOpen] = useState(false)
   const [storageOpen, setStorageOpen] = useState(false)
-  const [jobsOpen, setJobsOpen] = useState(false)
-  const { items: jobs } = useUploadManager()
-  const activeJobs = jobs.filter(
-    (job) => job.status === "uploading" || job.status === "processing",
-  ).length
 
   const signOut = async () => {
     lockKeys()
@@ -252,22 +244,6 @@ const FlatSidebar = ({
           </div>
         </Button>
 
-        <button
-          type="button"
-          onClick={() => setJobsOpen(true)}
-          className="panel hover:border-ring/30 flex w-full items-center gap-2.5 rounded-lg p-2 text-start transition"
-        >
-          <span className="bg-sidebar-accent flex size-8 shrink-0 items-center justify-center rounded-md">
-            {activeJobs > 0 ? <Spinner className="size-4" /> : <Icon name="bolt" className="size-4" />}
-          </span>
-          <span className="min-w-0 flex-1 truncate text-sm font-medium">{t("flatSidebar.jobs")}</span>
-          {activeJobs > 0 ? (
-            <span className="bg-primary text-primary-foreground rounded-full px-1.5 text-xs font-medium tabular-nums">
-              {activeJobs}
-            </span>
-          ) : null}
-        </button>
-
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
@@ -347,7 +323,6 @@ const FlatSidebar = ({
 
       <DevicesDialog open={devicesOpen} onOpenChange={setDevicesOpen} />
       <StorageDialog open={storageOpen} onOpenChange={setStorageOpen} />
-      <JobsDialog open={jobsOpen} onOpenChange={setJobsOpen} />
     </Sidebar>
   )
 }
