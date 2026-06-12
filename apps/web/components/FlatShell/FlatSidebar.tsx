@@ -32,7 +32,7 @@ import Changelog from "@components/Changelog/Changelog"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 import StorageDialog from "@components/StorageDialog/StorageDialog"
 import { replayOnboarding } from "@components/OnboardingCard/OnboardingCard"
-import { APP_BUILD, APP_VERSION } from "@lib/env"
+import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
 
 /** Stagger the nav rows in on mount. Each app has its own layout/sidebar, so this replays exactly
  *  when switching apps (not on within-app navigation, where the sidebar persists). */
@@ -94,9 +94,11 @@ const FlatSidebar = ({ productName, beta, children }: FlatSidebarProps) => {
 
   return (
     <Sidebar collapsible="offcanvas">
-      // IMAGE HERE
-      <Image src={logo} alt="PolarHQ" width={18} height={18} />
-      <div className="flex h-11 shrink-0 items-center px-3 pb-4 pt-18">
+      <div className="flex shrink-0 items-center gap-2 px-4 pt-4 pb-1">
+        <Image src={logo} alt={APP_NAME} width={22} height={22} className="size-[22px] shrink-0" />
+        <span className="text-sm font-semibold tracking-tight">{APP_NAME}</span>
+      </div>
+      <div className="flex h-11 shrink-0 items-center px-3 pb-2">
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
