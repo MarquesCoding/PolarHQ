@@ -10,10 +10,8 @@ import { lockKeys } from "@lib/e2e"
 import { fetchStorageStats } from "@lib/drive"
 import { bytesParts, formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
-import { useAppDispatch, useAppSelector } from "@store/hooks"
-import { setSearchQuery } from "@store/uiSlice"
 import { applyThemeWithReveal } from "@lib/themeTransition"
-import { IconChevronDown, IconLogout, IconMoon, IconSearch, IconSun } from "@tabler/icons-react"
+import { IconChevronDown, IconLogout, IconMoon, IconSun } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
@@ -48,31 +46,20 @@ interface FlatSidebarProps {
   productName: string
   /** Whether to show a Beta chip beside the product name. */
   beta?: boolean
-  /** Placeholder for the sidebar search field. */
-  searchPlaceholder: string
-  /** Whether the search field dispatches into the shared `ui.searchQuery` (default true). */
-  searchable?: boolean
   /** The nav content — built with the shared `NavRow`/`SectionLabel` primitives. */
   children: ReactNode
 }
 
 /**
  * Shared "flat" sidebar chrome used by every app: a single full-height column with the
- * app switcher, sidebar search, a nav slot, and the usage / account / version / theme footer.
- * Apps supply only their own nav rows as `children`; everything else is identical across apps.
+ * app switcher, a nav slot, and the usage / account / version / theme footer. Apps supply only
+ * their own nav rows as `children`; everything else is identical across apps. (Search lives in the
+ * top bar.)
  */
-const FlatSidebar = ({
-  productName,
-  beta,
-  searchPlaceholder,
-  searchable = true,
-  children,
-}: FlatSidebarProps) => {
+const FlatSidebar = ({ productName, beta, children }: FlatSidebarProps) => {
   const { t } = useTranslation("common")
   const pathname = usePathname()
   const router = useRouter()
-  const dispatch = useAppDispatch()
-  const query = useAppSelector((state) => state.ui.searchQuery)
   const { data: session } = authClient.useSession()
   const { resolvedTheme, setTheme } = useTheme()
 
@@ -107,13 +94,13 @@ const FlatSidebar = ({
 
   return (
     <Sidebar collapsible="offcanvas">
-      <div className="border-border flex h-11 shrink-0 items-center border-b px-3">
+      <div className="flex h-11 shrink-0 items-center px-3">
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <button
                 type="button"
-                className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-1.5 rounded-lg px-2 py-1.5 text-start transition"
+                className="border-border/60 hover:bg-sidebar-accent/40 flex min-w-0 flex-1 items-center gap-1.5 rounded-lg border px-2 py-1 text-start transition"
               >
                 <Image src={logo} alt="PolarHQ" width={20} height={20} className="size-5 shrink-0" />
                 <span className="truncate text-sm font-semibold">{productName}</span>
@@ -150,31 +137,11 @@ const FlatSidebar = ({
         </DropdownMenu>
       </div>
 
-      {searchable ? (
-        <div className="px-3 pt-3 pb-2">
-          <div className="bg-sidebar-accent/40 focus-within:border-ring/40 flex items-center gap-2 rounded-lg border border-transparent px-2.5 py-1.5">
-            <IconSearch className="text-muted-foreground size-4 shrink-0" />
-            <input
-              value={query}
-              onChange={(event) => dispatch(setSearchQuery(event.target.value))}
-              placeholder={searchPlaceholder}
-              className="placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-sm outline-none"
-            />
-            <span className="text-muted-foreground/70 hidden items-center gap-0.5 sm:flex">
-              <kbd className="bg-sidebar text-muted-foreground/80 rounded px-1 text-[10px]">⌘</kbd>
-              <kbd className="bg-sidebar text-muted-foreground/80 rounded px-1 text-[10px]">K</kbd>
-            </span>
-          </div>
-        </div>
-      ) : (
-        <div className="pt-1" />
-      )}
-
       <motion.nav
         variants={navContainerVariants}
         initial="hidden"
         animate="visible"
-        className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3"
+        className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3 pt-2"
       >
         {children}
       </motion.nav>
