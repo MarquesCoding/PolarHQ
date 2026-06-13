@@ -194,6 +194,9 @@ importers:
       '@polarhq/changelog':
         specifier: workspace:*
         version: link:../../packages/changelog
+      '@polarhq/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@polarhq/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
@@ -462,6 +465,22 @@ importers:
       '@polarhq/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/core:
+    dependencies:
+      libsodium-wrappers-sumo:
+        specifier: ^0.8.4
+        version: 0.8.4
+    devDependencies:
+      '@polarhq/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/libsodium-wrappers-sumo':
+        specifier: ^0.8.2
+        version: 0.8.2
       typescript:
         specifier: ^5.7.3
         version: 5.9.3

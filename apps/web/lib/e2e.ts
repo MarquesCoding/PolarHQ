@@ -30,7 +30,7 @@ import {
   secretboxOpen,
   secretboxSeal,
   toB64,
-} from "@lib/crypto"
+} from "@polarhq/core/crypto"
 
 interface KeyBundle {
   publicKey: string

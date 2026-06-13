@@ -8,7 +8,7 @@ import {
   secretboxSeal,
   secretstreamInit,
   secretstreamOpenAll,
-} from "@lib/crypto"
+} from "@polarhq/core/crypto"
 import { streamDecryptToDisk, supportsStreamingDownload } from "@lib/streamDownload"
 import { type DriveNode, decryptNodeName } from "@lib/drive"
 import {

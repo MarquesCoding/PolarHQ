@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { secretboxOpen, secretboxSeal } from "@lib/crypto"
+import { secretboxOpen, secretboxSeal } from "@polarhq/core/crypto"
 import { type DocMeta, fetchDoc, fetchDocContent, saveDocContent } from "@lib/docs"
 import { e2eReady, getDocContentKey, isDocEncrypted, isUnlocked } from "@lib/e2e"
 import { useLiveEvents } from "@lib/useLiveEvents"

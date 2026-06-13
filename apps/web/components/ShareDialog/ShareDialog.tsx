@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
-import { toB64 } from "@lib/crypto"
+import { toB64 } from "@polarhq/core/crypto"
 import type { ShareLink, ShareOptions } from "@lib/drive"
 import { getDocContentKey } from "@lib/e2e"
 import { Icon } from "@lib/icons"

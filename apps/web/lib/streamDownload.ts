@@ -6,7 +6,7 @@ import {
   secretstreamOpenInit,
   streamCipherChunkSize,
   streamPrefixSize,
-} from "@lib/crypto"
+} from "@polarhq/core/crypto"
 import type { UploadProgress } from "@lib/xhrUpload"
 
 interface SaveWritable {

@@ -8,7 +8,7 @@ import {
   secretboxOpen,
   secretboxSeal,
   toB64,
-} from "@lib/crypto"
+} from "@polarhq/core/crypto"
 import { fetchFolderLock, removeFolderLockApi, setFolderLockApi } from "@lib/drive"
 
 const VERIFIER_PLAINTEXT = new TextEncoder().encode("vault-folder-lock-v1")

@@ -1,6 +1,6 @@
 "use client"
 
-import { fingerprint, fromB64 } from "@lib/crypto"
+import { fingerprint, fromB64 } from "@polarhq/core/crypto"
 
 /**
  * Trust-on-first-use pinning for collaborators' public keys. The first time you share
