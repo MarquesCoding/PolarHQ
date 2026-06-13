@@ -126,9 +126,9 @@ importers:
 
   apps/marketing:
     dependencies:
-      '@polarhq/changelog':
+      '@polarhq/core':
         specifier: workspace:*
-        version: link:../../packages/changelog
+        version: link:../../packages/core
       '@polarhq/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -197,9 +197,6 @@ importers:
       '@number-flow/react':
         specifier: ^0.6.0
         version: 0.6.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@polarhq/changelog':
-        specifier: workspace:*
-        version: link:../../packages/changelog
       '@polarhq/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -442,15 +439,6 @@ importers:
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(kysely@0.29.2)(postgres@3.4.9)
-    devDependencies:
-      '@polarhq/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      typescript:
-        specifier: ^5.7.3
-        version: 5.9.3
-
-  packages/changelog:
     devDependencies:
       '@polarhq/typescript-config':
         specifier: workspace:*

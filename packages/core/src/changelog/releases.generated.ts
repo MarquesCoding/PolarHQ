@@ -1,4 +1,4 @@
-// AUTO-GENERATED from CHANGELOG.md by scripts/generate.mjs — do not edit by hand.
+// AUTO-GENERATED from CHANGELOG.md by scripts/generate-changelog.mjs — do not edit by hand.
 import type { Release } from "./types"
 
 export const RELEASES: Release[] = [

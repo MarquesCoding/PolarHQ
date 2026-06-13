@@ -4,7 +4,7 @@ import { formatMediumDate } from "@polarhq/i18n/format"
 import type { ReactNode } from "react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { type Release, RELEASES } from "@polarhq/changelog"
+import { type Release, RELEASES } from "@polarhq/core/changelog"
 import { Badge } from "@polarhq/ui/components/badge"
 import { Button } from "@polarhq/ui/components/button"
 import {

@@ -4,10 +4,13 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./crypto": "./src/crypto.ts"
+    "./crypto": "./src/crypto.ts",
+    "./changelog": "./src/changelog/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "build": "node scripts/generate-changelog.mjs",
+    "typecheck": "tsc --noEmit",
+    "changelog:generate": "node scripts/generate-changelog.mjs"
   },
   "dependencies": {
     "libsodium-wrappers-sumo": "^0.8.4"

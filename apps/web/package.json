@@ -43,7 +43,6 @@
     "@tiptap/pm": "^3.26.0",
     "@tiptap/react": "^3.26.0",
     "@tiptap/starter-kit": "^3.26.0",
-    "@polarhq/changelog": "workspace:*",
     "@polarhq/core": "workspace:*",
     "@polarhq/i18n": "workspace:*",
     "@polarhq/ui": "workspace:*",
