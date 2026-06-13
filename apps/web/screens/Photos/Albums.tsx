@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
+import { Link } from "@lib/router"
 import { type Album, createAlbum, fetchAlbums } from "@lib/photos"
 import { fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
 import EmptyState from "@components/EmptyState/EmptyState"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@lib/router"
 import { useTranslation } from "react-i18next"
 import { type DocMeta, fetchDocs, openEditor } from "@lib/docs"
 import { trashDriveNode } from "@lib/drive"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@lib/router"
 import { type DocMeta, type DocType, fetchDocs, openEditor } from "@lib/docs"
 import { trashDriveNode } from "@lib/drive"
 import { createEncryptedDoc } from "@lib/e2e"

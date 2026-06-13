@@ -1,6 +1,6 @@
 "use client"
 
-import { usePathname } from "next/navigation"
+import { usePathname } from "@lib/router"
 import { useTranslation } from "react-i18next"
 import { type DocType, editorHref, editorOpensNewTab, fetchDocs } from "@lib/docs"
 import { useQuery } from "@tanstack/react-query"

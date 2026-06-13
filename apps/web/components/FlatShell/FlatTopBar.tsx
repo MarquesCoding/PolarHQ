@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode } from "react"
-import { usePathname } from "next/navigation"
+import { usePathname } from "@lib/router"
 import { Icon } from "@lib/icons"
 import { SidebarTrigger } from "@polarhq/ui/components/sidebar"
 import { useTranslation } from "react-i18next"

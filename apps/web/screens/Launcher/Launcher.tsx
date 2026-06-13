@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useRouter } from "@lib/router"
 import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
 import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"

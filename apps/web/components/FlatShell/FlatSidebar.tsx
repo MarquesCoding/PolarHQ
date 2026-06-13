@@ -1,9 +1,7 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { Link, useRouter } from "@lib/router"
 import logo from "../../public/logo.png"
 import { authClient } from "@lib/authClient"
 import { lockKeys } from "@lib/e2e"
@@ -116,7 +114,7 @@ const FlatSidebar = ({
           className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1.5 text-start transition"
         >
           <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md">
-            <Image src={logo} alt={APP_NAME} width={28} height={28} className="size-7" />
+            <img src={logo} alt={APP_NAME} width={28} height={28} className="size-7" />
           </span>
           <span className="truncate text-sm font-semibold">{APP_NAME}</span>
           {beta ? (

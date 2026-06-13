@@ -2,7 +2,7 @@
 
 import { useReducer, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@lib/router"
 import {
   type DriveListing,
   type DriveNode,
@@ -50,7 +50,7 @@ import { PageSpinner } from "@components/Spinner/Spinner"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 import DetailsPanel from "@pages/Drive/components/DetailsPanel/DetailsPanel"
 import DriveBackgroundMenu from "@pages/Drive/components/DriveBackgroundMenu/DriveBackgroundMenu"
-import dynamic from "next/dynamic"
+import { dynamic } from "@lib/dynamic"
 import { isFolderUnlocked } from "@lib/folderLock"
 import { is3DModelName } from "@polarhq/core/model3dExt"
 import FolderLockDialog from "@pages/Drive/components/FolderLockDialog/FolderLockDialog"
@@ -66,9 +66,7 @@ import NodeTable from "@pages/Drive/components/NodeTable/NodeTable"
 import RenameDialog from "@pages/Drive/components/RenameDialog/RenameDialog"
 import VersionHistoryDialog from "@pages/Drive/components/VersionHistoryDialog/VersionHistoryDialog"
 
-const ModelViewer = dynamic(() => import("@pages/Drive/components/ModelViewer/ModelViewer"), {
-  ssr: false,
-})
+const ModelViewer = dynamic(() => import("@pages/Drive/components/ModelViewer/ModelViewer"))
 
 interface BrowserProps {
   folderId?: string

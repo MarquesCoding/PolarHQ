@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode } from "react"
-import Link from "next/link"
+import { Link } from "@lib/router"
 import { Icon } from "@lib/icons"
 import { cn } from "@polarhq/ui/lib/utils"
 import { type Variants, motion } from "motion/react"

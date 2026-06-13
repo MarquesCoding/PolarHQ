@@ -58,3 +58,6 @@ next-env.d.ts
 # Local planning notes (never committed)
 TODO.md
 SAAS_PLAN.md
+
+# TanStack Router generated route tree
+apps/web/src/routeTree.gen.ts

@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
-import Link from "next/link"
+import { Link } from "@lib/router"
 import { useTranslation } from "react-i18next"
 import { type CollabDocument, useCollabDocument } from "@lib/useCollabDocument"
 import { IconShieldLock, IconTrash } from "@tabler/icons-react"

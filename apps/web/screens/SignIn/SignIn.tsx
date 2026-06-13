@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@lib/router"
 import RecoveryCodeDialog from "@components/RecoveryCodeDialog"
 import { authClient } from "@lib/authClient"
 import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@lib/e2e"

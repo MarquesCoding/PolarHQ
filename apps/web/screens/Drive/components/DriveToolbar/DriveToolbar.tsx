@@ -1,6 +1,6 @@
 "use client"
 
-import { usePathname } from "next/navigation"
+import { usePathname } from "@lib/router"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
 import { driveFolderIdFromPath } from "@lib/drive"
 import { usePersistentNumber } from "@lib/persistentSetting"

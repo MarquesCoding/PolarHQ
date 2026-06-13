@@ -2,7 +2,7 @@
 
 import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
-import Link from "next/link"
+import { Link } from "@lib/router"
 import type { DriveNode } from "@lib/drive"
 import { Icon } from "@lib/icons"
 import { cn } from "@polarhq/ui/lib/utils"

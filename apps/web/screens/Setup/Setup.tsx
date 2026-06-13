@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@lib/router"
 import { useTranslation } from "react-i18next"
 import { APP_NAME } from "@lib/env"
 import { fetchSetupStatus } from "@lib/setup"

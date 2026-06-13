@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@lib/router"
 import { sanitizeLinkHref } from "@lib/editorConfig"
 import type { Editor } from "@tiptap/react"
 import { Button } from "@polarhq/ui/components/button"

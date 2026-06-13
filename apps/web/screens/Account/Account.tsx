@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@lib/router"
 import { authClient } from "@lib/authClient"
 import { Icon } from "@lib/icons"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"

@@ -1,7 +1,7 @@
 "use client"
 
 import { formatMediumDateTime } from "@polarhq/i18n/format"
-import dynamic from "next/dynamic"
+import { dynamic } from "@lib/dynamic"
 import { decryptName, decryptWithMetaKey } from "@lib/e2e"
 import { formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"
@@ -13,7 +13,6 @@ import Inspector, { type InspectorTab } from "@components/Inspector/Inspector"
 
 const PhotoLocationMap = dynamic(
   () => import("@pages/Photos/components/PhotoLocationMap/PhotoLocationMap"),
-  { ssr: false },
 )
 
 const decoder = new TextDecoder()

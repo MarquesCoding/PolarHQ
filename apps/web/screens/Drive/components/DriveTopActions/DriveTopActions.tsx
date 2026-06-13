@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter } from "@lib/router"
 import { driveFolderIdFromPath, emptyDriveTrash, fetchNodes } from "@lib/drive"
 import type { DocType } from "@lib/docs"
 import { createEncryptedDoc } from "@lib/e2e"

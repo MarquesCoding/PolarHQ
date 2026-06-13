@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@lib/router"
 import { type DocType } from "@lib/docs"
 import { importFile } from "@lib/importFlow"
 import { useQueryClient } from "@tanstack/react-query"

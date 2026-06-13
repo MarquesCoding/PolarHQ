@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en" class="overscroll-none antialiased font-sans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-icon.png" />
+    <title>Vault</title>
+    <style>
+      :root {
+        --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+        --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+      }
+    </style>
+  </head>
+  <body class="overscroll-none">
+    <div id="root"></div>
+    <div id="portal" style="position: fixed; left: 0; top: 0; z-index: 9999"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

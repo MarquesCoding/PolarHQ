@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@lib/router"
 import { useTranslation } from "react-i18next"
 import { Button } from "@polarhq/ui/components/button"
 import {

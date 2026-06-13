@@ -1,12 +1,13 @@
-# Vault "web" image — builds the Next.js app and serves it with `next start`.
-# Build from the repo root:  docker build -f apps/web/Dockerfile .
+# Vault "web" image — builds the Vite SPA and serves the static bundle with
+# `vite preview` (SPA fallback included). Build from the repo root:
+#   docker build -f apps/web/Dockerfile .
 #
-# NEXT_PUBLIC_* values are baked at build time. NEXT_PUBLIC_API_URL is the URL
+# VITE_* values are baked into the bundle at build time. VITE_API_URL is the URL
 # the *browser* uses to reach the API; it defaults to empty (same-origin) so the
 # image works behind the bundled reverse proxy on ANY port with no rebuild.
 # Only override it if you serve the API on a different origin without the proxy:
 #   docker build -f apps/web/Dockerfile \
-#     --build-arg NEXT_PUBLIC_API_URL=https://api.example.com .
+#     --build-arg VITE_API_URL=https://api.example.com .
 #
 FROM node:22-bookworm-slim
 
@@ -16,14 +17,14 @@ WORKDIR /app
 COPY . .
 RUN pnpm install --frozen-lockfile --filter "web..."
 
-ARG NEXT_PUBLIC_APP_NAME=Vault
-ARG NEXT_PUBLIC_API_URL=
-ARG NEXT_PUBLIC_APP_VERSION=0.3.0
-ARG NEXT_PUBLIC_APP_BUILD=docker
-ENV NEXT_PUBLIC_APP_NAME=$NEXT_PUBLIC_APP_NAME \
-    NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
-    NEXT_PUBLIC_APP_VERSION=$NEXT_PUBLIC_APP_VERSION \
-    NEXT_PUBLIC_APP_BUILD=$NEXT_PUBLIC_APP_BUILD
+ARG VITE_APP_NAME=Vault
+ARG VITE_API_URL=
+ARG VITE_APP_VERSION=0.3.0
+ARG VITE_APP_BUILD=docker
+ENV VITE_APP_NAME=$VITE_APP_NAME \
+    VITE_API_URL=$VITE_API_URL \
+    VITE_APP_VERSION=$VITE_APP_VERSION \
+    VITE_APP_BUILD=$VITE_APP_BUILD
 
 RUN pnpm --filter web build
 
