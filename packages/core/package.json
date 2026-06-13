@@ -5,7 +5,16 @@
   "type": "module",
   "exports": {
     "./crypto": "./src/crypto.ts",
-    "./changelog": "./src/changelog/index.ts"
+    "./changelog": "./src/changelog/index.ts",
+    "./format": "./src/format.ts",
+    "./treemap": "./src/treemap.ts",
+    "./debug": "./src/debug.ts",
+    "./keyVerification": "./src/keyVerification.ts",
+    "./secureStore": "./src/secureStore.ts",
+    "./thumbnails": "./src/thumbnails.ts",
+    "./motionPhoto": "./src/motionPhoto.ts",
+    "./model3dExt": "./src/model3dExt.ts",
+    "./burst": "./src/burst.ts"
   },
   "scripts": {
     "build": "node scripts/generate-changelog.mjs",
@@ -13,6 +22,7 @@
     "changelog:generate": "node scripts/generate-changelog.mjs"
   },
   "dependencies": {
+    "exifr": "^7.1.3",
     "libsodium-wrappers-sumo": "^0.8.4"
   },
   "devDependencies": {

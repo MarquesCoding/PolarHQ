@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next"
 import { type DriveNode, isArchiveName } from "@lib/drive"
 import { docTypeOf } from "@lib/docs"
 import { officeTypeForName } from "@lib/importFlow"
-import { is3DModelName } from "@lib/model3dExt"
+import { is3DModelName } from "@polarhq/core/model3dExt"
 import {
   IconArrowsMove,
   IconCopy,

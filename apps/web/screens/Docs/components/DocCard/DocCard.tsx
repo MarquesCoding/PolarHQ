@@ -2,7 +2,7 @@
 
 import { dateLocale } from "@polarhq/i18n/format"
 import type { MouseEvent } from "react"
-import { formatBytes } from "@lib/format"
+import { formatBytes } from "@polarhq/core/format"
 import type { DocMeta } from "@lib/docs"
 import { Icon } from "@lib/icons"
 import { IconCircle, IconCircleCheckFilled } from "@tabler/icons-react"

@@ -1,6 +1,6 @@
 "use client"
 
-import { formatBytes } from "@lib/format"
+import { formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"
 import { t } from "@polarhq/i18n/config"
 import type { UploadItem } from "@lib/uploadManager"

@@ -2,9 +2,9 @@
 
 import { authClient } from "@lib/authClient"
 import { type StorageKind, decryptNodeName, fetchStorageStats } from "@lib/drive"
-import { bytesParts, formatBytes } from "@lib/format"
+import { bytesParts, formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"
-import { squarify } from "@lib/treemap"
+import { squarify } from "@polarhq/core/treemap"
 import { IconDevices } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { motion } from "motion/react"

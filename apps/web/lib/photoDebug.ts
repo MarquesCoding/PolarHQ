@@ -1,6 +1,6 @@
 "use client"
 
-import { setDebug } from "@lib/debug"
+import { setDebug } from "@polarhq/core/debug"
 import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "@lib/embedder"
 import { isUnlocked } from "@lib/e2e"
 import {

@@ -20,9 +20,9 @@ import {
   uploadEncryptedDriveFile,
   uploadEncryptedDriveFileChunked,
 } from "@lib/driveE2e"
-import { detectBurstGroups } from "@lib/burst"
+import { detectBurstGroups } from "@polarhq/core/burst"
 import { isUnlocked } from "@lib/e2e"
-import { pairLivePhotos } from "@lib/motionPhoto"
+import { pairLivePhotos } from "@polarhq/core/motionPhoto"
 import {
   downloadDecryptedPhoto,
   uploadEncryptedMedia,

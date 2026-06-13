@@ -19,7 +19,7 @@ import {
   storeContentKey,
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
-import { generateImageThumbnail } from "@lib/thumbnails"
+import { generateImageThumbnail } from "@polarhq/core/thumbnails"
 import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
 
 /**

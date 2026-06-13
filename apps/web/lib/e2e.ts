@@ -9,8 +9,8 @@ import {
   fetchDocContent,
   saveDocContent,
 } from "@lib/docs"
-import { fingerprintOf, verifyAndPin } from "@lib/keyVerification"
-import { secureStoreClear, secureStoreGet, secureStoreSet } from "@lib/secureStore"
+import { fingerprintOf, verifyAndPin } from "@polarhq/core/keyVerification"
+import { secureStoreClear, secureStoreGet, secureStoreSet } from "@polarhq/core/secureStore"
 import {
   type KdfParams,
   type Keypair,

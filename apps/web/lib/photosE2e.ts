@@ -21,9 +21,9 @@ import {
   storeContentKey,
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
-import { extractMotionVideo } from "@lib/motionPhoto"
+import { extractMotionVideo } from "@polarhq/core/motionPhoto"
 import { type Asset, type GridAsset, fetchStackMembers } from "@lib/photos"
-import { analyzeAudio, analyzeImage, analyzeVideo } from "@lib/thumbnails"
+import { analyzeAudio, analyzeImage, analyzeVideo } from "@polarhq/core/thumbnails"
 import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
 import exifr from "exifr"
 

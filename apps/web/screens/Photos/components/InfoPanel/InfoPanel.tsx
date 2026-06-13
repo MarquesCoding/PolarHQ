@@ -3,7 +3,7 @@
 import { formatMediumDateTime } from "@polarhq/i18n/format"
 import dynamic from "next/dynamic"
 import { decryptName, decryptWithMetaKey } from "@lib/e2e"
-import { formatBytes } from "@lib/format"
+import { formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"
 import { type AssetExif, fetchAsset } from "@lib/photos"
 import { IconInfoCircle, IconMapPin } from "@tabler/icons-react"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { dbg } from "@lib/debug"
+import { dbg } from "@polarhq/core/debug"
 import { cosine, embedText, embedderSupported } from "@lib/embedder"
 import { isUnlocked } from "@lib/e2e"
 import { fetchIndex, getSearchThreshold, onIndexChanged, searchPrompt } from "@lib/photoIndex"

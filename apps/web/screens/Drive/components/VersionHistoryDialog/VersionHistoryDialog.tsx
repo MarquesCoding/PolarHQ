@@ -2,7 +2,7 @@
 
 import { dateLocale } from "@polarhq/i18n/format"
 import { type DriveNode, fetchVersions, restoreDriveVersion } from "@lib/drive"
-import { formatBytes } from "@lib/format"
+import { formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button, buttonVariants } from "@polarhq/ui/components/button"
