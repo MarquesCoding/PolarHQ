@@ -1,5 +1,8 @@
-import SheetsList from "@pages/Sheets/SheetsList"
+import { redirect } from "next/navigation"
 
-const Page = () => <SheetsList />
+/** Spreadsheets live in the unified Vault explorer; the standalone list is retired. */
+const Page = () => {
+  redirect("/drive/files")
+}
 
 export default Page

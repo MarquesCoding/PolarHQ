@@ -1,5 +1,8 @@
-import DocsList from "@pages/Docs/DocsList"
+import { redirect } from "next/navigation"
 
-const Page = () => <DocsList />
+/** Documents live in the unified Vault explorer; the standalone list is retired. */
+const Page = () => {
+  redirect("/drive/files")
+}
 
 export default Page

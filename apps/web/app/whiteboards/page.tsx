@@ -1,5 +1,8 @@
-import WhiteboardList from "@pages/Whiteboard/WhiteboardList"
+import { redirect } from "next/navigation"
 
-const Page = () => <WhiteboardList />
+/** Whiteboards live in the unified Vault explorer; the standalone list is retired. */
+const Page = () => {
+  redirect("/drive/files")
+}
 
 export default Page
