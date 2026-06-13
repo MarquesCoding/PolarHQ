@@ -1,3 +1,5 @@
+"use client"
+
 import CollabList from "@pages/Collab/CollabList"
 import { useTranslation } from "react-i18next"
 
