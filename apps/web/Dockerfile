@@ -1,4 +1,4 @@
-# PolarHQ "web" image — builds the Next.js app and serves it with `next start`.
+# Vault "web" image — builds the Next.js app and serves it with `next start`.
 # Build from the repo root:  docker build -f apps/web/Dockerfile .
 #
 # NEXT_PUBLIC_* values are baked at build time. NEXT_PUBLIC_API_URL is the URL
@@ -16,7 +16,7 @@ WORKDIR /app
 COPY . .
 RUN pnpm install --frozen-lockfile --filter "web..."
 
-ARG NEXT_PUBLIC_APP_NAME=PolarHQ
+ARG NEXT_PUBLIC_APP_NAME=Vault
 ARG NEXT_PUBLIC_API_URL=
 ARG NEXT_PUBLIC_APP_VERSION=0.3.0
 ARG NEXT_PUBLIC_APP_BUILD=docker

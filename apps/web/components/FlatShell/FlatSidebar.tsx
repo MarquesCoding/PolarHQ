@@ -41,7 +41,7 @@ import Changelog from "@components/Changelog/Changelog"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 import StorageDialog from "@components/StorageDialog/StorageDialog"
 import { replayOnboarding } from "@components/OnboardingCard/OnboardingCard"
-import { APP_BUILD, APP_VERSION } from "@lib/env"
+import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
 
 /** Stagger the nav rows in on mount. Each app has its own layout/sidebar, so this replays exactly
  *  when switching apps (not on within-app navigation, where the sidebar persists). */
@@ -123,7 +123,7 @@ const FlatSidebar = ({
                 className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1.5 text-start transition"
               >
                 <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md">
-                  <Image src={logo} alt="PolarHQ" width={28} height={28} className="size-7" />
+                  <Image src={logo} alt={APP_NAME} width={28} height={28} className="size-7" />
                 </span>
                 <span className="flex min-w-0 flex-col leading-tight">
                   <span className="flex items-center gap-1.5">
@@ -134,7 +134,7 @@ const FlatSidebar = ({
                       </span>
                     ) : null}
                   </span>
-                  <span className="text-muted-foreground truncate text-[11px]">PolarHQ</span>
+                  <span className="text-muted-foreground truncate text-[11px]">{APP_NAME}</span>
                 </span>
                 <IconSelector className="text-muted-foreground ms-auto size-4 shrink-0" />
               </button>
@@ -143,10 +143,10 @@ const FlatSidebar = ({
           <DropdownMenuContent align="start" sideOffset={6} className="w-64 p-2">
             <div className="flex items-center gap-2.5 px-1 pt-0.5 pb-2">
               <span className="flex size-8 items-center justify-center overflow-hidden rounded-lg">
-                <Image src={logo} alt="PolarHQ" width={32} height={32} className="size-8" />
+                <Image src={logo} alt={APP_NAME} width={32} height={32} className="size-8" />
               </span>
               <span className="flex min-w-0 flex-col leading-tight">
-                <span className="truncate text-sm font-semibold">PolarHQ</span>
+                <span className="truncate text-sm font-semibold">{APP_NAME}</span>
                 <span className="text-muted-foreground truncate text-[11px]">
                   {t("flatSidebar.personalWorkspace")}
                 </span>
