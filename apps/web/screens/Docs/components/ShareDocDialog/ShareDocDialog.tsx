@@ -6,9 +6,9 @@ import {
   addDocCollaborator,
   fetchDocCollaborators,
   removeDocCollaborator,
-} from "@lib/docs"
+} from "@polarhq/vault/docs"
 import { authClient } from "@polarhq/sdk/authClient"
-import { type ShareKeyResult, isDocEncrypted, rekeyDoc, shareDocKey } from "@lib/e2e"
+import { type ShareKeyResult, isDocEncrypted, rekeyDoc, shareDocKey } from "@polarhq/vault/e2e"
 import { IconTrash } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@polarhq/ui/components/button"

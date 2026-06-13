@@ -2,7 +2,7 @@
 
 import { dateLocale } from "@polarhq/i18n/format"
 import { useState } from "react"
-import type { CommentThread, DocComment } from "@lib/commentMark"
+import type { CommentThread, DocComment } from "@polarhq/vault/commentMark"
 import { IconCheck, IconMessageOff, IconX } from "@tabler/icons-react"
 import { Button } from "@polarhq/ui/components/button"
 import { Input } from "@polarhq/ui/components/input"

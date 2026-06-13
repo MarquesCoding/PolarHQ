@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { Link } from "@lib/router"
-import { type Album, createAlbum, fetchAlbums } from "@lib/photos"
-import { fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
+import { type Album, createAlbum, fetchAlbums } from "@polarhq/vault/photos"
+import { fetchDecryptedPhotoThumbnail } from "@polarhq/vault/photosE2e"
 import EmptyState from "@components/EmptyState/EmptyState"
 import { TopBarActions } from "@components/FlatShell"
 import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"

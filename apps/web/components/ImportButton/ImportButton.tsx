@@ -2,8 +2,8 @@
 
 import { useRef, useState } from "react"
 import { useRouter } from "@lib/router"
-import { type DocType } from "@lib/docs"
-import { importFile } from "@lib/importFlow"
+import { type DocType } from "@polarhq/vault/docs"
+import { importFile } from "@polarhq/vault/importFlow"
 import { useQueryClient } from "@tanstack/react-query"
 import { IconFileImport } from "@tabler/icons-react"
 import { Button } from "@polarhq/ui/components/button"

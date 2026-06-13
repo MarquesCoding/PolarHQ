@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import type { DriveNode } from "@lib/drive"
-import { lockFolder, removeFolderLock, unlockFolder } from "@lib/folderLock"
+import type { DriveNode } from "@polarhq/vault/drive"
+import { lockFolder, removeFolderLock, unlockFolder } from "@polarhq/vault/folderLock"
 import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,

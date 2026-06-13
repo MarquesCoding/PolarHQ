@@ -2,8 +2,8 @@
 
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
-import { type GridAsset, stackAssets, uploadAsset } from "@lib/photos"
-import { uploadEncryptedMedia } from "@lib/photosE2e"
+import { type GridAsset, stackAssets, uploadAsset } from "@polarhq/vault/photos"
+import { uploadEncryptedMedia } from "@polarhq/vault/photosE2e"
 import { useQueryClient } from "@tanstack/react-query"
 import {
   IconCrop,

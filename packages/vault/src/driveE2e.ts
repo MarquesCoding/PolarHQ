@@ -10,15 +10,15 @@ import {
   secretstreamOpenAll,
 } from "@polarhq/core/crypto"
 import { streamDecryptToDisk, supportsStreamingDownload } from "@polarhq/sdk/streamDownload"
-import { type DriveNode, decryptNodeName } from "@lib/drive"
+import { type DriveNode, decryptNodeName } from "./drive"
 import {
   createContentKey,
   encryptName,
   encryptedPlaceholder,
   getDocContentKey,
   storeContentKey,
-} from "@lib/e2e"
-import { API_URL } from "@lib/env"
+} from "./e2e"
+import { sdkConfig } from "@polarhq/sdk/config"
 import { generateImageThumbnail } from "@polarhq/core/thumbnails"
 import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@polarhq/sdk/xhrUpload"
 
@@ -50,7 +50,7 @@ export const uploadEncryptedDriveFile = async (
   if (file.lastModified) form.set("mtime", String(file.lastModified))
 
   const { node } = await postFormWithProgress<{ node: DriveNode }>(
-    `${API_URL}/api/v1/drive/nodes/upload`,
+    `${sdkConfig().apiUrl}/api/v1/drive/nodes/upload`,
     form,
     options,
   )
@@ -60,7 +60,7 @@ export const uploadEncryptedDriveFile = async (
   if (file.type.startsWith("image/")) {
     const thumbnail = await generateImageThumbnail(file).catch(() => null)
     if (thumbnail) {
-      await fetch(`${API_URL}/api/v1/drive/nodes/${node.id}/thumbnail`, {
+      await fetch(`${sdkConfig().apiUrl}/api/v1/drive/nodes/${node.id}/thumbnail`, {
         method: "PUT",
         credentials: "include",
         headers: { "content-type": "application/octet-stream" },
@@ -128,7 +128,7 @@ export const uploadEncryptedDriveFileChunked = async (
 export const fetchDecryptedThumbnail = async (nodeId: string): Promise<string | null> => {
   const key = await getDocContentKey(nodeId)
   if (!key) return null
-  const response = await fetch(`${API_URL}/api/v1/drive/nodes/${nodeId}/thumbnail`, {
+  const response = await fetch(`${sdkConfig().apiUrl}/api/v1/drive/nodes/${nodeId}/thumbnail`, {
     credentials: "include",
   })
   if (!response.ok) return null

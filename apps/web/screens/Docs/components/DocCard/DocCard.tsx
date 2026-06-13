@@ -3,7 +3,7 @@
 import { dateLocale } from "@polarhq/i18n/format"
 import type { MouseEvent } from "react"
 import { formatBytes } from "@polarhq/core/format"
-import type { DocMeta } from "@lib/docs"
+import type { DocMeta } from "@polarhq/vault/docs"
 import { Icon } from "@lib/icons"
 import { IconCircle, IconCircleCheckFilled } from "@tabler/icons-react"
 import { Button } from "@polarhq/ui/components/button"

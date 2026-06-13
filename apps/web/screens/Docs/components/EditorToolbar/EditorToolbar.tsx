@@ -2,7 +2,7 @@
 
 import { type ReactNode, useRef } from "react"
 import { useTranslation } from "react-i18next"
-import { sanitizeLinkHref } from "@lib/editorConfig"
+import { sanitizeLinkHref } from "@polarhq/vault/editorConfig"
 import { type Editor, useEditorState } from "@tiptap/react"
 import {
   IconAlignCenter,

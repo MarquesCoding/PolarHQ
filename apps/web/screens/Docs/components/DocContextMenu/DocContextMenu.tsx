@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import type { DocMeta } from "@lib/docs"
+import type { DocMeta } from "@polarhq/vault/docs"
 import { IconDownload, IconExternalLink, IconPencil, IconTrash } from "@tabler/icons-react"
 import {
   ContextMenu,

@@ -14,22 +14,22 @@ import { ApiError } from "@polarhq/sdk/apiClient"
 import { authClient } from "@polarhq/sdk/authClient"
 import { apiErrorMessage } from "@lib/i18n/apiError"
 import { type UploadOptions, postFormWithProgress } from "@polarhq/sdk/xhrUpload"
-import { archiveDriveNodes } from "@lib/drive"
+import { archiveDriveNodes } from "@polarhq/vault/drive"
 import {
   CHUNKED_UPLOAD_THRESHOLD,
   uploadEncryptedDriveFile,
   uploadEncryptedDriveFileChunked,
-} from "@lib/driveE2e"
+} from "@polarhq/vault/driveE2e"
 import { detectBurstGroups } from "@polarhq/core/burst"
-import { isUnlocked } from "@lib/e2e"
+import { isUnlocked } from "@polarhq/vault/e2e"
 import { pairLivePhotos } from "@polarhq/core/motionPhoto"
 import {
   downloadDecryptedPhoto,
   uploadEncryptedMedia,
   uploadEncryptedMediaChunked,
-} from "@lib/photosE2e"
+} from "@polarhq/vault/photosE2e"
 import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@polarhq/sdk/download"
-import { deleteAssets, fetchProcessing, stackAssets } from "@lib/photos"
+import { deleteAssets, fetchProcessing, stackAssets } from "@polarhq/vault/photos"
 import { type LiveEvent, useLiveEvents } from "@polarhq/sdk/useLiveEvents"
 import { useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"

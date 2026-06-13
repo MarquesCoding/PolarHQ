@@ -1,6 +1,6 @@
 "use client"
 
-import type { GridAsset } from "@lib/photos"
+import type { GridAsset } from "@polarhq/vault/photos"
 import { useElementWidth } from "@lib/useElementWidth"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
 

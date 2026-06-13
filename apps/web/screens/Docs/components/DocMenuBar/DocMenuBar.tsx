@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useRouter } from "@lib/router"
-import { sanitizeLinkHref } from "@lib/editorConfig"
+import { sanitizeLinkHref } from "@polarhq/vault/editorConfig"
 import type { Editor } from "@tiptap/react"
 import { Button } from "@polarhq/ui/components/button"
 import {
@@ -48,7 +48,7 @@ const DocMenuBar = ({ editor, title, commentsOpen, onToggleComments, onAddCommen
   const { t } = useTranslation("docs")
   const exportDocx = async () => {
     try {
-      const { exportDocument } = await import("@lib/officeExport")
+      const { exportDocument } = await import("@polarhq/vault/officeExport")
       await exportDocument(editor.getHTML(), title || "Document")
     } catch {
       toast.error(t("docMenuBar.couldNotExport"))

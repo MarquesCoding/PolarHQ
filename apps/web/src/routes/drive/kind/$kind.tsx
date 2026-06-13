@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import type { StorageKind } from "@lib/drive"
+import type { StorageKind } from "@polarhq/vault/drive"
 import Browser from "@pages/Drive/Browser"
 
 const KINDS: StorageKind[] = ["image", "video", "audio", "document", "archive", "other"]

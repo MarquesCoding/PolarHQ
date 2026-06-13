@@ -1,6 +1,6 @@
 "use client"
 
-import { type DriveNode, deleteDriveNode, fetchDriveTrash, restoreDriveNode } from "@lib/drive"
+import { type DriveNode, deleteDriveNode, fetchDriveTrash, restoreDriveNode } from "@polarhq/vault/drive"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"

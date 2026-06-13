@@ -1,8 +1,8 @@
 "use client"
 
 import { setDebug } from "@polarhq/core/debug"
-import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "@lib/embedder"
-import { isUnlocked } from "@lib/e2e"
+import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "./embedder"
+import { isUnlocked } from "./e2e"
 import {
   embedAsset,
   ensureIndexing,
@@ -11,8 +11,8 @@ import {
   getSearchThreshold,
   searchPrompt,
   setSearchThreshold,
-} from "@lib/photoIndex"
-import { labelAsset } from "@lib/photoLabels"
+} from "./photoIndex"
+import { labelAsset } from "./photoLabels"
 
 /** Attach `window.vault.ml` console helpers to inspect and drive the semantic index. */
 export const installPhotoDebug = (): void => {

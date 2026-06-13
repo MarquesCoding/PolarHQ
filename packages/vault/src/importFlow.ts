@@ -1,8 +1,8 @@
-import { type DocType, type DocMeta, openEditor } from "@lib/docs"
-import { type DriveNode, renameDriveNode } from "@lib/drive"
-import { fetchDecryptedFile } from "@lib/driveE2e"
-import { createEncryptedDoc, encryptNameWith } from "@lib/e2e"
-import type { ImportPayload } from "@lib/officeImport"
+import { type DocType, type DocMeta, openEditor } from "./docs"
+import { type DriveNode, renameDriveNode } from "./drive"
+import { fetchDecryptedFile } from "./driveE2e"
+import { createEncryptedDoc, encryptNameWith } from "./e2e"
+import type { ImportPayload } from "./officeImport"
 
 const IMPORT_PREFIX = "vault:import:"
 
@@ -16,7 +16,7 @@ export const officeTypeForName = (name: string): DocType | null => {
 
 /** Lazy-load the heavy Office parsers (xlsx/mammoth/fflate) only when a file is imported. */
 const parseFor = async (file: File, type: DocType): Promise<ImportPayload> => {
-  const parsers = await import("@lib/officeImport")
+  const parsers = await import("./officeImport")
   if (type === "sheet") return parsers.parseSpreadsheet(file)
   return parsers.parseDocument(file)
 }

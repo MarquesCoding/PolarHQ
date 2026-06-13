@@ -2,8 +2,8 @@
 
 import { type MouseEvent, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import type { DriveNode } from "@lib/drive"
-import { fetchDecryptedThumbnail } from "@lib/driveE2e"
+import type { DriveNode } from "@polarhq/vault/drive"
+import { fetchDecryptedThumbnail } from "@polarhq/vault/driveE2e"
 import { formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"
 import { IconCircle, IconCircleCheckFilled, IconStarFilled } from "@tabler/icons-react"

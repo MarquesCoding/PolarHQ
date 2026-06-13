@@ -9,7 +9,7 @@ import {
   secretstreamInit,
   secretstreamOpenAll,
 } from "@polarhq/core/crypto"
-import { CHUNKED_UPLOAD_THRESHOLD } from "@lib/driveE2e"
+import { CHUNKED_UPLOAD_THRESHOLD } from "./driveE2e"
 import { streamDecryptToDisk, supportsStreamingDownload } from "@polarhq/sdk/streamDownload"
 import {
   createContentKey,
@@ -19,10 +19,10 @@ import {
   encryptedPlaceholder,
   getDocContentKey,
   storeContentKey,
-} from "@lib/e2e"
-import { API_URL } from "@lib/env"
+} from "./e2e"
+import { sdkConfig } from "@polarhq/sdk/config"
 import { extractMotionVideo } from "@polarhq/core/motionPhoto"
-import { type Asset, type GridAsset, fetchStackMembers } from "@lib/photos"
+import { type Asset, type GridAsset, fetchStackMembers } from "./photos"
 import { analyzeAudio, analyzeImage, analyzeVideo } from "@polarhq/core/thumbnails"
 import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@polarhq/sdk/xhrUpload"
 import exifr from "exifr"
@@ -216,9 +216,9 @@ const attachAssetExtras = async (
 
   if (thumbnail) {
     const encryptedThumb = secretboxSeal(thumbnail, key)
-    await putThumbnail(`${API_URL}/api/v1/photos/assets/${asset.id}/thumbnail`, encryptedThumb)
+    await putThumbnail(`${sdkConfig().apiUrl}/api/v1/photos/assets/${asset.id}/thumbnail`, encryptedThumb)
     if (mirrorNodeId)
-      await putThumbnail(`${API_URL}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, encryptedThumb)
+      await putThumbnail(`${sdkConfig().apiUrl}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, encryptedThumb)
   }
 
   if (source.type.startsWith("image/")) {
@@ -227,11 +227,11 @@ const attachAssetExtras = async (
       : await extractMotionVideo(file).catch(() => null)
     if (motionBytes) {
       await putThumbnail(
-        `${API_URL}/api/v1/photos/assets/${asset.id}/motion`,
+        `${sdkConfig().apiUrl}/api/v1/photos/assets/${asset.id}/motion`,
         secretboxSeal(motionBytes, key),
       ).catch(() => undefined)
     }
-    void import("@lib/photoIndex")
+    void import("./photoIndex")
       .then((index) => index.embedAndStore(asset.id, source))
       .catch(() => undefined)
   }
@@ -268,7 +268,7 @@ export const uploadEncryptedMedia = async (
   const { asset, mirrorNodeId } = await postFormWithProgress<{
     asset: Asset
     mirrorNodeId: string | null
-  }>(`${API_URL}/api/v1/photos/assets`, form, options)
+  }>(`${sdkConfig().apiUrl}/api/v1/photos/assets`, form, options)
 
   await attachAssetExtras(file, source, asset, mirrorNodeId, key, thumbnail, motionFile)
   return asset
@@ -333,7 +333,7 @@ export const uploadEncryptedMediaChunked = async (
 export const fetchDecryptedMotionVideo = async (assetId: string): Promise<string | null> => {
   const key = await getDocContentKey(assetId)
   if (!key) return null
-  const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/motion`, {
+  const response = await fetch(`${sdkConfig().apiUrl}/api/v1/photos/assets/${assetId}/motion`, {
     credentials: "include",
   })
   if (!response.ok) return null
@@ -352,7 +352,7 @@ export const uploadEncryptedPhoto = uploadEncryptedMedia
 export const fetchDecryptedPhotoThumbnail = async (assetId: string): Promise<string | null> => {
   const key = await getDocContentKey(assetId)
   if (!key) return null
-  const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/thumbnail`, {
+  const response = await fetch(`${sdkConfig().apiUrl}/api/v1/photos/assets/${assetId}/thumbnail`, {
     credentials: "include",
   })
   if (!response.ok) return null
@@ -378,7 +378,7 @@ export const downloadDecryptedPhoto = async (
   if (sizeBytes >= CHUNKED_UPLOAD_THRESHOLD && supportsStreamingDownload()) {
     const key = await getDocContentKey(assetId)
     if (key) {
-      const url = `${API_URL}/api/v1/photos/assets/${assetId}/original`
+      const url = `${sdkConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`
       if (await streamDecryptToDisk(url, key, filename, sizeBytes, onProgress)) return
     }
   }
@@ -400,7 +400,7 @@ export const fetchDecryptedPhotoOriginal = async (
 ): Promise<string | null> => {
   const key = await getDocContentKey(assetId)
   if (!key) return null
-  const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/original`, {
+  const response = await fetch(`${sdkConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`, {
     credentials: "include",
   })
   if (!response.ok) return null

@@ -2,10 +2,10 @@
 
 import { formatMediumDateTime } from "@polarhq/i18n/format"
 import { dynamic } from "@lib/dynamic"
-import { decryptName, decryptWithMetaKey } from "@lib/e2e"
+import { decryptName, decryptWithMetaKey } from "@polarhq/vault/e2e"
 import { formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"
-import { type AssetExif, fetchAsset } from "@lib/photos"
+import { type AssetExif, fetchAsset } from "@polarhq/vault/photos"
 import { IconInfoCircle, IconMapPin } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"

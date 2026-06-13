@@ -1,6 +1,6 @@
 import { apiFetch } from "@polarhq/sdk/apiClient"
-import { decryptName, encryptName, encryptedPlaceholder } from "@lib/e2e"
-import { API_URL } from "@lib/env"
+import { decryptName, encryptName, encryptedPlaceholder } from "./e2e"
+import { sdkConfig } from "@polarhq/sdk/config"
 
 export type DriveKind = "folder" | "file"
 
@@ -297,7 +297,7 @@ export const uploadDriveFile = async (
   form.set("file", file)
   if (parentId) form.set("parentId", parentId)
   if (file.lastModified) form.set("mtime", String(file.lastModified))
-  const response = await fetch(`${API_URL}/api/v1/drive/nodes/upload`, {
+  const response = await fetch(`${sdkConfig().apiUrl}/api/v1/drive/nodes/upload`, {
     method: "POST",
     credentials: "include",
     body: form,

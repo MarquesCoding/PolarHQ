@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import type { DriveNode } from "@lib/drive"
-import { fetchDecryptedFile } from "@lib/driveE2e"
+import type { DriveNode } from "@polarhq/vault/drive"
+import { fetchDecryptedFile } from "@polarhq/vault/driveE2e"
 import { Icon } from "@lib/icons"
 import { useZoomPan } from "@lib/useZoomPan"
 import { Button } from "@polarhq/ui/components/button"

@@ -3,9 +3,9 @@
 import type { ReactNode } from "react"
 import { useRouter } from "@lib/router"
 import { useTranslation } from "react-i18next"
-import { type DriveNode, isArchiveName } from "@lib/drive"
-import { docTypeOf } from "@lib/docs"
-import { officeTypeForName } from "@lib/importFlow"
+import { type DriveNode, isArchiveName } from "@polarhq/vault/drive"
+import { docTypeOf } from "@polarhq/vault/docs"
+import { officeTypeForName } from "@polarhq/vault/importFlow"
 import { is3DModelName } from "@polarhq/core/model3dExt"
 import {
   IconArrowsMove,

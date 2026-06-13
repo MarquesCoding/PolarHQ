@@ -3,7 +3,7 @@
 import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "@lib/router"
-import type { DriveNode } from "@lib/drive"
+import type { DriveNode } from "@polarhq/vault/drive"
 import { Icon } from "@lib/icons"
 import { cn } from "@polarhq/ui/lib/utils"
 

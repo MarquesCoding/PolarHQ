@@ -2,10 +2,10 @@
 
 import { apiFetch } from "@polarhq/sdk/apiClient"
 import { dbg } from "@polarhq/core/debug"
-import { MODEL_VERSION, embedImage, embedderSupported } from "@lib/embedder"
-import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@lib/e2e"
-import { API_URL } from "@lib/env"
-import { fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
+import { MODEL_VERSION, embedImage, embedderSupported } from "./embedder"
+import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "./e2e"
+import { sdkConfig } from "@polarhq/sdk/config"
+import { fetchDecryptedPhotoOriginal } from "./photosE2e"
 
 /**
  * The client-side semantic index. CLIP vectors are computed in the browser, stored encrypted
@@ -71,7 +71,7 @@ const photoBlobForEmbedding = async (assetId: string): Promise<Blob | null> => {
       URL.revokeObjectURL(decrypted)
     }
   }
-  const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/original`, {
+  const response = await fetch(`${sdkConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`, {
     credentials: "include",
   })
   return response.ok ? response.blob() : null

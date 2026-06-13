@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { dbg } from "@polarhq/core/debug"
-import { cosine, embedText, embedderSupported } from "@lib/embedder"
-import { isUnlocked } from "@lib/e2e"
-import { fetchIndex, getSearchThreshold, onIndexChanged, searchPrompt } from "@lib/photoIndex"
+import { cosine, embedText, embedderSupported } from "@polarhq/vault/embedder"
+import { isUnlocked } from "@polarhq/vault/e2e"
+import { fetchIndex, getSearchThreshold, onIndexChanged, searchPrompt } from "@polarhq/vault/photoIndex"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 interface SemanticSearch {

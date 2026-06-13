@@ -2,7 +2,7 @@
 
 import { dateLocale } from "@polarhq/i18n/format"
 import type { ReactNode } from "react"
-import { type DriveNode, fetchVersions } from "@lib/drive"
+import { type DriveNode, fetchVersions } from "@polarhq/vault/drive"
 import { formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"
 import { IconHistory, IconInfoCircle, IconX } from "@tabler/icons-react"

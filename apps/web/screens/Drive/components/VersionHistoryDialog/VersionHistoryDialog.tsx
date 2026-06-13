@@ -1,7 +1,7 @@
 "use client"
 
 import { dateLocale } from "@polarhq/i18n/format"
-import { type DriveNode, fetchVersions, restoreDriveVersion } from "@lib/drive"
+import { type DriveNode, fetchVersions, restoreDriveVersion } from "@polarhq/vault/drive"
 import { formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"

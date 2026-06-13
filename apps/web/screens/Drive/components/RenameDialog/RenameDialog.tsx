@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { renameDriveNode } from "@lib/drive"
+import { renameDriveNode } from "@polarhq/vault/drive"
 import { useMutation } from "@tanstack/react-query"
 import { Button } from "@polarhq/ui/components/button"
 import {

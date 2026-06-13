@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { fetchSavedSearches } from "@lib/drive"
+import { fetchSavedSearches } from "@polarhq/vault/drive"
 import { useQuery } from "@tanstack/react-query"
 import Browser from "@pages/Drive/Browser"
 

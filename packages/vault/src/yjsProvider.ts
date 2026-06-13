@@ -1,7 +1,7 @@
 "use client"
 
 import { secretboxOpen, secretboxSeal } from "@polarhq/core/crypto"
-import { API_URL } from "@lib/env"
+import { sdkConfig } from "@polarhq/sdk/config"
 import * as decoding from "lib0/decoding"
 import * as encoding from "lib0/encoding"
 import {
@@ -18,7 +18,7 @@ const MESSAGE_AWARENESS = 1
 const RECONNECT_DELAY = 1500
 
 const wsUrl = (nodeId: string): string =>
-  `${API_URL.replace(/^http/, "ws")}/ws/doc?doc=${encodeURIComponent(nodeId)}`
+  `${sdkConfig().apiUrl.replace(/^http/, "ws")}/ws/doc?doc=${encodeURIComponent(nodeId)}`
 
 interface AwarenessChange {
   added: number[]

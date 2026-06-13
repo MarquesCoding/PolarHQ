@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { applyImportName, takeImport } from "@lib/importFlow"
+import { applyImportName, takeImport } from "@polarhq/vault/importFlow"
 import type { CollabDocument } from "@lib/useCollabDocument"
 import CollabBoundary from "@pages/Collab/CollabBoundary"
 import FormulaBar from "@pages/Sheets/components/FormulaBar/FormulaBar"

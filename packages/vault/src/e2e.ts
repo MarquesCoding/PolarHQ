@@ -8,7 +8,7 @@ import {
   fetchDocCollaborators,
   fetchDocContent,
   saveDocContent,
-} from "@lib/docs"
+} from "./docs"
 import { fingerprintOf, verifyAndPin } from "@polarhq/core/keyVerification"
 import { secureStoreClear, secureStoreGet, secureStoreSet } from "@polarhq/core/secureStore"
 import {

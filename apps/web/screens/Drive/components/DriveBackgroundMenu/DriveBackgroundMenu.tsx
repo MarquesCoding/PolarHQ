@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import type { DocType } from "@lib/docs"
+import type { DocType } from "@polarhq/vault/docs"
 import { IconFilePlus, IconFolderPlus, IconTable, IconUpload } from "@tabler/icons-react"
 import {
   ContextMenu,

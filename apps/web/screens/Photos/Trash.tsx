@@ -1,6 +1,6 @@
 "use client"
 
-import { deleteAssets, emptyTrash, fetchAssets, restoreAssets } from "@lib/photos"
+import { deleteAssets, emptyTrash, fetchAssets, restoreAssets } from "@polarhq/vault/photos"
 import { t as translate } from "@polarhq/i18n/config"
 import CollectionView from "@pages/Photos/components/CollectionView/CollectionView"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"

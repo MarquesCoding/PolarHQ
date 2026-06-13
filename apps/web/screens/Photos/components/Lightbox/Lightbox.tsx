@@ -3,13 +3,13 @@
 import { dateLocale } from "@polarhq/i18n/format"
 import { type ReactElement, useEffect, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
-import { decryptName } from "@lib/e2e"
-import { type GridAsset, assetOriginalUrl, favoriteAssets, sharePhoto, trashAssets } from "@lib/photos"
+import { decryptName } from "@polarhq/vault/e2e"
+import { type GridAsset, assetOriginalUrl, favoriteAssets, sharePhoto, trashAssets } from "@polarhq/vault/photos"
 import {
   fetchDecryptedMotionVideo,
   fetchDecryptedPhotoOriginal,
   fetchDecryptedPhotoThumbnail,
-} from "@lib/photosE2e"
+} from "@polarhq/vault/photosE2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
 import { IconLivePhoto } from "@tabler/icons-react"

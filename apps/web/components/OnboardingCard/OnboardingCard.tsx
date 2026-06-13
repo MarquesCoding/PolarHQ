@@ -2,7 +2,7 @@
 
 import { type ReactNode, useEffect, useState } from "react"
 import { Icon } from "@lib/icons"
-import type { GridAsset } from "@lib/photos"
+import type { GridAsset } from "@polarhq/vault/photos"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
 import { Button } from "@polarhq/ui/components/button"
 import { cn } from "@polarhq/ui/lib/utils"

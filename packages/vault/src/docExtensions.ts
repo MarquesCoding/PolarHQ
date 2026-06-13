@@ -13,6 +13,9 @@ declare module "@tiptap/core" {
     lineHeight: {
       setLineHeight: (value: string | null) => ReturnType
     }
+    textStyle: {
+      removeEmptyTextStyle: () => ReturnType
+    }
   }
 }
 

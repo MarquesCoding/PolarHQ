@@ -1,6 +1,6 @@
 import { apiFetch } from "@polarhq/sdk/apiClient"
-import type { ShareLink, ShareOptions } from "@lib/drive"
-import { API_URL } from "@lib/env"
+import type { ShareLink, ShareOptions } from "./drive"
+import { sdkConfig } from "@polarhq/sdk/config"
 
 /** Create a public share link for a photo (uses its mirrored Drive node). */
 export const sharePhoto = (assetId: string, options: ShareOptions = {}): Promise<ShareLink> =>
@@ -117,7 +117,7 @@ export interface UploadResult {
 export const uploadAsset = async (file: File): Promise<UploadResult> => {
   const body = new FormData()
   body.set("file", file)
-  const response = await fetch(`${API_URL}/api/v1/photos/assets`, {
+  const response = await fetch(`${sdkConfig().apiUrl}/api/v1/photos/assets`, {
     method: "POST",
     credentials: "include",
     body,
@@ -264,7 +264,7 @@ export const fetchProcessing = (): Promise<{ assets: ProcessingAsset[] }> =>
 
 /** Authenticated streaming URL for an asset's original file (used for audio playback). */
 export const assetOriginalUrl = (id: string): string =>
-  `${API_URL}/api/v1/photos/assets/${id}/original`
+  `${sdkConfig().apiUrl}/api/v1/photos/assets/${id}/original`
 
 export interface Usage {
   usedBytes: number

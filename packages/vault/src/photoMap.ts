@@ -1,8 +1,8 @@
 "use client"
 
 import { apiFetch } from "@polarhq/sdk/apiClient"
-import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@lib/e2e"
-import { encryptedGpsFor, fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
+import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "./e2e"
+import { encryptedGpsFor, fetchDecryptedPhotoOriginal } from "./photosE2e"
 
 const decoder = new TextDecoder()
 const encoder = new TextEncoder()

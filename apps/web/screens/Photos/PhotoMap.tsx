@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef } from "react"
 import { useTranslation } from "react-i18next"
-import { fetchPhotoPoints, runLocationBackfill } from "@lib/photoMap"
+import { fetchPhotoPoints, runLocationBackfill } from "@polarhq/vault/photoMap"
 import { useQuery } from "@tanstack/react-query"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import { Map, MapClusterLayer, MapControls, type MapRef } from "@polarhq/ui/components/map"

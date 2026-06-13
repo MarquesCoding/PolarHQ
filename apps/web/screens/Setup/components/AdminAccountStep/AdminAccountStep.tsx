@@ -3,7 +3,7 @@
 import { useState } from "react"
 import RecoveryCodeDialog from "@components/RecoveryCodeDialog"
 import { authClient } from "@polarhq/sdk/authClient"
-import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@lib/e2e"
+import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@polarhq/vault/e2e"
 import { apiErrorMessage } from "@lib/i18n/apiError"
 import { type RegistrationMode, completeSetup } from "@polarhq/sdk/setup"
 import { useForm } from "@tanstack/react-form"

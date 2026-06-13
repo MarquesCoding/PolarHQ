@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { type DriveNode, fetchNodes } from "@lib/drive"
+import { type DriveNode, fetchNodes } from "@polarhq/vault/drive"
 import { Icon } from "@lib/icons"
 import type { SelectionApi } from "@lib/selection"
 import { IconChevronRight } from "@tabler/icons-react"

@@ -7,14 +7,14 @@ import {
   useRef,
   useState,
 } from "react"
-import { decryptName } from "@lib/e2e"
+import { decryptName } from "@polarhq/vault/e2e"
 import { Icon } from "@lib/icons"
-import type { GridAsset } from "@lib/photos"
+import type { GridAsset } from "@polarhq/vault/photos"
 import {
   fetchDecryptedMotionVideo,
   fetchDecryptedPhotoOriginal,
   fetchDecryptedPhotoThumbnail,
-} from "@lib/photosE2e"
+} from "@polarhq/vault/photosE2e"
 import { IconCircle, IconHeartFilled, IconLivePhoto, IconPhoto, IconStack2 } from "@tabler/icons-react"
 import { cn } from "@polarhq/ui/lib/utils"
 import { motion } from "motion/react"

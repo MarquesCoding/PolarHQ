@@ -1,7 +1,7 @@
 "use client"
 
 import { authClient } from "@polarhq/sdk/authClient"
-import { type StorageKind, decryptNodeName, fetchStorageStats } from "@lib/drive"
+import { type StorageKind, decryptNodeName, fetchStorageStats } from "@polarhq/vault/drive"
 import { bytesParts, formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"
 import { squarify } from "@polarhq/core/treemap"
@@ -9,7 +9,7 @@ import { IconDevices } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import type { StorageApp, StorageStats } from "@lib/drive"
+import type { StorageApp, StorageStats } from "@polarhq/vault/drive"
 
 const KIND_COLOR: Record<StorageKind, string> = {
   image: "bg-blue-500",

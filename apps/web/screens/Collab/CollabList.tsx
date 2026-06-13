@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import { useRouter } from "@lib/router"
-import { type DocMeta, type DocType, fetchDocs, openEditor } from "@lib/docs"
-import { trashDriveNode } from "@lib/drive"
-import { createEncryptedDoc } from "@lib/e2e"
+import { type DocMeta, type DocType, fetchDocs, openEditor } from "@polarhq/vault/docs"
+import { trashDriveNode } from "@polarhq/vault/drive"
+import { createEncryptedDoc } from "@polarhq/vault/e2e"
 import { Icon } from "@lib/icons"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { SelectionProvider, useSelection } from "@lib/selection"

@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import type { DriveNode } from "@lib/drive"
-import { unlockFolder } from "@lib/folderLock"
+import type { DriveNode } from "@polarhq/vault/drive"
+import { unlockFolder } from "@polarhq/vault/folderLock"
 import { IconLock } from "@tabler/icons-react"
 import { Button } from "@polarhq/ui/components/button"
 import { Input } from "@polarhq/ui/components/input"

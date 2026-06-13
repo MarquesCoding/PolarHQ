@@ -3,7 +3,7 @@
 import { type ReactNode, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@lib/icons"
-import { sharePhoto } from "@lib/photos"
+import { sharePhoto } from "@polarhq/vault/photos"
 import { useSelection } from "@lib/selection"
 import { type DownloadItem, useUploadManager } from "@lib/uploadManager"
 import NumberFlow from "@number-flow/react"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { isEnrolled, setupKeys, unlockKeys, unlockWithRecovery } from "@lib/e2e"
+import { isEnrolled, setupKeys, unlockKeys, unlockWithRecovery } from "@polarhq/vault/e2e"
 import { IconCopy, IconShieldLock } from "@tabler/icons-react"
 import { Button } from "@polarhq/ui/components/button"
 import {

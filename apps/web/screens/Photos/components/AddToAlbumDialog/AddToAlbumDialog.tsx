@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Icon } from "@lib/icons"
-import { addToAlbum, createAlbum, fetchAlbums } from "@lib/photos"
+import { addToAlbum, createAlbum, fetchAlbums } from "@polarhq/vault/photos"
 import { IconPlus } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@polarhq/ui/components/button"

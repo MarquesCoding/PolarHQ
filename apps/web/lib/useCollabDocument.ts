@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { secretboxOpen, secretboxSeal } from "@polarhq/core/crypto"
-import { type DocMeta, fetchDoc, fetchDocContent, saveDocContent } from "@lib/docs"
-import { e2eReady, getDocContentKey, isDocEncrypted, isUnlocked } from "@lib/e2e"
+import { type DocMeta, fetchDoc, fetchDocContent, saveDocContent } from "@polarhq/vault/docs"
+import { e2eReady, getDocContentKey, isDocEncrypted, isUnlocked } from "@polarhq/vault/e2e"
 import { useLiveEvents } from "@polarhq/sdk/useLiveEvents"
-import { RelayProvider } from "@lib/yjsProvider"
+import { RelayProvider } from "@polarhq/vault/yjsProvider"
 import * as Y from "yjs"
 
 type Status = "loading" | "ready" | "error" | "locked" | "deleted"

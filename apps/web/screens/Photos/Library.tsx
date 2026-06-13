@@ -1,9 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { decryptName } from "@lib/e2e"
-import { installPhotoDebug } from "@lib/photoDebug"
-import { ensureIndexing } from "@lib/photoIndex"
+import { decryptName } from "@polarhq/vault/e2e"
+import { installPhotoDebug } from "@polarhq/vault/photoDebug"
+import { ensureIndexing } from "@polarhq/vault/photoIndex"
 import {
   type GridAsset,
   favoriteAssets,
@@ -11,8 +11,8 @@ import {
   stackAssets,
   trashAssets,
   unstackAssets,
-} from "@lib/photos"
-import { downloadItemFor, expandStacksToDownloadItems } from "@lib/photosE2e"
+} from "@polarhq/vault/photos"
+import { downloadItemFor, expandStacksToDownloadItems } from "@polarhq/vault/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useAssetFeed } from "@lib/useAssetFeed"

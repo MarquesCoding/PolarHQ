@@ -8,8 +8,8 @@ import {
   fetchAlbum,
   removeFromAlbum,
   trashAssets,
-} from "@lib/photos"
-import { downloadItemFor, expandStacksToDownloadItems } from "@lib/photosE2e"
+} from "@polarhq/vault/photos"
+import { downloadItemFor, expandStacksToDownloadItems } from "@polarhq/vault/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { type LiveEvent, useLiveEvents } from "@polarhq/sdk/useLiveEvents"
 import { useArmedConfirm } from "@lib/useArmedConfirm"

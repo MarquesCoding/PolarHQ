@@ -3,7 +3,7 @@
 import { type ReactNode, useEffect, useState } from "react"
 import { usePathname, useRouter } from "@lib/router"
 import { authClient } from "@polarhq/sdk/authClient"
-import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@lib/e2e"
+import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@polarhq/vault/e2e"
 import { SidebarProvider, useSidebar } from "@polarhq/ui/components/sidebar"
 import OnboardingCard from "@components/OnboardingCard/OnboardingCard"
 import Spinner from "@components/Spinner/Spinner"

@@ -2,8 +2,8 @@
 /* eslint-disable react/no-unknown-property */
 
 import { Suspense, useEffect, useMemo, useState } from "react"
-import type { DriveNode } from "@lib/drive"
-import { fetchDecryptedFile } from "@lib/driveE2e"
+import type { DriveNode } from "@polarhq/vault/drive"
+import { fetchDecryptedFile } from "@polarhq/vault/driveE2e"
 import { API_URL } from "@lib/env"
 import { Icon } from "@lib/icons"
 import {
@@ -12,7 +12,7 @@ import {
   disposeModel,
   hasTextures,
   loadModel,
-} from "@lib/model3d"
+} from "@polarhq/vault/model3d"
 import {
   IconBox,
   IconGridDots,

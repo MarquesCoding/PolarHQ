@@ -2,7 +2,7 @@
 
 import { usePathname } from "@lib/router"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
-import { driveFolderIdFromPath } from "@lib/drive"
+import { driveFolderIdFromPath } from "@polarhq/vault/drive"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useAppSelector } from "@store/hooks"
 import DriveTopActions from "@pages/Drive/components/DriveTopActions/DriveTopActions"
