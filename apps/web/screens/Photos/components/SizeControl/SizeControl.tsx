@@ -1,7 +1,7 @@
 "use client"
 
 import { Icon } from "@lib/icons"
-import SizeControlBase, { type SizeControlProps } from "@workspace/ui/components/size-control"
+import SizeControlBase, { type SizeControlProps } from "@polarhq/ui/components/size-control"
 import { useTranslation } from "react-i18next"
 
 type Props = Omit<SizeControlProps, "triggerIcon" | "minIcon" | "maxIcon" | "labels">

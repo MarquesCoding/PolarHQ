@@ -1,4 +1,4 @@
-import { config } from "@workspace/config"
+import { config } from "@polarhq/config"
 import { z } from "zod"
 import { listTimeline } from "./photos/service"
 import { protectedProcedure, publicProcedure, router } from "./trpc"

@@ -10,15 +10,15 @@ import {
 } from "@lib/admin"
 import GroupDetailSheet from "@pages/Admin/components/GroupDetailSheet/GroupDetailSheet"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
+import { Button } from "@polarhq/ui/components/button"
+import { Input } from "@polarhq/ui/components/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
+} from "@polarhq/ui/components/select"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"

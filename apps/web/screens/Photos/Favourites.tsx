@@ -6,7 +6,7 @@ import CollectionView from "@pages/Photos/components/CollectionView/CollectionVi
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import EmptyState from "@components/EmptyState/EmptyState"
 import { IconHeartOff } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import { toast } from "sonner"
 import { t } from "@lib/i18n/config"
 import { useTranslation } from "react-i18next"

@@ -27,22 +27,22 @@ import {
   IconStrikethrough,
   IconUnderline,
 } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+} from "@polarhq/ui/components/dropdown-menu"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
-import { Separator } from "@workspace/ui/components/separator"
+} from "@polarhq/ui/components/select"
+import { Separator } from "@polarhq/ui/components/separator"
 import { type CellFormat, FONTS, FONT_SIZES, ZOOM_LEVELS } from "@pages/Sheets/sheetModel"
 import type { BorderMode, SheetController } from "@pages/Sheets/useSheet"
 import ColorPalette from "@pages/Sheets/components/ColorPalette/ColorPalette"

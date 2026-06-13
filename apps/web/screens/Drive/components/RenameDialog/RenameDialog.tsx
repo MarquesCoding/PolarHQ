@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react"
 import { renameDriveNode } from "@lib/drive"
 import { useMutation } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { Input } from "@workspace/ui/components/input"
+} from "@polarhq/ui/components/dialog"
+import { Input } from "@polarhq/ui/components/input"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 

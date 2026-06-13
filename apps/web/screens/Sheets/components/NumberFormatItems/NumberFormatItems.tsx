@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import {
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from "@workspace/ui/components/dropdown-menu"
+} from "@polarhq/ui/components/dropdown-menu"
 import { NUMBER_FORMAT_GROUPS } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
 

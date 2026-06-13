@@ -9,14 +9,14 @@ import { TopBarActions } from "@components/FlatShell"
 import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
 import { IconPlus, IconStack2 } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { Input } from "@workspace/ui/components/input"
+} from "@polarhq/ui/components/dialog"
+import { Input } from "@polarhq/ui/components/input"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"

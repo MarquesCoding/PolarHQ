@@ -1,4 +1,4 @@
-import { type PermissionDef, registerLimit, registerPermissions } from "@workspace/auth"
+import { type PermissionDef, registerLimit, registerPermissions } from "@polarhq/auth"
 
 export const PHOTOS_APP_ID = "photos"
 

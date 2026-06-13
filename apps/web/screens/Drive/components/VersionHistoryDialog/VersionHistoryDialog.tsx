@@ -5,14 +5,14 @@ import { type DriveNode, fetchVersions, restoreDriveVersion } from "@lib/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button, buttonVariants } from "@workspace/ui/components/button"
+import { Button, buttonVariants } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
+} from "@polarhq/ui/components/dialog"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 

@@ -1,4 +1,4 @@
-import { config } from "@workspace/config"
+import { config } from "@polarhq/config"
 import type { StorageDriver } from "./driver"
 import { FsDriver } from "./fs-driver"
 import { S3Driver } from "./s3-driver"

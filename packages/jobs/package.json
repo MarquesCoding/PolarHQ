@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/jobs",
+  "name": "@polarhq/jobs",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,12 +10,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@workspace/config": "workspace:*",
+    "@polarhq/config": "workspace:*",
     "bullmq": "^5.78.0",
     "ioredis": "^5.11.1"
   },
   "devDependencies": {
-    "@workspace/typescript-config": "workspace:*",
+    "@polarhq/typescript-config": "workspace:*",
     "typescript": "^5.7.3"
   }
 }

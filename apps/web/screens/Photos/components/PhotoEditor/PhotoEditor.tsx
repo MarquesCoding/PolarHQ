@@ -12,10 +12,10 @@ import {
   IconSparkles,
   IconX,
 } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Slider } from "@workspace/ui/components/slider"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@polarhq/ui/components/button"
+import { Input } from "@polarhq/ui/components/input"
+import { Slider } from "@polarhq/ui/components/slider"
+import { cn } from "@polarhq/ui/lib/utils"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"

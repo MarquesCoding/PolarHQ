@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/config",
+  "name": "@polarhq/config",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,7 +14,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@workspace/typescript-config": "workspace:*",
+    "@polarhq/typescript-config": "workspace:*",
     "typescript": "^5.7.3"
   }
 }

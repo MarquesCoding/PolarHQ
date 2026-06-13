@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@lib/icons"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 import { DRIVE_NODES_MIME } from "@pages/Drive/components/NodeCard/NodeCard"
 
 interface ParentCardProps {

@@ -7,7 +7,7 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
-    "@workspace/changelog#build": {
+    "@polarhq/changelog#build": {
       "inputs": ["../../CHANGELOG.md", "scripts/**", "src/types.ts"],
       "outputs": ["src/releases.generated.ts"]
     },

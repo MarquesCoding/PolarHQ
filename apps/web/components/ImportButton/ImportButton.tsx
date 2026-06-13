@@ -6,7 +6,7 @@ import { type DocType } from "@lib/docs"
 import { importFile } from "@lib/importFlow"
 import { useQueryClient } from "@tanstack/react-query"
 import { IconFileImport } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 

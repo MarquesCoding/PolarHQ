@@ -3,14 +3,14 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import Image from "next/image"
 import { animate, motion, useMotionValue, useMotionValueEvent, useTransform } from "motion/react"
-import SizeControl from "@workspace/ui/components/size-control"
-import StorageMeter from "@workspace/ui/components/storage-meter"
-import SuiteShell from "@workspace/ui/components/suite-shell"
-import SuiteSidebar, { type SuiteNavItem } from "@workspace/ui/components/suite-sidebar"
-import SuiteTitleBar from "@workspace/ui/components/suite-title-bar"
-import { Icon } from "@workspace/ui/components/icon"
-import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
-import { cn } from "@workspace/ui/lib/utils"
+import SizeControl from "@polarhq/ui/components/size-control"
+import StorageMeter from "@polarhq/ui/components/storage-meter"
+import SuiteShell from "@polarhq/ui/components/suite-shell"
+import SuiteSidebar, { type SuiteNavItem } from "@polarhq/ui/components/suite-sidebar"
+import SuiteTitleBar from "@polarhq/ui/components/suite-title-bar"
+import { Icon } from "@polarhq/ui/components/icon"
+import { useIsMobile } from "@polarhq/ui/hooks/use-mobile"
+import { cn } from "@polarhq/ui/lib/utils"
 
 const MIN = 120
 const MAX = 330

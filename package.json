@@ -12,14 +12,14 @@
     "infra:up": "docker-compose -f docker/docker-compose.dev.yml up -d",
     "infra:down": "docker-compose -f docker/docker-compose.dev.yml down",
     "infra:logs": "docker-compose -f docker/docker-compose.dev.yml logs -f",
-    "db:generate": "pnpm --filter @workspace/db db:generate",
-    "db:migrate": "pnpm --filter @workspace/db db:migrate",
-    "db:studio": "pnpm --filter @workspace/db db:studio"
+    "db:generate": "pnpm --filter @polarhq/db db:generate",
+    "db:migrate": "pnpm --filter @polarhq/db db:migrate",
+    "db:studio": "pnpm --filter @polarhq/db db:studio"
   },
   "devDependencies": {
     "@types/node": "^24",
-    "@workspace/eslint-config": "workspace:*",
-    "@workspace/typescript-config": "workspace:*",
+    "@polarhq/eslint-config": "workspace:*",
+    "@polarhq/typescript-config": "workspace:*",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "^2.9.15",

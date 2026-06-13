@@ -1,5 +1,5 @@
-import { db, schema } from "@workspace/db"
-import { storage } from "@workspace/storage"
+import { db, schema } from "@polarhq/db"
+import { storage } from "@polarhq/storage"
 import { and, desc, eq, isNull } from "drizzle-orm"
 import { type DriveNode, ensureUserRoots, getNode, ingestDriveFile } from "../drive/service"
 

@@ -3,21 +3,21 @@
 import { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { IconTrash } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { Input } from "@workspace/ui/components/input"
+} from "@polarhq/ui/components/dialog"
+import { Input } from "@polarhq/ui/components/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
+} from "@polarhq/ui/components/select"
 import { type CondRule, type CondType, a1Range } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
 const ColorField = ({

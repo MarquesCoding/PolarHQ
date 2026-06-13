@@ -1,4 +1,4 @@
-import { db, schema } from "@workspace/db"
+import { db, schema } from "@polarhq/db"
 import { and, asc, eq, inArray, sql } from "drizzle-orm"
 
 export interface TagDto {

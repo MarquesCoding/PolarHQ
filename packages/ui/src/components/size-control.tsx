@@ -4,11 +4,11 @@ import { type ReactNode, useEffect, useRef, useState } from "react"
 import NumberFlow from "@number-flow/react"
 import { IconMinus, IconPlus } from "@tabler/icons-react"
 import { AnimatePresence, motion } from "motion/react"
-import { Button } from "@workspace/ui/components/button"
-import { Icon } from "@workspace/ui/components/icon"
-import { Separator } from "@workspace/ui/components/separator"
-import { Switch } from "@workspace/ui/components/switch"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@polarhq/ui/components/button"
+import { Icon } from "@polarhq/ui/components/icon"
+import { Separator } from "@polarhq/ui/components/separator"
+import { Switch } from "@polarhq/ui/components/switch"
+import { cn } from "@polarhq/ui/lib/utils"
 
 const MIN = 120
 const MAX = 330

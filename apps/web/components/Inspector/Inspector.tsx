@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, useState } from "react"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 
 export interface InspectorTab {
   id: string

@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/storage",
+  "name": "@polarhq/storage",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,10 +13,10 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1061.0",
     "@aws-sdk/s3-request-presigner": "^3.1061.0",
-    "@workspace/config": "workspace:*"
+    "@polarhq/config": "workspace:*"
   },
   "devDependencies": {
-    "@workspace/typescript-config": "workspace:*",
+    "@polarhq/typescript-config": "workspace:*",
     "typescript": "^5.7.3",
     "vitest": "^4.1.8"
   }

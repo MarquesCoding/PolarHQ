@@ -1,4 +1,4 @@
-import { db, schema } from "@workspace/db"
+import { db, schema } from "@polarhq/db"
 import { and, eq, inArray } from "drizzle-orm"
 
 export type LimitValueType = "bytes" | "count" | "duration" | "boolean" | "enum"

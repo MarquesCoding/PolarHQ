@@ -1,4 +1,4 @@
-import { auth } from "@workspace/auth"
+import { auth } from "@polarhq/auth"
 
 export interface SessionUser {
   id: string

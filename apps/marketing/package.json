@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@tabler/icons-react": "^3.44.0",
-    "@workspace/changelog": "workspace:*",
-    "@workspace/ui": "workspace:*",
+    "@polarhq/changelog": "workspace:*",
+    "@polarhq/ui": "workspace:*",
     "motion": "^12.40.0",
     "next": "16.2.6",
     "react": "19.2.4",
@@ -31,8 +31,8 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@workspace/eslint-config": "workspace:^",
-    "@workspace/typescript-config": "workspace:*",
+    "@polarhq/eslint-config": "workspace:^",
+    "@polarhq/typescript-config": "workspace:*",
     "typescript": "^5"
   }
 }

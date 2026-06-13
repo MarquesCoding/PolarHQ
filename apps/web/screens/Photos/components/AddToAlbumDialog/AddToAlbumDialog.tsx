@@ -5,15 +5,15 @@ import { Icon } from "@lib/icons"
 import { addToAlbum, createAlbum, fetchAlbums } from "@lib/photos"
 import { IconPlus } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { Input } from "@workspace/ui/components/input"
-import { Kbd } from "@workspace/ui/components/kbd"
+} from "@polarhq/ui/components/dialog"
+import { Input } from "@polarhq/ui/components/input"
+import { Kbd } from "@polarhq/ui/components/kbd"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 

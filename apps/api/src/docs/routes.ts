@@ -1,4 +1,4 @@
-import { config } from "@workspace/config"
+import { config } from "@polarhq/config"
 import { type Context, Hono } from "hono"
 import { z } from "zod"
 import { getSessionUser } from "../context"

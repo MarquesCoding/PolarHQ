@@ -1,10 +1,10 @@
 "use client"
 
 import { type ReactNode, useState } from "react"
-import { Icon } from "@workspace/ui/components/icon"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
+import { Icon } from "@polarhq/ui/components/icon"
+import { Button } from "@polarhq/ui/components/button"
+import { Input } from "@polarhq/ui/components/input"
+import { useIsMobile } from "@polarhq/ui/hooks/use-mobile"
 
 const toggleIconFor = (collapsed: boolean, hovered: boolean): string => {
   if (collapsed) return hovered ? "sidebar-left-2-show" : "layout-left"

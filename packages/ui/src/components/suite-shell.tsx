@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 
 interface SuiteShellProps {
   rail?: ReactNode

@@ -1,4 +1,4 @@
-import { type LimitDef, registerLimit } from "@workspace/auth"
+import { type LimitDef, registerLimit } from "@polarhq/auth"
 
 /**
  * The suite's tunable limits. Each is resolved per-user with precedence

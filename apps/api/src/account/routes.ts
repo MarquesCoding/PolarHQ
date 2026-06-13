@@ -1,4 +1,4 @@
-import { auth } from "@workspace/auth"
+import { auth } from "@polarhq/auth"
 import { Hono } from "hono"
 import { getSessionUser } from "../context"
 

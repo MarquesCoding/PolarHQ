@@ -4,7 +4,7 @@ import { dateLocale } from "@lib/i18n/format"
 import { fetchAdminAudit } from "@lib/admin"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
-import { Badge } from "@workspace/ui/components/badge"
+import { Badge } from "@polarhq/ui/components/badge"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 

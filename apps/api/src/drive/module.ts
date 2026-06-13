@@ -1,4 +1,4 @@
-import { type PermissionDef, registerPermissions } from "@workspace/auth"
+import { type PermissionDef, registerPermissions } from "@polarhq/auth"
 
 export const DRIVE_APP_ID = "drive"
 

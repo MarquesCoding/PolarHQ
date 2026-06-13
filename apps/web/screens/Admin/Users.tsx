@@ -9,16 +9,16 @@ import {
 } from "@lib/admin"
 import UserDetailSheet from "@pages/Admin/components/UserDetailSheet/UserDetailSheet"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
+import { Avatar, AvatarFallback } from "@polarhq/ui/components/avatar"
+import { Badge } from "@polarhq/ui/components/badge"
+import { Button } from "@polarhq/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+} from "@polarhq/ui/components/dropdown-menu"
 import { IconDotsVertical } from "@tabler/icons-react"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"

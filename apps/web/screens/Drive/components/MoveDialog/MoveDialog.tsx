@@ -4,15 +4,15 @@ import { useMemo, useState } from "react"
 import { type DriveNode, fetchFolders, moveDriveNode } from "@lib/drive"
 import { Icon } from "@lib/icons"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@polarhq/ui/components/dialog"
+import { cn } from "@polarhq/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 

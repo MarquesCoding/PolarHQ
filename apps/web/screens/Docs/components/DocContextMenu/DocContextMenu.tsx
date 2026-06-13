@@ -10,7 +10,7 @@ import {
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
-} from "@workspace/ui/components/context-menu"
+} from "@polarhq/ui/components/context-menu"
 
 export interface DocActions {
   open: (doc: DocMeta) => void

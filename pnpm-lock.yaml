@@ -11,15 +11,15 @@ importers:
 
   .:
     devDependencies:
+      '@polarhq/eslint-config':
+        specifier: workspace:*
+        version: link:packages/eslint-config
+      '@polarhq/typescript-config':
+        specifier: workspace:*
+        version: link:packages/typescript-config
       '@types/node':
         specifier: ^24
         version: 24.13.0
-      '@workspace/eslint-config':
-        specifier: workspace:*
-        version: link:packages/eslint-config
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:packages/typescript-config
       prettier:
         specifier: ^3.8.3
         version: 3.8.3
@@ -47,24 +47,24 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
+      '@polarhq/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@polarhq/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@polarhq/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@polarhq/jobs':
+        specifier: workspace:*
+        version: link:../../packages/jobs
+      '@polarhq/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
       '@trpc/server':
         specifier: ^11.17.0
         version: 11.17.0(typescript@5.9.3)
-      '@workspace/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@workspace/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@workspace/db':
-        specifier: workspace:*
-        version: link:../../packages/db
-      '@workspace/jobs':
-        specifier: workspace:*
-        version: link:../../packages/jobs
-      '@workspace/storage':
-        specifier: workspace:*
-        version: link:../../packages/storage
       adm-zip:
         specifier: ^0.5.16
         version: 0.5.17
@@ -90,6 +90,12 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
+      '@polarhq/media':
+        specifier: workspace:*
+        version: link:../../services/media
+      '@polarhq/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@types/adm-zip':
         specifier: ^0.5.7
         version: 0.5.8
@@ -99,12 +105,6 @@ importers:
       '@types/tar-stream':
         specifier: ^3.1.4
         version: 3.1.4
-      '@workspace/media':
-        specifier: workspace:*
-        version: link:../../services/media
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
@@ -120,15 +120,15 @@ importers:
 
   apps/marketing:
     dependencies:
+      '@polarhq/changelog':
+        specifier: workspace:*
+        version: link:../../packages/changelog
+      '@polarhq/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@tabler/icons-react':
         specifier: ^3.44.0
         version: 3.44.0(react@19.2.4)
-      '@workspace/changelog':
-        specifier: workspace:*
-        version: link:../../packages/changelog
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       motion:
         specifier: ^12.40.0
         version: 12.40.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -151,6 +151,12 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
     devDependencies:
+      '@polarhq/eslint-config':
+        specifier: workspace:^
+        version: link:../../packages/eslint-config
+      '@polarhq/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.3.0
@@ -163,12 +169,6 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.3(@types/react@19.2.15)
-      '@workspace/eslint-config':
-        specifier: workspace:^
-        version: link:../../packages/eslint-config
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
       typescript:
         specifier: ^5
         version: 5.9.3
@@ -191,6 +191,12 @@ importers:
       '@number-flow/react':
         specifier: ^0.6.0
         version: 0.6.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@polarhq/changelog':
+        specifier: workspace:*
+        version: link:../../packages/changelog
+      '@polarhq/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@react-three/drei':
         specifier: ^10.7.7
         version: 10.7.7(@react-three/fiber@9.6.1(@types/react@19.2.15)(immer@11.1.8)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.184.0))(@types/react@19.2.15)(@types/three@0.184.1)(immer@11.1.8)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.184.0)
@@ -275,12 +281,6 @@ importers:
       '@tiptap/starter-kit':
         specifier: ^3.26.0
         version: 3.26.0
-      '@workspace/changelog':
-        specifier: workspace:*
-        version: link:../../packages/changelog
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       better-auth:
         specifier: ^1.6.14
         version: 1.6.14(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(kysely@0.29.2)(postgres@3.4.9))(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.51.0))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.1.8(@types/node@20.19.41)(msw@2.14.6(@types/node@20.19.41)(typescript@5.9.3))(vite@8.0.16(@types/node@20.19.41)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.51.0)(tsx@4.22.4)))
@@ -372,6 +372,12 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
+      '@polarhq/eslint-config':
+        specifier: workspace:^
+        version: link:../../packages/eslint-config
+      '@polarhq/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.3.0
@@ -396,12 +402,6 @@ importers:
       '@types/three':
         specifier: ^0.184.1
         version: 0.184.1
-      '@workspace/eslint-config':
-        specifier: workspace:^
-        version: link:../../packages/eslint-config
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
       eslint:
         specifier: ^9
         version: 9.39.4(jiti@2.7.0)
@@ -418,10 +418,10 @@ importers:
 
   packages/auth:
     dependencies:
-      '@workspace/config':
+      '@polarhq/config':
         specifier: workspace:*
         version: link:../config
-      '@workspace/db':
+      '@polarhq/db':
         specifier: workspace:*
         version: link:../db
       better-auth:
@@ -431,7 +431,7 @@ importers:
         specifier: ^0.45.2
         version: 0.45.2(kysely@0.29.2)(postgres@3.4.9)
     devDependencies:
-      '@workspace/typescript-config':
+      '@polarhq/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       typescript:
@@ -440,7 +440,7 @@ importers:
 
   packages/changelog:
     devDependencies:
-      '@workspace/typescript-config':
+      '@polarhq/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       typescript:
@@ -456,7 +456,7 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
-      '@workspace/typescript-config':
+      '@polarhq/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       typescript:
@@ -468,7 +468,7 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
-      '@workspace/config':
+      '@polarhq/config':
         specifier: workspace:*
         version: link:../config
       drizzle-orm:
@@ -478,7 +478,7 @@ importers:
         specifier: ^3.4.9
         version: 3.4.9
     devDependencies:
-      '@workspace/typescript-config':
+      '@polarhq/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       drizzle-kit:
@@ -535,7 +535,7 @@ importers:
 
   packages/jobs:
     dependencies:
-      '@workspace/config':
+      '@polarhq/config':
         specifier: workspace:*
         version: link:../config
       bullmq:
@@ -545,7 +545,7 @@ importers:
         specifier: 5.11.1
         version: 5.11.1
     devDependencies:
-      '@workspace/typescript-config':
+      '@polarhq/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       typescript:
@@ -560,11 +560,11 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.1061.0
         version: 3.1061.0
-      '@workspace/config':
+      '@polarhq/config':
         specifier: workspace:*
         version: link:../config
     devDependencies:
-      '@workspace/typescript-config':
+      '@polarhq/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       typescript:
@@ -633,6 +633,12 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
+      '@polarhq/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@polarhq/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.3.0
@@ -651,12 +657,6 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.3(@types/react@19.2.15)
-      '@workspace/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       eslint:
         specifier: ^9
         version: 9.39.4(jiti@2.7.0)
@@ -669,23 +669,23 @@ importers:
 
   services/backup:
     dependencies:
-      '@workspace/config':
+      '@polarhq/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@workspace/db':
+      '@polarhq/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@workspace/jobs':
+      '@polarhq/jobs':
         specifier: workspace:*
         version: link:../../packages/jobs
-      '@workspace/storage':
+      '@polarhq/storage':
         specifier: workspace:*
         version: link:../../packages/storage
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(kysely@0.29.2)(postgres@3.4.9)
     devDependencies:
-      '@workspace/typescript-config':
+      '@polarhq/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
       bullmq:
@@ -700,16 +700,16 @@ importers:
 
   services/media:
     dependencies:
-      '@workspace/config':
+      '@polarhq/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@workspace/db':
+      '@polarhq/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@workspace/jobs':
+      '@polarhq/jobs':
         specifier: workspace:*
         version: link:../../packages/jobs
-      '@workspace/storage':
+      '@polarhq/storage':
         specifier: workspace:*
         version: link:../../packages/storage
       drizzle-orm:
@@ -725,12 +725,12 @@ importers:
         specifier: ^0.34.5
         version: 0.34.5
     devDependencies:
+      '@polarhq/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@types/heic-convert':
         specifier: ^2.1.1
         version: 2.1.1
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
       bullmq:
         specifier: ^5.78.0
         version: 5.78.0

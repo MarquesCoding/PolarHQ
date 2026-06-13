@@ -21,7 +21,7 @@ const nucleoAliases = optionalNucleoPacks.reduce<Record<string, string>>((aliase
 }, {})
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@workspace/ui"],
+  transpilePackages: ["@polarhq/ui"],
   turbopack: {
     resolveAlias: nucleoAliases,
   },

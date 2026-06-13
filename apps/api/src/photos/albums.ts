@@ -1,5 +1,5 @@
-import { storage } from "@workspace/storage"
-import { db, schema } from "@workspace/db"
+import { storage } from "@polarhq/storage"
+import { db, schema } from "@polarhq/db"
 import { and, desc, eq, inArray, sql } from "drizzle-orm"
 import type { Asset } from "./service"
 

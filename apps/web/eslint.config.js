@@ -1,4 +1,4 @@
-import { nextJsConfig } from "@workspace/eslint-config/next-js"
+import { nextJsConfig } from "@polarhq/eslint-config/next-js"
 
 /**
  * Localisation guard: flag new hardcoded user-facing strings so everything keeps going through

@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import { type Variants, motion, useScroll, useTransform } from "motion/react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   IconBrandAndroid,
   IconBrandAppleFilled,

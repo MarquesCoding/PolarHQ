@@ -1,5 +1,5 @@
-import { auth } from "@workspace/auth"
-import { db, schema } from "@workspace/db"
+import { auth } from "@polarhq/auth"
+import { db, schema } from "@polarhq/db"
 import { eq } from "drizzle-orm"
 import { getRoleByName, seedSystemRoles } from "../admin/roles"
 import { getInstanceSettings, updateInstanceSettings } from "../instance"

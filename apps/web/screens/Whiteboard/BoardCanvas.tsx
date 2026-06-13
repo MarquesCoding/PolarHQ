@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { IconArrowBackUp, IconArrowForwardUp, IconMinus, IconPlus } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   type BoardElement,
   type BoardState,

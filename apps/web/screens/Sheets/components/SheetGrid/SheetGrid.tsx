@@ -18,8 +18,8 @@ import {
 } from "@glideapps/glide-data-grid"
 import "@glideapps/glide-data-grid/dist/index.css"
 import { toast } from "sonner"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
+import { Button } from "@polarhq/ui/components/button"
+import { Input } from "@polarhq/ui/components/input"
 import {
   type CellFormat,
   COLS,

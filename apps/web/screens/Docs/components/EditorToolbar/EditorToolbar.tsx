@@ -32,21 +32,21 @@ import {
   IconTable,
   IconUnderline,
 } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+} from "@polarhq/ui/components/dropdown-menu"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
-import { Separator } from "@workspace/ui/components/separator"
+} from "@polarhq/ui/components/select"
+import { Separator } from "@polarhq/ui/components/separator"
 
 interface ToolbarButtonProps {
   label: string

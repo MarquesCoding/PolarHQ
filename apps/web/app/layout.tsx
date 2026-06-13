@@ -2,10 +2,10 @@ import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import { Geist, Geist_Mono } from "next/font/google"
 
-import "@workspace/ui/globals.css"
+import "@polarhq/ui/globals.css"
 import Providers from "@components/Providers/Providers"
 import { APP_NAME } from "@lib/env"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 
 const fontSans = Geist({ subsets: ["latin"], variable: "--font-sans" })
 const fontMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })

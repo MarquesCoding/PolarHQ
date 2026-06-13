@@ -13,7 +13,7 @@ import {
   IconSquare,
   IconSquareRotated,
 } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import { useTranslation } from "react-i18next"
 import type { Tool } from "../board"
 

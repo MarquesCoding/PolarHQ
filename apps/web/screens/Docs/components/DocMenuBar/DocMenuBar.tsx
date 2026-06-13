@@ -4,7 +4,7 @@ import type { ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { sanitizeLinkHref } from "@lib/editorConfig"
 import type { Editor } from "@tiptap/react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -16,7 +16,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+} from "@polarhq/ui/components/dropdown-menu"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 

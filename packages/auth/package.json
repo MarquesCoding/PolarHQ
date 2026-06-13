@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/auth",
+  "name": "@polarhq/auth",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,13 +10,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@workspace/config": "workspace:*",
-    "@workspace/db": "workspace:*",
+    "@polarhq/config": "workspace:*",
+    "@polarhq/db": "workspace:*",
     "better-auth": "^1.6.14",
     "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {
-    "@workspace/typescript-config": "workspace:*",
+    "@polarhq/typescript-config": "workspace:*",
     "typescript": "^5.7.3"
   }
 }

@@ -3,13 +3,13 @@
 import { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { IconBan, IconPlus } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@polarhq/ui/components/dropdown-menu"
+import { cn } from "@polarhq/ui/lib/utils"
 
 const PALETTE = [
   "#000000,#434343,#666666,#999999,#b7b7b7,#cccccc,#d9d9d9,#efefef,#f3f3f3,#ffffff",

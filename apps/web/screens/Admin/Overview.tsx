@@ -4,7 +4,7 @@ import { fetchOverview, formatBytes } from "@lib/admin"
 import { Icon } from "@lib/icons"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
-import { Card, CardContent } from "@workspace/ui/components/card"
+import { Card, CardContent } from "@polarhq/ui/components/card"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 

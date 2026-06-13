@@ -7,16 +7,16 @@ import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@lib/e2e"
 import { apiErrorMessage } from "@lib/i18n/apiError"
 import { type RegistrationMode, completeSetup } from "@lib/setup"
 import { useForm } from "@tanstack/react-form"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
+import { Button } from "@polarhq/ui/components/button"
+import { Input } from "@polarhq/ui/components/input"
+import { Label } from "@polarhq/ui/components/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
+} from "@polarhq/ui/components/select"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 import { z } from "zod"

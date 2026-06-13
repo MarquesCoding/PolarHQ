@@ -9,9 +9,9 @@ import {
   fetchAdminRoles,
 } from "@lib/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { Checkbox } from "@workspace/ui/components/checkbox"
+import { Badge } from "@polarhq/ui/components/badge"
+import { Button } from "@polarhq/ui/components/button"
+import { Checkbox } from "@polarhq/ui/components/checkbox"
 import {
   Dialog,
   DialogClose,
@@ -20,9 +20,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@workspace/ui/components/dialog"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
+} from "@polarhq/ui/components/dialog"
+import { Input } from "@polarhq/ui/components/input"
+import { Label } from "@polarhq/ui/components/label"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"

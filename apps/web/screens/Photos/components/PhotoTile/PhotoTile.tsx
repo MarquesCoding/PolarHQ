@@ -16,7 +16,7 @@ import {
   fetchDecryptedPhotoThumbnail,
 } from "@lib/photosE2e"
 import { IconCircle, IconHeartFilled, IconLivePhoto, IconPhoto, IconStack2 } from "@tabler/icons-react"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 

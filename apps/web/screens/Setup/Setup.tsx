@@ -14,7 +14,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card"
+} from "@polarhq/ui/components/card"
 
 type Step = "admin" | "groups"
 

@@ -1,4 +1,4 @@
-@import "@workspace/ui/globals.css";
+@import "@polarhq/ui/globals.css";
 
 html {
   scroll-behavior: smooth;

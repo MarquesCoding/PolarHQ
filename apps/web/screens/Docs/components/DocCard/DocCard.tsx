@@ -6,8 +6,8 @@ import { formatBytes } from "@lib/format"
 import type { DocMeta } from "@lib/docs"
 import { Icon } from "@lib/icons"
 import { IconCircle, IconCircleCheckFilled } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@polarhq/ui/components/button"
+import { cn } from "@polarhq/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 
 interface DocCardProps {

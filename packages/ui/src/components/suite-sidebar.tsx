@@ -7,9 +7,9 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react"
-import { Icon } from "@workspace/ui/components/icon"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
-import { cn } from "@workspace/ui/lib/utils"
+import { Icon } from "@polarhq/ui/components/icon"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@polarhq/ui/components/tooltip"
+import { cn } from "@polarhq/ui/lib/utils"
 
 export interface SuiteNavItem {
   key: string

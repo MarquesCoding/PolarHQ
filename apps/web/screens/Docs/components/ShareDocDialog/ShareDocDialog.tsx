@@ -11,15 +11,15 @@ import { authClient } from "@lib/authClient"
 import { type ShareKeyResult, isDocEncrypted, rekeyDoc, shareDocKey } from "@lib/e2e"
 import { IconTrash } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { Input } from "@workspace/ui/components/input"
+} from "@polarhq/ui/components/dialog"
+import { Input } from "@polarhq/ui/components/input"
 import { useTranslation } from "react-i18next"
 import {
   Select,
@@ -27,7 +27,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
+} from "@polarhq/ui/components/select"
 import { toast } from "sonner"
 
 interface ShareDocDialogProps {

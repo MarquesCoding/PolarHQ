@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { motion } from "motion/react"
 import { IconList } from "@tabler/icons-react"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 
 interface Heading {
   id: string

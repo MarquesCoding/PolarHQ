@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@lib/drive"
 import { unlockFolder } from "@lib/folderLock"
 import { IconLock } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
+import { Button } from "@polarhq/ui/components/button"
+import { Input } from "@polarhq/ui/components/input"
 
 interface FolderLockGateProps {
   node: DriveNode

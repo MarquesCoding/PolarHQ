@@ -6,8 +6,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { AnimatePresence, motion } from "motion/react"
 import { IconBrandGithubFilled, IconMenu2, IconX } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@polarhq/ui/components/button"
+import { cn } from "@polarhq/ui/lib/utils"
 
 const LINKS = [
   { label: "Blog", href: "/blog" },

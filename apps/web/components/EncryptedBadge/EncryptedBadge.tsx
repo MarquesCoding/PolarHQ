@@ -1,8 +1,8 @@
 "use client"
 
 import { IconShieldLock } from "@tabler/icons-react"
-import { Badge } from "@workspace/ui/components/badge"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
+import { Badge } from "@polarhq/ui/components/badge"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@polarhq/ui/components/tooltip"
 import { useTranslation } from "react-i18next"
 
 interface EncryptedBadgeProps {

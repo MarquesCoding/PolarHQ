@@ -1,8 +1,8 @@
 import { createRequire } from "node:module"
 import { Readable } from "node:stream"
-import { config } from "@workspace/config"
-import { publishUserEvent } from "@workspace/jobs"
-import { assetObjectKeys, storage } from "@workspace/storage"
+import { config } from "@polarhq/config"
+import { publishUserEvent } from "@polarhq/jobs"
+import { assetObjectKeys, storage } from "@polarhq/storage"
 import type { Archiver, ArchiverOptions, Format } from "archiver"
 import { type Context, Hono } from "hono"
 import { z } from "zod"
@@ -11,7 +11,7 @@ const createArchive = createRequire(import.meta.url)("archiver") as (
   format: Format,
   options?: ArchiverOptions,
 ) => Archiver
-import { resolveLimit } from "@workspace/auth"
+import { resolveLimit } from "@polarhq/auth"
 import { createId } from "@paralleldrive/cuid2"
 import { getSessionUser } from "../context"
 import { formatBytes, readUploadForm } from "../uploads"

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { fetchPhotoPoints, runLocationBackfill } from "@lib/photoMap"
 import { useQuery } from "@tanstack/react-query"
 import { PageSpinner } from "@components/Spinner/Spinner"
-import { Map, MapClusterLayer, MapControls, type MapRef } from "@workspace/ui/components/map"
+import { Map, MapClusterLayer, MapControls, type MapRef } from "@polarhq/ui/components/map"
 
 const PhotoMap = () => {
   const { t } = useTranslation("photos")

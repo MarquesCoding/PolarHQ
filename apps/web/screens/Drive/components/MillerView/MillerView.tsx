@@ -6,7 +6,7 @@ import { Icon } from "@lib/icons"
 import type { SelectionApi } from "@lib/selection"
 import { IconChevronRight } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import Spinner from "@components/Spinner/Spinner"
 import NodeContextMenu, {

@@ -20,10 +20,10 @@ COPY . .
 # deps). NODE_ENV is forced to development for the install so devDependencies
 # such as tsx and sharp are present; the runtime below sets it back.
 RUN NODE_ENV=development pnpm install --frozen-lockfile \
-  --filter "@workspace/api..." \
-  --filter "@workspace/media..." \
-  --filter "@workspace/backup..." \
-  --filter "@workspace/db..."
+  --filter "@polarhq/api..." \
+  --filter "@polarhq/media..." \
+  --filter "@polarhq/backup..." \
+  --filter "@polarhq/db..."
 
 # Stamp the running version so the API can report it (and the update check works).
 ARG APP_VERSION=0.0.0
@@ -35,4 +35,4 @@ ENV NODE_ENV=production
 EXPOSE 3001
 
 # Default role: the API. Compose overrides `command` for the workers + migrate.
-CMD ["pnpm", "--filter", "@workspace/api", "start"]
+CMD ["pnpm", "--filter", "@polarhq/api", "start"]

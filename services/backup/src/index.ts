@@ -4,7 +4,7 @@ import {
   QUEUE_BACKUP,
   createRedisConnection,
   scheduleBackupTick,
-} from "@workspace/jobs"
+} from "@polarhq/jobs"
 import { Worker } from "bullmq"
 import { runBackup, runScheduledIfDue } from "./runner"
 

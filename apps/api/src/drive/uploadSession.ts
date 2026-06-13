@@ -1,5 +1,5 @@
-import { createRedisConnection } from "@workspace/jobs"
-import type { MultipartPart } from "@workspace/storage"
+import { createRedisConnection } from "@polarhq/jobs"
+import type { MultipartPart } from "@polarhq/storage"
 
 /** A resumable chunked-upload session, held in Redis while the parts stream in. */
 export interface UploadSession {

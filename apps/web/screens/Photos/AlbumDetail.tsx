@@ -21,7 +21,7 @@ import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import { Icon } from "@lib/icons"
 import { IconArrowLeft, IconCircleMinus } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 

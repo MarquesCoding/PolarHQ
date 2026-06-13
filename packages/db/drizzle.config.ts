@@ -1,4 +1,4 @@
-import { config } from "@workspace/config"
+import { config } from "@polarhq/config"
 import { defineConfig } from "drizzle-kit"
 
 export default defineConfig({

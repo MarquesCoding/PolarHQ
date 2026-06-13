@@ -1,5 +1,5 @@
 {
-  "extends": "@workspace/typescript-config/node.json",
+  "extends": "@polarhq/typescript-config/node.json",
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }

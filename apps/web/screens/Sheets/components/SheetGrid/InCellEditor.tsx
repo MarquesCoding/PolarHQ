@@ -2,7 +2,7 @@
 
 import { type KeyboardEvent as ReactKeyboardEvent, type RefObject, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 import { FUNCTION_DOCS } from "@pages/Sheets/functionDocs"
 import type { SheetController } from "@pages/Sheets/useSheet"
 

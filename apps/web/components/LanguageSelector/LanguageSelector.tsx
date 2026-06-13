@@ -8,7 +8,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
+} from "@polarhq/ui/components/select"
 
 /** Picks the app language and persists it (localStorage via the i18next detector cache). */
 const LanguageSelector = () => {

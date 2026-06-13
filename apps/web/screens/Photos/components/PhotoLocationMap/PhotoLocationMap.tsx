@@ -1,6 +1,6 @@
 "use client"
 
-import { Map, MapMarker, MarkerContent } from "@workspace/ui/components/map"
+import { Map, MapMarker, MarkerContent } from "@polarhq/ui/components/map"
 
 interface PhotoLocationMapProps {
   lat: number

@@ -46,8 +46,8 @@ import {
   IconUserPlus,
 } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
+import { Button } from "@polarhq/ui/components/button"
+import { Input } from "@polarhq/ui/components/input"
 import * as Y from "yjs"
 import EncryptedBadge from "@components/EncryptedBadge/EncryptedBadge"
 import CommentsPanel from "@pages/Docs/components/CommentsPanel/CommentsPanel"

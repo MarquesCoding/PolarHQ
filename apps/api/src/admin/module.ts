@@ -1,4 +1,4 @@
-import { type PermissionDef, registerPermissions } from "@workspace/auth"
+import { type PermissionDef, registerPermissions } from "@polarhq/auth"
 import { registerLimitCatalog } from "./limits"
 
 export const ADMIN_PERMISSIONS: PermissionDef[] = [

@@ -1,4 +1,4 @@
-import { resolveLimit } from "@workspace/auth"
+import { resolveLimit } from "@polarhq/auth"
 import type { Context } from "hono"
 
 const PIECE_BYTES = 64 * 1024

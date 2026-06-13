@@ -7,7 +7,7 @@ import { fetchDecryptedThumbnail } from "@lib/driveE2e"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { IconCircle, IconCircleCheckFilled, IconStarFilled } from "@tabler/icons-react"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 import Spinner from "@components/Spinner/Spinner"
 
 export const DRIVE_NODES_MIME = "application/x-drive-nodes"

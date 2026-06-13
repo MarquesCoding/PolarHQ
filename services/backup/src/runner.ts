@@ -1,6 +1,6 @@
-import { config, decryptSecret } from "@workspace/config"
-import { db, schema } from "@workspace/db"
-import { S3Driver, storage } from "@workspace/storage"
+import { config, decryptSecret } from "@polarhq/config"
+import { db, schema } from "@polarhq/db"
+import { S3Driver, storage } from "@polarhq/storage"
 import { eq } from "drizzle-orm"
 import { createDriveFolder, getAccessToken, uploadDriveFile } from "./gdrive"
 

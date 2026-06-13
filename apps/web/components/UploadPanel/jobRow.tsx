@@ -5,8 +5,8 @@ import { Icon } from "@lib/icons"
 import { t } from "@lib/i18n/config"
 import type { UploadItem } from "@lib/uploadManager"
 import { IconRefresh, IconX } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@polarhq/ui/components/button"
+import { cn } from "@polarhq/ui/lib/utils"
 import { motion } from "motion/react"
 
 /** A small SVG progress ring; spins when the work has no measurable percentage. */

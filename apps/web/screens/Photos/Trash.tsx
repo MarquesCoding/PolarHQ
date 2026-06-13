@@ -9,7 +9,7 @@ import { TopBarActions } from "@components/FlatShell"
 import { useQueryClient } from "@tanstack/react-query"
 import { IconRestore, IconTrashX } from "@tabler/icons-react"
 import { useTranslation } from "react-i18next"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import { toast } from "sonner"
 
 const run = async (action: () => Promise<unknown>, message: string, after: () => void) => {

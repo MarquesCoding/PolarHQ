@@ -1,14 +1,14 @@
 "use client"
 
 import { IconCopy, IconShieldLock } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
+} from "@polarhq/ui/components/dialog"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 

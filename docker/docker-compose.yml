@@ -81,7 +81,7 @@ services:
 
   migrate:
     image: ghcr.io/marquescoding/polarhq-app:latest
-    command: ["pnpm", "--filter", "@workspace/db", "db:migrate"]
+    command: ["pnpm", "--filter", "@polarhq/db", "db:migrate"]
     environment: *app-env
     depends_on:
       postgres:
@@ -106,7 +106,7 @@ services:
 
   media:
     image: ghcr.io/marquescoding/polarhq-app:latest
-    command: ["pnpm", "--filter", "@workspace/media", "start"]
+    command: ["pnpm", "--filter", "@polarhq/media", "start"]
     environment: *app-env
     volumes:
       - storage-data:/data/storage
@@ -119,7 +119,7 @@ services:
 
   backup:
     image: ghcr.io/marquescoding/polarhq-app:latest
-    command: ["pnpm", "--filter", "@workspace/backup", "start"]
+    command: ["pnpm", "--filter", "@polarhq/backup", "start"]
     environment: *app-env
     volumes:
       - storage-data:/data/storage

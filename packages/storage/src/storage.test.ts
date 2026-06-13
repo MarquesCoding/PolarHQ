@@ -1,7 +1,7 @@
 import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { config } from "@workspace/config"
+import { config } from "@polarhq/config"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import type { StorageDriver } from "./driver"
 import { FsDriver } from "./fs-driver"

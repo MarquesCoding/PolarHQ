@@ -1,4 +1,4 @@
-import { QUEUE_MEDIA, createRedisConnection, type ProcessAssetJob } from "@workspace/jobs"
+import { QUEUE_MEDIA, createRedisConnection, type ProcessAssetJob } from "@polarhq/jobs"
 import { Worker } from "bullmq"
 import { processAsset } from "./processor"
 

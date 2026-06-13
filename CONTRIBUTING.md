@@ -59,7 +59,7 @@ packages/*      Shared libraries (db, auth, config, jobs, storage, ui)
 ## Conventions
 
 - **TypeScript** throughout, in strict mode. Keep things typed; avoid `any`.
-- **UI components** come from `@workspace/ui`. Do not use raw `button`, `input`, or
+- **UI components** come from `@polarhq/ui`. Do not use raw `button`, `input`, or
   `select` elements — use the shared components so styling and accessibility stay consistent.
 - **Styling** is Tailwind. Reuse the existing tokens and the shared chrome rather than
   re-implementing layout per app.

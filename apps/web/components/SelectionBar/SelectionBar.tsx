@@ -7,15 +7,15 @@ import { sharePhoto } from "@lib/photos"
 import { useSelection } from "@lib/selection"
 import { type DownloadItem, useUploadManager } from "@lib/uploadManager"
 import NumberFlow from "@number-flow/react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { Kbd } from "@workspace/ui/components/kbd"
-import { Separator } from "@workspace/ui/components/separator"
+} from "@polarhq/ui/components/dropdown-menu"
+import { Kbd } from "@polarhq/ui/components/kbd"
+import { Separator } from "@polarhq/ui/components/separator"
 import { AnimatePresence, motion } from "motion/react"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 

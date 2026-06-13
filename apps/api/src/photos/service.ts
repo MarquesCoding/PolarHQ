@@ -1,10 +1,10 @@
 import { createHash } from "node:crypto"
 import { extname } from "node:path"
 import { createId } from "@paralleldrive/cuid2"
-import { resolveLimit } from "@workspace/auth"
-import { db, schema } from "@workspace/db"
-import { enqueueProcessAsset } from "@workspace/jobs"
-import { assetObjectKeys, storage } from "@workspace/storage"
+import { resolveLimit } from "@polarhq/auth"
+import { db, schema } from "@polarhq/db"
+import { enqueueProcessAsset } from "@polarhq/jobs"
+import { assetObjectKeys, storage } from "@polarhq/storage"
 import { and, desc, eq, inArray, isNotNull, isNull, lt, or, sql } from "drizzle-orm"
 import {
   ensurePhotosDriveNode,

@@ -3,8 +3,8 @@
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setViewMode } from "@store/uiSlice"
 import { IconColumns2, IconLayoutGrid, IconList } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@polarhq/ui/components/button"
+import { cn } from "@polarhq/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 
 interface ViewToggleProps {

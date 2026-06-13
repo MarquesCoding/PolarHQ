@@ -5,7 +5,7 @@ import pluginReactHooks from "eslint-plugin-react-hooks"
 import globals from "globals"
 import tseslint from "typescript-eslint"
 
-import { config as baseConfig } from "@workspace/eslint-config/base"
+import { config as baseConfig } from "@polarhq/eslint-config/base"
 
 /**
  * A custom ESLint configuration for libraries that use React.

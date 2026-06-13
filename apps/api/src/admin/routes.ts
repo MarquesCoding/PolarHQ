@@ -1,5 +1,5 @@
-import { can } from "@workspace/auth"
-import { config } from "@workspace/config"
+import { can } from "@polarhq/auth"
+import { config } from "@polarhq/config"
 import { type Context, Hono } from "hono"
 import { deleteCookie, getCookie, setCookie } from "hono/cookie"
 import { createMiddleware } from "hono/factory"

@@ -13,18 +13,18 @@ import {
 } from "@lib/admin"
 import { API_URL } from "@lib/env"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
+import { Badge } from "@polarhq/ui/components/badge"
+import { Button } from "@polarhq/ui/components/button"
+import { Input } from "@polarhq/ui/components/input"
+import { Label } from "@polarhq/ui/components/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
-import { Switch } from "@workspace/ui/components/switch"
+} from "@polarhq/ui/components/select"
+import { Switch } from "@polarhq/ui/components/switch"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { useTranslation } from "react-i18next"

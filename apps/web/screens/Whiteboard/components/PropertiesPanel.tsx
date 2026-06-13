@@ -6,9 +6,9 @@ import {
   IconChevronsUp,
   IconChevronUp,
 } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
-import { Slider } from "@workspace/ui/components/slider"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@polarhq/ui/components/button"
+import { Slider } from "@polarhq/ui/components/slider"
+import { cn } from "@polarhq/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import { FILL_COLORS, STROKE_COLORS, STROKE_WIDTHS, type Style } from "../board"
 

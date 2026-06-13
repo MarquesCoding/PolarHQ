@@ -4,16 +4,16 @@ import { formatMediumDate } from "@lib/i18n/format"
 import type { ReactNode } from "react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { type Release, RELEASES } from "@workspace/changelog"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
+import { type Release, RELEASES } from "@polarhq/changelog"
+import { Badge } from "@polarhq/ui/components/badge"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@workspace/ui/components/dialog"
+} from "@polarhq/ui/components/dialog"
 
 const renderInline = (text: string): ReactNode[] =>
   text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).map((part, i) => {

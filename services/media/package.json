@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/media",
+  "name": "@polarhq/media",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,10 +13,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@workspace/config": "workspace:*",
-    "@workspace/db": "workspace:*",
-    "@workspace/jobs": "workspace:*",
-    "@workspace/storage": "workspace:*",
+    "@polarhq/config": "workspace:*",
+    "@polarhq/db": "workspace:*",
+    "@polarhq/jobs": "workspace:*",
+    "@polarhq/storage": "workspace:*",
     "drizzle-orm": "^0.45.2",
     "exifr": "^7.1.3",
     "heic-convert": "^2.1.0",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/heic-convert": "^2.1.1",
-    "@workspace/typescript-config": "workspace:*",
+    "@polarhq/typescript-config": "workspace:*",
     "bullmq": "^5.78.0",
     "tsx": "^4.22.4",
     "typescript": "^5.7.3"

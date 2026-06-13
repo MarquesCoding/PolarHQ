@@ -8,8 +8,8 @@ import { Icon } from "@lib/icons"
 import { fetchAlbums, fetchTags } from "@lib/photos"
 import { IconChevronRight } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@polarhq/ui/components/button"
+import { cn } from "@polarhq/ui/lib/utils"
 import { ActiveBg, NavRow, SectionLabel, navRowClass } from "@components/FlatShell"
 
 const isActive = (pathname: string, href: string): boolean =>

@@ -1,4 +1,4 @@
-import { db, schema } from "@workspace/db"
+import { db, schema } from "@polarhq/db"
 import { eq } from "drizzle-orm"
 
 export type InstanceSettings = typeof schema.instanceSettings.$inferSelect

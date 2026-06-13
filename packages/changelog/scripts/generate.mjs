@@ -1,5 +1,5 @@
 // Generates packages/changelog/src/releases.generated.ts from the repo-root CHANGELOG.md.
-// Run via `pnpm --filter @workspace/changelog generate`. CHANGELOG.md is the single source
+// Run via `pnpm --filter @polarhq/changelog generate`. CHANGELOG.md is the single source
 // of truth (maintained by release-please + optional hand polishing); this keeps the in-app
 // and marketing-site changelog in sync with it.
 

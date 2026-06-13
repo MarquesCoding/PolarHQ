@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import type { DriveNode } from "@lib/drive"
 import { lockFolder, removeFolderLock, unlockFolder } from "@lib/folderLock"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
@@ -11,8 +11,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
-import { Input } from "@workspace/ui/components/input"
+} from "@polarhq/ui/components/dialog"
+import { Input } from "@polarhq/ui/components/input"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 

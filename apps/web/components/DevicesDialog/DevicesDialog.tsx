@@ -8,13 +8,13 @@ import {
   IconDeviceMobile,
   IconWorld,
 } from "@tabler/icons-react"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
+} from "@polarhq/ui/components/dialog"
 import Spinner from "@components/Spinner/Spinner"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"

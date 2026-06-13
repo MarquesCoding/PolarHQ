@@ -40,7 +40,7 @@ import {
   IconUserPlus,
 } from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import { AnimatePresence } from "motion/react"
 import { toast } from "sonner"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"

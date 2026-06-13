@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto"
 import { createId } from "@paralleldrive/cuid2"
-import { db, schema } from "@workspace/db"
-import { processAsset } from "@workspace/media/processor"
-import { assetObjectKeys, storage } from "@workspace/storage"
+import { db, schema } from "@polarhq/db"
+import { processAsset } from "@polarhq/media/processor"
+import { assetObjectKeys, storage } from "@polarhq/storage"
 import { eq } from "drizzle-orm"
 
 const OWNER_ID = "Lp56fUcCBVMwKhhOJKrsOpXyc9L6Byic"

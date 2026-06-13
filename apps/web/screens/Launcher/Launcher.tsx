@@ -8,7 +8,7 @@ import { formatBytes } from "@lib/format"
 import { fetchUsage } from "@lib/photos"
 import AppTile from "@pages/Launcher/components/AppTile/AppTile"
 import { useQuery } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 

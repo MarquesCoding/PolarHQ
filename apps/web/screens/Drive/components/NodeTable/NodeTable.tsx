@@ -16,8 +16,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { Checkbox } from "@workspace/ui/components/checkbox"
-import { cn } from "@workspace/ui/lib/utils"
+import { Checkbox } from "@polarhq/ui/components/checkbox"
+import { cn } from "@polarhq/ui/lib/utils"
 import { DRIVE_NODES_MIME } from "@pages/Drive/components/NodeCard/NodeCard"
 import NodeContextMenu, {
   type DriveNodeActions,

@@ -12,7 +12,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
+} from "@polarhq/ui/components/dialog"
 import Spinner from "@components/Spinner/Spinner"
 import { useTranslation } from "react-i18next"
 

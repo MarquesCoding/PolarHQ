@@ -1,4 +1,4 @@
-import { config } from "@workspace/config"
+import { config } from "@polarhq/config"
 
 export interface UpdateInfo {
   current: string

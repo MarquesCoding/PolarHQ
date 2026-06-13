@@ -1,4 +1,4 @@
-import { config } from "@workspace/config"
+import { config } from "@polarhq/config"
 import type { Asset } from "./service"
 
 export interface AssetDto extends Asset {

@@ -1,5 +1,5 @@
 import { IconLoader2 } from "@tabler/icons-react"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 
 /** Small inline loading spinner. */
 const Spinner = ({ className }: { className?: string }) => (

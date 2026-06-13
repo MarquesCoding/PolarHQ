@@ -3,7 +3,7 @@
 import { type ReactNode } from "react"
 import Link from "next/link"
 import { Icon } from "@lib/icons"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@polarhq/ui/lib/utils"
 import { type Variants, motion } from "motion/react"
 
 /** All nav rows across a sidebar share this layoutId so the active pill animates between them. */

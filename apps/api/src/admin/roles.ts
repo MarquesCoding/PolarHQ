@@ -1,4 +1,4 @@
-import { db, schema } from "@workspace/db"
+import { db, schema } from "@polarhq/db"
 import { and, eq } from "drizzle-orm"
 
 export interface SystemRoleDef {

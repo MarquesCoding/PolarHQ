@@ -7,16 +7,16 @@ import { authClient } from "@lib/authClient"
 import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@lib/e2e"
 import { APP_NAME } from "@lib/env"
 import { useForm } from "@tanstack/react-form"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
+} from "@polarhq/ui/components/card"
+import { Input } from "@polarhq/ui/components/input"
+import { Label } from "@polarhq/ui/components/label"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { z } from "zod"

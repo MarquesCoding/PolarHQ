@@ -2,14 +2,14 @@
 
 import { IconX } from "@tabler/icons-react"
 import { useTranslation } from "react-i18next"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@polarhq/ui/components/button"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
+} from "@polarhq/ui/components/select"
 import { type ChartDef, a1Range } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
 import ChartView from "@pages/Sheets/components/ChartView/ChartView"

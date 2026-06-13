@@ -3,7 +3,7 @@
 import { type ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import { Icon } from "@lib/icons"
-import { SidebarTrigger } from "@workspace/ui/components/sidebar"
+import { SidebarTrigger } from "@polarhq/ui/components/sidebar"
 import { useTranslation } from "react-i18next"
 
 export interface TopBarTitle {

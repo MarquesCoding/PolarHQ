@@ -1,5 +1,5 @@
 import { serve } from "@hono/node-server"
-import { config } from "@workspace/config"
+import { config } from "@polarhq/config"
 import { app, injectWebSocket } from "./app"
 
 process.on("unhandledRejection", (reason) => {

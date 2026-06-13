@@ -24,17 +24,17 @@ import {
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
-import { Button } from "@workspace/ui/components/button"
-import { Sidebar } from "@workspace/ui/components/sidebar"
+import { Avatar, AvatarFallback, AvatarImage } from "@polarhq/ui/components/avatar"
+import { Button } from "@polarhq/ui/components/button"
+import { Sidebar } from "@polarhq/ui/components/sidebar"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@polarhq/ui/components/dropdown-menu"
+import { cn } from "@polarhq/ui/lib/utils"
 import { useTheme } from "next-themes"
 import { useTranslation } from "react-i18next"
 import Changelog from "@components/Changelog/Changelog"

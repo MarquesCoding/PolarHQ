@@ -1,5 +1,5 @@
-import { config } from "@workspace/config"
-import { db, schema } from "@workspace/db"
+import { config } from "@polarhq/config"
+import { db, schema } from "@polarhq/db"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { bearer } from "better-auth/plugins"

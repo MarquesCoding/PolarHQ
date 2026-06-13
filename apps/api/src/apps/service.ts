@@ -1,5 +1,5 @@
-import { can } from "@workspace/auth"
-import { db, schema } from "@workspace/db"
+import { can } from "@polarhq/auth"
+import { db, schema } from "@polarhq/db"
 import { eq } from "drizzle-orm"
 import { type AppManifest, listApps } from "./registry"
 

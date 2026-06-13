@@ -1,1 +1,1 @@
-export { type Release, RELEASES } from "@workspace/changelog"
+export { type Release, RELEASES } from "@polarhq/changelog"

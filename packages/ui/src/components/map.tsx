@@ -18,7 +18,7 @@ import {
 import { createPortal } from "react-dom";
 import { X, Minus, Plus, Locate, Maximize, Loader2 } from "lucide-react";
 
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@polarhq/ui/lib/utils";
 
 const defaultStyles = {
   dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",

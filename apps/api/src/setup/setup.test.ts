@@ -1,5 +1,5 @@
-import { can, resolveLimit } from "@workspace/auth"
-import { db, schema } from "@workspace/db"
+import { can, resolveLimit } from "@polarhq/auth"
+import { db, schema } from "@polarhq/db"
 import { eq } from "drizzle-orm"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import * as adminService from "../admin/service"
