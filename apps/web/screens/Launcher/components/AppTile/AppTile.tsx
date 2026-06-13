@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "@lib/router"
-import type { SuiteApp } from "@lib/apps"
+import type { SuiteApp } from "@polarhq/sdk/apps"
 import { Icon } from "@lib/icons"
 import { useAppDispatch } from "@store/hooks"
 import { setActiveApp } from "@store/uiSlice"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { fetchAdminSettings, updateAdminSettings } from "@lib/admin"
+import { fetchAdminSettings, updateAdminSettings } from "@polarhq/sdk/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@polarhq/ui/components/button"
 import { Input } from "@polarhq/ui/components/input"

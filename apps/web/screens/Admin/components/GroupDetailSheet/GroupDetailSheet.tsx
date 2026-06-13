@@ -9,7 +9,7 @@ import {
   fetchAdminUsers,
   removeGroupMember,
   setLimitFor,
-} from "@lib/admin"
+} from "@polarhq/sdk/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, AvatarFallback } from "@polarhq/ui/components/avatar"
 import { Button } from "@polarhq/ui/components/button"

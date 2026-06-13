@@ -7,7 +7,7 @@ import {
   createAdminGroup,
   fetchAdminGroups,
   fetchAdminUsers,
-} from "@lib/admin"
+} from "@polarhq/sdk/admin"
 import GroupDetailSheet from "@pages/Admin/components/GroupDetailSheet/GroupDetailSheet"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@polarhq/ui/components/button"

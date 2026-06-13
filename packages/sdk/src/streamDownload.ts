@@ -7,7 +7,7 @@ import {
   streamCipherChunkSize,
   streamPrefixSize,
 } from "@polarhq/core/crypto"
-import type { UploadProgress } from "@lib/xhrUpload"
+import type { UploadProgress } from "./xhrUpload"
 
 interface SaveWritable {
   write: (data: Uint8Array) => Promise<void>

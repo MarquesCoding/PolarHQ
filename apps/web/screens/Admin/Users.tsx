@@ -6,7 +6,7 @@ import {
   fetchAdminUsers,
   setUserBanned,
   setUserRole,
-} from "@lib/admin"
+} from "@polarhq/sdk/admin"
 import UserDetailSheet from "@pages/Admin/components/UserDetailSheet/UserDetailSheet"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, AvatarFallback } from "@polarhq/ui/components/avatar"

@@ -5,10 +5,21 @@
   "type": "module",
   "exports": {
     "./config": "./src/config.ts",
-    "./apiClient": "./src/apiClient.ts"
+    "./apiClient": "./src/apiClient.ts",
+    "./xhrUpload": "./src/xhrUpload.ts",
+    "./chunkedUpload": "./src/chunkedUpload.ts",
+    "./streamDownload": "./src/streamDownload.ts",
+    "./account": "./src/account.ts",
+    "./admin": "./src/admin.ts",
+    "./apps": "./src/apps.ts",
+    "./setup": "./src/setup.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@polarhq/core": "workspace:*",
+    "@polarhq/i18n": "workspace:*"
   },
   "devDependencies": {
     "@polarhq/typescript-config": "workspace:*",

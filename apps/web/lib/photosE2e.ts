@@ -1,7 +1,7 @@
 "use client"
 
 import { apiFetch } from "@polarhq/sdk/apiClient"
-import { uploadStreamingParts } from "@lib/chunkedUpload"
+import { uploadStreamingParts } from "@polarhq/sdk/chunkedUpload"
 import {
   isStreamBlob,
   secretboxOpen,
@@ -10,7 +10,7 @@ import {
   secretstreamOpenAll,
 } from "@polarhq/core/crypto"
 import { CHUNKED_UPLOAD_THRESHOLD } from "@lib/driveE2e"
-import { streamDecryptToDisk, supportsStreamingDownload } from "@lib/streamDownload"
+import { streamDecryptToDisk, supportsStreamingDownload } from "@polarhq/sdk/streamDownload"
 import {
   createContentKey,
   decryptName,
@@ -24,7 +24,7 @@ import { API_URL } from "@lib/env"
 import { extractMotionVideo } from "@polarhq/core/motionPhoto"
 import { type Asset, type GridAsset, fetchStackMembers } from "@lib/photos"
 import { analyzeAudio, analyzeImage, analyzeVideo } from "@polarhq/core/thumbnails"
-import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
+import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@polarhq/sdk/xhrUpload"
 import exifr from "exifr"
 
 const encoder = new TextEncoder()

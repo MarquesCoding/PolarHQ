@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchOverview, formatBytes } from "@lib/admin"
+import { fetchOverview, formatBytes } from "@polarhq/sdk/admin"
 import { Icon } from "@lib/icons"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"

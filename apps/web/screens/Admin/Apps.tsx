@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchAdminApps, setAppEnabled } from "@lib/admin"
+import { fetchAdminApps, setAppEnabled } from "@polarhq/sdk/admin"
 import { Icon } from "@lib/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@polarhq/ui/components/badge"

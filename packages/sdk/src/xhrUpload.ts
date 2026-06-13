@@ -1,6 +1,6 @@
 "use client"
 
-import { ApiError } from "@polarhq/sdk/apiClient"
+import { ApiError } from "./apiClient"
 
 export interface UploadProgress {
   /** Bytes sent so far. */

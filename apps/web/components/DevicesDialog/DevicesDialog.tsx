@@ -1,6 +1,6 @@
 "use client"
 
-import { type Device, fetchDevices, revokeDevice, timeAgo } from "@lib/account"
+import { type Device, fetchDevices, revokeDevice, timeAgo } from "@polarhq/sdk/account"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   IconDeviceDesktop,

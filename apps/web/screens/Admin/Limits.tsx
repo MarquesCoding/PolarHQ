@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { type AdminLimit, fetchAdminLimits, setInstanceLimit } from "@lib/admin"
+import { type AdminLimit, fetchAdminLimits, setInstanceLimit } from "@polarhq/sdk/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@polarhq/ui/components/button"
 import { Input } from "@polarhq/ui/components/input"

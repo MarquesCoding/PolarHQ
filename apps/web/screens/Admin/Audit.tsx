@@ -1,7 +1,7 @@
 "use client"
 
 import { dateLocale } from "@polarhq/i18n/format"
-import { fetchAdminAudit } from "@lib/admin"
+import { fetchAdminAudit } from "@polarhq/sdk/admin"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { Badge } from "@polarhq/ui/components/badge"

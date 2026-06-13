@@ -1,4 +1,4 @@
-import { apiFetch } from "@polarhq/sdk/apiClient"
+import { apiFetch } from "./apiClient"
 import { dateLocale } from "@polarhq/i18n/format"
 
 export type DevicePlatform = "ios" | "android" | "mac" | "windows" | "linux" | "web"

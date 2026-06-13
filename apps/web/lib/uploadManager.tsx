@@ -13,7 +13,7 @@ import { API_URL } from "@lib/env"
 import { ApiError } from "@polarhq/sdk/apiClient"
 import { authClient } from "@lib/authClient"
 import { apiErrorMessage } from "@lib/i18n/apiError"
-import { type UploadOptions, postFormWithProgress } from "@lib/xhrUpload"
+import { type UploadOptions, postFormWithProgress } from "@polarhq/sdk/xhrUpload"
 import { archiveDriveNodes } from "@lib/drive"
 import {
   CHUNKED_UPLOAD_THRESHOLD,

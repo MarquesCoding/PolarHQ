@@ -9,7 +9,7 @@ import {
   fetchAdminUser,
   setLimitFor,
   unassignRole,
-} from "@lib/admin"
+} from "@polarhq/sdk/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@polarhq/ui/components/badge"
 import { Button } from "@polarhq/ui/components/button"

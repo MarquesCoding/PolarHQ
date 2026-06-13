@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { apiErrorMessage } from "@lib/i18n/apiError"
-import { type Group, createGroup } from "@lib/setup"
+import { type Group, createGroup } from "@polarhq/sdk/setup"
 import { useForm } from "@tanstack/react-form"
 import { Button } from "@polarhq/ui/components/button"
 import { Input } from "@polarhq/ui/components/input"

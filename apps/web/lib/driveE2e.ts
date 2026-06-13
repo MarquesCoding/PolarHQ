@@ -1,7 +1,7 @@
 "use client"
 
 import { apiFetch } from "@polarhq/sdk/apiClient"
-import { uploadStreamingParts } from "@lib/chunkedUpload"
+import { uploadStreamingParts } from "@polarhq/sdk/chunkedUpload"
 import {
   isStreamBlob,
   secretboxOpen,
@@ -9,7 +9,7 @@ import {
   secretstreamInit,
   secretstreamOpenAll,
 } from "@polarhq/core/crypto"
-import { streamDecryptToDisk, supportsStreamingDownload } from "@lib/streamDownload"
+import { streamDecryptToDisk, supportsStreamingDownload } from "@polarhq/sdk/streamDownload"
 import { type DriveNode, decryptNodeName } from "@lib/drive"
 import {
   createContentKey,
@@ -20,7 +20,7 @@ import {
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 import { generateImageThumbnail } from "@polarhq/core/thumbnails"
-import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
+import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@polarhq/sdk/xhrUpload"
 
 /**
  * Upload a file end-to-end encrypted: encrypt the bytes with a fresh content key,

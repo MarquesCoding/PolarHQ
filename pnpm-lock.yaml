@@ -621,6 +621,13 @@ importers:
         version: 5.9.3
 
   packages/sdk:
+    dependencies:
+      '@polarhq/core':
+        specifier: workspace:*
+        version: link:../core
+      '@polarhq/i18n':
+        specifier: workspace:*
+        version: link:../i18n
     devDependencies:
       '@polarhq/typescript-config':
         specifier: workspace:*
