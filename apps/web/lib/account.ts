@@ -1,5 +1,5 @@
 import { apiFetch } from "@lib/apiClient"
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@polarhq/i18n/format"
 
 export type DevicePlatform = "ios" | "android" | "mac" | "windows" | "linux" | "web"
 

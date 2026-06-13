@@ -1,6 +1,6 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@polarhq/i18n/format"
 import type { MouseEvent } from "react"
 import { formatBytes } from "@lib/format"
 import type { DocMeta } from "@lib/docs"

@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { t } from "@lib/i18n/config"
+import { t } from "@polarhq/i18n/config"
 
 const PhotoMap = dynamic(() => import("@pages/Photos/PhotoMap"), {
   ssr: false,

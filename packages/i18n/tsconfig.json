@@ -1,0 +1,10 @@
+{
+  "extends": "@polarhq/typescript-config/react-library.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "noEmit": true
+  },
+  "include": ["src"]
+}

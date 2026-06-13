@@ -1,6 +1,6 @@
 "use client"
 
-import { formatMediumDate } from "@lib/i18n/format"
+import { formatMediumDate } from "@polarhq/i18n/format"
 import type { ReactNode } from "react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"

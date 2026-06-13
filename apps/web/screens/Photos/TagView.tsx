@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Button } from "@polarhq/ui/components/button"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
-import { t } from "@lib/i18n/config"
+import { t } from "@polarhq/i18n/config"
 
 const run = async (action: () => Promise<unknown>, message: string, after: () => void) => {
   try {

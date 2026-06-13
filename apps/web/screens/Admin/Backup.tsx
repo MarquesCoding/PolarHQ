@@ -1,6 +1,6 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@polarhq/i18n/format"
 import { useEffect, useState } from "react"
 import {
   type AdminBackupRun,

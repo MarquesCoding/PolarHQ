@@ -1,6 +1,6 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@polarhq/i18n/format"
 import { type ReactElement, useEffect, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
 import { decryptName } from "@lib/e2e"

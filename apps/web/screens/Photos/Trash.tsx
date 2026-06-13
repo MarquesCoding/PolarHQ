@@ -1,7 +1,7 @@
 "use client"
 
 import { deleteAssets, emptyTrash, fetchAssets, restoreAssets } from "@lib/photos"
-import { t as translate } from "@lib/i18n/config"
+import { t as translate } from "@polarhq/i18n/config"
 import CollectionView from "@pages/Photos/components/CollectionView/CollectionView"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import EmptyState from "@components/EmptyState/EmptyState"

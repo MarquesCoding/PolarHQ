@@ -1,0 +1,29 @@
+{
+  "name": "@polarhq/i18n",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./config": "./src/config.ts",
+    "./format": "./src/format.ts",
+    "./locales": "./src/locales.ts",
+    "./I18nProvider": "./src/I18nProvider.tsx"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "i18next": "^26.3.1",
+    "i18next-browser-languagedetector": "^8.2.1",
+    "i18next-http-backend": "^4.0.0",
+    "react-i18next": "^17.0.8"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@polarhq/typescript-config": "workspace:*",
+    "@types/react": "^19.2.4",
+    "typescript": "^5.7.3"
+  }
+}

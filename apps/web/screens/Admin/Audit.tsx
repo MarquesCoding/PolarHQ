@@ -1,6 +1,6 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@polarhq/i18n/format"
 import { fetchAdminAudit } from "@lib/admin"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"

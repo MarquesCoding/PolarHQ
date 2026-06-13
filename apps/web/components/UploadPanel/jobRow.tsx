@@ -2,7 +2,7 @@
 
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
-import { t } from "@lib/i18n/config"
+import { t } from "@polarhq/i18n/config"
 import type { UploadItem } from "@lib/uploadManager"
 import { IconRefresh, IconX } from "@tabler/icons-react"
 import { Button } from "@polarhq/ui/components/button"

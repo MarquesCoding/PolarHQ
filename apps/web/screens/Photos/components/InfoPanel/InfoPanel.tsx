@@ -1,6 +1,6 @@
 "use client"
 
-import { formatMediumDateTime } from "@lib/i18n/format"
+import { formatMediumDateTime } from "@polarhq/i18n/format"
 import dynamic from "next/dynamic"
 import { decryptName, decryptWithMetaKey } from "@lib/e2e"
 import { formatBytes } from "@lib/format"

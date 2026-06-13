@@ -1,7 +1,7 @@
 "use client"
 
 import { ApiError } from "@lib/apiClient"
-import i18n from "./config"
+import i18n from "@polarhq/i18n/config"
 
 /**
  * Resolve a thrown API error to a localised message. The backend returns a stable error KEY as

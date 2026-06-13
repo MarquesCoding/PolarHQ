@@ -1,6 +1,6 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@polarhq/i18n/format"
 import { type ReactNode, useEffect, useState } from "react"
 import { authClient } from "@lib/authClient"
 import { type DocMeta } from "@lib/docs"

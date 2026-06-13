@@ -194,6 +194,9 @@ importers:
       '@polarhq/changelog':
         specifier: workspace:*
         version: link:../../packages/changelog
+      '@polarhq/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@polarhq/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -532,6 +535,34 @@ importers:
       typescript-eslint:
         specifier: ^8.60.0
         version: 8.60.0(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3)
+
+  packages/i18n:
+    dependencies:
+      i18next:
+        specifier: ^26.3.1
+        version: 26.3.1(typescript@5.9.3)
+      i18next-browser-languagedetector:
+        specifier: ^8.2.1
+        version: 8.2.1
+      i18next-http-backend:
+        specifier: ^4.0.0
+        version: 4.0.0
+      react:
+        specifier: ^19.0.0
+        version: 19.2.4
+      react-i18next:
+        specifier: ^17.0.8
+        version: 17.0.8(i18next@26.3.1(typescript@5.9.3))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+    devDependencies:
+      '@polarhq/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/react':
+        specifier: ^19.2.4
+        version: 19.2.15
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
 
   packages/jobs:
     dependencies:

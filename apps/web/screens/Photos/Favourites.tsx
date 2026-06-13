@@ -8,7 +8,7 @@ import EmptyState from "@components/EmptyState/EmptyState"
 import { IconHeartOff } from "@tabler/icons-react"
 import { Button } from "@polarhq/ui/components/button"
 import { toast } from "sonner"
-import { t } from "@lib/i18n/config"
+import { t } from "@polarhq/i18n/config"
 import { useTranslation } from "react-i18next"
 
 const run = async (action: () => Promise<unknown>, message: string, after: () => void) => {

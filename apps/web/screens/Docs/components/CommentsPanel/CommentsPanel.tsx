@@ -1,13 +1,13 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@polarhq/i18n/format"
 import { useState } from "react"
 import type { CommentThread, DocComment } from "@lib/commentMark"
 import { IconCheck, IconMessageOff, IconX } from "@tabler/icons-react"
 import { Button } from "@polarhq/ui/components/button"
 import { Input } from "@polarhq/ui/components/input"
 import { cn } from "@polarhq/ui/lib/utils"
-import { t } from "@lib/i18n/config"
+import { t } from "@polarhq/i18n/config"
 import { useTranslation } from "react-i18next"
 
 interface Draft {
