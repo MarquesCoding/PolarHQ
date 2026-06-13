@@ -1,6 +1,7 @@
 import { serve } from "@hono/node-server"
 import { config } from "@polarhq/config"
 import { app, injectWebSocket } from "./app"
+import { startWorkers } from "./workers"
 
 process.on("unhandledRejection", (reason) => {
   console.error("[api] unhandled rejection:", reason)
@@ -15,3 +16,9 @@ const server = serve({ fetch: app.fetch, port: config.api.port }, (info) => {
 })
 
 injectWebSocket(server)
+
+if (config.runWorkers) {
+  await startWorkers().catch((error) => {
+    console.error("[api] failed to start in-process workers:", error)
+  })
+}

@@ -1,7 +1,6 @@
 packages:
   - "apps/*"
   - "packages/*"
-  - "services/*"
 
 allowBuilds:
   sharp: true

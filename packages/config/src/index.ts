@@ -46,6 +46,7 @@ const EnvSchema = z
     APP_BUILD: z.string().default("dev"),
     GITHUB_REPO: z.string().default("MarquesCoding/PolarHQ"),
     UPDATE_CHECK: boolish(true),
+    RUN_WORKERS: boolish(true),
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
   })
@@ -84,6 +85,7 @@ export const config = {
   build: env.APP_BUILD,
   githubRepo: env.GITHUB_REPO,
   updateCheck: env.UPDATE_CHECK,
+  runWorkers: env.RUN_WORKERS,
   google: {
     clientId: env.GOOGLE_CLIENT_ID,
     clientSecret: env.GOOGLE_CLIENT_SECRET,

@@ -1,6 +1,7 @@
-# PolarHQ "app" image — runs the API and the background workers (media, backup)
-# and the one-shot DB migration. Everything runs from source via tsx, so the
-# role is selected by overriding the container command (see docker-compose.yml).
+# PolarHQ "app" image — runs the API (which hosts the media + backup workers
+# in-process) and the one-shot DB migration. Everything runs from source via
+# tsx, so the role is selected by overriding the container command (see
+# docker-compose.yml). Set RUN_WORKERS=false to run the API without workers.
 #
 FROM node:22-bookworm-slim
 
@@ -21,8 +22,6 @@ COPY . .
 # such as tsx and sharp are present; the runtime below sets it back.
 RUN NODE_ENV=development pnpm install --frozen-lockfile \
   --filter "@polarhq/api..." \
-  --filter "@polarhq/media..." \
-  --filter "@polarhq/backup..." \
   --filter "@polarhq/db..."
 
 # Stamp the running version so the API can report it (and the update check works).

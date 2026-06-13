@@ -8,8 +8,9 @@
 #   3. caddy "8080:80"             — change 8080 to expose a different port
 #
 # Bundles Postgres (pgvector) and Redis, runs migrations once, then starts the
-# API, the media + backup workers, and the web app. Files are stored on a local
-# drive mount (the `storage-data` volume) by default — no S3/MinIO required.
+# API (which hosts the media + backup workers in-process) and the web app. Files
+# are stored on a local drive mount (the `storage-data` volume) by default — no
+# S3/MinIO required.
 #
 # STORAGE — pick ONE:
 #   • Local disk (default): nothing to do.
@@ -104,31 +105,10 @@ services:
         condition: service_completed_successfully
     restart: unless-stopped
 
-  media:
-    image: ghcr.io/marquescoding/polarhq-app:latest
-    command: ["pnpm", "--filter", "@polarhq/media", "start"]
-    environment: *app-env
-    volumes:
-      - storage-data:/data/storage
-    depends_on:
-      redis:
-        condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
-    restart: unless-stopped
-
-  backup:
-    image: ghcr.io/marquescoding/polarhq-app:latest
-    command: ["pnpm", "--filter", "@polarhq/backup", "start"]
-    environment: *app-env
-    volumes:
-      - storage-data:/data/storage
-    depends_on:
-      redis:
-        condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
-    restart: unless-stopped
+  # The media + backup workers run in-process inside the api container above
+  # (RUN_WORKERS defaults to true). To scale them out as dedicated processes,
+  # set RUN_WORKERS=false on api and add separate services with the same image
+  # and command ["pnpm", "--filter", "@polarhq/api", "start"].
 
   # Object storage (opt-in). Only starts with `--profile minio`; the default disk
   # stack ignores it. Pair with STORAGE_DRIVER=s3 + the S3_* vars in x-app-env.

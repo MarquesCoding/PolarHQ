@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto"
 import { createId } from "@paralleldrive/cuid2"
 import { db, schema } from "@polarhq/db"
-import { processAsset } from "@polarhq/media/processor"
+import { processAsset } from "../workers/media/processor"
 import { assetObjectKeys, storage } from "@polarhq/storage"
 import { eq } from "drizzle-orm"
 
