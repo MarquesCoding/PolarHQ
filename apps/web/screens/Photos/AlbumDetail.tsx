@@ -11,7 +11,7 @@ import {
 } from "@lib/photos"
 import { downloadItemFor, expandStacksToDownloadItems } from "@lib/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
-import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
+import { type LiveEvent, useLiveEvents } from "@polarhq/sdk/useLiveEvents"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
 import SelectionBar from "@components/SelectionBar/SelectionBar"

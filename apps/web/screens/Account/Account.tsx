@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "@lib/router"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@polarhq/sdk/authClient"
 import { Icon } from "@lib/icons"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 import LanguageSelector from "@components/LanguageSelector/LanguageSelector"

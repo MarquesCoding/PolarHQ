@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react"
 import type { GridAsset, TimelinePage } from "@lib/photos"
-import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
+import { type LiveEvent, useLiveEvents } from "@polarhq/sdk/useLiveEvents"
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query"
 
 /**

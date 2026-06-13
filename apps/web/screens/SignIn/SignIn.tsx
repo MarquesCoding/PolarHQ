@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "@lib/router"
 import RecoveryCodeDialog from "@components/RecoveryCodeDialog"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@polarhq/sdk/authClient"
 import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@lib/e2e"
 import { APP_NAME } from "@lib/env"
 import { useForm } from "@tanstack/react-form"

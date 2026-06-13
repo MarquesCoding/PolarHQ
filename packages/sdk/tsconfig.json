@@ -3,6 +3,8 @@
   "compilerOptions": {
     "module": "esnext",
     "moduleResolution": "bundler",
+    "declaration": false,
+    "declarationMap": false,
     "noEmit": true
   },
   "include": ["src"]

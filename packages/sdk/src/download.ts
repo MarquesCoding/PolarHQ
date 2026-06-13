@@ -1,6 +1,6 @@
-import { API_URL } from "@lib/env"
+import { sdkConfig } from "./config"
 
-const PHOTOS = `${API_URL}/api/v1/photos`
+const PHOTOS = `${sdkConfig().apiUrl}/api/v1/photos`
 
 export interface DownloadProgress {
   received: number

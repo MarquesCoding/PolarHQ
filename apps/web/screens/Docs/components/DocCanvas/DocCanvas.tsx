@@ -4,7 +4,7 @@ import { dateLocale } from "@polarhq/i18n/format"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "@lib/router"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@polarhq/sdk/authClient"
 import { t } from "@polarhq/i18n/config"
 import {
   CommentMark,

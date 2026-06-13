@@ -1,6 +1,6 @@
 "use client"
 
-import { authClient } from "@lib/authClient"
+import { authClient } from "@polarhq/sdk/authClient"
 import { type StorageKind, decryptNodeName, fetchStorageStats } from "@lib/drive"
 import { bytesParts, formatBytes } from "@polarhq/core/format"
 import { Icon } from "@lib/icons"

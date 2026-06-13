@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { secretboxOpen, secretboxSeal } from "@polarhq/core/crypto"
 import { type DocMeta, fetchDoc, fetchDocContent, saveDocContent } from "@lib/docs"
 import { e2eReady, getDocContentKey, isDocEncrypted, isUnlocked } from "@lib/e2e"
-import { useLiveEvents } from "@lib/useLiveEvents"
+import { useLiveEvents } from "@polarhq/sdk/useLiveEvents"
 import { RelayProvider } from "@lib/yjsProvider"
 import * as Y from "yjs"
 

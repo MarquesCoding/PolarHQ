@@ -2,7 +2,7 @@
 
 import { useRouter } from "@lib/router"
 import { fetchApps } from "@polarhq/sdk/apps"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@polarhq/sdk/authClient"
 import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
 import { formatBytes } from "@polarhq/core/format"
 import { fetchUsage } from "@lib/photos"

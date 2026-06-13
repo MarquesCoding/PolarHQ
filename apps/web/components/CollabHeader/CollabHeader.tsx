@@ -2,7 +2,7 @@
 
 import { dateLocale } from "@polarhq/i18n/format"
 import { type ReactNode, useEffect, useState } from "react"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@polarhq/sdk/authClient"
 import { type DocMeta } from "@lib/docs"
 import { renameDriveNode } from "@lib/drive"
 import { encryptNameWith } from "@lib/e2e"

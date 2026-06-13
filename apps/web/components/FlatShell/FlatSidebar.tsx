@@ -3,7 +3,7 @@
 import { type ReactNode, useEffect, useState } from "react"
 import { Link, useRouter } from "@lib/router"
 import logo from "../../public/logo.png"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@polarhq/sdk/authClient"
 import { lockKeys } from "@lib/e2e"
 import { fetchStorageStats } from "@lib/drive"
 import { bytesParts, formatBytes } from "@polarhq/core/format"

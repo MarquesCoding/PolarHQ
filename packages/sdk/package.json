@@ -12,17 +12,26 @@
     "./account": "./src/account.ts",
     "./admin": "./src/admin.ts",
     "./apps": "./src/apps.ts",
-    "./setup": "./src/setup.ts"
+    "./setup": "./src/setup.ts",
+    "./authClient": "./src/authClient.ts",
+    "./useLiveEvents": "./src/useLiveEvents.ts",
+    "./download": "./src/download.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@polarhq/core": "workspace:*",
-    "@polarhq/i18n": "workspace:*"
+    "@polarhq/i18n": "workspace:*",
+    "better-auth": "^1.6.14"
+  },
+  "peerDependencies": {
+    "react": ">=19"
   },
   "devDependencies": {
     "@polarhq/typescript-config": "workspace:*",
+    "@types/react": "^19",
+    "react": "^19",
     "typescript": "^5.7.3"
   }
 }

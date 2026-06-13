@@ -11,7 +11,7 @@ import {
 } from "react"
 import { API_URL } from "@lib/env"
 import { ApiError } from "@polarhq/sdk/apiClient"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@polarhq/sdk/authClient"
 import { apiErrorMessage } from "@lib/i18n/apiError"
 import { type UploadOptions, postFormWithProgress } from "@polarhq/sdk/xhrUpload"
 import { archiveDriveNodes } from "@lib/drive"
@@ -28,9 +28,9 @@ import {
   uploadEncryptedMedia,
   uploadEncryptedMediaChunked,
 } from "@lib/photosE2e"
-import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@lib/download"
+import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@polarhq/sdk/download"
 import { deleteAssets, fetchProcessing, stackAssets } from "@lib/photos"
-import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
+import { type LiveEvent, useLiveEvents } from "@polarhq/sdk/useLiveEvents"
 import { useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
