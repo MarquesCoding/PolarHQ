@@ -46,6 +46,11 @@ const DriveNav = () => {
     queryKey: ["drive", "searches"],
     queryFn: fetchSavedSearches,
   })
+  const { data: root } = useQuery({
+    queryKey: ["drive", "nodes", "root"],
+    queryFn: () => fetchNodes(),
+  })
+  const locations = (root?.children ?? []).filter((node) => node.kind === "folder")
   const trail = data?.breadcrumb ?? []
   const showLocation = folderId !== null && trail.length > 1
 
@@ -95,6 +100,22 @@ const DriveNav = () => {
           compact
         />
       ))}
+
+      {locations.length > 0 ? (
+        <>
+          <SectionLabel>{t("driveNav.locations")}</SectionLabel>
+          {locations.map((folder) => (
+            <NavRow
+              key={folder.id}
+              href={`/drive/${folder.id}`}
+              icon="folder"
+              label={folder.name}
+              active={pathname === `/drive/${folder.id}`}
+              compact
+            />
+          ))}
+        </>
+      ) : null}
 
       {searches.length > 0 ? (
         <>
