@@ -1,6 +1,6 @@
 "use client"
 
-import { ApiError } from "@lib/apiClient"
+import { ApiError } from "@polarhq/sdk/apiClient"
 import i18n from "@polarhq/i18n/config"
 
 /**

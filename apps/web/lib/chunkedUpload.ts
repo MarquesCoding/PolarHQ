@@ -1,6 +1,6 @@
 "use client"
 
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@polarhq/sdk/apiClient"
 import { STREAM_CHUNK_SIZE, type StreamSealer } from "@polarhq/core/crypto"
 import { type UploadOptions, retryOnTransient } from "@lib/xhrUpload"
 

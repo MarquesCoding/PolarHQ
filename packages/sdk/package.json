@@ -1,0 +1,17 @@
+{
+  "name": "@polarhq/sdk",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./config": "./src/config.ts",
+    "./apiClient": "./src/apiClient.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@polarhq/typescript-config": "workspace:*",
+    "typescript": "^5.7.3"
+  }
+}

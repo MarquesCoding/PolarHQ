@@ -10,7 +10,7 @@ import {
   useState,
 } from "react"
 import { API_URL } from "@lib/env"
-import { ApiError } from "@lib/apiClient"
+import { ApiError } from "@polarhq/sdk/apiClient"
 import { authClient } from "@lib/authClient"
 import { apiErrorMessage } from "@lib/i18n/apiError"
 import { type UploadOptions, postFormWithProgress } from "@lib/xhrUpload"

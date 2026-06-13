@@ -1,4 +1,4 @@
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@polarhq/sdk/apiClient"
 import type { DriveNode } from "@lib/drive"
 import { decryptName, decryptSharedName } from "@lib/e2e"
 import { API_URL } from "@lib/env"

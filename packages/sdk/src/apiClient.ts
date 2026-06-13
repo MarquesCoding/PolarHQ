@@ -1,4 +1,4 @@
-import { API_URL } from "@lib/env"
+import { sdkConfig } from "./config"
 
 export class ApiError extends Error {
   readonly status: number
@@ -14,7 +14,7 @@ export class ApiError extends Error {
 
 /** Call an Vault API endpoint with cookies, JSON in/out, and typed errors. */
 export const apiFetch = async <T>(path: string, init?: RequestInit): Promise<T> => {
-  const response = await fetch(`${API_URL}${path}`, {
+  const response = await fetch(`${sdkConfig().apiUrl}${path}`, {
     credentials: "include",
     ...init,
     headers: {

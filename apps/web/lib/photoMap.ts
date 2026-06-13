@@ -1,6 +1,6 @@
 "use client"
 
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@polarhq/sdk/apiClient"
 import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@lib/e2e"
 import { encryptedGpsFor, fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
 

@@ -1,4 +1,4 @@
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@polarhq/sdk/apiClient"
 import { decryptName, encryptName, encryptedPlaceholder } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 

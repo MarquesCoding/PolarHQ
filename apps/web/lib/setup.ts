@@ -1,4 +1,4 @@
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@polarhq/sdk/apiClient"
 
 export type RegistrationMode = "invite_only" | "open" | "closed"
 

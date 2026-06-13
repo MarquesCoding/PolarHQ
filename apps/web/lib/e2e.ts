@@ -1,6 +1,6 @@
 "use client"
 
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@polarhq/sdk/apiClient"
 import {
   type DocMeta,
   type DocType,

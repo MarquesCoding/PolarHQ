@@ -1,4 +1,4 @@
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@polarhq/sdk/apiClient"
 
 export interface AdminUser {
   id: string

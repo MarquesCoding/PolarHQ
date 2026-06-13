@@ -203,6 +203,9 @@ importers:
       '@polarhq/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@polarhq/sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
       '@polarhq/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -591,6 +594,15 @@ importers:
       ioredis:
         specifier: 5.11.1
         version: 5.11.1
+    devDependencies:
+      '@polarhq/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/sdk:
     devDependencies:
       '@polarhq/typescript-config':
         specifier: workspace:*

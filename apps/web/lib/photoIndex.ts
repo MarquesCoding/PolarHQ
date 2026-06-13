@@ -1,6 +1,6 @@
 "use client"
 
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@polarhq/sdk/apiClient"
 import { dbg } from "@polarhq/core/debug"
 import { MODEL_VERSION, embedImage, embedderSupported } from "@lib/embedder"
 import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@lib/e2e"
