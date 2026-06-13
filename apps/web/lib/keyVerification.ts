@@ -9,7 +9,7 @@ import { fingerprint, fromB64 } from "@lib/crypto"
  * aren't secret, so the pins live in localStorage.
  */
 
-const PIN_KEY = "orbit.e2e.pins"
+const PIN_KEY = "vault.e2e.pins"
 
 const loadPins = (): Record<string, string> => {
   if (typeof localStorage === "undefined") return {}

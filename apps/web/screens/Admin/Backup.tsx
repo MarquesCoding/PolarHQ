@@ -197,7 +197,7 @@ const Backup = () => {
                     <Input
                       id="bk-prefix"
                       value={prefix}
-                      placeholder="orbit-backup/"
+                      placeholder="vault-backup/"
                       onChange={(event) => setPrefix(event.target.value)}
                     />
                   </div>

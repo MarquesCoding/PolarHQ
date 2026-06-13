@@ -1,7 +1,7 @@
 import { createRedisConnection } from "./connection"
 
 /** Real-time event delivered to a user's WebSocket subscribers. */
-export interface OrbitEvent {
+export interface VaultEvent {
   type: string
   scope: string
   payload: unknown
@@ -15,10 +15,10 @@ const publisher = createRedisConnection()
 /** Publish an event to a user's channel; fanned out by the WS gateway. */
 export const publishUserEvent = async (
   userId: string,
-  event: Omit<OrbitEvent, "ts">,
+  event: Omit<VaultEvent, "ts">,
 ): Promise<void> => {
   const channel = userEventChannel(userId)
-  const payload: OrbitEvent = { ...event, ts: Date.now() }
+  const payload: VaultEvent = { ...event, ts: Date.now() }
   try {
     await publisher.publish(channel, JSON.stringify(payload))
   } catch (error) {
@@ -26,9 +26,9 @@ export const publishUserEvent = async (
   }
 }
 
-const safeParseEvent = (message: string): OrbitEvent | undefined => {
+const safeParseEvent = (message: string): VaultEvent | undefined => {
   try {
-    return JSON.parse(message) as OrbitEvent
+    return JSON.parse(message) as VaultEvent
   } catch {
     return undefined
   }
@@ -91,7 +91,7 @@ export const subscribeDocRoom = (
 /** Subscribe to a user's event channel. Returns an unsubscribe function. */
 export const subscribeUserEvents = (
   userId: string,
-  onEvent: (event: OrbitEvent) => void,
+  onEvent: (event: VaultEvent) => void,
 ): (() => Promise<void>) => {
   const subscriber = createRedisConnection()
   const channel = userEventChannel(userId)

@@ -7,7 +7,7 @@ import type { StorageDriver } from "./driver"
 import { FsDriver } from "./fs-driver"
 import { S3Driver } from "./s3-driver"
 
-const sample = Buffer.from("hello orbit storage")
+const sample = Buffer.from("hello vault storage")
 
 const driverContract = (
   name: string,
@@ -53,7 +53,7 @@ const driverContract = (
 }
 
 driverContract("FsDriver", async () => {
-  const dir = await mkdtemp(join(tmpdir(), "orbit-storage-"))
+  const dir = await mkdtemp(join(tmpdir(), "vault-storage-"))
   return {
     driver: new FsDriver(dir),
     cleanup: async () => {

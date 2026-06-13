@@ -251,7 +251,7 @@ Comments, presence cursors, and shared public views are next. But the foundation
 
 ## Crypto parity was the gate
 
-The web app encrypts everything with libsodium. For the iOS app to read the same library, its crypto had to produce **byte-for-byte identical** results. So before building any UI, we built **OrbitCrypto** — a Swift libsodium module — and verified it against the JavaScript implementation using shared test vectors.
+The web app encrypts everything with libsodium. For the iOS app to read the same library, its crypto had to produce **byte-for-byte identical** results. So before building any UI, we built **VaultCrypto** — a Swift libsodium module — and verified it against the JavaScript implementation using shared test vectors.
 
 > No screen shipped until the Swift crypto matched the web's output exactly. Decryption parity isn't a feature you can fake.
 

@@ -33,11 +33,11 @@ const TEXTUAL = /\.(txt|md|json|js|ts|tsx|jsx|css|html|ya?ml|csv|sh)$/i
 const typeIcon = (node: DriveNode): { name: string; color: string } => {
   const name = node.name.toLowerCase()
   const mime = node.mimeType ?? ""
-  if (mime === "application/vnd.orbit.doc")
+  if (mime === "application/vnd.vault.doc")
     return { name: "document", color: "text-muted-foreground" }
-  if (mime === "application/vnd.orbit.sheet")
+  if (mime === "application/vnd.vault.sheet")
     return { name: "table", color: "text-muted-foreground" }
-  if (mime === "application/vnd.orbit.board")
+  if (mime === "application/vnd.vault.board")
     return { name: "palette", color: "text-muted-foreground" }
   if (/\.(xlsx|xls|csv|tsv|ods)$/i.test(name)) return { name: "table", color: "text-emerald-500" }
   if (/\.docx$/i.test(name)) return { name: "document", color: "text-blue-500" }

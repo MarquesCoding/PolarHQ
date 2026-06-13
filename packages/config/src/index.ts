@@ -39,7 +39,7 @@ const EnvSchema = z
     S3_REGION: z.string().default("us-east-1"),
     S3_ACCESS_KEY_ID: z.string().optional(),
     S3_SECRET_ACCESS_KEY: z.string().optional(),
-    S3_BUCKET: z.string().default("orbit-media"),
+    S3_BUCKET: z.string().default("vault-media"),
     S3_FORCE_PATH_STYLE: boolish(true),
     STORAGE_FS_ROOT: z.string().default("./.data/storage"),
     APP_VERSION: z.string().default("0.0.0"),

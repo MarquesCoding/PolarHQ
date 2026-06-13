@@ -3,7 +3,7 @@ import { config } from "./index"
 
 const ENVELOPE = "v1"
 
-const derizeKey = (): Buffer => scryptSync(config.auth.secret, "orbit.secret.v1", 32)
+const derizeKey = (): Buffer => scryptSync(config.auth.secret, "vault.secret.v1", 32)
 
 /**
  * Encrypt a secret string for storage at rest with AES-256-GCM, keyed by `AUTH_SECRET`. The

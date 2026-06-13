@@ -1,6 +1,6 @@
 "use client"
 
-const KEY = "orbit.debug"
+const KEY = "vault.debug"
 
 export const isDebug = (): boolean => {
   try {
@@ -21,5 +21,5 @@ export const setDebug = (on: boolean): void => {
 
 /** Namespaced console log, only when debug is on. */
 export const dbg = (ns: string, ...args: unknown[]): void => {
-  if (isDebug()) console.log(`%c[orbit:${ns}]`, "color:#7c3aed;font-weight:600", ...args)
+  if (isDebug()) console.log(`%c[vault:${ns}]`, "color:#7c3aed;font-weight:600", ...args)
 }

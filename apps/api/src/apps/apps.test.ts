@@ -15,7 +15,7 @@ describe("app registry", () => {
     await seedSystemRoles()
     await db
       .insert(schema.user)
-      .values({ id: userId, name: "Apps Tester", email: `${userId}@orbit.test`, emailVerified: true })
+      .values({ id: userId, name: "Apps Tester", email: `${userId}@vault.test`, emailVerified: true })
       .onConflictDoNothing()
     const userRole = await getRoleByName("User")
     await db.insert(schema.subjectRoles).values({
@@ -46,7 +46,7 @@ describe("app registry", () => {
     const strangerId = `stranger-${Date.now()}`
     await db
       .insert(schema.user)
-      .values({ id: strangerId, name: "Stranger", email: `${strangerId}@orbit.test`, emailVerified: true })
+      .values({ id: strangerId, name: "Stranger", email: `${strangerId}@vault.test`, emailVerified: true })
 
     const apps = await getAppsForUser(strangerId)
     expect(apps.find((app) => app.id === "photos")?.available).toBe(false)

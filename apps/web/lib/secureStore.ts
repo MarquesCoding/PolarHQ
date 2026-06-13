@@ -7,7 +7,7 @@
  * without the key, and the key's raw bytes can never be exported.
  */
 
-const DB_NAME = "orbit-secure"
+const DB_NAME = "vault-secure"
 const STORE = "kv"
 const WRAP_KEY = "wrap-key"
 const BLOB_KEY = "kp-blob"

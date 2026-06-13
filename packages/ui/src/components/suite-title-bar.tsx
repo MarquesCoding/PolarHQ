@@ -83,7 +83,7 @@ const SuiteTitleBar = ({
           />
           <Input
             type="search"
-            name="orbit-search"
+            name="vault-search"
             autoComplete="off"
             spellCheck={false}
             autoFocus={isMobile && mobileSearchOpen}

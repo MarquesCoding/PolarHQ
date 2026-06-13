@@ -1011,9 +1011,9 @@ export const restoreVersion = async (
   return updated[0]!
 }
 
-const DOC_MIME = "application/vnd.orbit.doc"
-const SHEET_MIME = "application/vnd.orbit.sheet"
-const BOARD_MIME = "application/vnd.orbit.board"
+const DOC_MIME = "application/vnd.vault.doc"
+const SHEET_MIME = "application/vnd.vault.sheet"
+const BOARD_MIME = "application/vnd.vault.board"
 
 /** Which suite app a stored file belongs to, used for the storage breakdown. */
 export type StorageApp = "photos" | "drive" | "docs" | "sheets" | "whiteboard"
@@ -1037,7 +1037,7 @@ const kindForMime = (mime: string | null): StorageKind => {
   if (
     mime.startsWith("text/") ||
     mime === "application/pdf" ||
-    mime.startsWith("application/vnd.orbit.") ||
+    mime.startsWith("application/vnd.vault.") ||
     mime.startsWith("application/vnd.openxmlformats") ||
     mime.startsWith("application/vnd.oasis") ||
     mime === "application/msword" ||

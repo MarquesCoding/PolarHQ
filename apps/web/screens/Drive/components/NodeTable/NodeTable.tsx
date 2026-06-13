@@ -39,9 +39,9 @@ export const iconFor = (node: DriveNode): string => {
     return node.special ? "folder-shield" : node.locked ? "folder-key" : "folder"
   const name = node.name.toLowerCase()
   const mime = node.mimeType ?? ""
-  if (mime === "application/vnd.orbit.doc") return "document"
-  if (mime === "application/vnd.orbit.sheet") return "table"
-  if (mime === "application/vnd.orbit.board") return "palette"
+  if (mime === "application/vnd.vault.doc") return "document"
+  if (mime === "application/vnd.vault.sheet") return "table"
+  if (mime === "application/vnd.vault.board") return "palette"
   if (/\.(xlsx|xls|csv|tsv|ods)$/i.test(name)) return "table"
   if (/\.docx$/i.test(name)) return "document"
   if (/\.pptx$/i.test(name)) return "presentation"

@@ -14,7 +14,7 @@ export {
   type BackupJob,
 } from "./queues"
 export {
-  type OrbitEvent,
+  type VaultEvent,
   type DocSyncMessage,
   userEventChannel,
   publishUserEvent,

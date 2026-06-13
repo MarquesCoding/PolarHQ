@@ -1,22 +1,22 @@
-# Local development infrastructure for Orbit.
+# Local development infrastructure for Vault.
 # Brings up Postgres (with pgvector), Redis, and MinIO (S3) only.
 # App services (api, web, workers) run on the host via `pnpm dev` during development.
-name: orbit-dev
+name: vault-dev
 
 services:
   postgres:
     image: pgvector/pgvector:pg17
     restart: unless-stopped
     environment:
-      POSTGRES_USER: orbit
-      POSTGRES_PASSWORD: orbit
-      POSTGRES_DB: orbit
+      POSTGRES_USER: vault
+      POSTGRES_PASSWORD: vault
+      POSTGRES_DB: vault
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U orbit -d orbit"]
+      test: ["CMD-SHELL", "pg_isready -U vault -d vault"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -40,8 +40,8 @@ services:
     restart: unless-stopped
     command: ["server", "/data", "--console-address", ":9001"]
     environment:
-      MINIO_ROOT_USER: orbitadmin
-      MINIO_ROOT_PASSWORD: orbitadmin
+      MINIO_ROOT_USER: vaultadmin
+      MINIO_ROOT_PASSWORD: vaultadmin
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -60,10 +60,10 @@ services:
         condition: service_healthy
     entrypoint: >
       /bin/sh -c "
-      mc alias set local http://minio:9000 orbitadmin orbitadmin;
-      mc mb --ignore-existing local/orbit-media;
-      mc anonymous set none local/orbit-media;
-      echo 'MinIO bucket orbit-media ready';
+      mc alias set local http://minio:9000 vaultadmin vaultadmin;
+      mc mb --ignore-existing local/vault-media;
+      mc anonymous set none local/vault-media;
+      echo 'MinIO bucket vault-media ready';
       exit 0;
       "
 

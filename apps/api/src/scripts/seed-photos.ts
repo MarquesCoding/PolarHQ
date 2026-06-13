@@ -49,7 +49,7 @@ const cleanup = async () => {
 }
 
 const fetchImage = async (index: number, width: number, height: number): Promise<Buffer> => {
-  const url = `https://picsum.photos/seed/orbit${index}/${width}/${height}`
+  const url = `https://picsum.photos/seed/vault${index}/${width}/${height}`
   for (let attempt = 0; attempt < 4; attempt += 1) {
     try {
       const response = await fetch(url)

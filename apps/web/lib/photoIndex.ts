@@ -17,7 +17,7 @@ const KIND = "clip"
 
 export const searchPrompt = (query: string): string => `a photo of ${query.trim()}`
 
-const THRESHOLD_KEY = "orbit.ml.threshold"
+const THRESHOLD_KEY = "vault.ml.threshold"
 const DEFAULT_THRESHOLD = 0.22
 export const getSearchThreshold = (): number => {
   try {

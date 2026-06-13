@@ -24,7 +24,7 @@ const run = (command: string, args: string[]): Promise<Buffer> =>
   })
 
 const withTempDir = async <T>(fn: (dir: string) => Promise<T>): Promise<T> => {
-  const dir = await mkdtemp(join(tmpdir(), "orbit-media-"))
+  const dir = await mkdtemp(join(tmpdir(), "vault-media-"))
   try {
     return await fn(dir)
   } finally {

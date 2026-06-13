@@ -120,7 +120,7 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
             {mode === "recovery" ? (
               <Input
                 autoFocus
-                name="orbit-recovery-code"
+                name="vault-recovery-code"
                 autoComplete="off"
                 placeholder={t("unlockDialog.recoveryCodePlaceholder")}
                 value={recoveryInput}
@@ -131,7 +131,7 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
               <Input
                 autoFocus
                 type="password"
-                name="orbit-unlock-key"
+                name="vault-unlock-key"
                 autoComplete="off"
                 placeholder={t("unlockDialog.passwordPlaceholder")}
                 value={password}

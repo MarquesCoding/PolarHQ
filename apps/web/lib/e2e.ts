@@ -41,7 +41,7 @@ interface KeyBundle {
   wrappedMetaKey: string | null
 }
 
-const LEGACY_KEY = "orbit.e2e.kp"
+const LEGACY_KEY = "vault.e2e.kp"
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 

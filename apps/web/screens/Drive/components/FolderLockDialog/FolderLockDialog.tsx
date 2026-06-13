@@ -87,7 +87,7 @@ const FolderLockDialog = ({ node, mode, open, onOpenChange, onDone }: FolderLock
           <Input
             autoFocus
             type="password"
-            name="orbit-folder-password"
+            name="vault-folder-password"
             autoComplete="off"
             placeholder={t("folderLockDialog.folderPasswordPlaceholder")}
             value={password}
@@ -97,7 +97,7 @@ const FolderLockDialog = ({ node, mode, open, onOpenChange, onDone }: FolderLock
           {mode === "lock" ? (
             <Input
               type="password"
-              name="orbit-folder-password-confirm"
+              name="vault-folder-password-confirm"
               autoComplete="off"
               placeholder={t("folderLockDialog.confirmPasswordPlaceholder")}
               value={confirm}

@@ -3,14 +3,14 @@ import type { DriveNode } from "@lib/drive"
 import { decryptName, decryptSharedName } from "@lib/e2e"
 import { API_URL } from "@lib/env"
 
-/** Mimes that mark a Drive node as an Orbit collaborative document (body = Yjs snapshot). */
-export const DOC_MIME = "application/vnd.orbit.doc"
-export const SHEET_MIME = "application/vnd.orbit.sheet"
-export const BOARD_MIME = "application/vnd.orbit.board"
+/** Mimes that mark a Drive node as an Vault collaborative document (body = Yjs snapshot). */
+export const DOC_MIME = "application/vnd.vault.doc"
+export const SHEET_MIME = "application/vnd.vault.sheet"
+export const BOARD_MIME = "application/vnd.vault.board"
 
 export type DocType = "doc" | "sheet" | "board"
 
-/** Map a node mime to its app type (or null if it isn't an Orbit document). */
+/** Map a node mime to its app type (or null if it isn't an Vault document). */
 export const docTypeOf = (mime: string | null): DocType | null =>
   mime === DOC_MIME
     ? "doc"
@@ -95,7 +95,7 @@ export interface DocCollaborator {
   role: DocRole
 }
 
-/** Whether a Drive node is an Orbit document. */
+/** Whether a Drive node is an Vault document. */
 export const isDocNode = (node: Pick<DriveNode, "mimeType">): boolean =>
   node.mimeType === DOC_MIME
 

@@ -36,7 +36,7 @@ const pickDevice = async (): Promise<"webgpu" | "wasm"> => {
 const load = async (): Promise<Loaded> => {
   const device = await pickDevice()
   const started = performance.now()
-  console.log(`[orbit:ml:worker] loading ${MODEL} on ${device}…`)
+  console.log(`[vault:ml:worker] loading ${MODEL} on ${device}…`)
   const opts = { device, dtype: "q8" as const }
   const [tokenizer, processor, textModel, visionModel] = await Promise.all([
     AutoTokenizer.from_pretrained(MODEL),
@@ -44,7 +44,7 @@ const load = async (): Promise<Loaded> => {
     CLIPTextModelWithProjection.from_pretrained(MODEL, opts),
     CLIPVisionModelWithProjection.from_pretrained(MODEL, opts),
   ])
-  console.log(`[orbit:ml:worker] model ready on ${device} in ${Math.round(performance.now() - started)}ms`)
+  console.log(`[vault:ml:worker] model ready on ${device} in ${Math.round(performance.now() - started)}ms`)
   return { tokenizer, processor, textModel, visionModel }
 }
 
@@ -100,7 +100,7 @@ ctx.addEventListener("message", (event) => {
     .then((vector) => {
       if (req.debug && req.type !== "warmup")
         console.log(
-          `[orbit:ml:worker] ${req.type} (${vector.length}-d) in ${Math.round(performance.now() - started)}ms`,
+          `[vault:ml:worker] ${req.type} (${vector.length}-d) in ${Math.round(performance.now() - started)}ms`,
         )
       ctx.postMessage({ id: req.id, ok: true, vector })
     })

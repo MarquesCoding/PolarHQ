@@ -4,7 +4,7 @@ import { fetchDecryptedFile } from "@lib/driveE2e"
 import { createEncryptedDoc, encryptNameWith } from "@lib/e2e"
 import type { ImportPayload } from "@lib/officeImport"
 
-const IMPORT_PREFIX = "orbit:import:"
+const IMPORT_PREFIX = "vault:import:"
 
 /** Map a filename to the editor that can open it, or null if it isn't an Office/Google file. */
 export const officeTypeForName = (name: string): DocType | null => {

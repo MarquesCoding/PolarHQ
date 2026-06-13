@@ -33,7 +33,7 @@ const storageKindKey = (node: DriveNode): string => {
   if (mime.startsWith("audio/")) return "audio"
   if (
     mime === "application/pdf" ||
-    /(word|presentation|spreadsheet|^text\/|vnd\.orbit|officedocument|oasis|msword|json)/.test(mime)
+    /(word|presentation|spreadsheet|^text\/|vnd\.vault|officedocument|oasis|msword|json)/.test(mime)
   )
     return "document"
   if (ARCHIVE.test(name) || /(zip|tar|gzip|x-7z|x-rar|x-bzip)/.test(mime)) return "archive"

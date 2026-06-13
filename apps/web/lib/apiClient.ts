@@ -12,7 +12,7 @@ export class ApiError extends Error {
   }
 }
 
-/** Call an Orbit API endpoint with cookies, JSON in/out, and typed errors. */
+/** Call an Vault API endpoint with cookies, JSON in/out, and typed errors. */
 export const apiFetch = async <T>(path: string, init?: RequestInit): Promise<T> => {
   const response = await fetch(`${API_URL}${path}`, {
     credentials: "include",

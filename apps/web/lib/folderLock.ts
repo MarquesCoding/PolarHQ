@@ -11,7 +11,7 @@ import {
 } from "@lib/crypto"
 import { fetchFolderLock, removeFolderLockApi, setFolderLockApi } from "@lib/drive"
 
-const VERIFIER_PLAINTEXT = new TextEncoder().encode("orbit-folder-lock-v1")
+const VERIFIER_PLAINTEXT = new TextEncoder().encode("vault-folder-lock-v1")
 const unlocked = new Set<string>()
 
 export const isFolderUnlocked = (id: string): boolean => unlocked.has(id)

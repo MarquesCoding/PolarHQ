@@ -14,28 +14,28 @@ import {
 } from "@lib/photoIndex"
 import { labelAsset } from "@lib/photoLabels"
 
-/** Attach `window.orbit.ml` console helpers to inspect and drive the semantic index. */
+/** Attach `window.vault.ml` console helpers to inspect and drive the semantic index. */
 export const installPhotoDebug = (): void => {
   if (typeof window === "undefined") return
-  const w = window as unknown as { orbit?: Record<string, unknown> }
-  w.orbit = w.orbit ?? {}
+  const w = window as unknown as { vault?: Record<string, unknown> }
+  w.vault = w.vault ?? {}
 
-  w.orbit.ml = {
+  w.vault.ml = {
     modelVersion: MODEL_VERSION,
     enableLogs: () => {
       setDebug(true)
-      console.log("[orbit:ml] logs on — reload to capture worker startup")
+      console.log("[vault:ml] logs on — reload to capture worker startup")
     },
     disableLogs: () => setDebug(false),
     warmup: () => warmupEmbedder(),
     reindex: () => ensureIndexing(),
     setThreshold: (value: number) => {
       setSearchThreshold(value)
-      console.log(`[orbit:ml] search threshold set to ${value}`)
+      console.log(`[vault:ml] search threshold set to ${value}`)
     },
     embed: async (assetId: string) => {
       const vector = await embedAsset(assetId)
-      console.log(`[orbit:ml] embedded ${assetId}:`, vector ? `${vector.length}-d` : "unavailable")
+      console.log(`[vault:ml] embedded ${assetId}:`, vector ? `${vector.length}-d` : "unavailable")
       return Boolean(vector)
     },
     status: async () => {
@@ -66,11 +66,11 @@ export const installPhotoDebug = (): void => {
       const id = assetId ?? [...index.keys()][0]
       if (!id) throw new Error("index is empty — nothing to label yet")
       const labels = await labelAsset(id, topK)
-      console.log(`[orbit:ml] labels for ${id}:`)
+      console.log(`[vault:ml] labels for ${id}:`)
       console.table(labels)
       return { assetId: id, labels }
     },
   }
 
-  console.log("[orbit:ml] debug ready — try `await orbit.ml.status()` or `await orbit.ml.search(\"beach\")`")
+  console.log("[vault:ml] debug ready — try `await vault.ml.status()` or `await vault.ml.search(\"beach\")`")
 }

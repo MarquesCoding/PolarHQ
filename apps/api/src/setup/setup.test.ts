@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import * as adminService from "../admin/service"
 import { SetupError, completeSetup, getSetupStatus } from "./service"
 
-const ADMIN_EMAIL = "owner@orbit.test"
+const ADMIN_EMAIL = "owner@vault.test"
 
 const cleanupUserByEmail = async (email: string) => {
   const rows = await db.select({ id: schema.user.id }).from(schema.user).where(eq(schema.user.email, email)).limit(1)
@@ -67,7 +67,7 @@ describe("first-run setup", () => {
 
   it("refuses a second setup", async () => {
     await expect(
-      completeSetup({ email: "intruder@orbit.test", password: "Password123!", name: "Nope" }),
+      completeSetup({ email: "intruder@vault.test", password: "Password123!", name: "Nope" }),
     ).rejects.toBeInstanceOf(SetupError)
   })
 
@@ -78,7 +78,7 @@ describe("first-run setup", () => {
     await db.insert(schema.user).values({
       id: memberId,
       name: "Member",
-      email: `${memberId}@orbit.test`,
+      email: `${memberId}@vault.test`,
       emailVerified: true,
     })
     await adminService.addGroupMember(group.id, memberId)

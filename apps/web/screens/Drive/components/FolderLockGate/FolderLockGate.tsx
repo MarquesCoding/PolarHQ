@@ -43,7 +43,7 @@ const FolderLockGate = ({ node, onUnlocked }: FolderLockGateProps) => {
         <Input
           autoFocus
           type="password"
-          name="orbit-folder-unlock"
+          name="vault-folder-unlock"
           autoComplete="off"
           placeholder={t("folderLockGate.passwordPlaceholder")}
           value={password}

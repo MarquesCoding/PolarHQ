@@ -54,7 +54,7 @@ PolarHQ goes mobile. A native SwiftUI client for iOS 26, built on a libsodium co
 
 ### Added
 - **Native iOS client** (SwiftUI) — server setup, bearer auth, and an app-launcher home screen.
-- **OrbitCrypto** — a Swift libsodium module with JS parity test vectors; E2E unlock and decrypted Photos thumbnails on-device.
+- **VaultCrypto** — a Swift libsodium module with JS parity test vectors; E2E unlock and decrypted Photos thumbnails on-device.
 - **Immersive Photos library** — Liquid Glass chrome, pinch-to-zoom across Years / Months / All, and an Apple-style photo viewer with filmstrip and action bar.
 - **Drive on iOS** — Files-app-style folder browsing with decrypted names and types, plus rename / delete / new folder.
 - **Device & session management** — see and revoke every signed-in client.
@@ -62,7 +62,7 @@ PolarHQ goes mobile. A native SwiftUI client for iOS 26, built on a libsodium co
 
 ### Improved
 - Bearer-token auth enabled for native clients.
-- OrbitCrypto compiles cleanly under Swift 6 strict concurrency.
+- VaultCrypto compiles cleanly under Swift 6 strict concurrency.
 
 ## [0.1.2] - 2026-05-28 — Photo stacks & the in-depth editor
 <!-- tags: Feature, Photos -->

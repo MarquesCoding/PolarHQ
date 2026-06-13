@@ -27,7 +27,7 @@ interface AwarenessChange {
 }
 
 /**
- * Minimal Yjs network provider over Orbit's dumb /ws relay. Implements the
+ * Minimal Yjs network provider over Vault's dumb /ws relay. Implements the
  * y-protocols sync + awareness handshake; the server only rebroadcasts opaque
  * blobs to the room, so peers reconcile state directly (the CRDT merges
  * client-side). Designed so Phase 3 can encrypt the blobs without server changes.
