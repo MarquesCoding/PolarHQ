@@ -2,14 +2,13 @@
 
 import { type ReactNode, useEffect, useState } from "react"
 import Image from "next/image"
-import { usePathname, useRouter } from "next/navigation"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import logo from "../../public/logo.png"
-import { fetchApps } from "@lib/apps"
 import { authClient } from "@lib/authClient"
 import { lockKeys } from "@lib/e2e"
 import { fetchStorageStats } from "@lib/drive"
 import { bytesParts, formatBytes } from "@lib/format"
-import { Icon } from "@lib/icons"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setSearchQuery } from "@store/uiSlice"
 import { applyThemeWithReveal } from "@lib/themeTransition"
@@ -18,7 +17,6 @@ import {
   IconLogout,
   IconMoon,
   IconSearch,
-  IconSelector,
   IconSun,
 } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
@@ -76,14 +74,12 @@ const FlatSidebar = ({
   children,
 }: FlatSidebarProps) => {
   const { t } = useTranslation("common")
-  const pathname = usePathname()
   const router = useRouter()
   const dispatch = useAppDispatch()
   const query = useAppSelector((state) => state.ui.searchQuery)
   const { data: session } = authClient.useSession()
   const { resolvedTheme, setTheme } = useTheme()
 
-  const { data: apps } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
   const { data: usage } = useQuery({ queryKey: ["drive", "storage"], queryFn: fetchStorageStats })
   const [devicesOpen, setDevicesOpen] = useState(false)
   const [storageOpen, setStorageOpen] = useState(false)
@@ -115,69 +111,20 @@ const FlatSidebar = ({
   return (
     <Sidebar collapsible="offcanvas">
       <div className="border-border flex h-14 shrink-0 items-center border-b px-3">
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <button
-                type="button"
-                className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1.5 text-start transition"
-              >
-                <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md">
-                  <Image src={logo} alt={APP_NAME} width={28} height={28} className="size-7" />
-                </span>
-                <span className="flex min-w-0 flex-col leading-tight">
-                  <span className="flex items-center gap-1.5">
-                    <span className="truncate text-sm font-semibold">{productName}</span>
-                    {beta ? (
-                      <span className="bg-primary/15 text-primary rounded px-1 py-px text-[9px] font-semibold tracking-wide uppercase">
-                        {t("flatSidebar.beta")}
-                      </span>
-                    ) : null}
-                  </span>
-                  <span className="text-muted-foreground truncate text-[11px]">{APP_NAME}</span>
-                </span>
-                <IconSelector className="text-muted-foreground ms-auto size-4 shrink-0" />
-              </button>
-            }
-          />
-          <DropdownMenuContent align="start" sideOffset={6} className="w-64 p-2">
-            <div className="flex items-center gap-2.5 px-1 pt-0.5 pb-2">
-              <span className="flex size-8 items-center justify-center overflow-hidden rounded-lg">
-                <Image src={logo} alt={APP_NAME} width={32} height={32} className="size-8" />
-              </span>
-              <span className="flex min-w-0 flex-col leading-tight">
-                <span className="truncate text-sm font-semibold">{APP_NAME}</span>
-                <span className="text-muted-foreground truncate text-[11px]">
-                  {t("flatSidebar.personalWorkspace")}
-                </span>
-              </span>
-            </div>
-            <div className="depth-divider mb-1" />
-            <p className="text-muted-foreground/70 px-1.5 pt-1.5 pb-1 text-[11px] font-medium tracking-wider uppercase">
-              {t("flatSidebar.apps")}
-            </p>
-            {(apps ?? [])
-              .filter((app) => app.available && app.route !== "/" && app.id !== "admin")
-              .map((app) => {
-                const current = pathname.startsWith(app.route)
-                return (
-                  <DropdownMenuItem
-                    key={app.id}
-                    onClick={() => router.push(app.route)}
-                    className="gap-2.5 py-1.5"
-                  >
-                    <span className="bg-sidebar-accent flex size-7 shrink-0 items-center justify-center rounded-md">
-                      <Icon name={app.icon} className="size-4" />
-                    </span>
-                    <span className="min-w-0 flex-1 truncate font-medium">
-                      {t(`apps.${app.id}`, { defaultValue: app.name })}
-                    </span>
-                    {current ? <span className="bg-primary size-2 rounded-full" /> : null}
-                  </DropdownMenuItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Link
+          href="/drive"
+          className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1.5 text-start transition"
+        >
+          <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md">
+            <Image src={logo} alt={APP_NAME} width={28} height={28} className="size-7" />
+          </span>
+          <span className="truncate text-sm font-semibold">{APP_NAME}</span>
+          {beta ? (
+            <span className="bg-primary/15 text-primary rounded px-1 py-px text-[9px] font-semibold tracking-wide uppercase">
+              {t("flatSidebar.beta")}
+            </span>
+          ) : null}
+        </Link>
       </div>
 
       {searchable ? (

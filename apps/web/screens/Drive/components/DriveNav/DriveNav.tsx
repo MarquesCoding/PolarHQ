@@ -65,6 +65,12 @@ const DriveNav = () => {
         active={isMyDrive(pathname)}
       />
       <NavRow
+        href="/photos"
+        icon="photo"
+        label={t("apps.photos", { ns: "common" })}
+        active={pathname.startsWith("/photos")}
+      />
+      <NavRow
         href="/drive/recent"
         icon="calendar"
         label={t("driveNav.recents")}
