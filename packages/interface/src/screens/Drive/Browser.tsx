@@ -167,7 +167,12 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
       void importDriveFile(node, office, router).catch(() =>
         toast.error(t("browser.couldNotOpenFile")),
       )
-    } else if (node.mimeType?.startsWith("image/")) setViewingNode(node)
+    } else if (
+      node.mimeType?.startsWith("image/") ||
+      node.mimeType?.startsWith("video/") ||
+      node.mimeType?.startsWith("audio/")
+    )
+      setViewingNode(node)
     else if (is3DModelName(node.name)) setViewingModel(node)
     else downloadIds([node.id])
   }

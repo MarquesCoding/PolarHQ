@@ -15,12 +15,18 @@ interface ImageViewerProps {
   onClose: () => void
 }
 
-/** Full-screen image viewer with pinch / wheel / button zoom and drag-to-pan, for Drive images. */
+/**
+ * Full-screen media viewer for Drive files: images get pinch / wheel / button zoom and drag-to-pan;
+ * video and audio play inline from the same decrypted blob. The server only ever serves ciphertext.
+ */
 const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
   const { t } = useTranslation("drive")
   const zoom = useZoomPan(node.id)
   const [decrypted, setDecrypted] = useState<string | null>(null)
   const src = node.encrypted ? (decrypted ?? undefined) : (node.downloadUrl ?? node.thumbnailUrl ?? undefined)
+  const isVideo = node.mimeType?.startsWith("video/") ?? false
+  const isAudio = node.mimeType?.startsWith("audio/") ?? false
+  const isImage = !isVideo && !isAudio
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -82,37 +88,41 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
         </div>
 
         <div className="panel flex items-center gap-0.5 rounded-full p-1 shadow-lg">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={t("imageViewer.zoomOut")}
-            onClick={zoom.zoomOut}
-            className="rounded-full"
-          >
-            <Icon name="minus" className="size-4" />
-          </Button>
-          <span className="w-11 text-center text-xs font-semibold tabular-nums">
-            {Math.round(zoom.scale * 100)}%
-          </span>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={t("imageViewer.zoomIn")}
-            onClick={zoom.zoomIn}
-            className="rounded-full"
-          >
-            <Icon name="plus" className="size-4" />
-          </Button>
-          <span className="bg-border mx-0.5 h-5 w-px" />
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={t("imageViewer.resetZoom")}
-            onClick={zoom.reset}
-            className="rounded-full"
-          >
-            <Icon name="zoom-reset" className="size-4" />
-          </Button>
+          {isImage ? (
+            <>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={t("imageViewer.zoomOut")}
+                onClick={zoom.zoomOut}
+                className="rounded-full"
+              >
+                <Icon name="minus" className="size-4" />
+              </Button>
+              <span className="w-11 text-center text-xs font-semibold tabular-nums">
+                {Math.round(zoom.scale * 100)}%
+              </span>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={t("imageViewer.zoomIn")}
+                onClick={zoom.zoomIn}
+                className="rounded-full"
+              >
+                <Icon name="plus" className="size-4" />
+              </Button>
+              <span className="bg-border mx-0.5 h-5 w-px" />
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={t("imageViewer.resetZoom")}
+                onClick={zoom.reset}
+                className="rounded-full"
+              >
+                <Icon name="zoom-reset" className="size-4" />
+              </Button>
+            </>
+          ) : null}
           <Button
             variant="ghost"
             size="icon-sm"
@@ -137,7 +147,26 @@ const ImageViewer = ({ node, onClose }: ImageViewerProps) => {
         onPointerUp={zoom.stageHandlers.onPointerUp}
         onPointerCancel={zoom.stageHandlers.onPointerCancel}
       >
-        {src ? (
+        {src && isVideo ? (
+          <video
+            src={src}
+            controls
+            autoPlay
+            onClick={(event) => event.stopPropagation()}
+            className="max-h-full max-w-full rounded-2xl shadow-2xl"
+          />
+        ) : null}
+        {src && isAudio ? (
+          <div
+            className="panel w-full max-w-md rounded-2xl p-4 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <audio src={src} controls autoPlay className="w-full">
+              <track kind="captions" />
+            </audio>
+          </div>
+        ) : null}
+        {src && isImage ? (
           <motion.img
             src={src}
             alt={node.name}
