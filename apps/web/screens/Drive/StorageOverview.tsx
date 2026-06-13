@@ -28,7 +28,7 @@ const APP_META: Record<StorageApp, { color: string; icon: string }> = {
   whiteboard: { color: "bg-pink-500", icon: "palette" },
 }
 
-/** Bold section heading with a count chip, à la Spacedrive's `Devices ①` / `Locations ⑤`. */
+/** Bold section heading with a small count chip. */
 const SectionHeader = ({ title, count }: { title: string; count?: number }) => (
   <div className="mb-3 flex items-center gap-2">
     <h2 className="text-base font-semibold">{title}</h2>

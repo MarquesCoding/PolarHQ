@@ -12,9 +12,9 @@ export interface InspectorTab {
   content: ReactNode
 }
 
-/** Shared tabbed inspector shell (Spacedrive-style rail): a row of icon tabs over a scrolling
- *  content area. Drive and Photos supply their own tabs; the chrome + tab state live here. The
- *  active tab persists across selections and falls back to the first when it no longer exists. */
+/** Shared tabbed inspector shell — an icon tab rail over a scrolling content area. Drive and Photos
+ *  supply their own tabs; the chrome + tab state live here. The active tab persists across
+ *  selections and falls back to the first when it no longer exists. */
 const Inspector = ({ tabs }: { tabs: InspectorTab[] }) => {
   const [activeId, setActiveId] = useState<string | undefined>(undefined)
   const current = tabs.find((tab) => tab.id === activeId) ?? tabs[0]

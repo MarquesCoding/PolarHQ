@@ -52,7 +52,6 @@ Useful scripts:
 apps/web        Main app — Photos, Drive, Docs, Sheets, Admin
 apps/api        Hono + tRPC API, auth, storage, collaboration relay
 apps/marketing  Landing site (polarhq.app)
-apps/ios        Native SwiftUI client
 services/*      Background workers (media, backup)
 packages/*      Shared libraries (db, auth, config, jobs, storage, ui)
 ```
