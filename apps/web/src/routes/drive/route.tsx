@@ -1,8 +1,8 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
-import { FlatShell, FlatSidebar, FlatTopBar, type TopBarTitle } from "@components/FlatShell"
-import DriveNav from "@pages/Drive/components/DriveNav/DriveNav"
-import DriveToolbar from "@pages/Drive/components/DriveToolbar/DriveToolbar"
+import { FlatShell, FlatSidebar, FlatTopBar, type TopBarTitle } from "@polarhq/interface/components/FlatShell"
+import DriveNav from "@polarhq/interface/screens/Drive/components/DriveNav/DriveNav"
+import DriveToolbar from "@polarhq/interface/screens/Drive/components/DriveToolbar/DriveToolbar"
 
 const DriveLayout = () => {
   const { t } = useTranslation("drive")

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Setup from "@pages/Setup/Setup"
+import Setup from "@polarhq/interface/screens/Setup/Setup"
 
 const RouteComponent = () => <Setup />
 

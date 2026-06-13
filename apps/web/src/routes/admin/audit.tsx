@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Audit from "@pages/Admin/Audit"
+import Audit from "@polarhq/interface/screens/Admin/Audit"
 
 const RouteComponent = () => <Audit />
 

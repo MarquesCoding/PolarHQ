@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Backup from "@pages/Admin/Backup"
+import Backup from "@polarhq/interface/screens/Admin/Backup"
 
 const RouteComponent = () => <Backup />
 

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Apps from "@pages/Admin/Apps"
+import Apps from "@polarhq/interface/screens/Admin/Apps"
 
 const RouteComponent = () => <Apps />
 

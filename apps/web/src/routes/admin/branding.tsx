@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Branding from "@pages/Admin/Branding"
+import Branding from "@polarhq/interface/screens/Admin/Branding"
 
 const RouteComponent = () => <Branding />
 

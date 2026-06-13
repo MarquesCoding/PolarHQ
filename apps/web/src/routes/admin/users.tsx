@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Users from "@pages/Admin/Users"
+import Users from "@polarhq/interface/screens/Admin/Users"
 
 const RouteComponent = () => <Users />
 

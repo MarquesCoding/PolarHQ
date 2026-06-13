@@ -20,6 +20,7 @@
     "@number-flow/react": "^0.6.0",
     "@polarhq/core": "workspace:*",
     "@polarhq/i18n": "workspace:*",
+    "@polarhq/interface": "workspace:*",
     "@polarhq/sdk": "workspace:*",
     "@polarhq/ui": "workspace:*",
     "@polarhq/vault": "workspace:*",

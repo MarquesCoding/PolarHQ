@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
-import { FlatShell, FlatSidebar, FlatTopBar, type TopBarTitle } from "@components/FlatShell"
-import AdminNav from "@pages/Admin/components/AdminNav/AdminNav"
+import { FlatShell, FlatSidebar, FlatTopBar, type TopBarTitle } from "@polarhq/interface/components/FlatShell"
+import AdminNav from "@polarhq/interface/screens/Admin/components/AdminNav/AdminNav"
 
 const AdminLayout = () => {
   const { t } = useTranslation("admin")

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Favourites from "@pages/Photos/Favourites"
+import Favourites from "@polarhq/interface/screens/Photos/Favourites"
 
 const RouteComponent = () => <Favourites />
 

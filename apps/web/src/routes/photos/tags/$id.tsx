@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import TagView from "@pages/Photos/TagView"
+import TagView from "@polarhq/interface/screens/Photos/TagView"
 
 const RouteComponent = () => {
   const { id } = Route.useParams()

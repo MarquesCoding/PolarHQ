@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import SignIn from "@pages/SignIn/SignIn"
+import SignIn from "@polarhq/interface/screens/SignIn/SignIn"
 
 const RouteComponent = () => <SignIn />
 

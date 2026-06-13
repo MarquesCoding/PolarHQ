@@ -2,7 +2,7 @@ import { Suspense, lazy } from "react"
 import { createFileRoute } from "@tanstack/react-router"
 import { t } from "@polarhq/i18n/config"
 
-const PhotoMap = lazy(() => import("@pages/Photos/PhotoMap"))
+const PhotoMap = lazy(() => import("@polarhq/interface/screens/Photos/PhotoMap"))
 
 const RouteComponent = () => (
   <div className="flex min-h-0 flex-1 flex-col p-6">

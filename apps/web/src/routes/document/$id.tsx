@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Editor from "@pages/Docs/Editor"
+import Editor from "@polarhq/interface/screens/Docs/Editor"
 
 const RouteComponent = () => {
   const { id } = Route.useParams()

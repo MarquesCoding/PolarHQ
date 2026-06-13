@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Account from "@pages/Account/Account"
+import Account from "@polarhq/interface/screens/Account/Account"
 
 const RouteComponent = () => <Account />
 

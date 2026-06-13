@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Groups from "@pages/Admin/Groups"
+import Groups from "@polarhq/interface/screens/Admin/Groups"
 
 const RouteComponent = () => <Groups />
 

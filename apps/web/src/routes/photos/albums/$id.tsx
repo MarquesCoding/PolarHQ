@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import AlbumDetail from "@pages/Photos/AlbumDetail"
+import AlbumDetail from "@polarhq/interface/screens/Photos/AlbumDetail"
 
 const RouteComponent = () => {
   const { id } = Route.useParams()

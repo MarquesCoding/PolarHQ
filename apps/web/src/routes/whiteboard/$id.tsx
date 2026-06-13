@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import WhiteboardEditor from "@pages/Whiteboard/WhiteboardEditor"
+import WhiteboardEditor from "@polarhq/interface/screens/Whiteboard/WhiteboardEditor"
 
 const RouteComponent = () => {
   const { id } = Route.useParams()

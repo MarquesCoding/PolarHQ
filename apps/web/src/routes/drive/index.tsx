@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import StorageOverview from "@pages/Drive/StorageOverview"
+import StorageOverview from "@polarhq/interface/screens/Drive/StorageOverview"
 
 const RouteComponent = () => <StorageOverview />
 

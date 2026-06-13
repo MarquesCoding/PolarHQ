@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Limits from "@pages/Admin/Limits"
+import Limits from "@polarhq/interface/screens/Admin/Limits"
 
 const RouteComponent = () => <Limits />
 

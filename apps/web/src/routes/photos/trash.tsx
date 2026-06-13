@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Trash from "@pages/Photos/Trash"
+import Trash from "@polarhq/interface/screens/Photos/Trash"
 
 const RouteComponent = () => <Trash />
 

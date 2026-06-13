@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Roles from "@pages/Admin/Roles"
+import Roles from "@polarhq/interface/screens/Admin/Roles"
 
 const RouteComponent = () => <Roles />
 

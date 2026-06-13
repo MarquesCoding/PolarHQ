@@ -1,5 +1,5 @@
 import { Outlet, createRootRoute } from "@tanstack/react-router"
-import Providers from "@components/Providers/Providers"
+import Providers from "@polarhq/interface/components/Providers/Providers"
 
 const RootComponent = () => (
   <Providers>

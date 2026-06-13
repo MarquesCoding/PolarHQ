@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Library from "@pages/Photos/Library"
+import Library from "@polarhq/interface/screens/Photos/Library"
 
 const RouteComponent = () => <Library />
 

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { fetchSavedSearches } from "@polarhq/vault/drive"
 import { useQuery } from "@tanstack/react-query"
-import Browser from "@pages/Drive/Browser"
+import Browser from "@polarhq/interface/screens/Drive/Browser"
 
 const RouteComponent = () => {
   const { id } = Route.useParams()

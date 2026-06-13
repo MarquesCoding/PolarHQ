@@ -10,10 +10,8 @@
     "declarationMap": false,
     "paths": {
       "@/*": ["./*"],
-      "@components/*": ["./components/*"],
-      "@pages/*": ["./screens/*"],
       "@lib/*": ["./lib/*"],
-      "@store/*": ["./store/*"],
+      "@polarhq/interface/*": ["../../packages/interface/src/*"],
       "@polarhq/ui/*": ["../../packages/ui/src/*"]
     }
   },

@@ -1,0 +1,16 @@
+{
+  "extends": "@polarhq/typescript-config/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    "paths": {
+      "@polarhq/interface/*": ["./src/*"],
+      "@polarhq/ui/*": ["../ui/src/*"]
+    }
+  },
+  "include": ["src"]
+}
