@@ -46,7 +46,9 @@ export default defineConfig({
           if (id.includes("maplibre") || id.includes("supercluster")) return "maps"
           if (id.includes("libsodium")) return "crypto"
           if (id.includes("mammoth") || id.includes("pptxgenjs") || id.includes("html-docx")) return "office"
-          return undefined
+          if (id.includes("@tabler/icons-react")) return "icons"
+          if (id.includes("motion") || id.includes("framer")) return "motion"
+          return "vendor"
         },
       },
     },
