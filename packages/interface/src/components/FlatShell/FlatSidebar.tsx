@@ -108,7 +108,10 @@ const FlatSidebar = ({
 
   return (
     <Sidebar collapsible="offcanvas">
-      <div className="border-border flex h-14 shrink-0 items-center border-b px-3">
+      <div
+        data-tauri-drag-region
+        className="border-border flex h-14 shrink-0 items-center border-b px-3"
+      >
         <Link
           href="/drive"
           className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1.5 text-start transition"

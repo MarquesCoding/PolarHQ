@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Vault",
+  "version": "0.0.1",
+  "identifier": "vault.polarhq.app",
+  "build": {
+    "beforeDevCommand": "pnpm --filter web dev",
+    "devUrl": "http://localhost:3000",
+    "beforeBuildCommand": "pnpm --filter web build",
+    "frontendDist": "../../web/dist"
+  },
+  "app": {
+    "macOSPrivateApi": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Vault",
+        "width": 1280,
+        "height": 832,
+        "minWidth": 760,
+        "minHeight": 480,
+        "decorations": false,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "trafficLightPosition": { "x": 16, "y": 22 },
+        "transparent": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}
