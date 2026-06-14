@@ -75,12 +75,6 @@ const DriveNav = () => {
         active={isMyDrive(pathname)}
       />
       <NavRow
-        href="/photos"
-        icon="photo"
-        label={t("apps.photos", { ns: "common" })}
-        active={pathname.startsWith("/photos")}
-      />
-      <NavRow
         href="/drive/recent"
         icon="calendar"
         label={t("driveNav.recents")}
@@ -93,6 +87,35 @@ const DriveNav = () => {
         active={pathname === "/drive/favorites"}
       />
       <NavRow href="/drive/trash" icon="trash" label={t("driveNav.trash")} active={pathname === "/drive/trash"} />
+
+      <SectionLabel>{t("driveNav.media")}</SectionLabel>
+      <NavRow
+        href="/photos"
+        icon="photo"
+        label={t("driveNav.photos")}
+        active={pathname === "/photos"}
+      />
+      <NavRow
+        href="/photos/albums"
+        icon="folder"
+        label={t("driveNav.albums")}
+        active={pathname.startsWith("/photos/albums")}
+        compact
+      />
+      <NavRow
+        href="/photos/favourites"
+        icon="favourites"
+        label={t("driveNav.favorites")}
+        active={pathname === "/photos/favourites"}
+        compact
+      />
+      <NavRow
+        href="/photos/map"
+        icon="map-pin"
+        label={t("driveNav.map")}
+        active={pathname === "/photos/map"}
+        compact
+      />
 
       <SectionLabel>{t("driveNav.fileKinds")}</SectionLabel>
       {FILE_KINDS.map(({ kind, icon }) => (

@@ -66,9 +66,13 @@
     "uploadFiles": "Upload files"
   },
   "driveNav": {
+    "albums": "Albums",
     "drive": "Drive",
     "favorites": "Favorites",
     "fileKinds": "File kinds",
+    "map": "Map",
+    "media": "Media",
+    "photos": "Photos",
     "location": "Location",
     "locations": "Locations",
     "myDrive": "My Drive",
