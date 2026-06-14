@@ -1,13 +1,14 @@
 <div align="center">
 
-<img src="apps/web/public/logo.png" width="92" alt="PolarHQ logo" />
+<img src="apps/web/public/logo.png" width="92" alt="Vault logo" />
 
-# PolarHQ
+# Vault
 
 **Your digital life, under your control.**
 
-An open-source, self-hosted, **end-to-end encrypted** suite — Photos, Drive and Docs —
-that you run on your own server. One private home for everything.
+An open-source, self-hosted, **end-to-end encrypted** explorer that you run on your
+own server. Files, photos, documents, spreadsheets and boards — every kind of thing
+you own, in **one** private place. (A PolarHQ project.)
 
 <p>
   <img src="https://img.shields.io/badge/status-alpha%20v0.3-f59e0b?style=flat-square" alt="Status" />
@@ -21,7 +22,7 @@ that you run on your own server. One private home for everything.
 
 <br />
 
-<img src="image.png" width="100%" alt="PolarHQ" />
+<img src="image.png" width="100%" alt="Vault" />
 
 </div>
 
@@ -39,7 +40,9 @@ that you run on your own server. One private home for everything.
 
 <p>
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Next.js%2016-000000?style=flat-square&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/TanStack%20Router-EF4444?style=flat-square&logo=reactrouter&logoColor=white" alt="TanStack Router" />
+  <img src="https://img.shields.io/badge/Tauri-24C8DB?style=flat-square&logo=tauri&logoColor=white" alt="Tauri" />
   <img src="https://img.shields.io/badge/React%2019-149ECA?style=flat-square&logo=react&logoColor=white" alt="React" />
   <img src="https://img.shields.io/badge/Tailwind%20v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/Hono-E36002?style=flat-square&logo=hono&logoColor=white" alt="Hono" />
@@ -55,12 +58,13 @@ that you run on your own server. One private home for everything.
   <img src="https://img.shields.io/badge/Swift-F05138?style=flat-square&logo=swift&logoColor=white" alt="Swift" />
 </p>
 
-- **Monorepo** — Turborepo + pnpm workspaces
-- **Web** — Next.js 16 (App Router), React 19, Tailwind v4, Redux Toolkit, TanStack Query
-- **API** — Hono + tRPC, Drizzle ORM, better-auth, a dumb `/ws` relay for collaboration
+- **Monorepo** — Turborepo + pnpm workspaces; ~all UI/logic lives in shared, framework-agnostic packages
+- **Web** — a thin Vite + React 19 + TanStack Router shell over `@polarhq/interface`; Tailwind v4, Redux Toolkit, TanStack Query
+- **Desktop** — Tauri 2 wrapping the same frontend (`apps/desktop`, bundle id `vault.polarhq.app`)
+- **API** — Hono + tRPC, Drizzle ORM, better-auth, a dumb `/ws` relay for collaboration; the media + backup workers run in-process (`RUN_WORKERS`)
 - **Data** — PostgreSQL (pgvector), Redis (BullMQ + pub/sub), S3-compatible object storage
 - **Crypto** — libsodium everywhere; clients hold the keys, the server holds ciphertext
-- **Mobile** — native SwiftUI client (iOS 26) sharing the same crypto core
+- **Mobile** — React Native + Swift client (planned), reusing `@polarhq/core` + `@polarhq/i18n`
 
 ## Quick start
 
@@ -79,7 +83,7 @@ cp .env.example .env        # then edit AUTH_SECRET etc.
 # 4. Run database migrations
 pnpm db:migrate
 
-# 5. Start everything (web, api, workers, marketing)
+# 5. Start everything (web, api with in-process workers, marketing)
 pnpm dev
 ```
 
@@ -89,20 +93,22 @@ Then open the web app, complete the first-run **setup** to create the admin acco
 
 ```
 apps/
-  web/         Main app — Photos, Drive, Docs, Sheets, Admin
-  api/         Hono + tRPC API, auth, storage, collaboration relay
+  web/         Thin Vite + TanStack Router shell (src/routes + main.tsx)
+  desktop/     Tauri 2 desktop wrapper (vault.polarhq.app)
+  api/         Hono + tRPC API, auth, storage, collaboration relay, in-process workers
   marketing/   polarhq.app landing site (Next.js)
-  ios/         Native SwiftUI client
-services/
-  media/       Thumbnailing / media processing worker
-  backup/      Scheduled backup worker
 packages/
+  interface/   The whole UI — screens, components, store, hooks (renderer-agnostic React)
+  vault/       Domain layer — drive/e2e/docs/photos, doc editor, office, CLIP embedder
+  sdk/         Backend client — configureSdk + apiClient + network + auth + live events
+  core/        Framework-agnostic primitives — crypto, formatting, changelog
+  i18n/        Translations + i18n config/provider
+  ui/          Shared shadcn-style component library
   db/          Drizzle schema + migrations
   auth/        better-auth setup
   config/      Typed env/config
   jobs/        BullMQ queues + Redis pub/sub events
   storage/     S3 / filesystem storage driver
-  ui/          Shared shadcn-style component library
 ```
 
 ## Contributing
@@ -112,5 +118,5 @@ project, the branch and commit conventions, and how to open a pull request.
 
 ## License
 
-[AGPL-3.0](LICENSE.md) — PolarHQ is free software. You can self-host, modify and redistribute it;
+[AGPL-3.0](LICENSE.md) — Vault is free software. You can self-host, modify and redistribute it;
 if you run a modified version as a network service, you must share your changes.
