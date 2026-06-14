@@ -5,6 +5,7 @@ import { usePathname } from "@polarhq/interface/lib/router"
 import {
   deleteSavedSearch,
   driveFolderIdFromPath,
+  fetchDriveTags,
   fetchNodes,
   fetchSavedSearches,
 } from "@polarhq/vault/drive"
@@ -49,6 +50,10 @@ const DriveNav = () => {
   const { data: root } = useQuery({
     queryKey: ["drive", "nodes", "root"],
     queryFn: () => fetchNodes(),
+  })
+  const { data: tags = [] } = useQuery({
+    queryKey: ["drive", "tags"],
+    queryFn: fetchDriveTags,
   })
   const locations = (root?.children ?? []).filter((node) => node.kind === "folder")
   const trail = data?.breadcrumb ?? []
@@ -111,6 +116,22 @@ const DriveNav = () => {
               icon="folder"
               label={folder.name}
               active={pathname === `/drive/${folder.id}`}
+              compact
+            />
+          ))}
+        </>
+      ) : null}
+
+      {tags.length > 0 ? (
+        <>
+          <SectionLabel>{t("driveNav.tags")}</SectionLabel>
+          {tags.map((tag) => (
+            <NavRow
+              key={tag.id}
+              href={`/drive/tag/${tag.id}`}
+              icon="tag"
+              label={tag.name}
+              active={pathname === `/drive/tag/${tag.id}`}
               compact
             />
           ))}

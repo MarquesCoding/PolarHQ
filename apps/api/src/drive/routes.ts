@@ -15,6 +15,14 @@ import {
   type UploadSession,
 } from "./uploadSession"
 import { nodesWithKeys } from "../docs/keys"
+import {
+  createTag,
+  deleteTag,
+  getNodeTags,
+  listNodesByTag,
+  listTags,
+  setNodeTags,
+} from "./tags"
 import { ingestUpload, purgeAssets, restoreAssets, trashAssets } from "../photos/service"
 import {
   type DriveNode,
@@ -200,6 +208,49 @@ driveRoutes.post("/nodes/:id/favorite", async (c) => {
   const node = await setFavorite(userId, c.req.param("id"), parsed.data.favorite)
   notify(userId)
   return c.json({ node: serializeNode(node) })
+})
+
+driveRoutes.get("/tags", async (c) => {
+  return c.json({ tags: await listTags(c.get("userId")) })
+})
+
+driveRoutes.post("/tags", async (c) => {
+  const parsed = await parse(c, z.object({ name: z.string().trim().min(1).max(64) }))
+  if (!parsed.success) return c.json({ error: "drive.tag.invalid" }, 400)
+  return c.json({ tag: await createTag(c.get("userId"), parsed.data.name) })
+})
+
+driveRoutes.delete("/tags/:id", async (c) => {
+  await deleteTag(c.get("userId"), c.req.param("id"))
+  return c.json({ ok: true })
+})
+
+driveRoutes.get("/tags/:id/nodes", async (c) => {
+  const userId = c.get("userId")
+  const nodes = await listNodesByTag(userId, c.req.param("id"))
+  const encrypted = await nodesWithKeys(
+    userId,
+    nodes.map((n) => n.id),
+  )
+  return c.json({ children: nodes.map((n) => serializeNode(n, encrypted)) })
+})
+
+driveRoutes.get("/nodes/:id/tags", async (c) => {
+  const userId = c.get("userId")
+  const node = await getNode(userId, c.req.param("id"))
+  if (!node) return c.json({ error: "drive.node.notFound" }, 404)
+  return c.json({ tags: await getNodeTags(userId, node.id) })
+})
+
+driveRoutes.post("/nodes/:id/tags", async (c) => {
+  const userId = c.get("userId")
+  const node = await getNode(userId, c.req.param("id"))
+  if (!node) return c.json({ error: "drive.node.notFound" }, 404)
+  const parsed = await parse(c, z.object({ tagIds: z.array(z.string()) }))
+  if (!parsed.success) return c.json({ error: "drive.tag.invalid" }, 400)
+  await setNodeTags(userId, node.id, parsed.data.tagIds)
+  notify(userId)
+  return c.json({ tags: await getNodeTags(userId, node.id) })
 })
 
 driveRoutes.post("/nodes/folder", async (c) => {

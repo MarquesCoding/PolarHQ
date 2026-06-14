@@ -64,6 +64,7 @@ import NodeGrid from "@polarhq/interface/screens/Drive/components/NodeGrid/NodeG
 import type { DriveNodeActions } from "@polarhq/interface/screens/Drive/components/NodeContextMenu/NodeContextMenu"
 import NodeTable from "@polarhq/interface/screens/Drive/components/NodeTable/NodeTable"
 import RenameDialog from "@polarhq/interface/screens/Drive/components/RenameDialog/RenameDialog"
+import TagDialog from "@polarhq/interface/screens/Drive/components/TagDialog/TagDialog"
 import VersionHistoryDialog from "@polarhq/interface/screens/Drive/components/VersionHistoryDialog/VersionHistoryDialog"
 
 const ModelViewer = dynamic(() => import("@polarhq/interface/screens/Drive/components/ModelViewer/ModelViewer"))
@@ -86,6 +87,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const search = searchRaw.toLowerCase()
 
   const [renaming, setRenaming] = useState<DriveNode | null>(null)
+  const [tagNode, setTagNode] = useState<DriveNode | null>(null)
   const [moving, setMoving] = useState<string[] | null>(null)
   const [versionsNode, setVersionsNode] = useState<DriveNode | null>(null)
   const [shareNode, setShareNode] = useState<DriveNode | null>(null)
@@ -288,6 +290,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     removeLock: (node) => setLockDialog({ node, mode: "remove" }),
     favorite: (node) => void toggleFavorite(node),
     rename: (node) => setRenaming(node),
+    tags: (node) => setTagNode(node),
     details: (node) => {
       if (!selection.isSelected(node.id)) selection.selectOnly(node.id)
       dispatch(setDriveDetailsOpen(true))
@@ -475,6 +478,11 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
       <RenameDialog
         node={renaming}
         onOpenChange={(value) => !value && setRenaming(null)}
+        onDone={invalidate}
+      />
+      <TagDialog
+        node={tagNode}
+        onOpenChange={(value) => !value && setTagNode(null)}
         onDone={invalidate}
       />
       <MoveDialog

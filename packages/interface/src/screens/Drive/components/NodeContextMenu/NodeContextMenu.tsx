@@ -20,6 +20,7 @@ import {
   IconLock,
   IconLockOpen,
   IconPencil,
+  IconTag,
   IconPhoto,
   IconStar,
   IconStarFilled,
@@ -47,6 +48,7 @@ export interface DriveNodeActions {
   removeLock: (node: DriveNode) => void
   favorite: (node: DriveNode) => void
   rename: (node: DriveNode) => void
+  tags: (node: DriveNode) => void
   details: (node: DriveNode) => void
   versions: (node: DriveNode) => void
   trash: (node: DriveNode) => void
@@ -152,6 +154,10 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
             <ContextMenuItem onClick={() => actions.rename(node)}>
               <IconPencil />
               {t("nodeContextMenu.rename")}
+            </ContextMenuItem>
+            <ContextMenuItem onClick={() => actions.tags(node)}>
+              <IconTag />
+              {t("nodeContextMenu.tags")}
             </ContextMenuItem>
             <ContextMenuItem onClick={() => actions.details(node)}>
               <IconInfoCircle />

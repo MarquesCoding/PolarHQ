@@ -76,6 +76,7 @@
     "recents": "Recents",
     "removeSearch": "Remove saved search",
     "savedSearches": "Saved searches",
+    "tags": "Tags",
     "trash": "Trash"
   },
   "overview": {
@@ -204,6 +205,7 @@
     "openInPhotos": "Open in Photos",
     "removeLock": "Remove lock",
     "rename": "Rename",
+    "tags": "Manage tags",
     "unfavorite": "Remove from favorites",
     "share": "Share",
     "versionHistory": "See version history",
@@ -230,6 +232,16 @@
   },
   "shell": {
     "search": "Search Drive"
+  },
+  "tagDialog": {
+    "add": "Add",
+    "cancel": "Cancel",
+    "couldNotSave": "Could not save tags",
+    "empty": "No tags yet — create one below.",
+    "placeholder": "New tag name",
+    "save": "Save",
+    "saved": "Tags updated",
+    "title": "Manage tags"
   },
   "trash": {
     "actionFailed": "Action failed",

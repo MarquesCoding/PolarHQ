@@ -90,6 +90,35 @@ export type LibrarySource =
   | { view: "favorites" }
   | { view: "kind"; kind: StorageKind }
   | { view: "search"; query: string }
+  | { view: "tag"; tagId: string }
+
+/** A user-defined tag and how many nodes carry it. */
+export interface DriveTag {
+  id: string
+  name: string
+  count: number
+}
+
+export const fetchDriveTags = (): Promise<DriveTag[]> =>
+  apiFetch<{ tags: DriveTag[] }>("/api/v1/drive/tags").then((r) => r.tags)
+
+export const createDriveTag = (name: string): Promise<DriveTag> =>
+  apiFetch<{ tag: DriveTag }>("/api/v1/drive/tags", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  }).then((r) => r.tag)
+
+export const deleteDriveTag = (id: string): Promise<{ ok: true }> =>
+  apiFetch<{ ok: true }>(`/api/v1/drive/tags/${id}`, { method: "DELETE" })
+
+export const fetchNodeTags = (nodeId: string): Promise<DriveTag[]> =>
+  apiFetch<{ tags: DriveTag[] }>(`/api/v1/drive/nodes/${nodeId}/tags`).then((r) => r.tags)
+
+export const saveNodeTags = (nodeId: string, tagIds: string[]): Promise<DriveTag[]> =>
+  apiFetch<{ tags: DriveTag[] }>(`/api/v1/drive/nodes/${nodeId}/tags`, {
+    method: "POST",
+    body: JSON.stringify({ tagIds }),
+  }).then((r) => r.tags)
 
 /** Star or unstar a node; favorites surface in the cross-folder Favorites smart view. */
 export const setNodeFavorite = (id: string, favorite: boolean): Promise<{ node: DriveNode }> =>
@@ -110,6 +139,12 @@ export const fetchLibrary = async (source: LibrarySource): Promise<{ children: D
         ? decrypted.filter((node) => node.name.toLowerCase().includes(query))
         : decrypted,
     }
+  }
+  if (source.view === "tag") {
+    const listing = await apiFetch<{ children: DriveNode[] }>(
+      `/api/v1/drive/tags/${source.tagId}/nodes`,
+    )
+    return { children: listing.children.map(decryptNodeName) }
   }
   const params = new URLSearchParams({ view: source.view })
   if (source.view === "kind") params.set("kind", source.kind)
