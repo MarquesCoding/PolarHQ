@@ -15,18 +15,18 @@ const serif = Instrument_Serif({
   variable: "--font-serif",
 })
 
-const TITLE = "PolarHQ — your private home for everything"
+const TITLE = "Vault — your private home for everything"
 const DESCRIPTION =
-  "Open-source, self-hosted, end-to-end encrypted Photos, Drive and Docs — one private suite you run yourself."
+  "Open-source, self-hosted, end-to-end encrypted — files, photos and documents in one private explorer you run yourself."
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://polarhq.app"),
-  applicationName: "PolarHQ",
+  applicationName: "Vault",
   title: TITLE,
   description: DESCRIPTION,
   openGraph: {
     type: "website",
-    siteName: "PolarHQ",
+    siteName: "Vault",
     url: "https://polarhq.app",
     title: TITLE,
     description: DESCRIPTION,

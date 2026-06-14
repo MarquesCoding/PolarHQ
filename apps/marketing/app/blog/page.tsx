@@ -8,7 +8,7 @@ import { BLOG_POSTS } from "@lib/blog"
 import { formatDate } from "@lib/format"
 
 export const metadata: Metadata = {
-  title: "Blog — PolarHQ",
+  title: "Blog — Vault",
   description: "Notes from building a private, self-hosted home for everything.",
 }
 

@@ -5,7 +5,7 @@ import Reveal from "@components/Reveal"
 import { ROADMAP, type RoadmapStatus } from "@lib/roadmap"
 
 export const metadata: Metadata = {
-  title: "Roadmap — PolarHQ",
+  title: "Roadmap — Vault",
   description: "What's shipped, what's being built, and what's coming next.",
 }
 
@@ -22,7 +22,7 @@ const RoadmapPage = () => (
     hero={
       <PageHero
         eyebrow="Roadmap"
-        title="Where PolarHQ is headed"
+        title="Where Vault is headed"
         subtitle="Shipped, in progress, and on the horizon."
       />
     }

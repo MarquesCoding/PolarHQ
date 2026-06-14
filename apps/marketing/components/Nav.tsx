@@ -46,8 +46,8 @@ const Nav = () => {
     >
       <nav className="flex h-12 items-center gap-6 px-4 sm:gap-8 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.png" alt="PolarHQ" width={24} height={24} className="size-6" priority />
-          <span className="text-foreground text-[15px] font-semibold tracking-tight">PolarHQ</span>
+          <Image src="/logo.png" alt="Vault" width={24} height={24} className="size-6" priority />
+          <span className="text-foreground text-[15px] font-semibold tracking-tight">Vault</span>
         </Link>
 
         <div className="hidden items-center gap-7 md:flex">

@@ -9,8 +9,8 @@ import { RELEASES } from "@lib/changelog"
 import { formatDate } from "@lib/format"
 
 export const metadata: Metadata = {
-  title: "Changelog — PolarHQ",
-  description: "Every release of PolarHQ, newest first.",
+  title: "Changelog — Vault",
+  description: "Every release of Vault, newest first.",
 }
 
 const ChangelogPage = () => (

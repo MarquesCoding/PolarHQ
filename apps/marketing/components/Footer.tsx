@@ -32,8 +32,8 @@ const Footer = () => (
       <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-sm">
           <div className="flex items-center gap-2">
-            <Image src="/logo.png" alt="PolarHQ" width={24} height={24} className="size-6" />
-            <span className="text-foreground text-base font-semibold tracking-tight">PolarHQ</span>
+            <Image src="/logo.png" alt="Vault" width={24} height={24} className="size-6" />
+            <span className="text-foreground text-base font-semibold tracking-tight">Vault</span>
           </div>
           <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
             A self-hosted home for your photos, files and documents. Open source, end to end
@@ -82,7 +82,7 @@ const Footer = () => (
       aria-hidden
       className="wordmark text-foreground/[0.04] pointer-events-none mt-10 -mb-[0.12em] w-full overflow-hidden text-center text-[18vw] leading-none whitespace-nowrap select-none"
     >
-      PolarHQ
+      Vault
     </div>
 
     <div className="mx-auto max-w-6xl px-6">
