@@ -34,4 +34,21 @@ export default defineConfig({
   resolve: { alias: nucleoAliases },
   server: { port: 3000 },
   preview: { port: 3000, host: true },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (!id.includes("node_modules")) return undefined
+          if (id.includes("three") || id.includes("@react-three")) return "three"
+          if (id.includes("@tiptap") || id.includes("prosemirror") || id.includes("yjs")) return "editor"
+          if (id.includes("@huggingface") || id.includes("onnx")) return "ml"
+          if (id.includes("xlsx") || id.includes("hyperformula") || id.includes("@glideapps")) return "sheets"
+          if (id.includes("maplibre") || id.includes("supercluster")) return "maps"
+          if (id.includes("libsodium")) return "crypto"
+          if (id.includes("mammoth") || id.includes("pptxgenjs") || id.includes("html-docx")) return "office"
+          return undefined
+        },
+      },
+    },
+  },
 })
