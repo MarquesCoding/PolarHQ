@@ -591,13 +591,13 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
         {info ? (
           <motion.aside
             key="info"
-            className="relative z-10 shrink-0 overflow-hidden py-3 pr-3"
+            className="border-border/60 bg-card relative z-10 h-full shrink-0 overflow-hidden border-l"
             initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 368, opacity: 1 }}
+            animate={{ width: 340, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
           >
-            <div className="panel scrollbar-slim h-full w-[356px] overflow-hidden rounded-md">
+            <div className="h-full w-[340px] overflow-hidden">
               <InfoPanel
                 assetId={asset.id}
                 isFavorite={asset.isFavorite}
