@@ -19,11 +19,11 @@ import {
   Copy,
   DotsThree,
   DownloadSimple,
-  Heart,
-  Image as ImageIcon,
-  Info,
-  MagnifyingGlassMinus,
-  MagnifyingGlassPlus,
+  HeartIcon,
+  MagnifyingGlassMinusIcon,
+  MagnifyingGlassPlusIcon,
+  SidebarSimpleIcon,
+  SlideshowIcon,
   Sliders,
   Trash,
   X,
@@ -354,7 +354,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={zoom.zoomOut}
               className="rounded-full"
             >
-              <MagnifyingGlassMinus className="size-4" />
+              <MagnifyingGlassMinusIcon className="size-4" />
             </Button>
             <Button
               variant="ghost"
@@ -363,11 +363,11 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={zoom.zoomIn}
               className="rounded-full"
             >
-              <MagnifyingGlassPlus className="size-4" />
+              <MagnifyingGlassPlusIcon className="size-4" />
             </Button>
           </div>
         ) : null}
-        <div className="panel flex items-center gap-0.5 rounded-md p-1 shadow-lg">
+        <div className="flex items-center gap-0.5">
           {asset.motion && asset.type === "image" && motionSrc ? (
             <Button
               variant="ghost"
@@ -394,7 +394,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             />
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={toggleFavourite}>
-                <Heart weight={asset.isFavorite ? "fill" : "regular"} className={cn(asset.isFavorite && "text-primary")} />
+                <HeartIcon weight={asset.isFavorite ? "fill" : "regular"} />
                 {t("lightbox.favourite")}
               </DropdownMenuItem>
               {asset.type === "image" ? (
@@ -438,9 +438,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               size="icon-sm"
               aria-label={t("lightbox.filmstrip")}
               onClick={toggleStrip}
-              className={cn("rounded-full", showStrip && "text-primary")}
+              className="rounded-full"
             >
-              <ImageIcon className="size-5" />
+              <SlideshowIcon weight={showStrip ? "fill" : "regular"} className="size-5" />
             </Button>
           </Tip>
           <span className="bg-border mx-0.5 h-5 w-px" />
@@ -450,9 +450,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               size="icon-sm"
               aria-label={t("lightbox.info")}
               onClick={toggleInfo}
-              className={cn("rounded-full", info && "text-primary")}
+              className="rounded-full"
             >
-              <Info className="size-5" />
+              <SidebarSimpleIcon weight={info ? "fill" : "regular"} className="size-5" />
             </Button>
           </Tip>
         </div>
