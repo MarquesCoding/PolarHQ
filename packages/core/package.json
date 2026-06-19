@@ -4,12 +4,27 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./crypto": "./src/crypto.ts"
+    "./config": "./src/config.ts",
+    "./crypto": "./src/crypto.ts",
+    "./apiClient": "./src/apiClient.ts",
+    "./account": "./src/account.ts",
+    "./apps": "./src/apps.ts",
+    "./download": "./src/download.ts",
+    "./secureStore": "./src/secureStore.ts",
+    "./queryClient": "./src/queryClient.ts",
+    "./keyVerification": "./src/keyVerification.ts",
+    "./thumbnails": "./src/thumbnails.ts",
+    "./motionPhoto": "./src/motionPhoto.ts",
+    "./xhrUpload": "./src/xhrUpload.ts",
+    "./streamDownload": "./src/streamDownload.ts",
+    "./chunkedUpload": "./src/chunkedUpload.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.0",
+    "@workspace/i18n": "workspace:*",
     "libsodium-wrappers-sumo": "^0.8.4"
   },
   "devDependencies": {

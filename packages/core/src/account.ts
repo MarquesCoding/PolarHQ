@@ -1,4 +1,4 @@
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "./apiClient"
 import { dateLocale } from "@workspace/i18n/format"
 
 export type DevicePlatform = "ios" | "android" | "mac" | "windows" | "linux" | "web"

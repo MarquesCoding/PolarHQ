@@ -1,4 +1,4 @@
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "./apiClient"
 
 export type AppCategory = "storage" | "productivity" | "communication" | "security"
 export type AppPrivacy = "server-side" | "e2e"

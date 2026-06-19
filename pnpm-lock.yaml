@@ -457,6 +457,12 @@ importers:
 
   packages/core:
     dependencies:
+      '@tanstack/react-query':
+        specifier: ^5.101.0
+        version: 5.101.0(react@19.2.4)
+      '@workspace/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       libsodium-wrappers-sumo:
         specifier: ^0.8.4
         version: 0.8.4

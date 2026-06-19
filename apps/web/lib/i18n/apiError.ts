@@ -1,6 +1,6 @@
 "use client"
 
-import { ApiError } from "@lib/apiClient"
+import { ApiError } from "@workspace/core/apiClient"
 import i18n from "@workspace/i18n/config"
 
 /**

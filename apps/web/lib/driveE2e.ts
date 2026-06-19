@@ -1,7 +1,7 @@
 "use client"
 
-import { apiFetch } from "@lib/apiClient"
-import { uploadStreamingParts } from "@lib/chunkedUpload"
+import { apiFetch } from "@workspace/core/apiClient"
+import { uploadStreamingParts } from "@workspace/core/chunkedUpload"
 import {
   isStreamBlob,
   secretboxOpen,
@@ -9,7 +9,7 @@ import {
   secretstreamInit,
   secretstreamOpenAll,
 } from "@workspace/core/crypto"
-import { streamDecryptToDisk, supportsStreamingDownload } from "@lib/streamDownload"
+import { streamDecryptToDisk, supportsStreamingDownload } from "@workspace/core/streamDownload"
 import { type DriveNode, decryptNodeName } from "@lib/drive"
 import {
   createContentKey,
@@ -19,8 +19,8 @@ import {
   storeContentKey,
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
-import { generateImageThumbnail } from "@lib/thumbnails"
-import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
+import { generateImageThumbnail } from "@workspace/core/thumbnails"
+import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@workspace/core/xhrUpload"
 
 /**
  * Upload a file end-to-end encrypted: encrypt the bytes with a fresh content key,

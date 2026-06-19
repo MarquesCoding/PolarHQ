@@ -1,4 +1,4 @@
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@workspace/core/apiClient"
 import type { ShareLink, ShareOptions } from "@lib/drive"
 import { API_URL } from "@lib/env"
 

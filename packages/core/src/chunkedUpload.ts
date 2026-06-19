@@ -1,8 +1,8 @@
 "use client"
 
-import { apiFetch } from "@lib/apiClient"
-import { STREAM_CHUNK_SIZE, type StreamSealer } from "@workspace/core/crypto"
-import { type UploadOptions, retryOnTransient } from "@lib/xhrUpload"
+import { apiFetch } from "./apiClient"
+import { STREAM_CHUNK_SIZE, type StreamSealer } from "./crypto"
+import { type UploadOptions, retryOnTransient } from "./xhrUpload"
 
 const concatBytes = (a: Uint8Array, b: Uint8Array): Uint8Array => {
   const out = new Uint8Array(a.length + b.length)

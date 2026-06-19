@@ -1,6 +1,6 @@
 "use client"
 
-import { type Device, fetchDevices, revokeDevice, timeAgo } from "@lib/account"
+import { type Device, fetchDevices, revokeDevice, timeAgo } from "@workspace/core/account"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Desktop, DeviceMobile, Globe, Laptop } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"

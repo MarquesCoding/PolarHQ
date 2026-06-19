@@ -1,6 +1,6 @@
 "use client"
 
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@workspace/core/apiClient"
 import {
   type DocMeta,
   type DocType,
@@ -9,8 +9,8 @@ import {
   fetchDocContent,
   saveDocContent,
 } from "@lib/docs"
-import { fingerprintOf, verifyAndPin } from "@lib/keyVerification"
-import { secureStoreClear, secureStoreGet, secureStoreSet } from "@lib/secureStore"
+import { fingerprintOf, verifyAndPin } from "@workspace/core/keyVerification"
+import { secureStoreClear, secureStoreGet, secureStoreSet } from "@workspace/core/secureStore"
 import {
   type KdfParams,
   type Keypair,

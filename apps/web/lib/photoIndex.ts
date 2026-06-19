@@ -1,6 +1,6 @@
 "use client"
 
-import { apiFetch } from "@lib/apiClient"
+import { apiFetch } from "@workspace/core/apiClient"
 import { dbg } from "@lib/debug"
 import { MODEL_VERSION, embedImage, embedderSupported } from "@lib/embedder"
 import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@lib/e2e"
