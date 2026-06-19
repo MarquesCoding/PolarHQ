@@ -575,14 +575,19 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
         {info ? (
           <motion.aside
             key="info"
-            className="shrink-0 overflow-hidden py-3 pr-3"
+            className="relative z-10 shrink-0 overflow-hidden py-3 pr-3"
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: 368, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
           >
             <div className="panel scrollbar-slim h-full w-[356px] overflow-hidden rounded-md">
-              <InfoPanel assetId={asset.id} />
+              <InfoPanel
+                assetId={asset.id}
+                isFavorite={asset.isFavorite}
+                onFavorite={toggleFavourite}
+                onShare={() => setShareOpen(true)}
+              />
             </div>
           </motion.aside>
         ) : null}
