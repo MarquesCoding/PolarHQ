@@ -5,8 +5,7 @@ import { Dialog as SheetPrimitive } from "@base-ui/react/dialog"
 
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
-import { IconX } from "@tabler/icons-react"
-
+import { X } from "@phosphor-icons/react/X"
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
 }
@@ -70,8 +69,7 @@ function SheetContent({
               />
             }
           >
-            <IconX
-            />
+            <X />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
         )}

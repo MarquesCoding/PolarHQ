@@ -5,7 +5,7 @@ import { Icon } from "@lib/icons"
 import CollectionView from "@pages/Photos/components/CollectionView/CollectionView"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import EmptyState from "@components/EmptyState/EmptyState"
-import { IconHeartOff } from "@tabler/icons-react"
+import { HeartBreak } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
 import { t } from "@lib/i18n/config"
@@ -44,7 +44,7 @@ const Favourites = () => {
             size="sm"
             onClick={() => run(() => favoriteAssets(ids, false), t("favourites.removed"), after)}
           >
-            <IconHeartOff className="size-4" />
+            <HeartBreak className="size-4" />
             {t("favourites.unfavourite")}
           </Button>
           <ConfirmButton

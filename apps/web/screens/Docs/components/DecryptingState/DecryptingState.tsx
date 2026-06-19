@@ -1,6 +1,6 @@
 "use client"
 
-import { IconShieldLock } from "@tabler/icons-react"
+import { ShieldCheck } from "@phosphor-icons/react"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 
@@ -18,7 +18,7 @@ const DecryptingState = () => {
         animate={{ scale: [1, 1.12, 1], opacity: [0.65, 1, 0.65] }}
         transition={{ duration: 1.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
       >
-        <IconShieldLock className="size-9" />
+        <ShieldCheck className="size-9" />
       </motion.div>
       <p className="text-muted-foreground text-sm">{t("decryptingState.decrypting")}</p>
     </div>

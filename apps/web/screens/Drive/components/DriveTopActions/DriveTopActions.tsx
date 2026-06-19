@@ -9,14 +9,14 @@ import { useUploadManager } from "@lib/uploadManager"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setDriveDetailsOpen } from "@store/uiSlice"
 import {
-  IconFilePlus,
-  IconFolderPlus,
-  IconInfoCircle,
-  IconPlus,
-  IconTable,
-  IconTrashX,
-  IconUpload,
-} from "@tabler/icons-react"
+  FilePlus,
+  FolderPlus,
+  Info,
+  Plus,
+  Table,
+  Trash,
+  UploadSimple,
+} from "@phosphor-icons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
@@ -54,7 +54,7 @@ const DriveTopActions = () => {
   if (pathname.endsWith("/trash")) {
     return (
       <ConfirmButton
-        icon={<IconTrashX className="size-4" />}
+        icon={<Trash className="size-4" />}
         confirmLabel={t("driveTopActions.emptyTrashConfirm")}
         onConfirm={async () => {
           try {
@@ -102,33 +102,33 @@ const DriveTopActions = () => {
         aria-label={t("driveTopActions.toggleDetails")}
         onClick={() => dispatch(setDriveDetailsOpen(!detailsOpen))}
       >
-        <IconInfoCircle className="size-4" />
+        <Info className="size-4" />
       </Button>
 
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
             <Button variant="ghost" size="icon-sm" aria-label={t("driveTopActions.new")} disabled={!parentId}>
-              <IconPlus className="size-4" />
+              <Plus className="size-4" />
             </Button>
           }
         />
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => fileInput.current?.click()}>
-            <IconUpload className="size-4" />
+            <UploadSimple className="size-4" />
             {t("driveTopActions.uploadFiles")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setNewFolderOpen(true)}>
-            <IconFolderPlus className="size-4" />
+            <FolderPlus className="size-4" />
             {t("driveTopActions.newFolder")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => void newDoc("doc")}>
-            <IconFilePlus className="size-4" />
+            <FilePlus className="size-4" />
             {t("driveTopActions.newDocument")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => void newDoc("sheet")}>
-            <IconTable className="size-4" />
+            <Table className="size-4" />
             {t("driveTopActions.newSpreadsheet")}
           </DropdownMenuItem>
         </DropdownMenuContent>

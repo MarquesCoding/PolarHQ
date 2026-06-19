@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { IconTrash } from "@tabler/icons-react"
+import { Trash } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
@@ -61,7 +61,7 @@ const DataValidationDialog = ({
                   aria-label={t("dataValidationDialog.removeRule")}
                   onClick={() => sheet.removeDataRule(i)}
                 >
-                  <IconTrash className="size-4" />
+                  <Trash className="size-4" />
                 </Button>
               </div>
             ))}

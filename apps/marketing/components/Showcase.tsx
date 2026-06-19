@@ -2,13 +2,10 @@
 
 import type { ComponentType } from "react"
 import { motion } from "motion/react"
-import {
-  IconFileContentFillDuo18,
-  IconFolderFillDuo18,
-  IconImageFillDuo18,
-  IconServerFillDuo18,
-} from "nucleo-ui-fill-duo-18"
-
+import { Image } from "@phosphor-icons/react/Image"
+import { FolderSimple } from "@phosphor-icons/react/FolderSimple"
+import { FileText } from "@phosphor-icons/react/FileText"
+import { HardDrives } from "@phosphor-icons/react/HardDrives"
 interface Item {
   icon: ComponentType<{ className?: string }>
   title: string
@@ -17,25 +14,25 @@ interface Item {
 
 const ITEMS: Item[] = [
   {
-    icon: IconImageFillDuo18,
+    icon: Image,
     title: "Photos",
     description:
       "An intelligent gallery that finds faces, places and things on device. Your memories stay encrypted and entirely yours.",
   },
   {
-    icon: IconFolderFillDuo18,
+    icon: FolderSimple,
     title: "Drive",
     description:
       "Every file in one encrypted home. Sync across devices, share with a link and open Office documents in a click.",
   },
   {
-    icon: IconFileContentFillDuo18,
+    icon: FileText,
     title: "Docs and Sheets",
     description:
       "Collaborative documents and spreadsheets with real time collaboration and end to end encryption on every keystroke.",
   },
   {
-    icon: IconServerFillDuo18,
+    icon: HardDrives,
     title: "Self-hosted",
     description:
       "Deploy the whole suite with a single command and keep every byte on hardware you control.",

@@ -2,7 +2,8 @@
 
 import { type ReactNode, useEffect, useRef, useState } from "react"
 import NumberFlow from "@number-flow/react"
-import { IconMinus, IconPlus } from "@tabler/icons-react"
+import { Minus } from "@phosphor-icons/react/Minus"
+import { Plus } from "@phosphor-icons/react/Plus"
 import { AnimatePresence, motion } from "motion/react"
 import { Button } from "@workspace/ui/components/button"
 import { Icon } from "@workspace/ui/components/icon"
@@ -181,7 +182,7 @@ const SizeControl = ({
                       aria-label={labels.lessSpacing}
                       onClick={() => onGapChange(Math.max(0, gap - 2))}
                     >
-                      <IconMinus className="size-4" />
+                      <Minus className="size-4" />
                     </Button>
                     <NumberFlow value={gap} className="w-5 text-center text-sm" />
                     <Button
@@ -190,7 +191,7 @@ const SizeControl = ({
                       aria-label={labels.moreSpacing}
                       onClick={() => onGapChange(Math.min(16, gap + 2))}
                     >
-                      <IconPlus className="size-4" />
+                      <Plus className="size-4" />
                     </Button>
                   </div>
                 </div>

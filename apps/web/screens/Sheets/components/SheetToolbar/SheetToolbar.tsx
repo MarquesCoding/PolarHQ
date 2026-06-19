@@ -3,30 +3,30 @@
 import { type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import {
-  IconAlignCenter,
-  IconAlignLeft,
-  IconAlignRight,
-  IconArrowBackUp,
-  IconArrowForwardUp,
-  IconArrowMerge,
-  IconBold,
-  IconBorderAll,
-  IconBorderBottom,
-  IconBorderInner,
-  IconBorderLeft,
-  IconBorderNone,
-  IconBorderOuter,
-  IconBorderRight,
-  IconBorderTop,
-  IconChevronDown,
-  IconCurrencyDollar,
-  IconEraser,
-  IconItalic,
-  IconNumber123,
-  IconPercentage,
-  IconStrikethrough,
-  IconUnderline,
-} from "@tabler/icons-react"
+  TextAlignCenter,
+  TextAlignLeft,
+  TextAlignRight,
+  ArrowUUpLeft,
+  ArrowUUpRight,
+  ArrowsMerge,
+  TextB,
+  GridFour,
+  ArrowLineDown,
+  GridNine,
+  ArrowLineLeft,
+  Prohibit,
+  Square,
+  ArrowLineRight,
+  ArrowLineUp,
+  CaretDown,
+  CurrencyDollar,
+  Eraser,
+  TextItalic,
+  NumberCircleOne,
+  Percent,
+  TextStrikethrough,
+  TextUnderline,
+} from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -82,22 +82,22 @@ const SheetToolbar = ({ sheet }: { sheet: SheetController }) => {
   const { t } = useTranslation("sheets")
   const f = sheet.focusFmt
   const BORDER_OPTIONS: Array<{ mode: BorderMode; label: string; icon: ReactNode }> = [
-    { mode: "all", label: t("sheetToolbar.allBorders"), icon: <IconBorderAll className="size-4" /> },
-    { mode: "inner", label: t("sheetToolbar.innerBorders"), icon: <IconBorderInner className="size-4" /> },
-    { mode: "outer", label: t("sheetToolbar.outerBorders"), icon: <IconBorderOuter className="size-4" /> },
-    { mode: "top", label: t("sheetToolbar.topBorder"), icon: <IconBorderTop className="size-4" /> },
-    { mode: "bottom", label: t("sheetToolbar.bottomBorder"), icon: <IconBorderBottom className="size-4" /> },
-    { mode: "left", label: t("sheetToolbar.leftBorder"), icon: <IconBorderLeft className="size-4" /> },
-    { mode: "right", label: t("sheetToolbar.rightBorder"), icon: <IconBorderRight className="size-4" /> },
-    { mode: "none", label: t("sheetToolbar.clearBorders"), icon: <IconBorderNone className="size-4" /> },
+    { mode: "all", label: t("sheetToolbar.allBorders"), icon: <GridNine className="size-4" /> },
+    { mode: "inner", label: t("sheetToolbar.innerBorders"), icon: <GridFour className="size-4" /> },
+    { mode: "outer", label: t("sheetToolbar.outerBorders"), icon: <Square className="size-4" /> },
+    { mode: "top", label: t("sheetToolbar.topBorder"), icon: <ArrowLineUp className="size-4" /> },
+    { mode: "bottom", label: t("sheetToolbar.bottomBorder"), icon: <ArrowLineDown className="size-4" /> },
+    { mode: "left", label: t("sheetToolbar.leftBorder"), icon: <ArrowLineLeft className="size-4" /> },
+    { mode: "right", label: t("sheetToolbar.rightBorder"), icon: <ArrowLineRight className="size-4" /> },
+    { mode: "none", label: t("sheetToolbar.clearBorders"), icon: <Prohibit className="size-4" /> },
   ]
   return (
     <div className="bg-card/60 flex flex-wrap items-center gap-0.5 border-b px-2 py-1">
       <Tool label={t("sheetToolbar.undo")} disabled={!sheet.canUndo} onClick={sheet.undo}>
-        <IconArrowBackUp className="size-4" />
+        <ArrowUUpLeft className="size-4" />
       </Tool>
       <Tool label={t("sheetToolbar.redo")} disabled={!sheet.canRedo} onClick={sheet.redo}>
-        <IconArrowForwardUp className="size-4" />
+        <ArrowUUpRight className="size-4" />
       </Tool>
       <Divider />
 
@@ -116,10 +116,10 @@ const SheetToolbar = ({ sheet }: { sheet: SheetController }) => {
       <Divider />
 
       <Tool label={t("sheetToolbar.formatAsCurrency")} onClick={() => sheet.applyFormat({ fmt: "currency" })}>
-        <IconCurrencyDollar className="size-4" />
+        <CurrencyDollar className="size-4" />
       </Tool>
       <Tool label={t("sheetToolbar.formatAsPercent")} onClick={() => sheet.applyFormat({ fmt: "percent" })}>
-        <IconPercentage className="size-4" />
+        <Percent className="size-4" />
       </Tool>
       <Tool label={t("sheetToolbar.decreaseDecimalPlaces")} onClick={() => sheet.adjustDecimals(-1)}>
         <span className="text-[0.7rem] font-semibold tabular-nums">.0</span>
@@ -131,8 +131,8 @@ const SheetToolbar = ({ sheet }: { sheet: SheetController }) => {
         <DropdownMenuTrigger
           render={
             <Button variant="ghost" size="sm" title={t("sheetToolbar.moreFormats")} onMouseDown={noBlur}>
-              <IconNumber123 className="size-4" />
-              <IconChevronDown className="size-3" />
+              <NumberCircleOne className="size-4" />
+              <CaretDown className="size-3" />
             </Button>
           }
         />
@@ -175,16 +175,16 @@ const SheetToolbar = ({ sheet }: { sheet: SheetController }) => {
       <Divider />
 
       <Tool label={t("sheetToolbar.bold")} active={f.b} onClick={() => sheet.toggle("b")}>
-        <IconBold className="size-4" />
+        <TextB className="size-4" />
       </Tool>
       <Tool label={t("sheetToolbar.italic")} active={f.i} onClick={() => sheet.toggle("i")}>
-        <IconItalic className="size-4" />
+        <TextItalic className="size-4" />
       </Tool>
       <Tool label={t("sheetToolbar.underline")} active={f.u} onClick={() => sheet.toggle("u")}>
-        <IconUnderline className="size-4" />
+        <TextUnderline className="size-4" />
       </Tool>
       <Tool label={t("sheetToolbar.strikethrough")} active={f.s} onClick={() => sheet.toggle("s")}>
-        <IconStrikethrough className="size-4" />
+        <TextStrikethrough className="size-4" />
       </Tool>
       <ColorPalette kind="text" value={f.color} onChange={(v) => sheet.applyFormat({ color: v })} />
       <Divider />
@@ -194,7 +194,7 @@ const SheetToolbar = ({ sheet }: { sheet: SheetController }) => {
         <DropdownMenuTrigger
           render={
             <Button variant="ghost" size="icon-sm" title={t("sheetToolbar.borders")} onMouseDown={noBlur}>
-              <IconBorderOuter className="size-4" />
+              <Square className="size-4" />
             </Button>
           }
         />
@@ -212,12 +212,12 @@ const SheetToolbar = ({ sheet }: { sheet: SheetController }) => {
         active={sheet.isSelectionMerged}
         onClick={() => (sheet.isSelectionMerged ? sheet.unmergeSelection() : sheet.mergeSelection())}
       >
-        <IconArrowMerge className="size-4" />
+        <ArrowsMerge className="size-4" />
       </Tool>
       <Divider />
 
       {(["left", "center", "right"] as const).map((align) => {
-        const Icon = align === "left" ? IconAlignLeft : align === "center" ? IconAlignCenter : IconAlignRight
+        const Icon = align === "left" ? TextAlignLeft : align === "center" ? TextAlignCenter : TextAlignRight
         return (
           <Tool
             key={align}
@@ -232,7 +232,7 @@ const SheetToolbar = ({ sheet }: { sheet: SheetController }) => {
       <Divider />
 
       <Tool label={t("sheetToolbar.clearFormatting")} onClick={sheet.clearFormatting}>
-        <IconEraser className="size-4" />
+        <Eraser className="size-4" />
       </Tool>
     </div>
   )

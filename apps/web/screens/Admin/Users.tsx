@@ -19,7 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
-import { IconDotsVertical } from "@tabler/icons-react"
+import { DotsThreeVertical } from "@phosphor-icons/react"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
@@ -90,7 +90,7 @@ const Users = () => {
         <DropdownMenuTrigger
           render={
             <Button variant="ghost" size="icon-sm" aria-label={t("users.userActions")}>
-              <IconDotsVertical className="size-4" />
+              <DotsThreeVertical className="size-4" />
             </Button>
           }
         />

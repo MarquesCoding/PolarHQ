@@ -1,8 +1,8 @@
 "use client"
 
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
-import { IconCheck, IconMinus } from "@tabler/icons-react"
-
+import { Check } from "@phosphor-icons/react/Check"
+import { Minus } from "@phosphor-icons/react/Minus"
 import { cn } from "@workspace/ui/lib/utils"
 
 function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
@@ -17,9 +17,9 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
     >
       <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
         {props.indeterminate ? (
-          <IconMinus className="size-3.5" />
+          <Minus className="size-3.5" />
         ) : (
-          <IconCheck className="size-3.5" />
+          <Check className="size-3.5" />
         )}
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>

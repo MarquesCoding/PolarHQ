@@ -1,11 +1,11 @@
 "use client"
 
 import {
-  IconChevronDown,
-  IconChevronsDown,
-  IconChevronsUp,
-  IconChevronUp,
-} from "@tabler/icons-react"
+  CaretDoubleDown,
+  CaretDoubleUp,
+  CaretDown,
+  CaretUp,
+} from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Slider } from "@workspace/ui/components/slider"
 import { cn } from "@workspace/ui/lib/utils"
@@ -136,16 +136,16 @@ const PropertiesPanel = ({ current, onStyle, hasSelection, onReorder }: Props) =
         <Label>{t("propertiesPanel.layers")}</Label>
         <div className="flex items-center gap-1.5">
           <Button variant="outline" size="icon" className="size-9" aria-label={t("propertiesPanel.sendToBack")} onClick={() => onReorder("back")}>
-            <IconChevronsDown className="size-4" />
+            <CaretDoubleDown className="size-4" />
           </Button>
           <Button variant="outline" size="icon" className="size-9" aria-label={t("propertiesPanel.sendBackward")} onClick={() => onReorder("backward")}>
-            <IconChevronDown className="size-4" />
+            <CaretDown className="size-4" />
           </Button>
           <Button variant="outline" size="icon" className="size-9" aria-label={t("propertiesPanel.bringForward")} onClick={() => onReorder("forward")}>
-            <IconChevronUp className="size-4" />
+            <CaretUp className="size-4" />
           </Button>
           <Button variant="outline" size="icon" className="size-9" aria-label={t("propertiesPanel.bringToFront")} onClick={() => onReorder("front")}>
-            <IconChevronsUp className="size-4" />
+            <CaretDoubleUp className="size-4" />
           </Button>
         </div>
       </div>

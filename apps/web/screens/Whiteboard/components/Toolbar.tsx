@@ -2,17 +2,17 @@
 
 import type { ReactNode } from "react"
 import {
-  IconArrowRight,
-  IconCircle,
-  IconEraser,
-  IconHandStop,
-  IconLetterT,
-  IconLine,
-  IconPencil,
-  IconPointer,
-  IconSquare,
-  IconSquareRotated,
-} from "@tabler/icons-react"
+  ArrowRight,
+  Circle,
+  Cursor,
+  Diamond,
+  Eraser,
+  Hand,
+  LineSegment,
+  PencilSimple,
+  Square,
+  TextT,
+} from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { useTranslation } from "react-i18next"
 import type { Tool } from "../board"
@@ -21,16 +21,16 @@ const Toolbar = ({ tool, setTool }: { tool: Tool; setTool: (tool: Tool) => void 
   const { t } = useTranslation("whiteboard")
 
   const TOOLS: { tool: Tool; label: string; icon: (props: { className?: string }) => ReactNode }[] = [
-    { tool: "pan", label: t("toolbar.pan"), icon: (p) => <IconHandStop {...p} /> },
-    { tool: "select", label: t("toolbar.select"), icon: (p) => <IconPointer {...p} /> },
-    { tool: "rectangle", label: t("toolbar.rectangle"), icon: (p) => <IconSquare {...p} /> },
-    { tool: "diamond", label: t("toolbar.diamond"), icon: (p) => <IconSquareRotated {...p} /> },
-    { tool: "ellipse", label: t("toolbar.ellipse"), icon: (p) => <IconCircle {...p} /> },
-    { tool: "arrow", label: t("toolbar.arrow"), icon: (p) => <IconArrowRight {...p} /> },
-    { tool: "line", label: t("toolbar.line"), icon: (p) => <IconLine {...p} /> },
-    { tool: "draw", label: t("toolbar.draw"), icon: (p) => <IconPencil {...p} /> },
-    { tool: "text", label: t("toolbar.text"), icon: (p) => <IconLetterT {...p} /> },
-    { tool: "eraser", label: t("toolbar.eraser"), icon: (p) => <IconEraser {...p} /> },
+    { tool: "pan", label: t("toolbar.pan"), icon: (p) => <Hand {...p} /> },
+    { tool: "select", label: t("toolbar.select"), icon: (p) => <Cursor {...p} /> },
+    { tool: "rectangle", label: t("toolbar.rectangle"), icon: (p) => <Square {...p} /> },
+    { tool: "diamond", label: t("toolbar.diamond"), icon: (p) => <Diamond {...p} /> },
+    { tool: "ellipse", label: t("toolbar.ellipse"), icon: (p) => <Circle {...p} /> },
+    { tool: "arrow", label: t("toolbar.arrow"), icon: (p) => <ArrowRight {...p} /> },
+    { tool: "line", label: t("toolbar.line"), icon: (p) => <LineSegment {...p} /> },
+    { tool: "draw", label: t("toolbar.draw"), icon: (p) => <PencilSimple {...p} /> },
+    { tool: "text", label: t("toolbar.text"), icon: (p) => <TextT {...p} /> },
+    { tool: "eraser", label: t("toolbar.eraser"), icon: (p) => <Eraser {...p} /> },
   ]
 
   return (

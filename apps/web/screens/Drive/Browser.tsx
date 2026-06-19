@@ -30,15 +30,14 @@ import { useUploadManager } from "@lib/uploadManager"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setDriveDetailsOpen } from "@store/uiSlice"
 import {
-  IconArchive,
-  IconBookmark,
-  IconExternalLink,
-  IconFileExport,
-  IconPencil,
-  IconStar,
-  IconStarFilled,
-  IconUserPlus,
-} from "@tabler/icons-react"
+  Archive,
+  ArrowSquareOut,
+  Bookmark,
+  Export,
+  PencilSimple,
+  Star,
+  UserPlus,
+} from "@phosphor-icons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { AnimatePresence } from "motion/react"
@@ -333,7 +332,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
               {t("browser.resultsFor", { query: searchRaw })}
             </span>
             <Button variant="ghost" size="sm" onClick={() => void saveSearch()}>
-              <IconBookmark className="size-4" />
+              <Bookmark className="size-4" />
               {t("browser.saveSearch")}
             </Button>
           </div>
@@ -404,7 +403,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
       <SelectionBar>
         {single && docTypeOf(single.mimeType) ? (
           <Button variant="ghost" size="sm" onClick={() => open(single)}>
-            <IconExternalLink className="size-4" />
+            <ArrowSquareOut className="size-4" />
             {t("browser.open")}
           </Button>
         ) : null}
@@ -415,22 +414,22 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
         {single && !single.special ? (
           <Button variant="ghost" size="sm" onClick={() => void toggleFavorite(single)}>
             {single.favorite ? (
-              <IconStarFilled className="size-4" />
+              <Star weight="fill" className="size-4" />
             ) : (
-              <IconStar className="size-4" />
+              <Star className="size-4" />
             )}
             {single.favorite ? t("browser.unfavorite") : t("browser.favorite")}
           </Button>
         ) : null}
         {single && !single.special ? (
           <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
-            <IconPencil className="size-4" />
+            <PencilSimple className="size-4" />
             {t("browser.rename")}
           </Button>
         ) : null}
         {single?.kind === "file" ? (
           <Button variant="ghost" size="sm" onClick={() => setShareNode(single)}>
-            <IconUserPlus className="size-4" />
+            <UserPlus className="size-4" />
             {t("browser.share")}
           </Button>
         ) : null}
@@ -442,12 +441,12 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
         )}
         {canExtract ? (
           <Button variant="ghost" size="sm" onClick={() => void extract(single!.id)}>
-            <IconFileExport className="size-4" />
+            <Export className="size-4" />
             {t("browser.extract")}
           </Button>
         ) : null}
         <Button variant="ghost" size="sm" onClick={() => archive(ids)}>
-          <IconArchive className="size-4" />
+          <Archive className="size-4" />
           {t("browser.archive")}
         </Button>
         {hasSpecial ? null : (

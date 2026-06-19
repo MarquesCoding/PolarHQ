@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@lib/drive"
 import { unlockFolder } from "@lib/folderLock"
-import { IconLock } from "@tabler/icons-react"
+import { Lock } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 
@@ -33,7 +33,7 @@ const FolderLockGate = ({ node, onUnlocked }: FolderLockGateProps) => {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
       <div className="bg-muted text-muted-foreground flex size-14 items-center justify-center rounded-2xl">
-        <IconLock className="size-7" />
+        <Lock className="size-7" />
       </div>
       <div>
         <p className="text-sm font-medium">{t("folderLockGate.locked", { name: node.name })}</p>

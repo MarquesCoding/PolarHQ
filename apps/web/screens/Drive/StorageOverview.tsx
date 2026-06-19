@@ -5,7 +5,7 @@ import { type StorageKind, decryptNodeName, fetchStorageStats } from "@lib/drive
 import { bytesParts, formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { squarify } from "@lib/treemap"
-import { IconDevices } from "@tabler/icons-react"
+import { Devices } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
@@ -174,7 +174,7 @@ const StorageOverview = () => {
         <SectionHeader title={t("overview.devices")} />
         <div className="border-border/70 flex items-center gap-4 rounded-xl border border-dashed p-5">
           <span className="bg-muted flex size-12 shrink-0 items-center justify-center rounded-xl">
-            <IconDevices className="text-muted-foreground size-6" />
+            <Devices className="text-muted-foreground size-6" />
           </span>
           <div className="flex min-w-0 flex-col gap-0.5">
             <span className="text-sm font-medium">{t("overview.p2pSync")}</span>

@@ -2,12 +2,7 @@
 
 import { type Device, fetchDevices, revokeDevice, timeAgo } from "@lib/account"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import {
-  IconDeviceDesktop,
-  IconDeviceLaptop,
-  IconDeviceMobile,
-  IconWorld,
-} from "@tabler/icons-react"
+import { Desktop, DeviceMobile, Globe, Laptop } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
@@ -28,14 +23,14 @@ const iconFor = (platform: Device["platform"]) => {
   switch (platform) {
     case "ios":
     case "android":
-      return IconDeviceMobile
+      return DeviceMobile
     case "mac":
-      return IconDeviceLaptop
+      return Laptop
     case "windows":
     case "linux":
-      return IconDeviceDesktop
+      return Desktop
     default:
-      return IconWorld
+      return Globe
   }
 }
 

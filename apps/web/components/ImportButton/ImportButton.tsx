@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { type DocType } from "@lib/docs"
 import { importFile } from "@lib/importFlow"
 import { useQueryClient } from "@tanstack/react-query"
-import { IconFileImport } from "@tabler/icons-react"
+import { FileArrowDown } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
@@ -47,7 +47,7 @@ const ImportButton = ({ type }: { type: DocType }) => {
         disabled={busy}
         onClick={() => inputRef.current?.click()}
       >
-        <IconFileImport className="size-4" />
+        <FileArrowDown className="size-4" />
         {t("importButton.import")}
       </Button>
       <input

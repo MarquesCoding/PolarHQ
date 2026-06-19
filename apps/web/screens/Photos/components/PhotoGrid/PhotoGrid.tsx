@@ -14,7 +14,7 @@ import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
 import TimelineScrubber, {
   type TimelineMarker,
 } from "@pages/Photos/components/TimelineScrubber/TimelineScrubber"
-import { IconCircle } from "@tabler/icons-react"
+import { Circle } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
@@ -527,7 +527,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
               {label.assetIds.every((id) => selection.isSelected(id)) ? (
                 <Icon name="circle-check" className="size-5 shrink-0 text-white drop-shadow" />
               ) : (
-                <IconCircle className="text-muted-foreground/60 size-5 shrink-0" />
+                <Circle className="text-muted-foreground/60 size-5 shrink-0" />
               )}
             </span>
             <span className="text-foreground/70 text-xs font-semibold tracking-wide uppercase">

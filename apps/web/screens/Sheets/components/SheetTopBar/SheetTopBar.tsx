@@ -10,7 +10,7 @@ import { renameDriveNode } from "@lib/drive"
 import { encryptNameWith } from "@lib/e2e"
 import { Icon } from "@lib/icons"
 import type { RelayProvider } from "@lib/yjsProvider"
-import { IconUserPlus } from "@tabler/icons-react"
+import { UserPlus } from "@phosphor-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
@@ -152,7 +152,7 @@ const SheetTopBar = ({
         {encrypted ? <EncryptedBadge /> : null}
         {doc.owner ? (
           <Button size="sm" onClick={() => setShareOpen(true)}>
-            <IconUserPlus className="size-4" />
+            <UserPlus className="size-4" />
             {t("sheetTopBar.share")}
           </Button>
         ) : null}

@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { type DocType } from "@lib/docs"
 import { createEncryptedDoc } from "@lib/e2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
-import { IconPlus } from "@tabler/icons-react"
+import { Plus } from "@phosphor-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
@@ -43,7 +43,7 @@ const CollabToolbar = ({ type, route, createLabel }: CollabToolbarConfig) => {
       <SizeControl value={tileSize} onChange={setTileSize} />
       <ImportButton type={type} />
       <Button size="sm" onClick={() => void create()}>
-        <IconPlus className="size-4" />
+        <Plus className="size-4" />
         {createLabel}
       </Button>
     </div>

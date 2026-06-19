@@ -1,15 +1,15 @@
 import {
-  IconBrandAndroid,
-  IconBrandAppleFilled,
-  IconBrandUbuntu,
-  IconBrandWindowsFilled,
-} from "@tabler/icons-react"
+  AndroidLogo,
+  AppleLogo,
+  LinuxLogo,
+  WindowsLogo,
+} from "@phosphor-icons/react"
 
 const PLATFORMS = [
-  { label: "Windows 10+", icon: IconBrandWindowsFilled },
-  { label: "macOS", icon: IconBrandAppleFilled },
-  { label: "Linux", icon: IconBrandUbuntu },
-  { label: "Android", icon: IconBrandAndroid },
+  { label: "Windows 10+", icon: WindowsLogo },
+  { label: "macOS", icon: AppleLogo },
+  { label: "Linux", icon: LinuxLogo },
+  { label: "Android", icon: AndroidLogo },
 ]
 
 const PlatformLinks = () => (

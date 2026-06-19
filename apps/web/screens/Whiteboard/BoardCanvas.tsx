@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { IconArrowBackUp, IconArrowForwardUp, IconMinus, IconPlus } from "@tabler/icons-react"
+import { ArrowUUpLeft, ArrowUUpRight, Minus, Plus } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import {
   type BoardElement,
@@ -547,7 +547,7 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           aria-label={t("boardCanvas.zoomOut")}
           onClick={() => setZoom((z) => Math.max(0.1, z - 0.1))}
         >
-          <IconMinus className="size-4" />
+          <Minus className="size-4" />
         </Button>
         <Button
           variant="ghost"
@@ -568,7 +568,7 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           aria-label={t("boardCanvas.zoomIn")}
           onClick={() => setZoom((z) => Math.min(5, z + 0.1))}
         >
-          <IconPlus className="size-4" />
+          <Plus className="size-4" />
         </Button>
         <div className="bg-border mx-1 h-5 w-px" />
         <Button
@@ -578,7 +578,7 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           aria-label={t("boardCanvas.undo")}
           onClick={() => board.undo()}
         >
-          <IconArrowBackUp className="size-4" />
+          <ArrowUUpLeft className="size-4" />
         </Button>
         <Button
           variant="ghost"
@@ -587,7 +587,7 @@ const BoardCanvas = ({ board, tool, setTool, style, selectedId, setSelectedId }:
           aria-label={t("boardCanvas.redo")}
           onClick={() => board.redo()}
         >
-          <IconArrowForwardUp className="size-4" />
+          <ArrowUUpRight className="size-4" />
         </Button>
       </div>
     </div>

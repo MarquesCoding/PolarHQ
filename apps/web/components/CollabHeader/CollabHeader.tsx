@@ -7,7 +7,7 @@ import { type DocMeta } from "@lib/docs"
 import { renameDriveNode } from "@lib/drive"
 import { encryptNameWith } from "@lib/e2e"
 import type { RelayProvider } from "@lib/yjsProvider"
-import { IconDeviceFloppy, IconUserPlus } from "@tabler/icons-react"
+import { FloppyDisk, UserPlus } from "@phosphor-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"
@@ -145,7 +145,7 @@ const CollabHeader = ({
       {tools}
       {doc.owner ? (
         <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
-          <IconUserPlus className="size-4" />
+          <UserPlus className="size-4" />
           {t("collabHeader.share")}
         </Button>
       ) : null}
@@ -155,7 +155,7 @@ const CollabHeader = ({
         disabled={saveState === "saving"}
         onClick={onSave}
       >
-        <IconDeviceFloppy className="size-4" />
+        <FloppyDisk className="size-4" />
         {t("collabHeader.save")}
       </Button>
 

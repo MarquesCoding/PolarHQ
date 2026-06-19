@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, useRef, useState } from "react"
-import { IconUpload } from "@tabler/icons-react"
+import { UploadSimple } from "@phosphor-icons/react"
 import { useTranslation } from "react-i18next"
 
 interface DropZoneProps {
@@ -42,7 +42,7 @@ const DropZone = ({ onFiles, className, children }: DropZoneProps) => {
       {children}
       {dragging ? (
         <div className="bg-background/80 border-primary pointer-events-none fixed inset-4 z-50 flex flex-col items-center justify-center gap-3 rounded-xl border-2 backdrop-blur-sm">
-          <IconUpload className="text-primary size-10" />
+          <UploadSimple className="text-primary size-10" />
           <p className="text-lg font-medium">{t("dropZone.dropToUpload")}</p>
         </div>
       ) : null}

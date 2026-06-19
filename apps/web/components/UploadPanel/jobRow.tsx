@@ -4,7 +4,7 @@ import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { t } from "@lib/i18n/config"
 import type { UploadItem } from "@lib/uploadManager"
-import { IconRefresh, IconX } from "@tabler/icons-react"
+import { ArrowClockwise, X } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
@@ -158,7 +158,7 @@ export const JobRow = ({
         aria-label={t("common:uploadPanel.retry")}
         onClick={onRetry}
       >
-        <IconRefresh className="size-3.5" />
+        <ArrowClockwise className="size-3.5" />
       </Button>
     ) : null}
     <Button
@@ -167,7 +167,7 @@ export const JobRow = ({
       aria-label={t("common:uploadPanel.dismiss")}
       onClick={onRemove}
     >
-      <IconX className="size-3.5" />
+      <X className="size-3.5" />
     </Button>
   </motion.li>
 )

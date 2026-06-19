@@ -7,7 +7,7 @@ import { fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
 import EmptyState from "@components/EmptyState/EmptyState"
 import { TopBarActions } from "@components/FlatShell"
 import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
-import { IconPlus, IconStack2 } from "@tabler/icons-react"
+import { Plus, Stack } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -53,7 +53,7 @@ const AlbumCover = ({ album }: { album: Album }) => {
   if (!src) {
     return (
       <div className="text-muted-foreground flex h-full w-full items-center justify-center">
-        <IconStack2 className="size-6" />
+        <Stack className="size-6" />
       </div>
     )
   }
@@ -88,7 +88,7 @@ const Albums = () => {
     <div className="flex flex-1 flex-col p-6">
       <TopBarActions>
         <Button size="sm" onClick={() => setOpen(true)}>
-          <IconPlus className="size-4" />
+          <Plus className="size-4" />
           {t("albums.newAlbum")}
         </Button>
       </TopBarActions>
@@ -123,7 +123,7 @@ const Albums = () => {
           hint={t("albums.emptyHint")}
         >
           <Button size="sm" onClick={() => setOpen(true)}>
-            <IconPlus className="size-4" />
+            <Plus className="size-4" />
             {t("albums.newAlbum")}
           </Button>
         </EmptyState>

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useUploadManager } from "@lib/uploadManager"
-import { IconChevronDown } from "@tabler/icons-react"
+import { CaretDown } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
@@ -58,7 +58,7 @@ const UploadPanel = () => {
                 aria-label={collapsed ? t("uploadPanel.expand") : t("uploadPanel.collapse")}
                 onClick={() => setCollapsed((value) => !value)}
               >
-                <IconChevronDown
+                <CaretDown
                   className={cn("size-4 transition-transform", collapsed && "rotate-180")}
                 />
               </Button>

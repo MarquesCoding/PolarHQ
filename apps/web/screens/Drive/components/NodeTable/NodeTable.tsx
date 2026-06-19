@@ -7,7 +7,7 @@ import type { DriveNode } from "@lib/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import type { SelectionApi } from "@lib/selection"
-import { IconChevronDown, IconChevronUp, IconStarFilled } from "@tabler/icons-react"
+import { CaretDown, CaretUp, Star } from "@phosphor-icons/react"
 import {
   type ColumnDef,
   type SortingState,
@@ -146,9 +146,9 @@ const NodeTable = ({
             >
               {flexRender(header.column.columnDef.header, header.getContext())}
               {sorted === "asc" ? (
-                <IconChevronUp className="size-3" />
+                <CaretUp className="size-3" />
               ) : sorted === "desc" ? (
-                <IconChevronDown className="size-3" />
+                <CaretDown className="size-3" />
               ) : null}
             </button>
           )
@@ -275,7 +275,7 @@ const NodeTable = ({
               />
               <span className="truncate">{node.name}</span>
               {node.favorite ? (
-                <IconStarFilled className="size-3.5 shrink-0 text-amber-400" />
+                <Star weight="fill" className="size-3.5 shrink-0 text-amber-400" />
               ) : null}
             </div>
             <span className="text-muted-foreground tabular-nums">

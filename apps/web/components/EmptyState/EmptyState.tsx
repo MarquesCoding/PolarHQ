@@ -5,7 +5,7 @@ import { Icon } from "@lib/icons"
 import { motion } from "motion/react"
 
 interface EmptyStateProps {
-  /** Icon name (nucleo-backed, tabler fallback). */
+  /** Icon name. */
   icon: string
   title: string
   hint?: string

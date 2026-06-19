@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Icon } from "@lib/icons"
 import { addToAlbum, createAlbum, fetchAlbums } from "@lib/photos"
-import { IconPlus } from "@tabler/icons-react"
+import { Plus } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -92,7 +92,7 @@ const AddToAlbumDialog = ({
               }}
             />
             <Button onClick={() => create.mutate()} disabled={!name.trim() || create.isPending}>
-              <IconPlus className="size-4" />
+              <Plus className="size-4" />
               {t("addToAlbumDialog.create")}
             </Button>
           </div>

@@ -3,7 +3,7 @@
 import { dateLocale } from "@lib/i18n/format"
 import { useState } from "react"
 import type { CommentThread, DocComment } from "@lib/commentMark"
-import { IconCheck, IconMessageOff, IconX } from "@tabler/icons-react"
+import { Check, ChatCircleSlash, X } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { cn } from "@workspace/ui/lib/utils"
@@ -108,7 +108,7 @@ const CommentsPanel = ({
       <header className="border-border/60 flex h-9 shrink-0 items-center justify-between border-b px-3">
         <span className="text-sm font-semibold">{t("commentsPanel.title")}</span>
         <Button variant="ghost" size="icon-xs" aria-label={t("commentsPanel.closeComments")} onClick={onClose}>
-          <IconX className="size-4" />
+          <X className="size-4" />
         </Button>
       </header>
 
@@ -122,7 +122,7 @@ const CommentsPanel = ({
 
         {open.length === 0 && !draft ? (
           <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-2 text-center text-sm">
-            <IconMessageOff className="size-6" />
+            <ChatCircleSlash className="size-6" />
             <p>{t("commentsPanel.empty")}</p>
           </div>
         ) : null}
@@ -172,7 +172,7 @@ const CommentsPanel = ({
                     onResolve(thread.id)
                   }}
                 >
-                  <IconCheck className="size-4" />
+                  <Check className="size-4" />
                 </Button>
               </div>
             </div>

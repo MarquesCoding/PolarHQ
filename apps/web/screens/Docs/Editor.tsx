@@ -7,7 +7,7 @@ import { secretboxOpen } from "@lib/crypto"
 import { type DocMeta, fetchDoc, fetchDocContent } from "@lib/docs"
 import { e2eReady, getDocContentKey, isDocEncrypted, isUnlocked } from "@lib/e2e"
 import { RelayProvider } from "@lib/yjsProvider"
-import { IconShieldLock } from "@tabler/icons-react"
+import { LockKey } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import * as Y from "yjs"
@@ -94,7 +94,7 @@ const Editor = ({ nodeId }: { nodeId: string }) => {
   if (status === "locked") {
     return (
       <div className="flex min-h-svh flex-1 flex-col items-center justify-center gap-3 text-center">
-        <IconShieldLock className="text-muted-foreground size-8" />
+        <LockKey className="text-muted-foreground size-8" />
         <p className="text-muted-foreground text-sm">{t("editor.encrypted")}</p>
         <Button size="sm" onClick={() => setUnlockOpen(true)}>
           {t("editor.unlock")}

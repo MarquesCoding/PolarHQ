@@ -1,6 +1,6 @@
 "use client"
 
-import { IconCopy, IconShieldLock } from "@tabler/icons-react"
+import { Copy, ShieldCheck } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
@@ -25,7 +25,7 @@ const RecoveryCodeDialog = ({ recoveryCode, onContinue }: RecoveryCodeDialogProp
       <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <IconShieldLock className="size-5" />
+            <ShieldCheck className="size-5" />
             {t("recoveryCodeDialog.title")}
           </DialogTitle>
         </DialogHeader>
@@ -43,7 +43,7 @@ const RecoveryCodeDialog = ({ recoveryCode, onContinue }: RecoveryCodeDialogProp
               toast.success(t("recoveryCodeDialog.copied"))
             }}
           >
-            <IconCopy className="size-4" />
+            <Copy className="size-4" />
           </Button>
         </div>
         <DialogFooter>

@@ -11,7 +11,7 @@ import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
 import { useAppSelector } from "@store/hooks"
-import { IconPencil, IconPlus } from "@tabler/icons-react"
+import { PencilSimple, Plus } from "@phosphor-icons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { useTranslation } from "react-i18next"
@@ -140,7 +140,7 @@ const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfi
           <p className="text-sm">{search ? t("collabList.noMatches") : t("collabList.empty")}</p>
           {!search ? (
             <Button size="sm" disabled={creating} onClick={create}>
-              <IconPlus className="size-4" />
+              <Plus className="size-4" />
               {createLabel}
             </Button>
           ) : null}
@@ -168,7 +168,7 @@ const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfi
         </Button>
         {single?.owner ? (
           <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
-            <IconPencil className="size-4" />
+            <PencilSimple className="size-4" />
             {t("collabList.rename")}
           </Button>
         ) : null}
