@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowLeft } from "@phosphor-icons/react"
+import { ArrowLeft } from "@phosphor-icons/react/ssr"
 import PageShell from "@components/PageShell"
 import PostBanner from "@components/PostBanner"
 import Markdown from "@components/Markdown"

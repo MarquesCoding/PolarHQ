@@ -3,7 +3,7 @@ import {
   AppleLogo,
   LinuxLogo,
   WindowsLogo,
-} from "@phosphor-icons/react"
+} from "@phosphor-icons/react/ssr"
 
 const PLATFORMS = [
   { label: "Windows 10+", icon: WindowsLogo },
