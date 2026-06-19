@@ -5,7 +5,7 @@ import { formatMediumDateTime } from "@lib/i18n/format"
 import dynamic from "next/dynamic"
 import { decryptName, decryptWithMetaKey } from "@lib/e2e"
 import { bytesParts } from "@lib/format"
-import { ArrowSquareOut, Calendar, Camera, File, Heart, MapPin } from "@phosphor-icons/react"
+import { ArrowSquareOut, Calendar, Camera, File, HeartIcon, MapPin } from "@phosphor-icons/react"
 import NumberFlow from "@number-flow/react"
 import { type AssetExif, fetchAsset } from "@lib/photos"
 import { useQuery } from "@tanstack/react-query"
@@ -166,7 +166,7 @@ const InfoPanel = ({ assetId, isFavorite, onFavorite, onShare }: InfoPanelProps)
                 onClick={onFavorite}
                 className="rounded-full"
               >
-                <Heart weight={isFavorite ? "fill" : "regular"} className={cn("size-[18px]", isFavorite && "text-primary")} />
+                <HeartIcon weight={isFavorite ? "fill" : "regular"} className="size-[18px]" />
               </Button>
             ) : null}
             {onShare ? (
