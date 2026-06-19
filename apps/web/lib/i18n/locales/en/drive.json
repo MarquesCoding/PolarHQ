@@ -42,6 +42,7 @@
   "detailsPanel": {
     "closeDetails": "Close details",
     "created": "Created",
+    "dates": "Dates",
     "empty": "Select an item to see its details.",
     "extension": "Extension",
     "file": "File",

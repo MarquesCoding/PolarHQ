@@ -1,11 +1,12 @@
 "use client"
 
 import { dateLocale } from "@lib/i18n/format"
-import type { ReactNode } from "react"
+import type { ComponentType, ReactNode } from "react"
 import { type DriveNode, fetchVersions } from "@lib/drive"
-import { formatBytes } from "@lib/format"
+import { bytesParts, formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
-import { ClockCounterClockwise, Info, X } from "@phosphor-icons/react"
+import { Calendar, ClockCounterClockwise, File, Info, X } from "@phosphor-icons/react"
+import NumberFlow from "@number-flow/react"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
@@ -73,16 +74,36 @@ const Preview = ({ node }: { node: DriveNode }) => {
   )
 }
 
-const Field = ({ label, value }: { label: string; value: ReactNode }) => (
-  <div className="flex flex-col gap-0.5">
-    <dt className="text-muted-foreground text-xs">{label}</dt>
-    <dd className="text-sm break-words">{value}</dd>
+const Row = ({ label, value }: { label: string; value?: ReactNode }) =>
+  value ? (
+    <div className="flex items-start justify-between gap-4 py-1.5 text-sm">
+      <span className="text-muted-foreground shrink-0">{label}</span>
+      <span className="text-foreground/90 text-right break-words">{value}</span>
+    </div>
+  ) : null
+
+const Section = ({
+  icon: IconCmp,
+  title,
+  children,
+}: {
+  icon: ComponentType<{ className?: string }>
+  title: string
+  children: ReactNode
+}) => (
+  <div className="flex flex-col">
+    <div className="text-muted-foreground flex items-center gap-2 pb-1 text-xs font-semibold tracking-wide uppercase">
+      <IconCmp className="size-4" />
+      {title}
+    </div>
+    <div className="border-border/60 flex flex-col border-t pt-1">{children}</div>
   </div>
 )
 
 const SingleDetails = ({ node }: { node: DriveNode }) => {
   const { t } = useTranslation("drive")
   const extension = node.kind === "file" ? extensionOf(node.name) : undefined
+  const sizeParts = bytesParts(node.sizeBytes ?? 0)
   return (
     <>
       <div className="flex flex-col items-center gap-3 text-center">
@@ -91,8 +112,8 @@ const SingleDetails = ({ node }: { node: DriveNode }) => {
         </div>
         <p className="text-sm font-medium break-words">{node.name}</p>
       </div>
-      <dl className="flex flex-col gap-3">
-        <Field
+      <Section icon={File} title={t("detailsPanel.file")}>
+        <Row
           label={t("detailsPanel.kind")}
           value={
             node.kind === "folder"
@@ -100,17 +121,28 @@ const SingleDetails = ({ node }: { node: DriveNode }) => {
               : t(`overview.kinds.${storageKindKey(node)}`)
           }
         />
-        <Field
+        <Row
           label={t("detailsPanel.type")}
           value={node.kind === "folder" ? t("detailsPanel.folder") : (node.mimeType ?? t("detailsPanel.file"))}
         />
-        {extension ? <Field label={t("detailsPanel.extension")} value={extension} /> : null}
+        {extension ? <Row label={t("detailsPanel.extension")} value={extension} /> : null}
         {node.kind === "file" ? (
-          <Field label={t("detailsPanel.size")} value={formatBytes(node.sizeBytes ?? 0)} />
+          <Row
+            label={t("detailsPanel.size")}
+            value={
+              <NumberFlow
+                value={sizeParts.value}
+                suffix={` ${sizeParts.unit}`}
+                format={{ maximumFractionDigits: sizeParts.decimals }}
+              />
+            }
+          />
         ) : null}
-        <Field label={t("detailsPanel.created")} value={new Date(node.createdAt).toLocaleString(dateLocale())} />
-        <Field label={t("detailsPanel.modified")} value={new Date(node.updatedAt).toLocaleString(dateLocale())} />
-      </dl>
+      </Section>
+      <Section icon={Calendar} title={t("detailsPanel.dates")}>
+        <Row label={t("detailsPanel.created")} value={new Date(node.createdAt).toLocaleString(dateLocale())} />
+        <Row label={t("detailsPanel.modified")} value={new Date(node.updatedAt).toLocaleString(dateLocale())} />
+      </Section>
     </>
   )
 }
@@ -203,11 +235,11 @@ const StackedDetails = ({ nodes }: { nodes: DriveNode[] }) => {
         </div>
         <p className="text-sm font-medium">{t("detailsPanel.itemsSelected", { count: nodes.length })}</p>
       </div>
-      <dl className="flex flex-col gap-3">
-        {files > 0 ? <Field label={t("detailsPanel.files")} value={String(files)} /> : null}
-        {folders > 0 ? <Field label={t("detailsPanel.folders")} value={String(folders)} /> : null}
-        <Field label={t("detailsPanel.totalSize")} value={formatBytes(totalBytes)} />
-      </dl>
+      <div className="border-border/60 flex flex-col border-t pt-1">
+        {files > 0 ? <Row label={t("detailsPanel.files")} value={String(files)} /> : null}
+        {folders > 0 ? <Row label={t("detailsPanel.folders")} value={String(folders)} /> : null}
+        <Row label={t("detailsPanel.totalSize")} value={formatBytes(totalBytes)} />
+      </div>
     </>
   )
 }
