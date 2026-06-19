@@ -1,6 +1,6 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@workspace/i18n/format"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import Link from "next/link"

@@ -1,11 +1,11 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@workspace/i18n/format"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import { authClient } from "@lib/authClient"
-import { t } from "@lib/i18n/config"
+import { t } from "@workspace/i18n/config"
 import {
   CommentMark,
   type CommentThread,
