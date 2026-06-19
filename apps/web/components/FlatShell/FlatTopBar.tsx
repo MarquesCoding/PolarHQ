@@ -31,7 +31,7 @@ const FlatTopBar = ({ titles, extra }: FlatTopBarProps) => {
   const current = titles.find((entry) => entry.match(pathname)) ?? titles[0]
 
   return (
-    <header className="border-border bg-sidebar flex h-14 shrink-0 items-center gap-2.5 border-b px-4">
+    <header className="border-border/60 bg-sidebar/55 flex h-14 shrink-0 items-center gap-2.5 border-b px-4 backdrop-blur-xl">
       <SidebarTrigger className="-ms-1" aria-label={t("flatTopBar.toggleSidebar")} />
       {current ? (
         <>
