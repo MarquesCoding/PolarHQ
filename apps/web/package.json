@@ -15,6 +15,7 @@
     "@glideapps/glide-data-grid": "^6.0.3",
     "@huggingface/transformers": "^4.2.0",
     "@number-flow/react": "^0.6.0",
+    "@phosphor-icons/react": "^2.1.10",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@reduxjs/toolkit": "^2.12.0",

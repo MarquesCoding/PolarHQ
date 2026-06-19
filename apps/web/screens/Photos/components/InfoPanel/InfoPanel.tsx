@@ -1,11 +1,11 @@
 "use client"
 
-import type { ReactNode } from "react"
+import type { ComponentType, ReactNode } from "react"
 import { formatMediumDateTime } from "@lib/i18n/format"
 import dynamic from "next/dynamic"
 import { decryptName, decryptWithMetaKey } from "@lib/e2e"
 import { bytesParts } from "@lib/format"
-import { Icon } from "@lib/icons"
+import { ArrowSquareOut, Calendar, Camera, File, Heart, MapPin } from "@phosphor-icons/react"
 import NumberFlow from "@number-flow/react"
 import { type AssetExif, fetchAsset } from "@lib/photos"
 import { useQuery } from "@tanstack/react-query"
@@ -60,10 +60,18 @@ const Row = ({ label, value }: { label: string; value?: ReactNode }) =>
     </div>
   ) : null
 
-const Section = ({ icon, title, children }: { icon: string; title: string; children: ReactNode }) => (
+const Section = ({
+  icon: IconCmp,
+  title,
+  children,
+}: {
+  icon: ComponentType<{ className?: string }>
+  title: string
+  children: ReactNode
+}) => (
   <div className="flex flex-col">
     <div className="text-muted-foreground flex items-center gap-2 pb-1 text-xs font-semibold tracking-wide uppercase">
-      <Icon name={icon} className="size-4" />
+      <IconCmp className="size-4" />
       {title}
     </div>
     <div className="border-border/60 flex flex-col border-t pt-1">{children}</div>
@@ -158,7 +166,7 @@ const InfoPanel = ({ assetId, isFavorite, onFavorite, onShare }: InfoPanelProps)
                 onClick={onFavorite}
                 className="rounded-full"
               >
-                <Icon name="favourites" className={cn("size-[18px]", isFavorite && "text-primary")} />
+                <Heart weight={isFavorite ? "fill" : "regular"} className={cn("size-[18px]", isFavorite && "text-primary")} />
               </Button>
             ) : null}
             {onShare ? (
@@ -169,7 +177,7 @@ const InfoPanel = ({ assetId, isFavorite, onFavorite, onShare }: InfoPanelProps)
                 onClick={onShare}
                 className="rounded-full"
               >
-                <Icon name="open-external" className="size-[18px]" />
+                <ArrowSquareOut className="size-[18px]" />
               </Button>
             ) : null}
           </div>
@@ -177,7 +185,7 @@ const InfoPanel = ({ assetId, isFavorite, onFavorite, onShare }: InfoPanelProps)
       </div>
 
       <div className="scrollbar-slim flex flex-1 flex-col gap-5 overflow-y-auto p-5">
-        <Section icon="file-text" title={t("infoPanel.file")}>
+        <Section icon={File} title={t("infoPanel.file")}>
           <Row label={t("infoPanel.name")} value={displayName} />
           <Row label={t("infoPanel.kind")} value={kindLabel} />
           <Row label={t("infoPanel.type")} value={asset.mimeType} />
@@ -207,13 +215,13 @@ const InfoPanel = ({ assetId, isFavorite, onFavorite, onShare }: InfoPanelProps)
           <Row label={t("infoPanel.duration")} value={duration} />
         </Section>
 
-        <Section icon="calendar" title={t("infoPanel.date")}>
+        <Section icon={Calendar} title={t("infoPanel.date")}>
           <Row label={t("infoPanel.taken")} value={taken} />
           <Row label={t("infoPanel.added")} value={added} />
         </Section>
 
         {hasCamera ? (
-          <Section icon="camera" title={t("infoPanel.camera")}>
+          <Section icon={Camera} title={t("infoPanel.camera")}>
             <Row label={t("infoPanel.camera")} value={camera || undefined} />
             <Row label={t("infoPanel.lens")} value={exif?.lens} />
             <Row label={t("infoPanel.iso")} value={exif?.iso ? `ISO ${exif.iso}` : undefined} />
@@ -230,7 +238,7 @@ const InfoPanel = ({ assetId, isFavorite, onFavorite, onShare }: InfoPanelProps)
         ) : null}
 
         {hasLocation ? (
-          <Section icon="map-pin" title={t("infoPanel.location")}>
+          <Section icon={MapPin} title={t("infoPanel.location")}>
             <div className="flex flex-col gap-1 pt-1">
               <PhotoLocationMap lat={latitude} lng={longitude} />
               <Row
