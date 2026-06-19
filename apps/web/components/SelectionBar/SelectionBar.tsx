@@ -94,7 +94,7 @@ const SelectionBar = ({
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", stiffness: 460, damping: 30 }}
           >
-            <div className="panel flex items-center gap-1 rounded-full py-1.5 pr-3 pl-1.5 shadow-xl">
+            <div className="panel flex items-center gap-1 rounded-2xl py-1.5 pr-3 pl-1.5 shadow-xl">
               <Button
                 variant="ghost"
                 size="icon-sm"
