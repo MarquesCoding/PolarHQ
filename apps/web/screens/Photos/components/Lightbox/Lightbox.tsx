@@ -1,14 +1,6 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
 import { type ReactElement, useEffect, useRef, useState } from "react"
-import { decryptName } from "@lib/e2e"
-import { type GridAsset, assetOriginalUrl, favoriteAssets, sharePhoto, trashAssets } from "@lib/photos"
-import {
-  fetchDecryptedMotionVideo,
-  fetchDecryptedPhotoOriginal,
-  fetchDecryptedPhotoThumbnail,
-} from "@lib/photosE2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
 import {
@@ -29,14 +21,10 @@ import {
   Trash,
   X,
 } from "@phosphor-icons/react"
-import { useUploadManager } from "@lib/uploadManager"
-import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
-import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
 import EditPanel from "@pages/Photos/components/PhotoEditor/EditPanel"
 import EditStage from "@pages/Photos/components/PhotoEditor/EditStage"
 import { usePhotoEditor } from "@pages/Photos/components/PhotoEditor/usePhotoEditor"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
-import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
@@ -60,13 +48,15 @@ import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
+import type { ViewerController, ViewerItem } from "./viewer"
 
 interface LightboxProps {
-  assets: GridAsset[]
+  /** The data layer the viewer renders against (Photos or Drive supplies one). */
+  controller: ViewerController
   index: number
   onIndexChange: (index: number) => void
   onClose: () => void
-  /** Show a thumbnail strip of every asset along the bottom — used for stack/burst viewing. */
+  /** Show a thumbnail strip of every item along the bottom — used for stack/burst viewing. */
   filmstrip?: boolean
 }
 
@@ -78,31 +68,33 @@ const Tip = ({ label, children }: { label: string; children: ReactElement }) => 
   </Tooltip>
 )
 
-/** A single filmstrip thumbnail, reusing PhotoTile's session cache for decrypted thumbnails. */
-const FilmstripThumb = ({ asset, active }: { asset: GridAsset; active: boolean }) => {
+/** A single filmstrip thumbnail; the controller resolves encrypted thumbnails (and caches them). */
+const FilmstripThumb = ({
+  item,
+  active,
+  fetchThumb,
+}: {
+  item: ViewerItem
+  active: boolean
+  fetchThumb: (item: ViewerItem) => Promise<string | null>
+}) => {
   const [src, setSrc] = useState<string | null>(() =>
-    asset.encrypted ? (decryptedThumbnails.get(asset.id) ?? null) : (asset.thumbnailUrl ?? null),
+    item.encrypted ? null : (item.thumbnailUrl ?? null),
   )
   useEffect(() => {
-    if (!asset.encrypted) {
-      setSrc(asset.thumbnailUrl ?? null)
-      return
-    }
-    const cached = decryptedThumbnails.get(asset.id)
-    if (cached) {
-      setSrc(cached)
+    if (!item.encrypted) {
+      setSrc(item.thumbnailUrl ?? null)
       return
     }
     let on = true
-    void fetchDecryptedPhotoThumbnail(asset.id).then((result) => {
-      if (!result) return
-      decryptedThumbnails.set(asset.id, result)
-      if (on) setSrc(result)
+    void fetchThumb(item).then((result) => {
+      if (on && result) setSrc(result)
     })
     return () => {
       on = false
     }
-  }, [asset.id, asset.encrypted, asset.thumbnailUrl])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item.id, item.encrypted, item.thumbnailUrl])
 
   return (
     <span
@@ -126,25 +118,24 @@ const FilmstripThumb = ({ asset, active }: { asset: GridAsset; active: boolean }
  *  OOMing the tab — we offer a streaming download instead (true streaming playback is a later phase). */
 const PLAYABLE_ENCRYPTED_MAX = 1.5 * 1024 * 1024 * 1024
 
-const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: LightboxProps) => {
+const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: LightboxProps) => {
   const { t } = useTranslation("photos")
-  const queryClient = useQueryClient()
-  const upload = useUploadManager()
+  const { items } = controller
   const [infoPref, setInfoPref] = usePersistentNumber("photos.lightboxDetails", 0)
   const info = infoPref === 1
   const toggleInfo = () => setInfoPref(info ? 0 : 1)
   const [stripPref, setStripPref] = usePersistentNumber("photos.lightboxFilmstrip", 0)
-  const showStrip = (filmstrip || stripPref === 1) && assets.length > 1
+  const showStrip = (filmstrip || stripPref === 1) && items.length > 1
   const toggleStrip = () => setStripPref(stripPref ? 0 : 1)
   const deleteArmed = useRef(false)
   const [isEditing, setEditing] = useState(false)
   const [confirmDiscard, setConfirmDiscard] = useState(false)
   const exitEditingRef = useRef<() => void>(() => {})
   const [shareOpen, setShareOpen] = useState(false)
-  const asset = assets[index]
+  const item = items[index]
   const tooLargeToPreview =
-    !!asset?.encrypted && asset.type === "video" && asset.sizeBytes > PLAYABLE_ENCRYPTED_MAX
-  const zoom = useZoomPan(asset?.id)
+    !!item?.encrypted && item.kind === "video" && item.sizeBytes > PLAYABLE_ENCRYPTED_MAX
+  const zoom = useZoomPan(item?.id)
   const activeThumbRef = useRef<HTMLButtonElement | null>(null)
   const stripRef = useRef<HTMLDivElement | null>(null)
 
@@ -161,18 +152,18 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
   }, [index, showStrip])
 
   useEffect(() => {
-    if (!asset) onClose()
-  }, [asset, onClose])
+    if (!item) onClose()
+  }, [item, onClose])
 
   useEffect(() => {
+    if (!controller.trash) return
     const onKey = (event: KeyboardEvent) => {
-      if (!asset || !event.shiftKey || event.key.toLowerCase() !== "d") return
+      if (!item || !event.shiftKey || event.key.toLowerCase() !== "d") return
       event.preventDefault()
       if (deleteArmed.current) {
         deleteArmed.current = false
-        void trashAssets([asset.id]).then(() => {
-          void queryClient.invalidateQueries({ queryKey: ["photos"] })
-          if (assets.length <= 1) onClose()
+        void controller.trash?.(item).then(() => {
+          if (items.length <= 1) onClose()
           else onIndexChange(index > 0 ? index - 1 : index + 1)
         })
       } else {
@@ -185,7 +176,8 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [asset, assets.length, index, onClose, onIndexChange, queryClient])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item, items.length, index, onClose, onIndexChange])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -205,43 +197,36 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
         else onClose()
       } else if (event.key === "ArrowLeft" && index > 0 && !isEditing) {
         onIndexChange(index - 1)
-      } else if (event.key === "ArrowRight" && index < assets.length - 1 && !isEditing) {
+      } else if (event.key === "ArrowRight" && index < items.length - 1 && !isEditing) {
         onIndexChange(index + 1)
       }
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [index, assets.length, onClose, onIndexChange, isEditing, confirmDiscard])
+  }, [index, items.length, onClose, onIndexChange, isEditing, confirmDiscard])
 
-  if (!asset) return null
-
-  const refresh = () => void queryClient.invalidateQueries({ queryKey: ["photos"] })
+  if (!item) return null
 
   const toggleFavourite = async () => {
-    await favoriteAssets([asset.id], !asset.isFavorite).catch(() => undefined)
-    refresh()
+    if (!controller.toggleFavorite) return
+    await controller.toggleFavorite(item).catch(() => undefined)
   }
 
   const moveToTrash = async () => {
-    await trashAssets([asset.id]).catch(() => undefined)
-    refresh()
-    if (assets.length <= 1) onClose()
+    if (!controller.trash) return
+    await controller.trash(item).catch(() => undefined)
+    if (items.length <= 1) onClose()
     else onIndexChange(index > 0 ? index - 1 : index + 1)
   }
 
-  const displayName =
-    (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
-  const download = () =>
-    upload.download(displayName, [
-      { id: asset.id, name: displayName, encrypted: asset.encrypted, size: asset.sizeBytes },
-    ])
+  const download = () => controller.download?.(item)
 
   const copyImage = async () => {
-    if (asset.type !== "image") return
+    if (item.kind !== "image") return
     const toPng = async (): Promise<Blob> => {
-      const url = asset.encrypted
-        ? (decryptedSrc ?? (await fetchDecryptedPhotoOriginal(asset.id, asset.mimeType)))
-        : assetOriginalUrl(asset.id)
+      const url = item.encrypted
+        ? (decryptedSrc ?? (await controller.fetchOriginal(item)))
+        : (item.originalUrl ?? item.previewUrl ?? null)
       if (!url) throw new Error("no source")
       const blob = await fetch(url, { credentials: "include" }).then((response) => response.blob())
       if (blob.type === "image/png") return blob
@@ -270,13 +255,13 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
 
   const [decryptedSrc, setDecryptedSrc] = useState<string | null>(null)
   useEffect(() => {
-    if (!asset.encrypted || tooLargeToPreview) {
+    if (!item.encrypted || tooLargeToPreview) {
       setDecryptedSrc(null)
       return
     }
     let active = true
     let url: string | null = null
-    void fetchDecryptedPhotoOriginal(asset.id, asset.mimeType).then((result) => {
+    void controller.fetchOriginal(item).then((result) => {
       if (!active) {
         if (result) URL.revokeObjectURL(result)
         return
@@ -288,14 +273,18 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
       active = false
       if (url) URL.revokeObjectURL(url)
     }
-  }, [asset.id, asset.encrypted, asset.mimeType, tooLargeToPreview])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item.id, item.encrypted, item.mimeType, tooLargeToPreview])
 
-  const editing = isEditing && asset.type === "image"
+  const canEdit = !!controller.editing && item.kind === "image"
+  const editing = isEditing && canEdit
   const editor = usePhotoEditor({
-    asset,
-    sourceUrl: asset.encrypted ? (decryptedSrc ?? "") : assetOriginalUrl(asset.id),
+    baseName: item.name.replace(/\.[^.]+$/, ""),
+    sourceUrl: item.encrypted ? (decryptedSrc ?? "") : (item.originalUrl ?? ""),
     enabled: editing,
-    onSaved: refresh,
+    onSave: async (file) => {
+      await controller.editing?.save(item, file)
+    },
     onClose: () => setEditing(false),
   })
   const requestExitEditing = () => {
@@ -306,20 +295,20 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
     exitEditingRef.current = requestExitEditing
   })
 
-  const source = asset.encrypted
+  const source = item.encrypted
     ? (decryptedSrc ?? undefined)
-    : (asset.previewUrl ?? asset.thumbnailUrl ?? undefined)
-  const taken = asset.takenAt ? new Date(asset.takenAt).toLocaleDateString(dateLocale()) : undefined
+    : (item.previewUrl ?? item.thumbnailUrl ?? undefined)
 
+  const canPlayMotion = !!item.motion && !!controller.fetchMotion
   const [motionSrc, setMotionSrc] = useState<string | null>(null)
   const [playMotion, setPlayMotion] = useState(false)
   useEffect(() => {
     setPlayMotion(false)
     setMotionSrc(null)
-    if (!asset.motion) return
+    if (!canPlayMotion) return
     let active = true
     let url: string | null = null
-    void fetchDecryptedMotionVideo(asset.id).then((result) => {
+    void controller.fetchMotion?.(item).then((result) => {
       if (!active) {
         if (result) URL.revokeObjectURL(result)
         return
@@ -331,7 +320,11 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
       active = false
       if (url) URL.revokeObjectURL(url)
     }
-  }, [asset.id, asset.motion])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item.id, canPlayMotion])
+
+  const shareConfig = controller.share?.(item)
+  const infoOpen = controller.renderInfo ? info : false
 
   return (
     <motion.div
@@ -352,7 +345,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
       {source ? (
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <img
-            key={asset.id}
+            key={item.id}
             src={source}
             alt=""
             className="absolute inset-0 h-full w-full scale-125 object-cover opacity-40 blur-3xl"
@@ -372,12 +365,12 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             {editing ? <ArrowLeft className="size-5" /> : <X className="size-5" />}
           </Button>
           <span className="pointer-events-none absolute top-1/2 left-1/2 max-w-[40vw] -translate-x-1/2 -translate-y-1/2 truncate text-sm font-medium">
-            {displayName}
+            {item.name}
           </span>
 
         {!editing ? (
         <div className="flex items-center gap-2">
-        {asset.type === "image" && source ? (
+        {item.kind === "image" && source ? (
           <div className="flex items-center gap-0.5">
             <Button
               variant="ghost"
@@ -400,7 +393,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
           </div>
         ) : null}
         <div className="flex items-center gap-0.5">
-          {asset.motion && asset.type === "image" && motionSrc ? (
+          {canPlayMotion && item.kind === "image" && motionSrc ? (
             <Button
               variant="ghost"
               size="icon-sm"
@@ -425,68 +418,86 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               }
             />
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={toggleFavourite}>
-                <Heart weight={asset.isFavorite ? "fill" : "regular"} />
-                {t("lightbox.favourite")}
-              </DropdownMenuItem>
-              {asset.type === "image" ? (
+              {controller.toggleFavorite ? (
+                <DropdownMenuItem onClick={toggleFavourite}>
+                  <Heart weight={item.isFavorite ? "fill" : "regular"} />
+                  {t("lightbox.favourite")}
+                </DropdownMenuItem>
+              ) : null}
+              {item.kind === "image" ? (
                 <>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      if (asset.encrypted && !decryptedSrc) {
-                        toast(t("lightbox.decrypting"))
-                        return
-                      }
-                      setEditing(true)
-                    }}
-                  >
-                    <Sliders />
-                    {t("lightbox.edit")}
-                  </DropdownMenuItem>
+                  {canEdit ? (
+                    <DropdownMenuItem
+                      onClick={() => {
+                        if (item.encrypted && !decryptedSrc) {
+                          toast(t("lightbox.decrypting"))
+                          return
+                        }
+                        setEditing(true)
+                      }}
+                    >
+                      <Sliders />
+                      {t("lightbox.edit")}
+                    </DropdownMenuItem>
+                  ) : null}
                   <DropdownMenuItem onClick={copyImage}>
                     <Copy />
                     {t("lightbox.copy")}
                   </DropdownMenuItem>
                 </>
               ) : null}
-              <DropdownMenuItem onClick={() => setShareOpen(true)}>
-                <ArrowSquareOut />
-                {t("lightbox.share")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={download}>
-                <DownloadSimple />
-                {t("lightbox.download")}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={moveToTrash}>
-                <Trash />
-                {t("lightbox.moveToTrash")}
-              </DropdownMenuItem>
+              {shareConfig ? (
+                <DropdownMenuItem onClick={() => setShareOpen(true)}>
+                  <ArrowSquareOut />
+                  {t("lightbox.share")}
+                </DropdownMenuItem>
+              ) : null}
+              {controller.download ? (
+                <DropdownMenuItem onClick={download}>
+                  <DownloadSimple />
+                  {t("lightbox.download")}
+                </DropdownMenuItem>
+              ) : null}
+              {controller.trash ? (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem variant="destructive" onClick={moveToTrash}>
+                    <Trash />
+                    {t("lightbox.moveToTrash")}
+                  </DropdownMenuItem>
+                </>
+              ) : null}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Tip label={t("lightbox.filmstrip")}>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("lightbox.filmstrip")}
-              onClick={toggleStrip}
-              className="rounded-full"
-            >
-              <Slideshow weight={showStrip ? "fill" : "regular"} className="size-5" />
-            </Button>
-          </Tip>
-          <span className="bg-border mx-0.5 h-5 w-px" />
-          <Tip label={t("lightbox.info")}>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("lightbox.info")}
-              onClick={toggleInfo}
-              className="rounded-full"
-            >
-              <SidebarSimple weight={info ? "fill" : "regular"} className="size-5" />
-            </Button>
-          </Tip>
+          {items.length > 1 ? (
+            <Tip label={t("lightbox.filmstrip")}>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={t("lightbox.filmstrip")}
+                onClick={toggleStrip}
+                className="rounded-full"
+              >
+                <Slideshow weight={showStrip ? "fill" : "regular"} className="size-5" />
+              </Button>
+            </Tip>
+          ) : null}
+          {controller.renderInfo ? (
+            <>
+              <span className="bg-border mx-0.5 h-5 w-px" />
+              <Tip label={t("lightbox.info")}>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={t("lightbox.info")}
+                  onClick={toggleInfo}
+                  className="rounded-full"
+                >
+                  <SidebarSimple weight={infoOpen ? "fill" : "regular"} className="size-5" />
+                </Button>
+              </Tip>
+            </>
+          ) : null}
         </div>
         </div>
         ) : null}
@@ -496,13 +507,13 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
           ref={zoom.stageRef}
           className={cn(
             "relative flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden p-6 sm:p-10",
-            asset.type === "image" && !editing && "touch-none",
-            asset.type === "image" && !editing && zoom.canPan && "cursor-grab active:cursor-grabbing",
+            item.kind === "image" && !editing && "touch-none",
+            item.kind === "image" && !editing && zoom.canPan && "cursor-grab active:cursor-grabbing",
           )}
-          onPointerDown={asset.type === "image" && !editing ? zoom.stageHandlers.onPointerDown : undefined}
-          onPointerMove={asset.type === "image" && !editing ? zoom.stageHandlers.onPointerMove : undefined}
-          onPointerUp={asset.type === "image" && !editing ? zoom.stageHandlers.onPointerUp : undefined}
-          onPointerCancel={asset.type === "image" && !editing ? zoom.stageHandlers.onPointerCancel : undefined}
+          onPointerDown={item.kind === "image" && !editing ? zoom.stageHandlers.onPointerDown : undefined}
+          onPointerMove={item.kind === "image" && !editing ? zoom.stageHandlers.onPointerMove : undefined}
+          onPointerUp={item.kind === "image" && !editing ? zoom.stageHandlers.onPointerUp : undefined}
+          onPointerCancel={item.kind === "image" && !editing ? zoom.stageHandlers.onPointerCancel : undefined}
         >
           {index > 0 && !editing ? (
             <Button
@@ -517,7 +528,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             </Button>
           ) : null}
 
-          {asset.type === "video" && tooLargeToPreview ? (
+          {item.kind === "video" && tooLargeToPreview ? (
             <div className="flex h-full w-full flex-col items-center justify-center gap-3 px-8 text-center">
               <p className="text-base font-medium text-white">{t("lightbox.tooLargeTitle")}</p>
               <p className="max-w-sm text-sm text-white/70">{t("lightbox.tooLargeBody")}</p>
@@ -525,19 +536,19 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
                 {t("lightbox.downloadToView")}
               </Button>
             </div>
-          ) : asset.type === "video" ? (
+          ) : item.kind === "video" ? (
             <MediaPlayer
-              key={asset.id}
+              key={item.id}
               kind="video"
-              src={asset.encrypted ? (decryptedSrc ?? "") : (asset.videoUrl ?? "")}
-              poster={asset.encrypted ? undefined : (asset.previewUrl ?? undefined)}
+              src={item.encrypted ? (decryptedSrc ?? "") : (item.videoUrl ?? "")}
+              poster={item.encrypted ? undefined : (item.previewUrl ?? undefined)}
             />
-          ) : asset.type === "audio" ? (
+          ) : item.kind === "audio" ? (
             <MediaPlayer
-              key={asset.id}
+              key={item.id}
               kind="audio"
-              src={asset.encrypted ? (decryptedSrc ?? "") : assetOriginalUrl(asset.id)}
-              name={displayName}
+              src={item.encrypted ? (decryptedSrc ?? "") : (item.originalUrl ?? "")}
+              name={item.name}
             />
           ) : editing ? (
             <EditStage controller={editor} />
@@ -548,15 +559,15 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               transition={{ duration: 0.1, ease: "easeOut" }}
             >
               <motion.img
-                layoutId={`photo-${asset.id}`}
+                layoutId={`photo-${item.id}`}
                 src={source}
-                alt={displayName}
+                alt={item.name}
                 draggable={false}
                 className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
                 style={{
                   backgroundImage:
-                    !asset.encrypted && asset.thumbnailUrl
-                      ? `url(${asset.thumbnailUrl})`
+                    !item.encrypted && item.thumbnailUrl
+                      ? `url(${item.thumbnailUrl})`
                       : undefined,
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",
@@ -569,9 +580,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             <p className="text-muted-foreground text-sm">{t("lightbox.stillProcessing")}</p>
           )}
 
-          {asset.type === "image" && playMotion && motionSrc && !editing ? (
+          {item.kind === "image" && playMotion && motionSrc && !editing ? (
             <video
-              key={`motion-${asset.id}`}
+              key={`motion-${item.id}`}
               src={motionSrc}
               autoPlay
               muted
@@ -582,7 +593,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             />
           ) : null}
 
-          {index < assets.length - 1 && !editing ? (
+          {index < items.length - 1 && !editing ? (
             <Button
               variant="ghost"
               size="icon"
@@ -608,18 +619,22 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
           >
           <div className="flex justify-center px-4 pb-4">
             <div ref={stripRef} className="scrollbar-slim flex max-w-full gap-2 overflow-x-auto py-1">
-              {assets.map((member, position) => (
+              {items.map((member, position) => (
                 <button
                   key={member.id}
                   ref={position === index ? activeThumbRef : undefined}
                   type="button"
-                  aria-label={t("lightbox.frame", { position: position + 1, total: assets.length })}
+                  aria-label={t("lightbox.frame", { position: position + 1, total: items.length })}
                   aria-current={position === index}
                   onPointerDown={(event) => event.stopPropagation()}
                   onClick={() => onIndexChange(position)}
                   className="shrink-0"
                 >
-                  <FilmstripThumb asset={member} active={position === index} />
+                  <FilmstripThumb
+                    item={member}
+                    active={position === index}
+                    fetchThumb={controller.fetchThumbnail}
+                  />
                 </button>
               ))}
             </div>
@@ -630,7 +645,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
       </div>
 
       <AnimatePresence initial={false}>
-        {info || editing ? (
+        {infoOpen || editing ? (
           <motion.aside
             key="aside"
             className="border-border/60 bg-card relative z-10 h-full shrink-0 overflow-hidden border-l"
@@ -661,12 +676,10 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
                     exit={{ x: -32, opacity: 0 }}
                     transition={{ duration: 0.2, ease: "easeOut" }}
                   >
-                    <InfoPanel
-                      assetId={asset.id}
-                      isFavorite={asset.isFavorite}
-                      onFavorite={toggleFavourite}
-                      onShare={() => setShareOpen(true)}
-                    />
+                    {controller.renderInfo?.(item, {
+                      onFavorite: controller.toggleFavorite ? toggleFavourite : undefined,
+                      onShare: shareConfig ? () => setShareOpen(true) : undefined,
+                    })}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -676,13 +689,15 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
       </AnimatePresence>
       </motion.div>
 
-      <ShareDialog
-        name={displayName}
-        open={shareOpen}
-        onOpenChange={setShareOpen}
-        createLink={(options) => sharePhoto(asset.id, options)}
-        encryptKeyId={asset.encrypted ? asset.id : undefined}
-      />
+      {shareConfig ? (
+        <ShareDialog
+          name={item.name}
+          open={shareOpen}
+          onOpenChange={setShareOpen}
+          createLink={shareConfig.createLink}
+          encryptKeyId={shareConfig.encryptKeyId}
+        />
+      ) : null}
 
       <Dialog open={confirmDiscard} onOpenChange={setConfirmDiscard}>
         <DialogContent showCloseButton={false} className="sm:max-w-xs">

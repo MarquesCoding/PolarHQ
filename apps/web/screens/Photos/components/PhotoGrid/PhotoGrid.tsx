@@ -10,6 +10,7 @@ import { fetchDecryptedPhotoOriginal, fetchDecryptedPhotoThumbnail } from "@lib/
 import { useSelection } from "@lib/selection"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import Lightbox from "@pages/Photos/components/Lightbox/Lightbox"
+import { usePhotosViewer } from "@pages/Photos/components/Lightbox/usePhotosViewer"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
 import TimelineScrubber, {
   type TimelineMarker,
@@ -277,6 +278,8 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     () => [...assets].sort((a, b) => dateOf(b).getTime() - dateOf(a).getTime()),
     [assets],
   )
+  const viewerController = usePhotosViewer(sortedGridAssets)
+  const stackController = usePhotosViewer(stackMembers ?? [])
   const layout = useMemo(
     () => buildLayout(sortedGridAssets, width, rowHeight, gap, square === 1),
     [sortedGridAssets, width, rowHeight, gap, square, dateStamp],
@@ -563,7 +566,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
         {openIndex !== null ? (
           <Lightbox
             key="lightbox"
-            assets={sortedGridAssets}
+            controller={viewerController}
             index={openIndex}
             onIndexChange={setOpenIndex}
             onClose={() => setOpenIndex(null)}
@@ -575,7 +578,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
         {stackMembers && stackIndex !== null ? (
           <Lightbox
             key="stack-lightbox"
-            assets={stackMembers}
+            controller={stackController}
             index={stackIndex}
             onIndexChange={setStackIndex}
             filmstrip

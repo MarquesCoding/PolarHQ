@@ -47,7 +47,6 @@ const EditPanel = ({ controller }: { controller: PhotoEditorController }) => {
     setCrop,
     aspect,
     applyAspect,
-    texts,
     setTexts,
     active,
     setActiveText,
