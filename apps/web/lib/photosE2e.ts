@@ -8,7 +8,7 @@ import {
   secretboxSeal,
   secretstreamInit,
   secretstreamOpenAll,
-} from "@lib/crypto"
+} from "@workspace/core/crypto"
 import { CHUNKED_UPLOAD_THRESHOLD } from "@lib/driveE2e"
 import { streamDecryptToDisk, supportsStreamingDownload } from "@lib/streamDownload"
 import {

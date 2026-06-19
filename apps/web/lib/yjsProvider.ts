@@ -1,6 +1,6 @@
 "use client"
 
-import { secretboxOpen, secretboxSeal } from "@lib/crypto"
+import { secretboxOpen, secretboxSeal } from "@workspace/core/crypto"
 import { API_URL } from "@lib/env"
 import * as decoding from "lib0/decoding"
 import * as encoding from "lib0/encoding"
