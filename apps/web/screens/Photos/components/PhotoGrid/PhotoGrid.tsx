@@ -401,18 +401,6 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     marqueeStart.current = null
   }
 
-  useEffect(() => {
-    if (openIndex === null) return
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpenIndex(null)
-      else if (event.key === "ArrowLeft") setOpenIndex((i) => (i !== null && i > 0 ? i - 1 : i))
-      else if (event.key === "ArrowRight")
-        setOpenIndex((i) => (i !== null && i < sortedGridAssets.length - 1 ? i + 1 : i))
-    }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
-  }, [openIndex, sortedGridAssets.length])
-
   const visibleRows = useMemo(
     () =>
       layout.rows.length <= VIRTUALIZE_THRESHOLD
