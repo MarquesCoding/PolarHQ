@@ -122,7 +122,7 @@ const FlatSidebar = ({
                 className="hover:bg-sidebar-accent/50 -ms-1 flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1.5 text-start transition"
               >
                 <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md">
-                  <img src={logo.src} alt="PolarHQ" width={28} height={28} className="size-7" />
+                  <img src={logo} alt="PolarHQ" width={28} height={28} className="size-7" />
                 </span>
                 <span className="flex min-w-0 flex-col leading-tight">
                   <span className="flex items-center gap-1.5">
@@ -142,7 +142,7 @@ const FlatSidebar = ({
           <DropdownMenuContent align="start" sideOffset={6} className="w-64 p-2">
             <div className="flex items-center gap-2.5 px-1 pt-0.5 pb-2">
               <span className="flex size-8 items-center justify-center overflow-hidden rounded-lg">
-                <img src={logo.src} alt="PolarHQ" width={32} height={32} className="size-8" />
+                <img src={logo} alt="PolarHQ" width={32} height={32} className="size-8" />
               </span>
               <span className="flex min-w-0 flex-col leading-tight">
                 <span className="truncate text-sm font-semibold">PolarHQ</span>
