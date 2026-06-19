@@ -13,6 +13,7 @@ import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
 import {
   Aperture,
+  ArrowLeft,
   ArrowSquareOut,
   CaretLeft,
   CaretRight,
@@ -31,10 +32,21 @@ import {
 import { useUploadManager } from "@lib/uploadManager"
 import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
-import PhotoEditor from "@pages/Photos/components/PhotoEditor/PhotoEditor"
+import EditPanel from "@pages/Photos/components/PhotoEditor/EditPanel"
+import EditStage from "@pages/Photos/components/PhotoEditor/EditStage"
+import { usePhotoEditor } from "@pages/Photos/components/PhotoEditor/usePhotoEditor"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,7 +57,6 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 import { cn } from "@workspace/ui/lib/utils"
-import NumberFlow from "@number-flow/react"
 import { AnimatePresence, motion } from "motion/react"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
@@ -126,7 +137,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
   const showStrip = (filmstrip || stripPref === 1) && assets.length > 1
   const toggleStrip = () => setStripPref(stripPref ? 0 : 1)
   const deleteArmed = useRef(false)
-  const [editing, setEditing] = useState(false)
+  const [isEditing, setEditing] = useState(false)
+  const [confirmDiscard, setConfirmDiscard] = useState(false)
+  const exitEditingRef = useRef<() => void>(() => {})
   const [shareOpen, setShareOpen] = useState(false)
   const asset = assets[index]
   const tooLargeToPreview =
@@ -187,16 +200,18 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
       const target = event.target as HTMLElement | null
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return
       if (event.key === "Escape") {
-        onClose()
-      } else if (event.key === "ArrowLeft" && index > 0) {
+        if (confirmDiscard) return
+        if (isEditing) exitEditingRef.current()
+        else onClose()
+      } else if (event.key === "ArrowLeft" && index > 0 && !isEditing) {
         onIndexChange(index - 1)
-      } else if (event.key === "ArrowRight" && index < assets.length - 1) {
+      } else if (event.key === "ArrowRight" && index < assets.length - 1 && !isEditing) {
         onIndexChange(index + 1)
       }
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [index, assets.length, onClose, onIndexChange])
+  }, [index, assets.length, onClose, onIndexChange, isEditing, confirmDiscard])
 
   if (!asset) return null
 
@@ -275,6 +290,22 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
     }
   }, [asset.id, asset.encrypted, asset.mimeType, tooLargeToPreview])
 
+  const editing = isEditing && asset.type === "image"
+  const editor = usePhotoEditor({
+    asset,
+    sourceUrl: asset.encrypted ? (decryptedSrc ?? "") : assetOriginalUrl(asset.id),
+    enabled: editing,
+    onSaved: refresh,
+    onClose: () => setEditing(false),
+  })
+  const requestExitEditing = () => {
+    if (editor.dirty) setConfirmDiscard(true)
+    else setEditing(false)
+  }
+  useEffect(() => {
+    exitEditingRef.current = requestExitEditing
+  })
+
   const source = asset.encrypted
     ? (decryptedSrc ?? undefined)
     : (asset.previewUrl ?? asset.thumbnailUrl ?? undefined)
@@ -334,16 +365,17 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={t("lightbox.close")}
-            onClick={onClose}
+            aria-label={editing ? t("photoEditor.closeEditor") : t("lightbox.close")}
+            onClick={editing ? requestExitEditing : onClose}
             className="rounded-full"
           >
-            <X className="size-5" />
+            {editing ? <ArrowLeft className="size-5" /> : <X className="size-5" />}
           </Button>
           <span className="pointer-events-none absolute top-1/2 left-1/2 max-w-[40vw] -translate-x-1/2 -translate-y-1/2 truncate text-sm font-medium">
             {displayName}
           </span>
 
+        {!editing ? (
         <div className="flex items-center gap-2">
         {asset.type === "image" && source ? (
           <div className="flex items-center gap-0.5">
@@ -457,21 +489,22 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
           </Tip>
         </div>
         </div>
+        ) : null}
       </div>
 
         <div
           ref={zoom.stageRef}
           className={cn(
             "relative flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden p-6 sm:p-10",
-            asset.type === "image" && "touch-none",
-            asset.type === "image" && zoom.canPan && "cursor-grab active:cursor-grabbing",
+            asset.type === "image" && !editing && "touch-none",
+            asset.type === "image" && !editing && zoom.canPan && "cursor-grab active:cursor-grabbing",
           )}
-          onPointerDown={asset.type === "image" ? zoom.stageHandlers.onPointerDown : undefined}
-          onPointerMove={asset.type === "image" ? zoom.stageHandlers.onPointerMove : undefined}
-          onPointerUp={asset.type === "image" ? zoom.stageHandlers.onPointerUp : undefined}
-          onPointerCancel={asset.type === "image" ? zoom.stageHandlers.onPointerCancel : undefined}
+          onPointerDown={asset.type === "image" && !editing ? zoom.stageHandlers.onPointerDown : undefined}
+          onPointerMove={asset.type === "image" && !editing ? zoom.stageHandlers.onPointerMove : undefined}
+          onPointerUp={asset.type === "image" && !editing ? zoom.stageHandlers.onPointerUp : undefined}
+          onPointerCancel={asset.type === "image" && !editing ? zoom.stageHandlers.onPointerCancel : undefined}
         >
-          {index > 0 ? (
+          {index > 0 && !editing ? (
             <Button
               variant="ghost"
               size="icon"
@@ -506,6 +539,8 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               src={asset.encrypted ? (decryptedSrc ?? "") : assetOriginalUrl(asset.id)}
               name={displayName}
             />
+          ) : editing ? (
+            <EditStage controller={editor} />
           ) : source ? (
             <motion.div
               className="flex h-full w-full items-center justify-center"
@@ -534,7 +569,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             <p className="text-muted-foreground text-sm">{t("lightbox.stillProcessing")}</p>
           )}
 
-          {asset.type === "image" && playMotion && motionSrc ? (
+          {asset.type === "image" && playMotion && motionSrc && !editing ? (
             <video
               key={`motion-${asset.id}`}
               src={motionSrc}
@@ -547,7 +582,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             />
           ) : null}
 
-          {index < assets.length - 1 ? (
+          {index < assets.length - 1 && !editing ? (
             <Button
               variant="ghost"
               size="icon"
@@ -562,7 +597,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
         </div>
 
         <AnimatePresence initial={false}>
-        {showStrip ? (
+        {showStrip && !editing ? (
           <motion.div
             key="filmstrip"
             initial={{ height: 0, opacity: 0 }}
@@ -595,39 +630,51 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
       </div>
 
       <AnimatePresence initial={false}>
-        {info ? (
+        {info || editing ? (
           <motion.aside
-            key="info"
+            key="aside"
             className="border-border/60 bg-card relative z-10 h-full shrink-0 overflow-hidden border-l"
             initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 340, opacity: 1 }}
+            animate={{ width: editing ? 360 : 340, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
           >
-            <div className="h-full w-[340px] overflow-hidden">
-              <InfoPanel
-                assetId={asset.id}
-                isFavorite={asset.isFavorite}
-                onFavorite={toggleFavourite}
-                onShare={() => setShareOpen(true)}
-              />
+            <div className="relative h-full" style={{ width: editing ? 360 : 340 }}>
+              <AnimatePresence mode="wait" initial={false}>
+                {editing ? (
+                  <motion.div
+                    key="edit"
+                    className="absolute inset-0"
+                    initial={{ x: 32, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: 32, opacity: 0 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    <EditPanel controller={editor} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="info"
+                    className="absolute inset-0 overflow-hidden"
+                    initial={{ x: -32, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -32, opacity: 0 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    <InfoPanel
+                      assetId={asset.id}
+                      isFavorite={asset.isFavorite}
+                      onFavorite={toggleFavourite}
+                      onShare={() => setShareOpen(true)}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.aside>
         ) : null}
       </AnimatePresence>
       </motion.div>
-
-      <AnimatePresence>
-        {editing && asset.type === "image" ? (
-          <PhotoEditor
-            key="editor"
-            asset={asset}
-            sourceUrl={asset.encrypted ? (decryptedSrc ?? "") : assetOriginalUrl(asset.id)}
-            onClose={() => setEditing(false)}
-            onSaved={refresh}
-          />
-        ) : null}
-      </AnimatePresence>
 
       <ShareDialog
         name={displayName}
@@ -636,6 +683,29 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
         createLink={(options) => sharePhoto(asset.id, options)}
         encryptKeyId={asset.encrypted ? asset.id : undefined}
       />
+
+      <Dialog open={confirmDiscard} onOpenChange={setConfirmDiscard}>
+        <DialogContent showCloseButton={false} className="sm:max-w-xs">
+          <DialogHeader>
+            <DialogTitle>{t("photoEditor.discardTitle")}</DialogTitle>
+            <DialogDescription>{t("photoEditor.discardBody")}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              {t("photoEditor.keepEditing")}
+            </DialogClose>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                setConfirmDiscard(false)
+                setEditing(false)
+              }}
+            >
+              {t("photoEditor.discardConfirm")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   )
 }
