@@ -1,10 +1,12 @@
 "use client"
 
+import type { ReactNode } from "react"
 import { formatMediumDateTime } from "@lib/i18n/format"
 import dynamic from "next/dynamic"
 import { decryptName, decryptWithMetaKey } from "@lib/e2e"
-import { formatBytes } from "@lib/format"
+import { bytesParts } from "@lib/format"
 import { Icon } from "@lib/icons"
+import NumberFlow from "@number-flow/react"
 import { type AssetExif, fetchAsset } from "@lib/photos"
 import { IconInfoCircle, IconMapPin } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
@@ -50,7 +52,7 @@ const formatDuration = (ms?: number | null): string | undefined => {
   return hours > 0 ? `${hours}:${pad(minutes)}:${pad(seconds)}` : `${minutes}:${pad(seconds)}`
 }
 
-const Row = ({ label, value }: { label: string; value?: string | null }) =>
+const Row = ({ label, value }: { label: string; value?: ReactNode }) =>
   value ? (
     <div className="flex items-start justify-between gap-4 py-1.5 text-sm">
       <span className="text-muted-foreground shrink-0">{label}</span>
@@ -107,11 +109,15 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
   const camera = [asset.cameraMake ?? exif?.make, asset.cameraModel ?? exif?.model]
     .filter(Boolean)
     .join(" ")
-  const dimensions = asset.width && asset.height ? `${asset.width} × ${asset.height}` : undefined
+  const sizeParts = bytesParts(asset.sizeBytes)
+  const dimensions =
+    asset.width && asset.height ? (
+      <span>
+        <NumberFlow value={asset.width} /> × <NumberFlow value={asset.height} />
+      </span>
+    ) : undefined
   const megapixels =
-    asset.width && asset.height
-      ? `${((asset.width * asset.height) / 1_000_000).toFixed(1)} MP`
-      : undefined
+    asset.width && asset.height ? (asset.width * asset.height) / 1_000_000 : undefined
   const isImage = asset.mimeType.startsWith("image/")
   const kindLabel = isImage
     ? t("infoPanel.kindImage")
@@ -155,9 +161,29 @@ const InfoPanel = ({ assetId }: InfoPanelProps) => {
             />
             <Row label={t("infoPanel.kind")} value={kindLabel} />
             <Row label={t("infoPanel.type")} value={asset.mimeType} />
-            <Row label={t("infoPanel.size")} value={formatBytes(asset.sizeBytes)} />
+            <Row
+              label={t("infoPanel.size")}
+              value={
+                <NumberFlow
+                  value={sizeParts.value}
+                  suffix={` ${sizeParts.unit}`}
+                  format={{ maximumFractionDigits: sizeParts.decimals }}
+                />
+              }
+            />
             <Row label={t("infoPanel.dimensions")} value={dimensions} />
-            {isImage ? <Row label={t("infoPanel.resolution")} value={megapixels} /> : null}
+            {isImage && megapixels !== undefined ? (
+              <Row
+                label={t("infoPanel.resolution")}
+                value={
+                  <NumberFlow
+                    value={megapixels}
+                    suffix=" MP"
+                    format={{ minimumFractionDigits: 1, maximumFractionDigits: 1 }}
+                  />
+                }
+              />
+            ) : null}
             <Row label={t("infoPanel.duration")} value={duration} />
           </Section>
 

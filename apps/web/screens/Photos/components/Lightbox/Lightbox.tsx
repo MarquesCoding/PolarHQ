@@ -23,6 +23,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 import { cn } from "@workspace/ui/lib/utils"
+import NumberFlow from "@number-flow/react"
 import { AnimatePresence, motion } from "motion/react"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
@@ -307,9 +308,11 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             >
               <Icon name="minus" className="size-4" />
             </Button>
-            <span className="w-11 text-center text-xs font-semibold tabular-nums">
-              {Math.round(zoom.scale * 100)}%
-            </span>
+            <NumberFlow
+              value={Math.round(zoom.scale * 100)}
+              suffix="%"
+              className="w-11 text-center text-xs font-semibold tabular-nums"
+            />
             <Button
               variant="ghost"
               size="icon-sm"
@@ -454,7 +457,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               aria-label={t("lightbox.previous")}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => onIndexChange(index - 1)}
-              className="panel hover:bg-muted absolute left-4 z-10 size-10 rounded-full shadow-lg"
+              className="bg-background/30 hover:bg-background/50 border-border/40 absolute left-4 z-10 size-10 rounded-full border backdrop-blur-2xl shadow-lg"
             >
               <Icon name="nav-back" className="size-5" />
             </Button>
@@ -530,7 +533,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               aria-label={t("lightbox.next")}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => onIndexChange(index + 1)}
-              className="panel hover:bg-muted absolute right-4 z-10 size-10 rounded-full shadow-lg"
+              className="bg-background/30 hover:bg-background/50 border-border/40 absolute right-4 z-10 size-10 rounded-full border backdrop-blur-2xl shadow-lg"
             >
               <Icon name="nav-forward" className="size-5" />
             </Button>
@@ -571,11 +574,11 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             key="info"
             className="shrink-0 overflow-hidden py-3 pr-3"
             initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 380, opacity: 1 }}
+            animate={{ width: 368, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
           >
-            <div className="panel scrollbar-slim h-full w-[356px] overflow-hidden rounded-2xl">
+            <div className="panel scrollbar-slim h-full w-[356px] overflow-hidden rounded-md">
               <InfoPanel assetId={asset.id} />
             </div>
           </motion.aside>

@@ -6,6 +6,7 @@ import type { GridAsset } from "@lib/photos"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
+import NumberFlow from "@number-flow/react"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 
@@ -21,13 +22,6 @@ export const replayOnboarding = (): void => {
   }
   window.location.reload()
 }
-
-/** A gradient SVG data URI so the real PhotoTile has something to show without any uploads. */
-const grad = (from: string, to: string): string =>
-  "data:image/svg+xml," +
-  encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${from}'/><stop offset='1' stop-color='${to}'/></linearGradient></defs><rect width='120' height='120' fill='url(#g)'/></svg>`,
-  )
 
 const sample = (id: string, thumb: string, extra: Partial<GridAsset> = {}): GridAsset => ({
   id,
@@ -114,12 +108,12 @@ const Tap = ({ at, tapAt }: { at: [number, number]; tapAt: number }) => (
 /** Drop photos in — they pop into the grid and a burst collapses into one stack. */
 const UploadDemo = () => {
   const tiles = [
-    sample("onb-u1", grad("#fca5a5", "#ef4444")),
-    sample("onb-u2", grad("#fdba74", "#f97316"), { stackId: "s", stackCount: 4 }),
-    sample("onb-u3", grad("#6ee7b7", "#10b981")),
-    sample("onb-u4", grad("#93c5fd", "#3b82f6"), { isFavorite: true }),
-    sample("onb-u5", grad("#c4b5fd", "#8b5cf6")),
-    sample("onb-u6", grad("#f9a8d4", "#ec4899")),
+    sample("onb-u1", "/onboarding/1.jpg"),
+    sample("onb-u2", "/onboarding/2.jpg", { stackId: "s", stackCount: 4 }),
+    sample("onb-u3", "/onboarding/3.jpg"),
+    sample("onb-u4", "/onboarding/4.jpg", { isFavorite: true }),
+    sample("onb-u5", "/onboarding/5.jpg"),
+    sample("onb-u6", "/onboarding/6.jpg"),
   ]
   return (
     <div className="relative h-full w-full">
@@ -141,7 +135,7 @@ const ShareDemo = () => {
   <div className="relative flex h-full w-full items-center justify-center gap-3">
     <div className="flex items-center gap-2.5">
       <div className="ring-border size-[60px] overflow-hidden rounded-lg ring-1">
-        <img src={grad("#a5b4fc", "#6366f1")} alt="" className="size-full object-cover" />
+        <img src="/onboarding/4.jpg" alt="" className="size-full object-cover" />
       </div>
       <div className="flex flex-col gap-1">
         <span className="text-foreground text-xs font-semibold">{t("onboardingCard.albumName")}</span>
@@ -169,9 +163,9 @@ const ShareDemo = () => {
 /** Everything is end-to-end encrypted — a lock closes over the library. */
 const PrivacyDemo = () => {
   const tiles = [
-    sample("onb-p1", grad("#fcd34d", "#f59e0b")),
-    sample("onb-p2", grad("#6ee7b7", "#059669")),
-    sample("onb-p3", grad("#93c5fd", "#2563eb")),
+    sample("onb-p1", "/onboarding/1.jpg"),
+    sample("onb-p2", "/onboarding/2.jpg"),
+    sample("onb-p3", "/onboarding/3.jpg"),
   ]
   return (
     <div className="relative flex h-full w-full items-center justify-center">
@@ -285,22 +279,8 @@ const OnboardingCard = () => {
             transition={{ type: "spring", stiffness: 320, damping: 30 }}
             className="panel absolute right-4 bottom-4 w-[340px] overflow-hidden rounded-2xl shadow-2xl select-none"
           >
-            <button
-              type="button"
-              aria-label={t("onboardingCard.dismiss")}
-              onClick={dismiss}
-              className="text-muted-foreground hover:bg-muted hover:text-foreground absolute top-3 right-3 z-40 flex size-7 items-center justify-center rounded-full transition"
-            >
-              <Icon name="xmark" className="size-4" />
-            </button>
-
             <div className="px-5 pt-5">
-              <div
-                className={cn(
-                  "ring-border h-32 overflow-hidden rounded-xl bg-gradient-to-b ring-1 ring-inset",
-                  slide.accent,
-                )}
-              >
+              <div className="ring-border bg-muted/30 h-32 overflow-hidden rounded-xl ring-1 ring-inset">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={index}
@@ -344,9 +324,11 @@ const OnboardingCard = () => {
                     />
                   ))}
                 </div>
-                <span className="text-muted-foreground text-xs tabular-nums">
-                  {index + 1}/{SLIDES.length}
-                </span>
+                <NumberFlow
+                  value={index + 1}
+                  suffix={`/${SLIDES.length}`}
+                  className="text-muted-foreground text-xs tabular-nums"
+                />
               </div>
               <div className="flex items-center gap-1">
                 {index > 0 ? (
