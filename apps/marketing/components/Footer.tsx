@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { DiscordLogo, GithubLogo, XLogo } from "@phosphor-icons/react"
+import { DiscordLogo, GithubLogo, XLogo } from "@phosphor-icons/react/ssr"
 
 interface Column {
   title: string

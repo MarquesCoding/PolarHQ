@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { Lock } from "@phosphor-icons/react"
+import { Lock } from "@phosphor-icons/react/ssr"
 
 interface BrowserFrameProps {
   url: string
