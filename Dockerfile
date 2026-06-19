@@ -5,7 +5,9 @@
 FROM node:22-bookworm-slim
 
 # ffmpeg is needed by the media worker; ca-certificates for outbound TLS.
-RUN corepack enable \
+# pnpm is installed via npm (not corepack) — corepack's lazy download trips a
+# Node 22 undici bug (`assert(!this.paused)`) on the CI runners.
+RUN npm install -g pnpm@10.33.4 \
   && apt-get update \
   && apt-get install -y --no-install-recommends ffmpeg ca-certificates \
   && rm -rf /var/lib/apt/lists/*

@@ -10,7 +10,9 @@
 #
 FROM node:22-bookworm-slim
 
-RUN corepack enable
+# pnpm via npm (not corepack) — corepack's lazy download trips a Node 22 undici
+# bug (`assert(!this.paused)`) on the CI runners.
+RUN npm install -g pnpm@10.33.4
 WORKDIR /app
 
 COPY . .
