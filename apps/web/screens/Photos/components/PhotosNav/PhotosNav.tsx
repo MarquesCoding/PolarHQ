@@ -1,8 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { AppLink as Link, usePathname } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@lib/icons"
 import { fetchAlbums, fetchTags } from "@workspace/core/photos"

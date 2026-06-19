@@ -3,7 +3,7 @@
 import { dateLocale } from "@workspace/i18n/format"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import Link from "next/link"
+import { AppLink as Link } from "@workspace/screens/platform"
 import { authClient } from "@lib/authClient"
 import { t } from "@workspace/i18n/config"
 import {

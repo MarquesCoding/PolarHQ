@@ -2,7 +2,7 @@
 
 import { type ReactNode, useEffect, useState } from "react"
 import Image from "next/image"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useNavigation } from "@workspace/screens/platform"
 import logo from "../../public/logo.png"
 import { fetchApps } from "@workspace/core/apps"
 import { authClient } from "@lib/authClient"
@@ -77,7 +77,7 @@ const FlatSidebar = ({
 }: FlatSidebarProps) => {
   const { t } = useTranslation("common")
   const pathname = usePathname()
-  const router = useRouter()
+  const router = useNavigation()
   const dispatch = useAppDispatch()
   const query = useAppSelector((state) => state.ui.searchQuery)
   const { data: session } = authClient.useSession()

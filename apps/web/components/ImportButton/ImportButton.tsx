@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import { type DocType } from "@workspace/core/docs"
 import { importFile } from "@lib/importFlow"
 import { useQueryClient } from "@tanstack/react-query"
@@ -20,7 +20,7 @@ const ACCEPT: Record<DocType, string> = {
 /** Imports an Office/Google file (.xlsx, .docx, .pptx, …) into a new document of `type`. */
 const ImportButton = ({ type }: { type: DocType }) => {
   const { t } = useTranslation("common")
-  const router = useRouter()
+  const router = useNavigation()
   const queryClient = useQueryClient()
   const inputRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)

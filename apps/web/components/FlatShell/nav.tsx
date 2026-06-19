@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode } from "react"
-import Link from "next/link"
+import { AppLink as Link } from "@workspace/screens/platform"
 import { Icon } from "@lib/icons"
 import { cn } from "@workspace/ui/lib/utils"
 import { type Variants, motion } from "motion/react"

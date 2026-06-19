@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import {
   deleteAlbum,
   favoriteAssets,
@@ -27,7 +27,7 @@ import { useTranslation } from "react-i18next"
 
 const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
   const { t } = useTranslation("photos")
-  const router = useRouter()
+  const router = useNavigation()
   const queryClient = useQueryClient()
   const selection = useSelection()
 

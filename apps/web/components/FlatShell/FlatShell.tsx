@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useNavigation } from "@workspace/screens/platform"
 import { authClient } from "@lib/authClient"
 import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@workspace/core/e2e"
 import { SidebarProvider, useSidebar } from "@workspace/ui/components/sidebar"
@@ -38,7 +38,7 @@ interface FlatShellProps {
  * mode (sidebar hidden). Every app shares this; apps differ only in the sidebar/top-bar content.
  */
 const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
-  const router = useRouter()
+  const router = useNavigation()
   const { data: session, isPending } = authClient.useSession()
   const [embedded, setEmbedded] = useState(false)
   const [unlockOpen, setUnlockOpen] = useState(false)

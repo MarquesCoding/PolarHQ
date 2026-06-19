@@ -1,6 +1,6 @@
 "use client"
 
-import { usePathname } from "next/navigation"
+import { usePathname } from "@workspace/screens/platform"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
 import { driveFolderIdFromPath } from "@workspace/core/drive"
 import { usePersistentNumber } from "@lib/persistentSetting"

@@ -277,6 +277,9 @@ importers:
       '@workspace/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@workspace/screens':
+        specifier: workspace:*
+        version: link:../../packages/screens
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -593,6 +596,22 @@ importers:
         specifier: 5.11.1
         version: 5.11.1
     devDependencies:
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/screens:
+    dependencies:
+      react:
+        specifier: '*'
+        version: 19.2.4
+    devDependencies:
+      '@types/react':
+        specifier: ^19
+        version: 19.2.15
       '@workspace/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

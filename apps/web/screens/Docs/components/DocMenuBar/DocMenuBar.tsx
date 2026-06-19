@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import { sanitizeLinkHref } from "@lib/editorConfig"
 import type { Editor } from "@tiptap/react"
 import { Button } from "@workspace/ui/components/button"
@@ -44,7 +44,7 @@ interface DocMenuBarProps {
 }
 
 const DocMenuBar = ({ editor, title, commentsOpen, onToggleComments, onAddComment }: DocMenuBarProps) => {
-  const router = useRouter()
+  const router = useNavigation()
   const { t } = useTranslation("docs")
   const exportDocx = async () => {
     try {

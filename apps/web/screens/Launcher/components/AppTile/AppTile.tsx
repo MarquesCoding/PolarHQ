@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import type { SuiteApp } from "@workspace/core/apps"
 import { Icon } from "@lib/icons"
 import { useAppDispatch } from "@store/hooks"
@@ -21,7 +21,7 @@ interface AppTileProps {
 
 const AppTile = ({ app }: AppTileProps) => {
   const { t } = useTranslation("common")
-  const router = useRouter()
+  const router = useNavigation()
   const dispatch = useAppDispatch()
 
   const open = () => {

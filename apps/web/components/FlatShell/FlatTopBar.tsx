@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode } from "react"
-import { usePathname } from "next/navigation"
+import { usePathname } from "@workspace/screens/platform"
 import { Icon } from "@lib/icons"
 import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import { useTranslation } from "react-i18next"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
 import { APP_NAME } from "@lib/env"
 import { fetchSetupStatus } from "@lib/setup"
@@ -20,7 +20,7 @@ type Step = "admin" | "groups"
 
 const Setup = () => {
   const { t } = useTranslation("setup")
-  const router = useRouter()
+  const router = useNavigation()
   const [step, setStep] = useState<Step>("admin")
   const { data, isLoading } = useQuery({ queryKey: ["setup-status"], queryFn: fetchSetupStatus })
 

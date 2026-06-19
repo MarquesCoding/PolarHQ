@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import { fetchApps } from "@workspace/core/apps"
 import { authClient } from "@lib/authClient"
 import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next"
 
 const Launcher = () => {
   const { t } = useTranslation("common")
-  const router = useRouter()
+  const router = useNavigation()
   const { data: apps, isLoading } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
   const { data: usage } = useQuery({ queryKey: ["photos", "usage"], queryFn: fetchUsage })
   const { data: session } = authClient.useSession()

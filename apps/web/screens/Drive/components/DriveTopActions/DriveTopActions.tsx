@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useNavigation } from "@workspace/screens/platform"
 import { driveFolderIdFromPath, emptyDriveTrash, fetchNodes } from "@workspace/core/drive"
 import type { DocType } from "@workspace/core/docs"
 import { createEncryptedDoc } from "@workspace/core/e2e"
@@ -35,7 +35,7 @@ import NewFolderDialog from "@pages/Drive/components/NewFolderDialog/NewFolderDi
 const DriveTopActions = () => {
   const { t } = useTranslation("drive")
   const pathname = usePathname()
-  const router = useRouter()
+  const router = useNavigation()
   const dispatch = useAppDispatch()
   const detailsOpen = useAppSelector((state) => state.ui.driveDetailsOpen)
   const queryClient = useQueryClient()

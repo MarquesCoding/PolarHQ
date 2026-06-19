@@ -13,6 +13,7 @@ import { Toaster } from "@workspace/ui/components/sonner"
 import { TooltipProvider } from "@workspace/ui/components/tooltip"
 import { Provider as ReduxProvider } from "react-redux"
 import UploadPanel from "@components/UploadPanel/UploadPanel"
+import PlatformAdapter from "@components/PlatformAdapter/PlatformAdapter"
 
 /** Wire the app's on-device search indexer into core's post-upload hook (kept out of core so the
  *  embedder/model stays app-side). The dynamic import keeps the model off the initial bundle. */
@@ -36,8 +37,10 @@ const Providers = ({ children }: { children: ReactNode }) => {
           <ThemeProvider>
             <TooltipProvider>
               <UploadProvider>
-                {children}
-                <UploadPanel />
+                <PlatformAdapter>
+                  {children}
+                  <UploadPanel />
+                </PlatformAdapter>
               </UploadProvider>
             </TooltipProvider>
             <Toaster position="bottom-right" />

@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -40,7 +40,7 @@ const Menu = ({ label, children }: { label: string; children: ReactNode }) => (
 
 const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string }) => {
   const { t } = useTranslation("sheets")
-  const router = useRouter()
+  const router = useNavigation()
   const [cfOpen, setCfOpen] = useState(false)
   const [dvOpen, setDvOpen] = useState(false)
 
