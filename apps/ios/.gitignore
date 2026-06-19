@@ -1,7 +1,0 @@
-Orbit.xcodeproj/
-build/
-DerivedData/
-.build/
-.swiftpm/
-*.xcuserstate
-.DS_Store
