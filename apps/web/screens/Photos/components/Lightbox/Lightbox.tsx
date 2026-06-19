@@ -12,7 +12,7 @@ import {
 } from "@lib/photosE2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
-import { IconLivePhoto } from "@tabler/icons-react"
+import { IconDots, IconLivePhoto } from "@tabler/icons-react"
 import { useUploadManager } from "@lib/uploadManager"
 import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
@@ -20,6 +20,13 @@ import PhotoEditor from "@pages/Photos/components/PhotoEditor/PhotoEditor"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 import { cn } from "@workspace/ui/lib/utils"
@@ -100,6 +107,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
   const [infoPref, setInfoPref] = usePersistentNumber("photos.lightboxDetails", 0)
   const info = infoPref === 1
   const toggleInfo = () => setInfoPref(info ? 0 : 1)
+  const [stripPref, setStripPref] = usePersistentNumber("photos.lightboxFilmstrip", 0)
+  const showStrip = (filmstrip || stripPref === 1) && assets.length > 1
+  const toggleStrip = () => setStripPref(stripPref ? 0 : 1)
   const deleteArmed = useRef(false)
   const [editing, setEditing] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
@@ -346,80 +356,68 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               <IconLivePhoto className="size-5" />
             </Button>
           ) : null}
-          <Tip label={t("lightbox.favourite")}>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={t("lightbox.more")}
+                  className="rounded-full"
+                >
+                  <IconDots className="size-5" />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={toggleFavourite}>
+                <Icon name="favourites" className={cn(asset.isFavorite && "text-primary")} />
+                {t("lightbox.favourite")}
+              </DropdownMenuItem>
+              {asset.type === "image" ? (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      if (asset.encrypted && !decryptedSrc) {
+                        toast(t("lightbox.decrypting"))
+                        return
+                      }
+                      setEditing(true)
+                    }}
+                  >
+                    <Icon name="sliders" />
+                    {t("lightbox.edit")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={copyImage}>
+                    <Icon name="duplicate" />
+                    {t("lightbox.copy")}
+                  </DropdownMenuItem>
+                </>
+              ) : null}
+              <DropdownMenuItem onClick={() => setShareOpen(true)}>
+                <Icon name="open-external" />
+                {t("lightbox.share")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={download}>
+                <Icon name="download" />
+                {t("lightbox.download")}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={moveToTrash}>
+                <Icon name="trash" />
+                {t("lightbox.moveToTrash")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Tip label={t("lightbox.filmstrip")}>
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={t("lightbox.favourite")}
-              onClick={toggleFavourite}
-              className="rounded-full"
+              aria-label={t("lightbox.filmstrip")}
+              onClick={toggleStrip}
+              className={cn("rounded-full", showStrip && "bg-muted")}
             >
-              <Icon name="favourites" className={cn("size-5", asset.isFavorite && "text-primary")} />
-            </Button>
-          </Tip>
-          {asset.type === "image" ? (
-            <Tip label={t("lightbox.edit")}>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={t("lightbox.editImage")}
-                onClick={() => {
-                  if (asset.encrypted && !decryptedSrc) {
-                    toast(t("lightbox.decrypting"))
-                    return
-                  }
-                  setEditing(true)
-                }}
-                className="rounded-full"
-              >
-                <Icon name="sliders" className="size-5" />
-              </Button>
-            </Tip>
-          ) : null}
-          {asset.type === "image" ? (
-            <Tip label={t("lightbox.copy")}>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={t("lightbox.copyImage")}
-                onClick={copyImage}
-                className="rounded-full"
-              >
-                <Icon name="duplicate" className="size-5" />
-              </Button>
-            </Tip>
-          ) : null}
-          <Tip label={t("lightbox.share")}>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("lightbox.share")}
-              onClick={() => setShareOpen(true)}
-              className="rounded-full"
-            >
-              <Icon name="open-external" className="size-5" />
-            </Button>
-          </Tip>
-          <Tip label={t("lightbox.download")}>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("lightbox.download")}
-              onClick={download}
-              className="rounded-full"
-            >
-              <Icon name="download" className="size-5" />
-            </Button>
-          </Tip>
-          <Tip label={t("lightbox.moveToTrash")}>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("lightbox.moveToTrash")}
-              onClick={moveToTrash}
-              className="rounded-full"
-            >
-              <Icon name="trash" className="size-5" />
+              <Icon name="photo" className="size-5" />
             </Button>
           </Tip>
           <span className="bg-border mx-0.5 h-5 w-px" />
@@ -540,7 +538,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
           ) : null}
         </div>
 
-        {filmstrip && assets.length > 1 ? (
+        {showStrip ? (
           <div className="flex justify-center px-4 pb-4">
             <div className="scrollbar-slim flex max-w-full gap-2 overflow-x-auto py-1">
               {assets.map((member, position) => (
