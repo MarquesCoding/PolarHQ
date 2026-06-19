@@ -118,10 +118,18 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
     !!asset?.encrypted && asset.type === "video" && asset.sizeBytes > PLAYABLE_ENCRYPTED_MAX
   const zoom = useZoomPan(asset?.id)
   const activeThumbRef = useRef<HTMLButtonElement | null>(null)
+  const stripRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (!showStrip) return
-    activeThumbRef.current?.scrollIntoView({ block: "nearest", inline: "center", behavior: "auto" })
+    const thumb = activeThumbRef.current
+    const container = stripRef.current
+    if (!thumb || !container) return
+    const tRect = thumb.getBoundingClientRect()
+    const cRect = container.getBoundingClientRect()
+    const target =
+      container.scrollLeft + (tRect.left - cRect.left) - container.clientWidth / 2 + tRect.width / 2
+    container.scrollTo({ left: target, behavior: "smooth" })
   }, [index, showStrip])
 
   useEffect(() => {
@@ -281,13 +289,20 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
 
   return (
     <motion.div
-      className="bg-background fixed inset-0 z-50 flex"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.18 }}
       onPointerDown={(event) => event.stopPropagation()}
     >
+      <motion.div
+        className="bg-background border-border/50 relative flex h-full max-h-[88vh] w-full max-w-[1600px] overflow-hidden rounded-2xl border shadow-2xl"
+        initial={{ scale: 0.97 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.97 }}
+        transition={{ duration: 0.18, ease: "easeOut" }}
+      >
       {source ? (
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <img
@@ -300,8 +315,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
         </div>
       ) : null}
       <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
-        <div className="flex items-center justify-between gap-2 p-3">
-        <div className="panel flex min-w-0 items-center gap-1.5 rounded-md p-1 pr-3 shadow-lg">
+        <div className="relative flex items-center justify-between gap-2 p-3">
           <Button
             variant="ghost"
             size="icon-sm"
@@ -311,15 +325,13 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
           >
             <Icon name="xmark" className="size-5" />
           </Button>
-          <div className="flex min-w-0 flex-col leading-tight">
-            <span className="max-w-[40vw] truncate text-xs font-medium">{displayName}</span>
-            {taken ? <span className="text-muted-foreground text-[11px]">{taken}</span> : null}
-          </div>
-        </div>
+          <span className="pointer-events-none absolute top-1/2 left-1/2 max-w-[40vw] -translate-x-1/2 -translate-y-1/2 truncate text-sm font-medium">
+            {displayName}
+          </span>
 
         <div className="flex items-center gap-2">
         {asset.type === "image" && source ? (
-          <div className="panel flex items-center gap-0.5 rounded-md p-1 shadow-lg">
+          <div className="flex items-center gap-0.5">
             <Button
               variant="ghost"
               size="icon-sm"
@@ -329,11 +341,6 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             >
               <Icon name="minus" className="size-4" />
             </Button>
-            <NumberFlow
-              value={Math.round(zoom.scale * 100)}
-              suffix="%"
-              className="w-11 text-center text-xs font-semibold tabular-nums"
-            />
             <Button
               variant="ghost"
               size="icon-sm"
@@ -342,16 +349,6 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               className="rounded-full"
             >
               <Icon name="plus" className="size-4" />
-            </Button>
-            <span className="bg-border mx-0.5 h-5 w-px" />
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("lightbox.resetZoom")}
-              onClick={zoom.reset}
-              className="rounded-full"
-            >
-              <Icon name="zoom-reset" className="size-4" />
             </Button>
           </div>
         ) : null}
@@ -549,9 +546,18 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
           ) : null}
         </div>
 
+        <AnimatePresence initial={false}>
         {showStrip ? (
+          <motion.div
+            key="filmstrip"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
           <div className="flex justify-center px-4 pb-4">
-            <div className="scrollbar-slim flex max-w-full gap-2 overflow-x-auto py-1">
+            <div ref={stripRef} className="scrollbar-slim flex max-w-full gap-2 overflow-x-auto py-1">
               {assets.map((member, position) => (
                 <button
                   key={member.id}
@@ -568,7 +574,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               ))}
             </div>
           </div>
+          </motion.div>
         ) : null}
+        </AnimatePresence>
       </div>
 
       <AnimatePresence initial={false}>
@@ -592,6 +600,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
           </motion.aside>
         ) : null}
       </AnimatePresence>
+      </motion.div>
 
       <AnimatePresence>
         {editing && asset.type === "image" ? (
