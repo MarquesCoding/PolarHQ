@@ -4,7 +4,7 @@ import { type DriveNode, deleteDriveNode, fetchDriveTrash, restoreDriveNode } fr
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
-import { useAppSelector } from "@store/hooks"
+import { useAppSelector } from "@workspace/screens/store/hooks"
 import { ArrowCounterClockwise, TrashSimple } from "@phosphor-icons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"

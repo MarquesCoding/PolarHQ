@@ -2,7 +2,7 @@
 
 import type { ComponentType, ReactNode } from "react"
 import { formatMediumDateTime } from "@workspace/i18n/format"
-import dynamic from "next/dynamic"
+import { Suspense, lazy } from "react"
 import { decryptName, decryptWithMetaKey } from "@workspace/core/e2e"
 import { bytesParts } from "@lib/format"
 import { ArrowSquareOut, Calendar, Camera, File, HeartIcon, MapPin } from "@phosphor-icons/react"
@@ -13,9 +13,8 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 
-const PhotoLocationMap = dynamic(
+const PhotoLocationMap = lazy(
   () => import("@pages/Photos/components/PhotoLocationMap/PhotoLocationMap"),
-  { ssr: false },
 )
 
 const decoder = new TextDecoder()
@@ -240,7 +239,9 @@ const InfoPanel = ({ assetId, isFavorite, onFavorite, onShare }: InfoPanelProps)
         {hasLocation ? (
           <Section icon={MapPin} title={t("infoPanel.location")}>
             <div className="flex flex-col gap-1 pt-1">
-              <PhotoLocationMap lat={latitude} lng={longitude} />
+              <Suspense fallback={null}>
+                <PhotoLocationMap lat={latitude} lng={longitude} />
+              </Suspense>
               <Row
                 label={t("infoPanel.coordinates")}
                 value={`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`}
