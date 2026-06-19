@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
 import { type DriveNode, isArchiveName } from "@workspace/core/drive"
 import { docTypeOf } from "@workspace/core/docs"
@@ -58,7 +58,7 @@ interface NodeContextMenuProps {
 }
 
 const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
-  const router = useRouter()
+  const router = useNavigation()
   const { t } = useTranslation("drive")
   const isFile = node.kind === "file"
   const isImage = isFile && Boolean(node.mimeType?.startsWith("image/"))

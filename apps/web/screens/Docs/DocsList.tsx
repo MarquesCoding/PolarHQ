@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
 import { type DocMeta, fetchDocs, openEditor } from "@workspace/core/docs"
 import { trashDriveNode } from "@workspace/core/drive"
@@ -34,7 +34,7 @@ const downloadDoc = (doc: DocMeta) => {
 
 const DocsListInner = () => {
   const { t } = useTranslation("docs")
-  const router = useRouter()
+  const router = useNavigation()
   const queryClient = useQueryClient()
   const selection = useSelection()
   const search = useAppSelector((state) => state.ui.searchQuery).trim().toLowerCase()

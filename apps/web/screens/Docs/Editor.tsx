@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import Link from "next/link"
+import { AppLink as Link } from "@workspace/screens/platform"
 import { secretboxOpen } from "@workspace/core/crypto"
 import { type DocMeta, fetchDoc, fetchDocContent } from "@workspace/core/docs"
 import { e2eReady, getDocContentKey, isDocEncrypted, isUnlocked } from "@workspace/core/e2e"

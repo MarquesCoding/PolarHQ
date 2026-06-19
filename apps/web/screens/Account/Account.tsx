@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import { authClient } from "@lib/authClient"
 import { Icon } from "@lib/icons"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
@@ -33,7 +33,7 @@ const Section = ({
 
 const Account = () => {
   const { t } = useTranslation("account")
-  const router = useRouter()
+  const router = useNavigation()
   const { data: session, isPending } = authClient.useSession()
   const { theme, setTheme } = useTheme()
   const [devicesOpen, setDevicesOpen] = useState(false)

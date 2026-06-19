@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import { type DocMeta, type DocType, fetchDocs, openEditor } from "@workspace/core/docs"
 import { trashDriveNode } from "@workspace/core/drive"
 import { createEncryptedDoc } from "@workspace/core/e2e"
@@ -42,7 +42,7 @@ export interface CollabListConfig {
 
 const CollabListInner = ({ type, iconName, title, createLabel }: CollabListConfig) => {
   const { t } = useTranslation("collab")
-  const router = useRouter()
+  const router = useNavigation()
   const queryClient = useQueryClient()
   const selection = useSelection()
   const search = useAppSelector((state) => state.ui.searchQuery).trim().toLowerCase()

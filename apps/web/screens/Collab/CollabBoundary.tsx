@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
-import Link from "next/link"
+import { AppLink as Link } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
 import { type CollabDocument, useCollabDocument } from "@lib/useCollabDocument"
 import { LockKey, Trash } from "@phosphor-icons/react"

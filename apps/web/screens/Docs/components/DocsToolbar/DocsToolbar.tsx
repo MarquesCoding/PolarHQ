@@ -1,6 +1,6 @@
 "use client"
 
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useNavigation } from "@workspace/screens/platform"
 import { openEditor } from "@workspace/core/docs"
 import { createEncryptedDoc } from "@workspace/core/e2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
@@ -16,7 +16,7 @@ import SizeControl from "@pages/Photos/components/SizeControl/SizeControl"
 const DocsToolbar = () => {
   const { t } = useTranslation("docs")
   const pathname = usePathname()
-  const router = useRouter()
+  const router = useNavigation()
   const queryClient = useQueryClient()
   const [tileSize, setTileSize] = usePersistentNumber("docs.tileSize", 150)
 

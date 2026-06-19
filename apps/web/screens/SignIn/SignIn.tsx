@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import RecoveryCodeDialog from "@components/RecoveryCodeDialog"
 import { authClient } from "@lib/authClient"
 import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@workspace/core/e2e"
@@ -40,7 +40,7 @@ const fieldError = (errors: unknown[]): string | null => {
 const SignIn = () => {
   const { t } = useTranslation("auth")
   const schema = makeSchema(t)
-  const router = useRouter()
+  const router = useNavigation()
   const { data: session, isPending } = authClient.useSession()
   const [recoveryCode, setRecoveryCode] = useState<string | null>(null)
   const manualRedirect = useRef(false)

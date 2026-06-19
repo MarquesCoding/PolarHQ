@@ -46,6 +46,7 @@
     "@workspace/changelog": "workspace:*",
     "@workspace/core": "workspace:*",
     "@workspace/i18n": "workspace:*",
+    "@workspace/screens": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.6.14",
     "exifr": "^7.1.3",

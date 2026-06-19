@@ -2,7 +2,7 @@
 
 import { useReducer, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useRouter } from "next/navigation"
+import { useNavigation } from "@workspace/screens/platform"
 import {
   type DriveListing,
   type DriveNode,
@@ -77,7 +77,7 @@ interface BrowserProps {
 
 const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const { t } = useTranslation("drive")
-  const router = useRouter()
+  const router = useNavigation()
   const queryClient = useQueryClient()
   const selection = useSelection()
   const upload = useUploadManager()

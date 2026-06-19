@@ -1,6 +1,6 @@
 "use client"
 
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useNavigation } from "@workspace/screens/platform"
 import { type DocType } from "@workspace/core/docs"
 import { createEncryptedDoc } from "@workspace/core/e2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
@@ -22,7 +22,7 @@ export interface CollabToolbarConfig {
 const CollabToolbar = ({ type, route, createLabel }: CollabToolbarConfig) => {
   const { t } = useTranslation("collab")
   const pathname = usePathname()
-  const router = useRouter()
+  const router = useNavigation()
   const queryClient = useQueryClient()
   const [tileSize, setTileSize] = usePersistentNumber(`${type}.tileSize`, 150)
 
