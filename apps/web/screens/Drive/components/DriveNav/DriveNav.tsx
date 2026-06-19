@@ -7,7 +7,7 @@ import {
   driveFolderIdFromPath,
   fetchNodes,
   fetchSavedSearches,
-} from "@lib/drive"
+} from "@workspace/core/drive"
 import { Icon } from "@lib/icons"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"

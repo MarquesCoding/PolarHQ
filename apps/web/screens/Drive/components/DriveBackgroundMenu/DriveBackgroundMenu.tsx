@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import type { DocType } from "@lib/docs"
+import type { DocType } from "@workspace/core/docs"
 import { FilePlus, FolderPlus, Table, UploadSimple } from "@phosphor-icons/react"
 import {
   ContextMenu,

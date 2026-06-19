@@ -3,7 +3,7 @@
 import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
 import Link from "next/link"
-import type { DriveNode } from "@lib/drive"
+import type { DriveNode } from "@workspace/core/drive"
 import { Icon } from "@lib/icons"
 import { cn } from "@workspace/ui/lib/utils"
 

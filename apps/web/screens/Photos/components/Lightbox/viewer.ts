@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import type { ShareLink, ShareOptions } from "@lib/drive"
+import type { ShareLink, ShareOptions } from "@workspace/core/drive"
 
 /**
  * A single viewable media item, normalised so the Lightbox is agnostic to its source (a Photos

@@ -2,8 +2,8 @@
 
 import { type MouseEvent, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import type { DriveNode } from "@lib/drive"
-import { fetchDecryptedThumbnail } from "@lib/driveE2e"
+import type { DriveNode } from "@workspace/core/drive"
+import { fetchDecryptedThumbnail } from "@workspace/core/driveE2e"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { CheckCircle, Circle, Star } from "@phosphor-icons/react"

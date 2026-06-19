@@ -12,24 +12,24 @@ import {
 import { API_URL } from "@lib/env"
 import { ApiError } from "@workspace/core/apiClient"
 import { authClient } from "@lib/authClient"
-import { apiErrorMessage } from "@lib/i18n/apiError"
+import { apiErrorMessage } from "@workspace/core/apiError"
 import { type UploadOptions, postFormWithProgress } from "@workspace/core/xhrUpload"
-import { archiveDriveNodes } from "@lib/drive"
+import { archiveDriveNodes } from "@workspace/core/drive"
 import {
   CHUNKED_UPLOAD_THRESHOLD,
   uploadEncryptedDriveFile,
   uploadEncryptedDriveFileChunked,
-} from "@lib/driveE2e"
+} from "@workspace/core/driveE2e"
 import { detectBurstGroups } from "@lib/burst"
-import { isUnlocked } from "@lib/e2e"
+import { isUnlocked } from "@workspace/core/e2e"
 import { pairLivePhotos } from "@workspace/core/motionPhoto"
 import {
   downloadDecryptedPhoto,
   uploadEncryptedMedia,
   uploadEncryptedMediaChunked,
-} from "@lib/photosE2e"
+} from "@workspace/core/photosE2e"
 import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@workspace/core/download"
-import { deleteAssets, fetchProcessing, stackAssets } from "@lib/photos"
+import { deleteAssets, fetchProcessing, stackAssets } from "@workspace/core/photos"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
 import { useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"

@@ -1,7 +1,7 @@
 "use client"
 
 import { authClient } from "@lib/authClient"
-import { type StorageKind, decryptNodeName, fetchStorageStats } from "@lib/drive"
+import { type StorageKind, decryptNodeName, fetchStorageStats } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { squarify } from "@lib/treemap"
@@ -9,7 +9,7 @@ import { Devices } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import type { StorageApp, StorageStats } from "@lib/drive"
+import type { StorageApp, StorageStats } from "@workspace/core/drive"
 
 const KIND_COLOR: Record<StorageKind, string> = {
   image: "bg-blue-500",

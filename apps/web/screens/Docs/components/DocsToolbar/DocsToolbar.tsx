@@ -1,8 +1,8 @@
 "use client"
 
 import { usePathname, useRouter } from "next/navigation"
-import { openEditor } from "@lib/docs"
-import { createEncryptedDoc } from "@lib/e2e"
+import { openEditor } from "@workspace/core/docs"
+import { createEncryptedDoc } from "@workspace/core/e2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { FilePlus } from "@phosphor-icons/react"
 import { useQueryClient } from "@tanstack/react-query"

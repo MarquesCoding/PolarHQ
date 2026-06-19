@@ -7,14 +7,14 @@ import {
   useRef,
   useState,
 } from "react"
-import { decryptName } from "@lib/e2e"
+import { decryptName } from "@workspace/core/e2e"
 import { Icon } from "@lib/icons"
-import type { GridAsset } from "@lib/photos"
+import type { GridAsset } from "@workspace/core/photos"
 import {
   fetchDecryptedMotionVideo,
   fetchDecryptedPhotoOriginal,
   fetchDecryptedPhotoThumbnail,
-} from "@lib/photosE2e"
+} from "@workspace/core/photosE2e"
 import { Circle, Heart, Image, Record, Stack } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"

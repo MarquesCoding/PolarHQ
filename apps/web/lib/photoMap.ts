@@ -1,8 +1,8 @@
 "use client"
 
 import { apiFetch } from "@workspace/core/apiClient"
-import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@lib/e2e"
-import { encryptedGpsFor, fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
+import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@workspace/core/e2e"
+import { encryptedGpsFor, fetchDecryptedPhotoOriginal } from "@workspace/core/photosE2e"
 
 const decoder = new TextDecoder()
 const encoder = new TextEncoder()

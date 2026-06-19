@@ -3,7 +3,7 @@
 import { dateLocale } from "@workspace/i18n/format"
 import { type MouseEvent, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import type { DriveNode } from "@lib/drive"
+import type { DriveNode } from "@workspace/core/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import type { SelectionApi } from "@lib/selection"

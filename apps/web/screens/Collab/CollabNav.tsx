@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import { useTranslation } from "react-i18next"
-import { type DocType, editorHref, editorOpensNewTab, fetchDocs } from "@lib/docs"
+import { type DocType, editorHref, editorOpensNewTab, fetchDocs } from "@workspace/core/docs"
 import { useQuery } from "@tanstack/react-query"
 import { NavRow, SectionLabel } from "@components/FlatShell"
 

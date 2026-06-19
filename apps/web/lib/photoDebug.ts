@@ -2,7 +2,7 @@
 
 import { setDebug } from "@lib/debug"
 import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "@lib/embedder"
-import { isUnlocked } from "@lib/e2e"
+import { isUnlocked } from "@workspace/core/e2e"
 import {
   embedAsset,
   ensureIndexing,

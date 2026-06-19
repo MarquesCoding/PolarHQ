@@ -6,8 +6,8 @@ import {
   createShareLink,
   setNodeFavorite,
   trashDriveNode,
-} from "@lib/drive"
-import { downloadDriveFile, fetchDecryptedFile, fetchDecryptedThumbnail } from "@lib/driveE2e"
+} from "@workspace/core/drive"
+import { downloadDriveFile, fetchDecryptedFile, fetchDecryptedThumbnail } from "@workspace/core/driveE2e"
 import { useUploadManager } from "@lib/uploadManager"
 import type { ViewerController, ViewerItem } from "@pages/Photos/components/Lightbox/viewer"
 import { useQueryClient } from "@tanstack/react-query"

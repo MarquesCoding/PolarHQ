@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { createDriveFolder } from "@lib/drive"
+import { createDriveFolder } from "@workspace/core/drive"
 import { Icon } from "@lib/icons"
 import { useMutation } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"

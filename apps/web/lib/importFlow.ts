@@ -1,7 +1,7 @@
-import { type DocType, type DocMeta, openEditor } from "@lib/docs"
-import { type DriveNode, renameDriveNode } from "@lib/drive"
-import { fetchDecryptedFile } from "@lib/driveE2e"
-import { createEncryptedDoc, encryptNameWith } from "@lib/e2e"
+import { type DocType, type DocMeta, openEditor } from "@workspace/core/docs"
+import { type DriveNode, renameDriveNode } from "@workspace/core/drive"
+import { fetchDecryptedFile } from "@workspace/core/driveE2e"
+import { createEncryptedDoc, encryptNameWith } from "@workspace/core/e2e"
 import type { ImportPayload } from "@lib/officeImport"
 
 const IMPORT_PREFIX = "orbit:import:"

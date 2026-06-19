@@ -1,7 +1,7 @@
 "use client"
 
 import { type PointerEvent as ReactPointerEvent, useRef, useState } from "react"
-import type { DriveNode } from "@lib/drive"
+import type { DriveNode } from "@workspace/core/drive"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import type { SelectionApi } from "@lib/selection"
 import NodeCard from "@pages/Drive/components/NodeCard/NodeCard"

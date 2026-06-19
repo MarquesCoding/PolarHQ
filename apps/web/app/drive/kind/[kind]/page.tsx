@@ -1,4 +1,4 @@
-import type { StorageKind } from "@lib/drive"
+import type { StorageKind } from "@workspace/core/drive"
 import Browser from "@pages/Drive/Browser"
 
 const KINDS: StorageKind[] = ["image", "video", "audio", "document", "archive", "other"]

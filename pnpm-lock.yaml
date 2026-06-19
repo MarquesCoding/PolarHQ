@@ -463,6 +463,12 @@ importers:
       '@workspace/i18n':
         specifier: workspace:*
         version: link:../i18n
+      exifr:
+        specifier: ^7.1.3
+        version: 7.1.3
+      heic2any:
+        specifier: ^0.0.4
+        version: 0.0.4
       libsodium-wrappers-sumo:
         specifier: ^0.8.4
         version: 0.8.4

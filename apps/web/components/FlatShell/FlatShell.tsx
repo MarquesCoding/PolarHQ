@@ -3,7 +3,7 @@
 import { type ReactNode, useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { authClient } from "@lib/authClient"
-import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@lib/e2e"
+import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@workspace/core/e2e"
 import { SidebarProvider, useSidebar } from "@workspace/ui/components/sidebar"
 import OnboardingCard from "@components/OnboardingCard/OnboardingCard"
 import Spinner from "@components/Spinner/Spinner"

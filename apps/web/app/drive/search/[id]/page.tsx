@@ -1,7 +1,7 @@
 "use client"
 
 import { use } from "react"
-import { fetchSavedSearches } from "@lib/drive"
+import { fetchSavedSearches } from "@workspace/core/drive"
 import { useQuery } from "@tanstack/react-query"
 import Browser from "@pages/Drive/Browser"
 

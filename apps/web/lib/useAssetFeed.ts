@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react"
-import type { GridAsset, TimelinePage } from "@lib/photos"
+import type { GridAsset, TimelinePage } from "@workspace/core/photos"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query"
 

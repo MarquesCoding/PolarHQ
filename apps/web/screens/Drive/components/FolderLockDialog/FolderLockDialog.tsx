@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import type { DriveNode } from "@lib/drive"
+import type { DriveNode } from "@workspace/core/drive"
 import { lockFolder, removeFolderLock, unlockFolder } from "@lib/folderLock"
 import { Button } from "@workspace/ui/components/button"
 import {

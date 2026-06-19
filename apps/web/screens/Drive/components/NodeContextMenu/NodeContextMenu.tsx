@@ -3,8 +3,8 @@
 import type { ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslation } from "react-i18next"
-import { type DriveNode, isArchiveName } from "@lib/drive"
-import { docTypeOf } from "@lib/docs"
+import { type DriveNode, isArchiveName } from "@workspace/core/drive"
+import { docTypeOf } from "@workspace/core/docs"
 import { officeTypeForName } from "@lib/importFlow"
 import { is3DModelName } from "@lib/model3dExt"
 import {

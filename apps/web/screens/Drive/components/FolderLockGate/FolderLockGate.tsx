@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import type { DriveNode } from "@lib/drive"
+import type { DriveNode } from "@workspace/core/drive"
 import { unlockFolder } from "@lib/folderLock"
 import { Lock } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
