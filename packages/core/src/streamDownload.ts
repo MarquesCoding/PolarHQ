@@ -6,8 +6,8 @@ import {
   secretstreamOpenInit,
   streamCipherChunkSize,
   streamPrefixSize,
-} from "@workspace/core/crypto"
-import type { UploadProgress } from "@lib/xhrUpload"
+} from "./crypto"
+import type { UploadProgress } from "./xhrUpload"
 
 interface SaveWritable {
   write: (data: Uint8Array) => Promise<void>

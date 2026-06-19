@@ -10,10 +10,10 @@ import {
   useState,
 } from "react"
 import { API_URL } from "@lib/env"
-import { ApiError } from "@lib/apiClient"
+import { ApiError } from "@workspace/core/apiClient"
 import { authClient } from "@lib/authClient"
 import { apiErrorMessage } from "@lib/i18n/apiError"
-import { type UploadOptions, postFormWithProgress } from "@lib/xhrUpload"
+import { type UploadOptions, postFormWithProgress } from "@workspace/core/xhrUpload"
 import { archiveDriveNodes } from "@lib/drive"
 import {
   CHUNKED_UPLOAD_THRESHOLD,
@@ -22,13 +22,13 @@ import {
 } from "@lib/driveE2e"
 import { detectBurstGroups } from "@lib/burst"
 import { isUnlocked } from "@lib/e2e"
-import { pairLivePhotos } from "@lib/motionPhoto"
+import { pairLivePhotos } from "@workspace/core/motionPhoto"
 import {
   downloadDecryptedPhoto,
   uploadEncryptedMedia,
   uploadEncryptedMediaChunked,
 } from "@lib/photosE2e"
-import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@lib/download"
+import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@workspace/core/download"
 import { deleteAssets, fetchProcessing, stackAssets } from "@lib/photos"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
 import { useQueryClient } from "@tanstack/react-query"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import type { SuiteApp } from "@lib/apps"
+import type { SuiteApp } from "@workspace/core/apps"
 import { Icon } from "@lib/icons"
 import { useAppDispatch } from "@store/hooks"
 import { setActiveApp } from "@store/uiSlice"

@@ -1,7 +1,7 @@
 "use client"
 
-import { apiFetch } from "@lib/apiClient"
-import { uploadStreamingParts } from "@lib/chunkedUpload"
+import { apiFetch } from "@workspace/core/apiClient"
+import { uploadStreamingParts } from "@workspace/core/chunkedUpload"
 import {
   isStreamBlob,
   secretboxOpen,
@@ -10,7 +10,7 @@ import {
   secretstreamOpenAll,
 } from "@workspace/core/crypto"
 import { CHUNKED_UPLOAD_THRESHOLD } from "@lib/driveE2e"
-import { streamDecryptToDisk, supportsStreamingDownload } from "@lib/streamDownload"
+import { streamDecryptToDisk, supportsStreamingDownload } from "@workspace/core/streamDownload"
 import {
   createContentKey,
   decryptName,
@@ -21,10 +21,10 @@ import {
   storeContentKey,
 } from "@lib/e2e"
 import { API_URL } from "@lib/env"
-import { extractMotionVideo } from "@lib/motionPhoto"
+import { extractMotionVideo } from "@workspace/core/motionPhoto"
 import { type Asset, type GridAsset, fetchStackMembers } from "@lib/photos"
-import { analyzeAudio, analyzeImage, analyzeVideo } from "@lib/thumbnails"
-import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@lib/xhrUpload"
+import { analyzeAudio, analyzeImage, analyzeVideo } from "@workspace/core/thumbnails"
+import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@workspace/core/xhrUpload"
 import exifr from "exifr"
 
 const encoder = new TextEncoder()

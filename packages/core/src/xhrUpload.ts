@@ -1,6 +1,6 @@
 "use client"
 
-import { ApiError } from "@lib/apiClient"
+import { ApiError } from "./apiClient"
 
 export interface UploadProgress {
   /** Bytes sent so far. */

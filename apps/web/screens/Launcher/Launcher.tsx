@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { fetchApps } from "@lib/apps"
+import { fetchApps } from "@workspace/core/apps"
 import { authClient } from "@lib/authClient"
 import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
 import { formatBytes } from "@lib/format"
