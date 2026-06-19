@@ -2,7 +2,6 @@
 
 import { dateLocale } from "@lib/i18n/format"
 import { type ReactElement, useEffect, useRef, useState } from "react"
-import { Icon } from "@lib/icons"
 import { decryptName } from "@lib/e2e"
 import { type GridAsset, assetOriginalUrl, favoriteAssets, sharePhoto, trashAssets } from "@lib/photos"
 import {
@@ -14,13 +13,21 @@ import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
 import { IconLivePhoto } from "@tabler/icons-react"
 import {
-  IconCircleInfoOutline18,
-  IconDotsOutline18,
-  IconImageOutline18,
-  IconMagnifierMinusOutline18,
-  IconMagnifierPlusOutline18,
-  IconXmarkOutline18,
-} from "nucleo-ui-outline-18"
+  ArrowSquareOut,
+  CaretLeft,
+  CaretRight,
+  Copy,
+  DotsThree,
+  DownloadSimple,
+  Heart,
+  Image as ImageIcon,
+  Info,
+  MagnifyingGlassMinus,
+  MagnifyingGlassPlus,
+  Sliders,
+  Trash,
+  X,
+} from "@phosphor-icons/react"
 import { useUploadManager } from "@lib/uploadManager"
 import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
@@ -331,7 +338,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             onClick={onClose}
             className="rounded-full"
           >
-            <IconXmarkOutline18 className="size-5" />
+            <X className="size-5" />
           </Button>
           <span className="pointer-events-none absolute top-1/2 left-1/2 max-w-[40vw] -translate-x-1/2 -translate-y-1/2 truncate text-sm font-medium">
             {displayName}
@@ -347,7 +354,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={zoom.zoomOut}
               className="rounded-full"
             >
-              <IconMagnifierMinusOutline18 className="size-4" />
+              <MagnifyingGlassMinus className="size-4" />
             </Button>
             <Button
               variant="ghost"
@@ -356,7 +363,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={zoom.zoomIn}
               className="rounded-full"
             >
-              <IconMagnifierPlusOutline18 className="size-4" />
+              <MagnifyingGlassPlus className="size-4" />
             </Button>
           </div>
         ) : null}
@@ -381,13 +388,13 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
                   aria-label={t("lightbox.more")}
                   className="rounded-full"
                 >
-                  <IconDotsOutline18 className="size-5" />
+                  <DotsThree className="size-5" />
                 </Button>
               }
             />
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={toggleFavourite}>
-                <Icon name="favourites" className={cn(asset.isFavorite && "text-primary")} />
+                <Heart weight={asset.isFavorite ? "fill" : "regular"} className={cn(asset.isFavorite && "text-primary")} />
                 {t("lightbox.favourite")}
               </DropdownMenuItem>
               {asset.type === "image" ? (
@@ -401,26 +408,26 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
                       setEditing(true)
                     }}
                   >
-                    <Icon name="sliders" />
+                    <Sliders />
                     {t("lightbox.edit")}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={copyImage}>
-                    <Icon name="duplicate" />
+                    <Copy />
                     {t("lightbox.copy")}
                   </DropdownMenuItem>
                 </>
               ) : null}
               <DropdownMenuItem onClick={() => setShareOpen(true)}>
-                <Icon name="open-external" />
+                <ArrowSquareOut />
                 {t("lightbox.share")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={download}>
-                <Icon name="download" />
+                <DownloadSimple />
                 {t("lightbox.download")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onClick={moveToTrash}>
-                <Icon name="trash" />
+                <Trash />
                 {t("lightbox.moveToTrash")}
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -431,9 +438,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               size="icon-sm"
               aria-label={t("lightbox.filmstrip")}
               onClick={toggleStrip}
-              className={cn("rounded-full", showStrip && "bg-muted")}
+              className={cn("rounded-full", showStrip && "text-primary")}
             >
-              <IconImageOutline18 className="size-5" />
+              <ImageIcon className="size-5" />
             </Button>
           </Tip>
           <span className="bg-border mx-0.5 h-5 w-px" />
@@ -443,9 +450,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               size="icon-sm"
               aria-label={t("lightbox.info")}
               onClick={toggleInfo}
-              className={cn("rounded-full", info && "bg-muted")}
+              className={cn("rounded-full", info && "text-primary")}
             >
-              <IconCircleInfoOutline18 className="size-5" />
+              <Info className="size-5" />
             </Button>
           </Tip>
         </div>
@@ -473,7 +480,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={() => onIndexChange(index - 1)}
               className="bg-background/30 hover:bg-background/50 border-border/40 absolute left-4 z-10 size-10 rounded-full border backdrop-blur-2xl shadow-lg"
             >
-              <Icon name="nav-back" className="size-5" />
+              <CaretLeft className="size-5" />
             </Button>
           ) : null}
 
@@ -549,7 +556,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={() => onIndexChange(index + 1)}
               className="bg-background/30 hover:bg-background/50 border-border/40 absolute right-4 z-10 size-10 rounded-full border backdrop-blur-2xl shadow-lg"
             >
-              <Icon name="nav-forward" className="size-5" />
+              <CaretRight className="size-5" />
             </Button>
           ) : null}
         </div>
