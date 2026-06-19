@@ -1,10 +1,10 @@
 "use client"
 
-import { monthLong, monthShort, weekdayLong } from "@lib/i18n/format"
+import { monthLong, monthShort, weekdayLong } from "@workspace/i18n/format"
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@lib/icons"
-import { t } from "@lib/i18n/config"
+import { t } from "@workspace/i18n/config"
 import { type GridAsset, fetchStackMembers } from "@lib/photos"
 import { fetchDecryptedPhotoOriginal, fetchDecryptedPhotoThumbnail } from "@lib/photosE2e"
 import { useSelection } from "@lib/selection"

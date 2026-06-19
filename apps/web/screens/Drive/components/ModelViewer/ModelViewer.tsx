@@ -26,7 +26,7 @@ import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import { t } from "@lib/i18n/config"
+import { t } from "@workspace/i18n/config"
 import type * as THREE from "three"
 
 interface ModelViewerProps {

@@ -1,6 +1,6 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@workspace/i18n/format"
 import { type DriveNode, fetchVersions, restoreDriveVersion } from "@lib/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"

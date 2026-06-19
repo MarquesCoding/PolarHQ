@@ -2,7 +2,7 @@
 
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
-import { t } from "@lib/i18n/config"
+import { t } from "@workspace/i18n/config"
 import type { UploadItem } from "@lib/uploadManager"
 import { ArrowClockwise, X } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"

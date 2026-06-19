@@ -1,13 +1,13 @@
 "use client"
 
-import { dateLocale } from "@lib/i18n/format"
+import { dateLocale } from "@workspace/i18n/format"
 import { useState } from "react"
 import type { CommentThread, DocComment } from "@lib/commentMark"
 import { Check, ChatCircleSlash, X } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { cn } from "@workspace/ui/lib/utils"
-import { t } from "@lib/i18n/config"
+import { t } from "@workspace/i18n/config"
 import { useTranslation } from "react-i18next"
 
 interface Draft {

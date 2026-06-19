@@ -44,6 +44,7 @@
     "@tiptap/react": "^3.26.0",
     "@tiptap/starter-kit": "^3.26.0",
     "@workspace/changelog": "workspace:*",
+    "@workspace/i18n": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.6.14",
     "exifr": "^7.1.3",
