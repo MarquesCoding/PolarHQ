@@ -120,9 +120,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
   const activeThumbRef = useRef<HTMLButtonElement | null>(null)
 
   useEffect(() => {
-    if (!filmstrip) return
+    if (!showStrip) return
     activeThumbRef.current?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" })
-  }, [index, filmstrip])
+  }, [index, showStrip])
 
   useEffect(() => {
     if (!asset) onClose()
@@ -550,15 +550,9 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
                   aria-current={position === index}
                   onPointerDown={(event) => event.stopPropagation()}
                   onClick={() => onIndexChange(position)}
-                  className="flex shrink-0 flex-col items-center gap-1.5"
+                  className="shrink-0"
                 >
                   <FilmstripThumb asset={member} active={position === index} />
-                  <span
-                    className={cn(
-                      "size-1.5 rounded-full transition",
-                      position === index ? "bg-foreground" : "bg-transparent",
-                    )}
-                  />
                 </button>
               ))}
             </div>
