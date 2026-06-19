@@ -1,9 +1,6 @@
 "use client"
 
 import { type PointerEvent as ReactPointerEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react"
-import { type GridAsset, stackAssets, uploadAsset } from "@lib/photos"
-import { uploadEncryptedMedia } from "@lib/photosE2e"
-import { useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
@@ -75,11 +72,13 @@ export interface Histogram {
 }
 
 interface UsePhotoEditorOptions {
-  asset: GridAsset
+  /** File base name (without extension) for the saved derivative. */
+  baseName: string
   sourceUrl: string
   /** Only fetch the source + render while the editor is actually open in the Lightbox. */
   enabled: boolean
-  onSaved: () => void
+  /** Persist the rendered edit (PNG) as a new derivative of the item. */
+  onSave: (file: File) => Promise<void>
   onClose: () => void
 }
 
@@ -125,14 +124,13 @@ export interface PhotoEditorController {
  * before/after pair. Heavy work (fetch + paint) only runs while `enabled`.
  */
 export const usePhotoEditor = ({
-  asset,
+  baseName,
   sourceUrl,
   enabled,
-  onSaved,
+  onSave,
   onClose,
 }: UsePhotoEditorOptions): PhotoEditorController => {
   const { t } = useTranslation("photos")
-  const queryClient = useQueryClient()
   const [bitmap, setBitmap] = useState<ImageBitmap | null>(null)
   const [tool, setTool] = useState<Tool>("adjust")
   const [adjustments, setAdjustments] = useState<Adjustments>(NEUTRAL)
@@ -322,15 +320,9 @@ export const usePhotoEditor = ({
         out.toBlob((result) => resolve(result), "image/png"),
       )
       if (!blob) throw new Error("encode failed")
-      const baseName = asset.originalFilename.replace(/\.[^.]+$/, "")
       const file = new File([blob], `${baseName} (edited).png`, { type: "image/png" })
-      const edited = asset.encrypted
-        ? await uploadEncryptedMedia(file)
-        : (await uploadAsset(file)).asset
-      await stackAssets([edited.id, asset.id]).catch(() => undefined)
-      await queryClient.invalidateQueries({ queryKey: ["photos"] })
+      await onSave(file)
       toast.success(t("photoEditor.saved"))
-      onSaved()
       onClose()
     } catch {
       toast.error(t("photoEditor.saveFailed"))

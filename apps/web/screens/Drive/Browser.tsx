@@ -54,7 +54,8 @@ import { isFolderUnlocked } from "@lib/folderLock"
 import { is3DModelName } from "@lib/model3dExt"
 import FolderLockDialog from "@pages/Drive/components/FolderLockDialog/FolderLockDialog"
 import FolderLockGate from "@pages/Drive/components/FolderLockGate/FolderLockGate"
-import ImageViewer from "@pages/Drive/components/ImageViewer/ImageViewer"
+import Lightbox from "@pages/Photos/components/Lightbox/Lightbox"
+import { useDriveViewer } from "@pages/Drive/useDriveViewer"
 import MillerView from "@pages/Drive/components/MillerView/MillerView"
 import MoveDialog from "@pages/Drive/components/MoveDialog/MoveDialog"
 import NewFolderDialog from "@pages/Drive/components/NewFolderDialog/NewFolderDialog"
@@ -136,6 +137,12 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
         return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
       })
   const byId = new Map(children.map((node) => [node.id, node]))
+
+  const imageNodes = visible.filter((node) => node.mimeType?.startsWith("image/"))
+  const driveController = useDriveViewer(imageNodes)
+  const viewingIndex = viewingNode
+    ? imageNodes.findIndex((node) => node.id === viewingNode.id)
+    : -1
 
   const trail = data && "breadcrumb" in data ? data.breadcrumb : []
   const parentFolder = trail.length > 1 ? trail[trail.length - 2]! : null
@@ -509,8 +516,14 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
       onClose={() => dispatch(setDriveDetailsOpen(false))}
     />
     <AnimatePresence>
-      {viewingNode ? (
-        <ImageViewer key="viewer" node={viewingNode} onClose={() => setViewingNode(null)} />
+      {viewingNode && viewingIndex >= 0 ? (
+        <Lightbox
+          key="viewer"
+          controller={driveController}
+          index={viewingIndex}
+          onIndexChange={(next) => setViewingNode(imageNodes[next] ?? null)}
+          onClose={() => setViewingNode(null)}
+        />
       ) : null}
       {viewingModel ? (
         <ModelViewer key="model" node={viewingModel} onClose={() => setViewingModel(null)} />
