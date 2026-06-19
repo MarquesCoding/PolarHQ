@@ -1,3 +1,5 @@
+"use client"
+
 import type { ComponentType } from "react"
 import { ArrowsIn } from "@phosphor-icons/react/ArrowsIn"
 import { ArrowSquareOut } from "@phosphor-icons/react/ArrowSquareOut"

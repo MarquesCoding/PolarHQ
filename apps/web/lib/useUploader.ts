@@ -1,3 +1,5 @@
+"use client"
+
 import { useCallback, useState } from "react"
 import { uploadAsset } from "@lib/photos"
 import { toast } from "sonner"
