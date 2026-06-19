@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { type DriveNode, fetchFolders, moveDriveNode } from "@lib/drive"
+import { type DriveNode, fetchFolders, moveDriveNode } from "@workspace/core/drive"
 import { Icon } from "@lib/icons"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { dbg } from "@lib/debug"
 import { cosine, embedText, embedderSupported } from "@lib/embedder"
-import { isUnlocked } from "@lib/e2e"
+import { isUnlocked } from "@workspace/core/e2e"
 import { fetchIndex, getSearchThreshold, onIndexChanged, searchPrompt } from "@lib/photoIndex"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 

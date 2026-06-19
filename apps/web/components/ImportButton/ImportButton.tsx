@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { type DocType } from "@lib/docs"
+import { type DocType } from "@workspace/core/docs"
 import { importFile } from "@lib/importFlow"
 import { useQueryClient } from "@tanstack/react-query"
 import { FileArrowDown } from "@phosphor-icons/react"

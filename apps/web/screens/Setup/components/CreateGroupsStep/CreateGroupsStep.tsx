@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { apiErrorMessage } from "@lib/i18n/apiError"
+import { apiErrorMessage } from "@workspace/core/apiError"
 import { type Group, createGroup } from "@lib/setup"
 import { useForm } from "@tanstack/react-form"
 import { Button } from "@workspace/ui/components/button"

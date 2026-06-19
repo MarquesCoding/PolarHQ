@@ -9,7 +9,7 @@ import {
   secretboxSeal,
   toB64,
 } from "@workspace/core/crypto"
-import { fetchFolderLock, removeFolderLockApi, setFolderLockApi } from "@lib/drive"
+import { fetchFolderLock, removeFolderLockApi, setFolderLockApi } from "@workspace/core/drive"
 
 const VERIFIER_PLAINTEXT = new TextEncoder().encode("orbit-folder-lock-v1")
 const unlocked = new Set<string>()

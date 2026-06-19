@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
-import { decryptName } from "@lib/e2e"
+import { decryptName } from "@workspace/core/e2e"
 import {
   type GridAsset,
   assetOriginalUrl,
@@ -10,13 +10,13 @@ import {
   stackAssets,
   trashAssets,
   uploadAsset,
-} from "@lib/photos"
+} from "@workspace/core/photos"
 import {
   fetchDecryptedMotionVideo,
   fetchDecryptedPhotoOriginal,
   fetchDecryptedPhotoThumbnail,
   uploadEncryptedMedia,
-} from "@lib/photosE2e"
+} from "@workspace/core/photosE2e"
 import { useUploadManager } from "@lib/uploadManager"
 import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"

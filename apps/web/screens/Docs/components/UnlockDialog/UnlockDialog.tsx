@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { isEnrolled, setupKeys, unlockKeys, unlockWithRecovery } from "@lib/e2e"
+import { isEnrolled, setupKeys, unlockKeys, unlockWithRecovery } from "@workspace/core/e2e"
 import { Copy, LockKey } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import {

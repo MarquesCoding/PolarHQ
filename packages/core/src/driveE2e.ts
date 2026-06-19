@@ -1,26 +1,26 @@
 "use client"
 
-import { apiFetch } from "@workspace/core/apiClient"
-import { uploadStreamingParts } from "@workspace/core/chunkedUpload"
+import { apiFetch } from "./apiClient"
+import { uploadStreamingParts } from "./chunkedUpload"
 import {
   isStreamBlob,
   secretboxOpen,
   secretboxSeal,
   secretstreamInit,
   secretstreamOpenAll,
-} from "@workspace/core/crypto"
-import { streamDecryptToDisk, supportsStreamingDownload } from "@workspace/core/streamDownload"
-import { type DriveNode, decryptNodeName } from "@lib/drive"
+} from "./crypto"
+import { streamDecryptToDisk, supportsStreamingDownload } from "./streamDownload"
+import { type DriveNode, decryptNodeName } from "./drive"
 import {
   createContentKey,
   encryptName,
   encryptedPlaceholder,
   getDocContentKey,
   storeContentKey,
-} from "@lib/e2e"
-import { API_URL } from "@lib/env"
-import { generateImageThumbnail } from "@workspace/core/thumbnails"
-import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@workspace/core/xhrUpload"
+} from "./e2e"
+import { coreConfig } from "./config"
+import { generateImageThumbnail } from "./thumbnails"
+import { type UploadOptions, type UploadProgress, postFormWithProgress } from "./xhrUpload"
 
 /**
  * Upload a file end-to-end encrypted: encrypt the bytes with a fresh content key,
@@ -50,7 +50,7 @@ export const uploadEncryptedDriveFile = async (
   if (file.lastModified) form.set("mtime", String(file.lastModified))
 
   const { node } = await postFormWithProgress<{ node: DriveNode }>(
-    `${API_URL}/api/v1/drive/nodes/upload`,
+    `${coreConfig().apiUrl}/api/v1/drive/nodes/upload`,
     form,
     options,
   )
@@ -60,7 +60,7 @@ export const uploadEncryptedDriveFile = async (
   if (file.type.startsWith("image/")) {
     const thumbnail = await generateImageThumbnail(file).catch(() => null)
     if (thumbnail) {
-      await fetch(`${API_URL}/api/v1/drive/nodes/${node.id}/thumbnail`, {
+      await fetch(`${coreConfig().apiUrl}/api/v1/drive/nodes/${node.id}/thumbnail`, {
         method: "PUT",
         credentials: "include",
         headers: { "content-type": "application/octet-stream" },
@@ -128,7 +128,7 @@ export const uploadEncryptedDriveFileChunked = async (
 export const fetchDecryptedThumbnail = async (nodeId: string): Promise<string | null> => {
   const key = await getDocContentKey(nodeId)
   if (!key) return null
-  const response = await fetch(`${API_URL}/api/v1/drive/nodes/${nodeId}/thumbnail`, {
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/drive/nodes/${nodeId}/thumbnail`, {
     credentials: "include",
   })
   if (!response.ok) return null

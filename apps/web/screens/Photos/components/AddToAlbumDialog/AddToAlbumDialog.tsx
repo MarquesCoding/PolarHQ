@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Icon } from "@lib/icons"
-import { addToAlbum, createAlbum, fetchAlbums } from "@lib/photos"
+import { addToAlbum, createAlbum, fetchAlbums } from "@workspace/core/photos"
 import { Plus } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"

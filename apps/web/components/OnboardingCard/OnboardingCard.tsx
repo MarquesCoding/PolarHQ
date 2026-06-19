@@ -2,7 +2,7 @@
 
 import { type ReactNode, useEffect, useState } from "react"
 import { Icon } from "@lib/icons"
-import type { GridAsset } from "@lib/photos"
+import type { GridAsset } from "@workspace/core/photos"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"

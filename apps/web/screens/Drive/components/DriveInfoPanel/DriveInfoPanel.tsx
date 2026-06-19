@@ -2,7 +2,7 @@
 
 import { dateLocale } from "@workspace/i18n/format"
 import type { ComponentType, ReactNode } from "react"
-import type { DriveNode } from "@lib/drive"
+import type { DriveNode } from "@workspace/core/drive"
 import { bytesParts } from "@lib/format"
 import { ArrowSquareOut, Calendar, File, HeartIcon } from "@phosphor-icons/react"
 import NumberFlow from "@number-flow/react"

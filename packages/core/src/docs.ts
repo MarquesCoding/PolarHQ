@@ -1,7 +1,7 @@
-import { apiFetch } from "@workspace/core/apiClient"
-import type { DriveNode } from "@lib/drive"
-import { decryptName, decryptSharedName } from "@lib/e2e"
-import { API_URL } from "@lib/env"
+import { apiFetch } from "./apiClient"
+import type { DriveNode } from "./drive"
+import { decryptName, decryptSharedName } from "./e2e"
+import { coreConfig } from "./config"
 
 /** Mimes that mark a Drive node as an Orbit collaborative document (body = Yjs snapshot). */
 export const DOC_MIME = "application/vnd.orbit.doc"
@@ -140,7 +140,7 @@ export const createDoc = (
 
 /** Fetch a document's raw content bytes (a Yjs snapshot). */
 export const fetchDocContent = async (id: string): Promise<ArrayBuffer> => {
-  const response = await fetch(`${API_URL}/api/v1/docs/documents/${id}/content`, {
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/docs/documents/${id}/content`, {
     credentials: "include",
   })
   if (!response.ok) throw new Error(`Could not load document (${response.status})`)
@@ -149,7 +149,7 @@ export const fetchDocContent = async (id: string): Promise<ArrayBuffer> => {
 
 /** Persist a document's content (a Yjs snapshot) by overwriting the Drive file body. */
 export const saveDocContent = async (id: string, bytes: Uint8Array): Promise<void> => {
-  const response = await fetch(`${API_URL}/api/v1/docs/documents/${id}/content`, {
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/docs/documents/${id}/content`, {
     method: "PUT",
     credentials: "include",
     headers: { "content-type": "application/octet-stream" },

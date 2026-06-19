@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { decryptName } from "@lib/e2e"
+import { decryptName } from "@workspace/core/e2e"
 import { installPhotoDebug } from "@lib/photoDebug"
 import { ensureIndexing } from "@lib/photoIndex"
 import {
@@ -11,8 +11,8 @@ import {
   stackAssets,
   trashAssets,
   unstackAssets,
-} from "@lib/photos"
-import { downloadItemFor, expandStacksToDownloadItems } from "@lib/photosE2e"
+} from "@workspace/core/photos"
+import { downloadItemFor, expandStacksToDownloadItems } from "@workspace/core/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useAssetFeed } from "@lib/useAssetFeed"

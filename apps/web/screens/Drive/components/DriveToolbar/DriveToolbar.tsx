@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
-import { driveFolderIdFromPath } from "@lib/drive"
+import { driveFolderIdFromPath } from "@workspace/core/drive"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useAppSelector } from "@store/hooks"
 import DriveTopActions from "@pages/Drive/components/DriveTopActions/DriveTopActions"

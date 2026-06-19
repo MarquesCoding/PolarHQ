@@ -3,9 +3,9 @@
 import { apiFetch } from "@workspace/core/apiClient"
 import { dbg } from "@lib/debug"
 import { MODEL_VERSION, embedImage, embedderSupported } from "@lib/embedder"
-import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@lib/e2e"
+import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@workspace/core/e2e"
 import { API_URL } from "@lib/env"
-import { fetchDecryptedPhotoOriginal } from "@lib/photosE2e"
+import { fetchDecryptedPhotoOriginal } from "@workspace/core/photosE2e"
 
 /**
  * The client-side semantic index. CLIP vectors are computed in the browser, stored encrypted

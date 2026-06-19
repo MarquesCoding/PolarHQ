@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { type DocMeta, type DocType, fetchDocs, openEditor } from "@lib/docs"
-import { trashDriveNode } from "@lib/drive"
-import { createEncryptedDoc } from "@lib/e2e"
+import { type DocMeta, type DocType, fetchDocs, openEditor } from "@workspace/core/docs"
+import { trashDriveNode } from "@workspace/core/drive"
+import { createEncryptedDoc } from "@workspace/core/e2e"
 import { Icon } from "@lib/icons"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { SelectionProvider, useSelection } from "@lib/selection"

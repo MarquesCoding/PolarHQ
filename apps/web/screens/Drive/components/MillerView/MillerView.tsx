@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { type DriveNode, fetchNodes } from "@lib/drive"
+import { type DriveNode, fetchNodes } from "@workspace/core/drive"
 import { Icon } from "@lib/icons"
 import type { SelectionApi } from "@lib/selection"
 import { CaretRight } from "@phosphor-icons/react"

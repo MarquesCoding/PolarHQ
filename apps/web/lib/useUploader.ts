@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react"
-import { uploadAsset } from "@lib/photos"
+import { uploadAsset } from "@workspace/core/photos"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 

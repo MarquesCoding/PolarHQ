@@ -2,9 +2,9 @@
 
 import { useRef, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { driveFolderIdFromPath, emptyDriveTrash, fetchNodes } from "@lib/drive"
-import type { DocType } from "@lib/docs"
-import { createEncryptedDoc } from "@lib/e2e"
+import { driveFolderIdFromPath, emptyDriveTrash, fetchNodes } from "@workspace/core/drive"
+import type { DocType } from "@workspace/core/docs"
+import { createEncryptedDoc } from "@workspace/core/e2e"
 import { useUploadManager } from "@lib/uploadManager"
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setDriveDetailsOpen } from "@store/uiSlice"

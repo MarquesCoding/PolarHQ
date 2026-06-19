@@ -8,8 +8,8 @@ import {
   fetchAlbum,
   removeFromAlbum,
   trashAssets,
-} from "@lib/photos"
-import { downloadItemFor, expandStacksToDownloadItems } from "@lib/photosE2e"
+} from "@workspace/core/photos"
+import { downloadItemFor, expandStacksToDownloadItems } from "@workspace/core/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
 import { useArmedConfirm } from "@lib/useArmedConfirm"

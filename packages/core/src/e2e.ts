@@ -1,6 +1,6 @@
 "use client"
 
-import { apiFetch } from "@workspace/core/apiClient"
+import { apiFetch } from "./apiClient"
 import {
   type DocMeta,
   type DocType,
@@ -8,9 +8,9 @@ import {
   fetchDocCollaborators,
   fetchDocContent,
   saveDocContent,
-} from "@lib/docs"
-import { fingerprintOf, verifyAndPin } from "@workspace/core/keyVerification"
-import { secureStoreClear, secureStoreGet, secureStoreSet } from "@workspace/core/secureStore"
+} from "./docs"
+import { fingerprintOf, verifyAndPin } from "./keyVerification"
+import { secureStoreClear, secureStoreGet, secureStoreSet } from "./secureStore"
 import {
   type KdfParams,
   type Keypair,
@@ -30,7 +30,7 @@ import {
   secretboxOpen,
   secretboxSeal,
   toB64,
-} from "@workspace/core/crypto"
+} from "./crypto"
 
 interface KeyBundle {
   publicKey: string

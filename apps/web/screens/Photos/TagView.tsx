@@ -1,6 +1,6 @@
 "use client"
 
-import { favoriteAssets, fetchAssets, fetchTags, trashAssets } from "@lib/photos"
+import { favoriteAssets, fetchAssets, fetchTags, trashAssets } from "@workspace/core/photos"
 import { Icon } from "@lib/icons"
 import CollectionView from "@pages/Photos/components/CollectionView/CollectionView"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"

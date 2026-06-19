@@ -1,8 +1,8 @@
 "use client"
 
 import type { ReactNode } from "react"
-import type { TimelinePage } from "@lib/photos"
-import { downloadItemFor, expandStacksToDownloadItems } from "@lib/photosE2e"
+import type { TimelinePage } from "@workspace/core/photos"
+import { downloadItemFor, expandStacksToDownloadItems } from "@workspace/core/photosE2e"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useAssetFeed } from "@lib/useAssetFeed"
 import { type ArmedConfirm, useArmedConfirm } from "@lib/useArmedConfirm"

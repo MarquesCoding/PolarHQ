@@ -17,11 +17,11 @@ import {
   moveDriveNode,
   setNodeFavorite,
   trashDriveNode,
-} from "@lib/drive"
-import { type DocType, docTypeOf, openEditor } from "@lib/docs"
-import { downloadDriveFile } from "@lib/driveE2e"
+} from "@workspace/core/drive"
+import { type DocType, docTypeOf, openEditor } from "@workspace/core/docs"
+import { downloadDriveFile } from "@workspace/core/driveE2e"
 import { importDriveFile, officeTypeForName } from "@lib/importFlow"
-import { createEncryptedDoc } from "@lib/e2e"
+import { createEncryptedDoc } from "@workspace/core/e2e"
 import { Icon } from "@lib/icons"
 import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"

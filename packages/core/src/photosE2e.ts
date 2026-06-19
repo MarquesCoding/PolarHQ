@@ -1,16 +1,16 @@
 "use client"
 
-import { apiFetch } from "@workspace/core/apiClient"
-import { uploadStreamingParts } from "@workspace/core/chunkedUpload"
+import { apiFetch } from "./apiClient"
+import { uploadStreamingParts } from "./chunkedUpload"
 import {
   isStreamBlob,
   secretboxOpen,
   secretboxSeal,
   secretstreamInit,
   secretstreamOpenAll,
-} from "@workspace/core/crypto"
-import { CHUNKED_UPLOAD_THRESHOLD } from "@lib/driveE2e"
-import { streamDecryptToDisk, supportsStreamingDownload } from "@workspace/core/streamDownload"
+} from "./crypto"
+import { CHUNKED_UPLOAD_THRESHOLD } from "./driveE2e"
+import { streamDecryptToDisk, supportsStreamingDownload } from "./streamDownload"
 import {
   createContentKey,
   decryptName,
@@ -19,13 +19,21 @@ import {
   encryptedPlaceholder,
   getDocContentKey,
   storeContentKey,
-} from "@lib/e2e"
-import { API_URL } from "@lib/env"
-import { extractMotionVideo } from "@workspace/core/motionPhoto"
-import { type Asset, type GridAsset, fetchStackMembers } from "@lib/photos"
-import { analyzeAudio, analyzeImage, analyzeVideo } from "@workspace/core/thumbnails"
-import { type UploadOptions, type UploadProgress, postFormWithProgress } from "@workspace/core/xhrUpload"
+} from "./e2e"
+import { coreConfig } from "./config"
+import { extractMotionVideo } from "./motionPhoto"
+import { type Asset, type GridAsset, fetchStackMembers } from "./photos"
+import { analyzeAudio, analyzeImage, analyzeVideo } from "./thumbnails"
+import { type UploadOptions, type UploadProgress, postFormWithProgress } from "./xhrUpload"
 import exifr from "exifr"
+
+/** A post-upload media indexer (e.g. on-device CLIP embedding for search). The shell registers its
+ *  implementation via {@link setMediaIndexer} so core stays free of the app's embedder. */
+type MediaIndexer = (assetId: string, source: Blob) => void
+let mediaIndexer: MediaIndexer | undefined
+export const setMediaIndexer = (fn: MediaIndexer): void => {
+  mediaIndexer = fn
+}
 
 const encoder = new TextEncoder()
 
@@ -216,9 +224,9 @@ const attachAssetExtras = async (
 
   if (thumbnail) {
     const encryptedThumb = secretboxSeal(thumbnail, key)
-    await putThumbnail(`${API_URL}/api/v1/photos/assets/${asset.id}/thumbnail`, encryptedThumb)
+    await putThumbnail(`${coreConfig().apiUrl}/api/v1/photos/assets/${asset.id}/thumbnail`, encryptedThumb)
     if (mirrorNodeId)
-      await putThumbnail(`${API_URL}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, encryptedThumb)
+      await putThumbnail(`${coreConfig().apiUrl}/api/v1/drive/nodes/${mirrorNodeId}/thumbnail`, encryptedThumb)
   }
 
   if (source.type.startsWith("image/")) {
@@ -227,13 +235,11 @@ const attachAssetExtras = async (
       : await extractMotionVideo(file).catch(() => null)
     if (motionBytes) {
       await putThumbnail(
-        `${API_URL}/api/v1/photos/assets/${asset.id}/motion`,
+        `${coreConfig().apiUrl}/api/v1/photos/assets/${asset.id}/motion`,
         secretboxSeal(motionBytes, key),
       ).catch(() => undefined)
     }
-    void import("@lib/photoIndex")
-      .then((index) => index.embedAndStore(asset.id, source))
-      .catch(() => undefined)
+    mediaIndexer?.(asset.id, source)
   }
 }
 
@@ -268,7 +274,7 @@ export const uploadEncryptedMedia = async (
   const { asset, mirrorNodeId } = await postFormWithProgress<{
     asset: Asset
     mirrorNodeId: string | null
-  }>(`${API_URL}/api/v1/photos/assets`, form, options)
+  }>(`${coreConfig().apiUrl}/api/v1/photos/assets`, form, options)
 
   await attachAssetExtras(file, source, asset, mirrorNodeId, key, thumbnail, motionFile)
   return asset
@@ -333,7 +339,7 @@ export const uploadEncryptedMediaChunked = async (
 export const fetchDecryptedMotionVideo = async (assetId: string): Promise<string | null> => {
   const key = await getDocContentKey(assetId)
   if (!key) return null
-  const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/motion`, {
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/motion`, {
     credentials: "include",
   })
   if (!response.ok) return null
@@ -352,7 +358,7 @@ export const uploadEncryptedPhoto = uploadEncryptedMedia
 export const fetchDecryptedPhotoThumbnail = async (assetId: string): Promise<string | null> => {
   const key = await getDocContentKey(assetId)
   if (!key) return null
-  const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/thumbnail`, {
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/thumbnail`, {
     credentials: "include",
   })
   if (!response.ok) return null
@@ -378,7 +384,7 @@ export const downloadDecryptedPhoto = async (
   if (sizeBytes >= CHUNKED_UPLOAD_THRESHOLD && supportsStreamingDownload()) {
     const key = await getDocContentKey(assetId)
     if (key) {
-      const url = `${API_URL}/api/v1/photos/assets/${assetId}/original`
+      const url = `${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`
       if (await streamDecryptToDisk(url, key, filename, sizeBytes, onProgress)) return
     }
   }
@@ -400,7 +406,7 @@ export const fetchDecryptedPhotoOriginal = async (
 ): Promise<string | null> => {
   const key = await getDocContentKey(assetId)
   if (!key) return null
-  const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/original`, {
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`, {
     credentials: "include",
   })
   if (!response.ok) return null
