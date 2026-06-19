@@ -121,7 +121,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
 
   useEffect(() => {
     if (!showStrip) return
-    activeThumbRef.current?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" })
+    activeThumbRef.current?.scrollIntoView({ block: "nearest", inline: "center", behavior: "auto" })
   }, [index, showStrip])
 
   useEffect(() => {
@@ -281,14 +281,25 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
 
   return (
     <motion.div
-      className="bg-background/80 fixed inset-0 z-50 flex backdrop-blur-2xl"
+      className="bg-background fixed inset-0 z-50 flex"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.18 }}
       onPointerDown={(event) => event.stopPropagation()}
     >
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+      {source ? (
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <img
+            key={asset.id}
+            src={source}
+            alt=""
+            className="absolute inset-0 h-full w-full scale-125 object-cover opacity-40 blur-3xl"
+          />
+          <div className="bg-background/50 absolute inset-0" />
+        </div>
+      ) : null}
+      <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="flex items-center justify-between gap-2 p-3">
         <div className="panel flex min-w-0 items-center gap-1.5 rounded-md p-1 pr-3 shadow-lg">
           <Button
