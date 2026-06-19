@@ -14,12 +14,12 @@ import {
   loadModel,
 } from "@lib/model3d"
 import {
-  IconBox,
-  IconGridDots,
-  IconRotate360,
-  IconTexture,
-  IconVectorTriangle,
-} from "@tabler/icons-react"
+  ArrowsClockwise,
+  Cube,
+  GridFour,
+  Swatches,
+  Triangle,
+} from "@phosphor-icons/react"
 import { Bounds, Grid, OrbitControls } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { Button } from "@workspace/ui/components/button"
@@ -117,10 +117,10 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
 
   const textured = object ? hasTextures(object) : false
 
-  const modes: { key: ShadeMode; label: string; icon: typeof IconBox }[] = [
-    { key: "shaded", label: t("modelViewer.shaded"), icon: IconBox },
-    { key: "wireframe", label: t("modelViewer.wireframe"), icon: IconVectorTriangle },
-    { key: "normals", label: t("modelViewer.normals"), icon: IconTexture },
+  const modes: { key: ShadeMode; label: string; icon: typeof Cube }[] = [
+    { key: "shaded", label: t("modelViewer.shaded"), icon: Cube },
+    { key: "wireframe", label: t("modelViewer.wireframe"), icon: Triangle },
+    { key: "normals", label: t("modelViewer.normals"), icon: Swatches },
   ]
 
   return (
@@ -167,7 +167,7 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
               onClick={() => setShowTextures((value) => !value)}
               className={cn("rounded-full", showTextures && "bg-muted")}
             >
-              <IconTexture className="size-4" />
+              <Swatches className="size-4" />
             </Button>
           ) : null}
           <Button
@@ -177,7 +177,7 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
             onClick={() => setShowGrid((value) => !value)}
             className={cn("rounded-full", showGrid && "bg-muted")}
           >
-            <IconGridDots className="size-4" />
+            <GridFour className="size-4" />
           </Button>
           <Button
             variant="ghost"
@@ -186,7 +186,7 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
             onClick={() => setAutoRotate((value) => !value)}
             className={cn("rounded-full", autoRotate && "bg-muted")}
           >
-            <IconRotate360 className="size-4" />
+            <ArrowsClockwise className="size-4" />
           </Button>
         </div>
       </div>

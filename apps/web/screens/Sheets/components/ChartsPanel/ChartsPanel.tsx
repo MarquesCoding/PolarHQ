@@ -1,6 +1,6 @@
 "use client"
 
-import { IconX } from "@tabler/icons-react"
+import { X } from "@phosphor-icons/react"
 import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -46,7 +46,7 @@ const ChartsPanel = ({ sheet }: { sheet: SheetController }) => {
             aria-label={t("chartsPanel.removeChart")}
             onClick={() => sheet.removeChart(chart.id)}
           >
-            <IconX className="size-4" />
+            <X className="size-4" />
           </Button>
         </div>
         <ChartView sheet={sheet} chart={chart} />

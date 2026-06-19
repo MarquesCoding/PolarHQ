@@ -11,7 +11,7 @@ import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
 import { useAppSelector } from "@store/hooks"
-import { IconFileText, IconPencil, IconPlus } from "@tabler/icons-react"
+import { FileText, PencilSimple, Plus } from "@phosphor-icons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Icon } from "@lib/icons"
@@ -132,13 +132,13 @@ const DocsListInner = () => {
         <PageSpinner />
       ) : all.length === 0 ? (
         <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 text-center">
-          <IconFileText className="size-8" />
+          <FileText className="size-8" />
           <p className="text-sm">
             {search ? t("docsList.emptySearch") : t("docsList.emptyNew")}
           </p>
           {!search ? (
             <Button size="sm" disabled={creating} onClick={create}>
-              <IconPlus className="size-4" />
+              <Plus className="size-4" />
               {t("docsList.newDocument")}
             </Button>
           ) : null}
@@ -166,7 +166,7 @@ const DocsListInner = () => {
         </Button>
         {single?.owner ? (
           <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
-            <IconPencil className="size-4" />
+            <PencilSimple className="size-4" />
             {t("docsList.rename")}
           </Button>
         ) : null}

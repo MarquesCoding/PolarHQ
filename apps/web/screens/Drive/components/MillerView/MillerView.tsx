@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { type DriveNode, fetchNodes } from "@lib/drive"
 import { Icon } from "@lib/icons"
 import type { SelectionApi } from "@lib/selection"
-import { IconChevronRight } from "@tabler/icons-react"
+import { CaretRight } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
@@ -79,7 +79,7 @@ const MillerColumn = ({
                   />
                   <span className="min-w-0 flex-1 truncate">{node.name}</span>
                   {node.kind === "folder" ? (
-                    <IconChevronRight className="text-muted-foreground size-3.5 shrink-0" />
+                    <CaretRight className="text-muted-foreground size-3.5 shrink-0" />
                   ) : null}
                 </button>
               </NodeContextMenu>

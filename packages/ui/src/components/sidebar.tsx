@@ -23,8 +23,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
-import { IconLayoutSidebar } from "@tabler/icons-react"
-
+import { SidebarSimple } from "@phosphor-icons/react/SidebarSimple"
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
@@ -262,7 +261,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <IconLayoutSidebar className="rtl:rotate-180" />
+      <SidebarSimple className="rtl:rotate-180" />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )

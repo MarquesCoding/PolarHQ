@@ -3,7 +3,7 @@
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import type { DocMeta } from "@lib/docs"
-import { IconDownload, IconExternalLink, IconPencil, IconTrash } from "@tabler/icons-react"
+import { ArrowSquareOut, DownloadSimple, PencilSimple, Trash } from "@phosphor-icons/react"
 import {
   ContextMenu,
   ContextMenuContent,
@@ -34,24 +34,24 @@ const DocContextMenu = ({ doc, actions, children }: DocContextMenuProps) => {
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem onClick={() => actions.open(doc)}>
-          <IconExternalLink />
+          <ArrowSquareOut />
           {t("docContextMenu.open")}
         </ContextMenuItem>
         {doc.owner ? (
           <ContextMenuItem onClick={() => actions.rename(doc)}>
-            <IconPencil />
+            <PencilSimple />
             {t("docContextMenu.rename")}
           </ContextMenuItem>
         ) : null}
         <ContextMenuItem onClick={() => actions.download(doc)}>
-          <IconDownload />
+          <DownloadSimple />
           {t("docContextMenu.download")}
         </ContextMenuItem>
         {doc.owner ? (
           <>
             <ContextMenuSeparator />
             <ContextMenuItem variant="destructive" onClick={() => actions.trash(doc)}>
-              <IconTrash />
+              <Trash />
               {t("docContextMenu.moveToTrash")}
             </ContextMenuItem>
           </>

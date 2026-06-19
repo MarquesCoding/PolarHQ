@@ -1,9 +1,9 @@
-import { IconLoader2 } from "@tabler/icons-react"
+import { CircleNotch } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 
 /** Small inline loading spinner. */
 const Spinner = ({ className }: { className?: string }) => (
-  <IconLoader2 className={cn("text-muted-foreground size-5 animate-spin", className)} />
+  <CircleNotch className={cn("text-muted-foreground size-5 animate-spin", className)} />
 )
 
 /** Centered full-area spinner for page/section loading states. */

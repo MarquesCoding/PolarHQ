@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { openEditor } from "@lib/docs"
 import { createEncryptedDoc } from "@lib/e2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
-import { IconFilePlus } from "@tabler/icons-react"
+import { FilePlus } from "@phosphor-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
@@ -37,7 +37,7 @@ const DocsToolbar = () => {
       <SizeControl value={tileSize} onChange={setTileSize} />
       <ImportButton type="doc" />
       <Button size="sm" onClick={() => void newDocument()}>
-        <IconFilePlus className="size-4" />
+        <FilePlus className="size-4" />
         {t("docsToolbar.newDocument")}
       </Button>
     </div>

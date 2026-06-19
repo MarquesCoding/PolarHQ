@@ -19,7 +19,7 @@ import { PageSpinner } from "@components/Spinner/Spinner"
 import PhotoGrid from "@pages/Photos/components/PhotoGrid/PhotoGrid"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import { Icon } from "@lib/icons"
-import { IconArrowLeft, IconCircleMinus } from "@tabler/icons-react"
+import { ArrowLeft, MinusCircle } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
@@ -107,7 +107,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
             aria-label={t("albumDetailInner.backToAlbums")}
             onClick={() => router.push("/photos/albums")}
           >
-            <IconArrowLeft className="size-4" />
+            <ArrowLeft className="size-4" />
           </Button>
           <h1 className="truncate text-xl font-semibold">
             {data?.album.name ?? t("albumDetailInner.albumFallback")}
@@ -156,7 +156,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
             run(() => removeFromAlbum(albumId, ids), t("albumDetailInner.removedFromAlbum"))
           }
         >
-          <IconCircleMinus className="size-4" />
+          <MinusCircle className="size-4" />
           {t("albumDetailInner.remove")}
         </Button>
         <ConfirmButton

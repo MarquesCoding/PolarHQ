@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { IconTrash } from "@tabler/icons-react"
+import { Trash } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
@@ -118,7 +118,7 @@ const ConditionalFormatDialog = ({
                   aria-label={t("conditionalFormatDialog.removeRule")}
                   onClick={() => sheet.removeCondFormat(i)}
                 >
-                  <IconTrash className="size-4" />
+                  <Trash className="size-4" />
                 </Button>
               </div>
             ))}

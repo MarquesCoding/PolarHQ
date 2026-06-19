@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet"
-import { IconX } from "@tabler/icons-react"
+import { X } from "@phosphor-icons/react"
 import Spinner from "@components/Spinner/Spinner"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
@@ -180,7 +180,7 @@ const UserDetailSheet = ({ userId, onOpenChange }: UserDetailSheetProps) => {
                         className="size-4"
                         onClick={() => unassign.mutate(role.id)}
                       >
-                        <IconX className="size-3" />
+                        <X className="size-3" />
                       </Button>
                     </Badge>
                   ))

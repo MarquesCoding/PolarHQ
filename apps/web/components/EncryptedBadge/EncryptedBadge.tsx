@@ -1,6 +1,6 @@
 "use client"
 
-import { IconShieldLock } from "@tabler/icons-react"
+import { ShieldCheck } from "@phosphor-icons/react"
 import { Badge } from "@workspace/ui/components/badge"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
 import { useTranslation } from "react-i18next"
@@ -21,14 +21,14 @@ const EncryptedBadge = ({ description }: EncryptedBadgeProps) => {
             variant="secondary"
             className="shrink-0 cursor-default gap-1 border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
           >
-            <IconShieldLock />
+            <ShieldCheck />
             {t("encryptedBadge.encrypted")}
           </Badge>
         }
       />
       <TooltipContent className="bg-popover text-popover-foreground border-border flex max-w-xs flex-col items-start gap-0 rounded-xl border p-4 text-sm shadow-lg">
         <span className="text-foreground flex items-center gap-2 font-semibold">
-          <IconShieldLock className="size-4 text-emerald-600 dark:text-emerald-400" />
+          <ShieldCheck className="size-4 text-emerald-600 dark:text-emerald-400" />
           {t("encryptedBadge.endToEndEncrypted")}
         </span>
         <span className="text-muted-foreground mt-1.5 leading-snug">

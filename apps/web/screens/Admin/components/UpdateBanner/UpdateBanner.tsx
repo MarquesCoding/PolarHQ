@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { IconArrowUpCircle, IconX } from "@tabler/icons-react"
+import { ArrowCircleUp, X } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import { fetchUpdateCheck } from "@lib/admin"
 import { Button } from "@workspace/ui/components/button"
@@ -28,7 +28,7 @@ const UpdateBanner = () => {
 
   return (
     <div className="mb-5 flex items-center gap-3 rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-3 text-sm">
-      <IconArrowUpCircle className="size-5 shrink-0 text-blue-400" />
+      <ArrowCircleUp className="size-5 shrink-0 text-blue-400" />
       <div className="min-w-0 flex-1">
         <span className="font-medium">{t("updateBanner.available", { version: data.latest })}</span>{" "}
         <span className="text-muted-foreground">{t("updateBanner.running", { version: data.current })}</span>
@@ -49,7 +49,7 @@ const UpdateBanner = () => {
           setDismissed(data.latest)
         }}
       >
-        <IconX className="size-4" />
+        <X className="size-4" />
       </Button>
     </div>
   )

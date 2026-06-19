@@ -5,7 +5,7 @@ import type { MouseEvent } from "react"
 import { formatBytes } from "@lib/format"
 import type { DocMeta } from "@lib/docs"
 import { Icon } from "@lib/icons"
-import { IconCircle, IconCircleCheckFilled } from "@tabler/icons-react"
+import { Circle, CheckCircle } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
@@ -46,9 +46,9 @@ const DocCard = ({ doc, selected, onOpen, onSelect, onToggle, iconName = "docume
       )}
     >
       {selected ? (
-        <IconCircleCheckFilled className="text-primary bg-background size-5 rounded-full" />
+        <CheckCircle weight="fill" className="text-primary bg-background size-5 rounded-full" />
       ) : (
-        <IconCircle className="text-muted-foreground bg-background/70 size-5 rounded-full" />
+        <Circle className="text-muted-foreground bg-background/70 size-5 rounded-full" />
       )}
     </Button>
 

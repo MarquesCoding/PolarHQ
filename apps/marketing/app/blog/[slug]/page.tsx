@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { IconArrowLeft } from "@tabler/icons-react"
+import { ArrowLeft } from "@phosphor-icons/react"
 import PageShell from "@components/PageShell"
 import PostBanner from "@components/PostBanner"
 import Markdown from "@components/Markdown"
@@ -33,7 +33,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
         href="/blog"
         className="text-foreground/75 hover:text-foreground inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
       >
-        <IconArrowLeft className="size-4" />
+        <ArrowLeft className="size-4" />
         Back to blog
       </Link>
 

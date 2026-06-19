@@ -4,8 +4,10 @@ import * as React from "react"
 import { Select as SelectPrimitive } from "@base-ui/react/select"
 
 import { cn } from "@workspace/ui/lib/utils"
-import { IconSelector, IconCheck, IconChevronUp, IconChevronDown } from "@tabler/icons-react"
-
+import { CaretUpDown } from "@phosphor-icons/react/CaretUpDown"
+import { Check } from "@phosphor-icons/react/Check"
+import { CaretUp } from "@phosphor-icons/react/CaretUp"
+import { CaretDown } from "@phosphor-icons/react/CaretDown"
 const Select = SelectPrimitive.Root
 
 function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
@@ -49,7 +51,7 @@ function SelectTrigger({
       {children}
       <SelectPrimitive.Icon
         render={
-          <IconSelector className="pointer-events-none size-4 text-muted-foreground" />
+          <CaretUpDown className="pointer-events-none size-4 text-muted-foreground" />
         }
       />
     </SelectPrimitive.Trigger>
@@ -130,7 +132,7 @@ function SelectItem({
           <span className="pointer-events-none absolute end-2 flex size-4 items-center justify-center" />
         }
       >
-        <IconCheck className="pointer-events-none" />
+        <Check className="pointer-events-none" />
       </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
   )
@@ -162,7 +164,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <IconChevronUp
+      <CaretUp
       />
     </SelectPrimitive.ScrollUpArrow>
   )
@@ -181,7 +183,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <IconChevronDown
+      <CaretDown
       />
     </SelectPrimitive.ScrollDownArrow>
   )

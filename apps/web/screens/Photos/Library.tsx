@@ -28,7 +28,7 @@ import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import PhotoGrid from "@pages/Photos/components/PhotoGrid/PhotoGrid"
 import TagDialog from "@pages/Photos/components/TagDialog/TagDialog"
 import { Icon } from "@lib/icons"
-import { IconPhoto, IconStack2, IconStackPop } from "@tabler/icons-react"
+import { Image, Stack, StackMinus } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Kbd } from "@workspace/ui/components/kbd"
 import { toast } from "sonner"
@@ -148,7 +148,7 @@ const LibraryInner = () => {
         <PageSpinner />
       ) : visible.length === 0 ? (
         <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 text-center">
-          <IconPhoto className="size-8" />
+          <Image className="size-8" />
           <p className="text-sm">
             {search ? t("library.noMatches") : t("library.dragToUpload")}
           </p>
@@ -182,13 +182,13 @@ const LibraryInner = () => {
         </Button>
         {ids.length >= 2 ? (
           <Button variant="ghost" size="sm" onClick={stack}>
-            <IconStack2 className="size-4" />
+            <Stack className="size-4" />
             {t("library.stack")}
           </Button>
         ) : null}
         {stackedOne ? (
           <Button variant="ghost" size="sm" onClick={unstack}>
-            <IconStackPop className="size-4" />
+            <StackMinus className="size-4" />
             {t("library.unstack")}
           </Button>
         ) : null}

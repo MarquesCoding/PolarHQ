@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandX } from "@tabler/icons-react"
+import { DiscordLogo, GithubLogo, XLogo } from "@phosphor-icons/react"
 
 interface Column {
   title: string
@@ -7,9 +7,9 @@ interface Column {
 }
 
 const SOCIALS = [
-  { label: "GitHub", icon: IconBrandGithubFilled },
-  { label: "X", icon: IconBrandX },
-  { label: "Discord", icon: IconBrandDiscordFilled },
+  { label: "GitHub", icon: GithubLogo },
+  { label: "X", icon: XLogo },
+  { label: "Discord", icon: DiscordLogo },
 ]
 
 const COLUMNS: Column[] = [

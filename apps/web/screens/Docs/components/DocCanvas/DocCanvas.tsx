@@ -39,12 +39,12 @@ import { TextStyle } from "@tiptap/extension-text-style"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import {
-  IconDeviceFloppy,
-  IconFileText,
-  IconMessage,
-  IconMessagePlus,
-  IconUserPlus,
-} from "@tabler/icons-react"
+  ChatCircle,
+  ChatCircleDots,
+  FileText,
+  FloppyDisk,
+  UserPlus,
+} from "@phosphor-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
@@ -386,7 +386,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
             aria-label={t("docCanvas.backToDocs")}
             className="flex size-9 shrink-0 items-center justify-center rounded-md bg-blue-600/15 text-blue-600 dark:text-blue-400"
           >
-            <IconFileText className="size-5" />
+            <FileText className="size-5" />
           </Link>
           <Input
             value={title}
@@ -425,7 +425,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
               title={t("docCanvas.addComment")}
               onClick={addComment}
             >
-              <IconMessagePlus className="size-4" />
+              <ChatCircleDots className="size-4" />
             </Button>
           ) : null}
           <Button
@@ -433,12 +433,12 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
             size="sm"
             onClick={() => setCommentsOpen((value) => !value)}
           >
-            <IconMessage className="size-4" />
+            <ChatCircle className="size-4" />
             {openThreadCount > 0 ? openThreadCount : t("docCanvas.comments")}
           </Button>
           {doc.owner ? (
             <Button size="sm" onClick={() => setShareOpen(true)}>
-              <IconUserPlus className="size-4" />
+              <UserPlus className="size-4" />
               {t("docCanvas.share")}
             </Button>
           ) : null}
@@ -448,7 +448,7 @@ const DocCanvas = ({ nodeId, ydoc, doc, provider, contentKey }: DocCanvasProps) 
             disabled={saveState === "saving"}
             onClick={() => void manualSave()}
           >
-            <IconDeviceFloppy className="size-4" />
+            <FloppyDisk className="size-4" />
             {t("docCanvas.save")}
           </Button>
         </div>

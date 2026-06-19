@@ -2,7 +2,7 @@
 
 import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setViewMode } from "@store/uiSlice"
-import { IconColumns2, IconLayoutGrid, IconList } from "@tabler/icons-react"
+import { Columns, GridFour, ListBullets } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
@@ -28,7 +28,7 @@ const ViewToggle = ({ columns = false }: ViewToggleProps) => {
         onClick={() => dispatch(setViewMode("grid"))}
         className={cn("rounded-md", view === "grid" && "bg-background shadow-sm")}
       >
-        <IconLayoutGrid className="size-4" />
+        <GridFour className="size-4" />
       </Button>
       <Button
         variant="ghost"
@@ -38,7 +38,7 @@ const ViewToggle = ({ columns = false }: ViewToggleProps) => {
         onClick={() => dispatch(setViewMode("table"))}
         className={cn("rounded-md", view === "table" && "bg-background shadow-sm")}
       >
-        <IconList className="size-4" />
+        <ListBullets className="size-4" />
       </Button>
       {columns ? (
         <Button
@@ -49,7 +49,7 @@ const ViewToggle = ({ columns = false }: ViewToggleProps) => {
           onClick={() => dispatch(setViewMode("columns"))}
           className={cn("rounded-md", view === "columns" && "bg-background shadow-sm")}
         >
-          <IconColumns2 className="size-4" />
+          <Columns className="size-4" />
         </Button>
       ) : null}
     </div>

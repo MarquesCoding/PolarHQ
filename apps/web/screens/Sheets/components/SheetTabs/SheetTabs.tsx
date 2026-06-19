@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { IconPlus, IconX } from "@tabler/icons-react"
+import { Plus, X } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import type { SheetController } from "@pages/Sheets/useSheet"
 
@@ -19,7 +19,7 @@ const SheetTabs = ({ sheet }: { sheet: SheetController }) => {
         aria-label={t("sheetTabs.addSheet")}
         className="hover:bg-accent text-muted-foreground hover:text-foreground flex size-7 shrink-0 items-center justify-center rounded-md"
       >
-        <IconPlus className="size-4" />
+        <Plus className="size-4" />
       </button>
       <div className="scrollbar-slim flex items-center gap-0.5 overflow-x-auto">
         {sheet.sheets.map((s) => {
@@ -69,7 +69,7 @@ const SheetTabs = ({ sheet }: { sheet: SheetController }) => {
                   }}
                   className="hover:text-foreground text-muted-foreground/60 opacity-0 transition group-hover:opacity-100"
                 >
-                  <IconX className="size-3" />
+                  <X className="size-3" />
                 </button>
               ) : null}
             </div>

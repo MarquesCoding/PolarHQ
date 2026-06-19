@@ -7,7 +7,7 @@ import { useForm } from "@tanstack/react-form"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import { IconUsersGroup } from "@tabler/icons-react"
+import { UsersThree } from "@phosphor-icons/react"
 import { toast } from "sonner"
 import { z } from "zod"
 import { useTranslation } from "react-i18next"
@@ -103,7 +103,7 @@ const CreateGroupsStep = ({ onFinish }: CreateGroupsStepProps) => {
               key={group.id}
               className="border-border flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
             >
-              <IconUsersGroup className="size-4 shrink-0" />
+              <UsersThree className="size-4 shrink-0" />
               <span className="font-medium">{group.name}</span>
               {group.description ? (
                 <span className="text-muted-foreground truncate">— {group.description}</span>

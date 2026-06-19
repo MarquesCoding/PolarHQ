@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet"
-import { IconX } from "@tabler/icons-react"
+import { X } from "@phosphor-icons/react"
 import Spinner from "@components/Spinner/Spinner"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
@@ -197,7 +197,7 @@ const GroupDetailSheet = ({ groupId, onOpenChange }: GroupDetailSheetProps) => {
                         aria-label={t("groupDetailSheet.removeMember", { name: member.name })}
                         onClick={() => remove.mutate(member.id)}
                       >
-                        <IconX className="size-4" />
+                        <X className="size-4" />
                       </Button>
                     </div>
                   ))

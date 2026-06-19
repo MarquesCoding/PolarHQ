@@ -6,12 +6,12 @@ import { type GridAsset, stackAssets, uploadAsset } from "@lib/photos"
 import { uploadEncryptedMedia } from "@lib/photosE2e"
 import { useQueryClient } from "@tanstack/react-query"
 import {
-  IconCrop,
-  IconLetterT,
-  IconRotateClockwise,
-  IconSparkles,
-  IconX,
-} from "@tabler/icons-react"
+  ArrowClockwise,
+  Crop,
+  Sparkle,
+  TextT,
+  X,
+} from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Slider } from "@workspace/ui/components/slider"
@@ -373,7 +373,7 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
     >
       <div className="flex items-center justify-between border-b px-4 py-3">
         <Button variant="ghost" size="icon-sm" aria-label={t("photoEditor.closeEditor")} onClick={onClose}>
-          <IconX className="size-5" />
+          <X className="size-5" />
         </Button>
         <span className="text-sm font-medium">{t("photoEditor.title")}</span>
         <div className="flex items-center gap-2">
@@ -458,9 +458,9 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
           <div className="bg-muted/40 flex items-center gap-1 rounded-lg p-1">
             {(
               [
-                { key: "adjust", label: t("photoEditor.adjust"), icon: <IconSparkles className="size-4" /> },
-                { key: "crop", label: t("photoEditor.crop"), icon: <IconCrop className="size-4" /> },
-                { key: "text", label: t("photoEditor.text"), icon: <IconLetterT className="size-4" /> },
+                { key: "adjust", label: t("photoEditor.adjust"), icon: <Sparkle className="size-4" /> },
+                { key: "crop", label: t("photoEditor.crop"), icon: <Crop className="size-4" /> },
+                { key: "text", label: t("photoEditor.text"), icon: <TextT className="size-4" /> },
               ] as const
             ).map((item) => (
               <Button
@@ -507,7 +507,7 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
           {tool === "crop" ? (
             <div className="flex flex-col gap-3">
               <Button variant="outline" size="sm" onClick={() => setRotation((r) => (r + 90) % 360)}>
-                <IconRotateClockwise className="size-4" />
+                <ArrowClockwise className="size-4" />
                 {t("photoEditor.rotate90")}
               </Button>
               <div className="grid grid-cols-3 gap-1.5">
@@ -538,7 +538,7 @@ const PhotoEditor = ({ asset, sourceUrl, onClose, onSaved }: PhotoEditorProps) =
           {tool === "text" ? (
             <div className="flex flex-col gap-3">
               <Button variant="outline" size="sm" onClick={addText}>
-                <IconLetterT className="size-4" />
+                <TextT className="size-4" />
                 {t("photoEditor.addText")}
               </Button>
               {active ? (

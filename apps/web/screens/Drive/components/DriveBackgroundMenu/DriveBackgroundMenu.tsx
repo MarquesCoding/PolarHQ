@@ -3,7 +3,7 @@
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import type { DocType } from "@lib/docs"
-import { IconFilePlus, IconFolderPlus, IconTable, IconUpload } from "@tabler/icons-react"
+import { FilePlus, FolderPlus, Table, UploadSimple } from "@phosphor-icons/react"
 import {
   ContextMenu,
   ContextMenuContent,
@@ -33,20 +33,20 @@ const DriveBackgroundMenu = ({
       <ContextMenuTrigger className="flex flex-1 flex-col">{children}</ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem onClick={onUpload}>
-          <IconUpload />
+          <UploadSimple />
           {t("driveBackgroundMenu.uploadFiles")}
         </ContextMenuItem>
         <ContextMenuItem onClick={onNewFolder}>
-          <IconFolderPlus />
+          <FolderPlus />
           {t("driveBackgroundMenu.newFolder")}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onClick={() => onNew("doc")}>
-          <IconFilePlus />
+          <FilePlus />
           {t("driveBackgroundMenu.newDocument")}
         </ContextMenuItem>
         <ContextMenuItem onClick={() => onNew("sheet")}>
-          <IconTable />
+          <Table />
           {t("driveBackgroundMenu.newSpreadsheet")}
         </ContextMenuItem>
       </ContextMenuContent>

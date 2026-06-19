@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { AnimatePresence, motion } from "motion/react"
-import { IconBrandGithubFilled, IconMenu2, IconX } from "@tabler/icons-react"
+import { GithubLogo, List, X } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 
@@ -81,7 +81,7 @@ const Nav = () => {
           aria-label="GitHub"
           className="text-muted-foreground hover:text-foreground hidden transition-colors md:block"
         >
-          <IconBrandGithubFilled className="size-5" />
+          <GithubLogo weight="fill" className="size-5" />
         </a>
 
         <Button
@@ -92,7 +92,7 @@ const Nav = () => {
           className="md:hidden"
           onClick={() => setOpen((value) => !value)}
         >
-          {open ? <IconX className="size-5" /> : <IconMenu2 className="size-5" />}
+          {open ? <X className="size-5" /> : <List className="size-5" />}
         </Button>
       </nav>
 
@@ -130,7 +130,7 @@ const Nav = () => {
                 onClick={() => setOpen(false)}
                 className="text-foreground/80 hover:text-foreground flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/5"
               >
-                <IconBrandGithubFilled className="size-4" />
+                <GithubLogo weight="fill" className="size-4" />
                 GitHub
               </a>
             </div>

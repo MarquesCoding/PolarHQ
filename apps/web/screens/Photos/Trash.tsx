@@ -7,7 +7,7 @@ import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import EmptyState from "@components/EmptyState/EmptyState"
 import { TopBarActions } from "@components/FlatShell"
 import { useQueryClient } from "@tanstack/react-query"
-import { IconRestore, IconTrashX } from "@tabler/icons-react"
+import { ArrowCounterClockwise, Trash as TrashIcon } from "@phosphor-icons/react"
 import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
@@ -31,7 +31,7 @@ const Trash = () => {
     <>
       <TopBarActions>
         <ConfirmButton
-          icon={<IconTrashX className="size-4" />}
+          icon={<TrashIcon className="size-4" />}
           confirmLabel={t("trash.emptyConfirm")}
           idleVariant="destructive-solid"
           onConfirm={() => run(emptyTrash, t("trash.emptied"), refresh)}
@@ -57,11 +57,11 @@ const Trash = () => {
               size="sm"
               onClick={() => run(() => restoreAssets(ids), t("trash.restored"), after)}
             >
-              <IconRestore className="size-4" />
+              <ArrowCounterClockwise className="size-4" />
               {t("trash.restore")}
             </Button>
             <ConfirmButton
-              icon={<IconTrashX className="size-4" />}
+              icon={<TrashIcon className="size-4" />}
               armed={deleteConfirm.armed}
               onTrigger={deleteConfirm.trigger}
             >

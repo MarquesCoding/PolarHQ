@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { IconLock } from "@tabler/icons-react"
+import { Lock } from "@phosphor-icons/react"
 
 interface BrowserFrameProps {
   url: string
@@ -20,7 +20,7 @@ const BrowserFrame = ({ url, children, className = "" }: BrowserFrameProps) => (
       </div>
 
       <div className="mx-auto flex w-full max-w-xs items-center justify-center gap-1.5 rounded bg-black/30 px-2.5 py-0.5 text-[11px] text-white/55">
-        <IconLock className="size-2.5 shrink-0" />
+        <Lock className="size-2.5 shrink-0" />
         <span className="truncate">{url}</span>
       </div>
 

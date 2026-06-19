@@ -11,19 +11,19 @@ import {
 } from "@lib/photosE2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
-import { IconLivePhoto } from "@tabler/icons-react"
 import {
+  Aperture,
   ArrowSquareOut,
   CaretLeft,
   CaretRight,
   Copy,
   DotsThree,
   DownloadSimple,
-  HeartIcon,
-  MagnifyingGlassMinusIcon,
-  MagnifyingGlassPlusIcon,
-  SidebarSimpleIcon,
-  SlideshowIcon,
+  Heart,
+  MagnifyingGlassMinus,
+  MagnifyingGlassPlus,
+  SidebarSimple,
+  Slideshow,
   Sliders,
   Trash,
   X,
@@ -354,7 +354,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={zoom.zoomOut}
               className="rounded-full"
             >
-              <MagnifyingGlassMinusIcon className="size-4" />
+              <MagnifyingGlassMinus className="size-4" />
             </Button>
             <Button
               variant="ghost"
@@ -363,7 +363,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={zoom.zoomIn}
               className="rounded-full"
             >
-              <MagnifyingGlassPlusIcon className="size-4" />
+              <MagnifyingGlassPlus className="size-4" />
             </Button>
           </div>
         ) : null}
@@ -376,7 +376,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={() => setPlayMotion((value) => !value)}
               className={cn("rounded-full", playMotion && "bg-muted")}
             >
-              <IconLivePhoto className="size-5" />
+              <Aperture className="size-5" />
             </Button>
           ) : null}
           <DropdownMenu>
@@ -394,7 +394,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             />
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={toggleFavourite}>
-                <HeartIcon weight={asset.isFavorite ? "fill" : "regular"} />
+                <Heart weight={asset.isFavorite ? "fill" : "regular"} />
                 {t("lightbox.favourite")}
               </DropdownMenuItem>
               {asset.type === "image" ? (
@@ -440,7 +440,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={toggleStrip}
               className="rounded-full"
             >
-              <SlideshowIcon weight={showStrip ? "fill" : "regular"} className="size-5" />
+              <Slideshow weight={showStrip ? "fill" : "regular"} className="size-5" />
             </Button>
           </Tip>
           <span className="bg-border mx-0.5 h-5 w-px" />
@@ -452,7 +452,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={toggleInfo}
               className="rounded-full"
             >
-              <SidebarSimpleIcon weight={info ? "fill" : "regular"} className="size-5" />
+              <SidebarSimple weight={info ? "fill" : "regular"} className="size-5" />
             </Button>
           </Tip>
         </div>

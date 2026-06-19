@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@lib/icons"
 import { fetchAlbums, fetchTags } from "@lib/photos"
-import { IconChevronRight } from "@tabler/icons-react"
+import { CaretRight } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
@@ -51,7 +51,7 @@ const PhotosNav = () => {
                   className="relative -me-1 size-5"
                   onClick={() => setAlbumsOpen((value) => !value)}
                 >
-                  <IconChevronRight
+                  <CaretRight
                     className={cn("size-3.5 transition-transform", albumsOpen && "rotate-90")}
                   />
                 </Button>

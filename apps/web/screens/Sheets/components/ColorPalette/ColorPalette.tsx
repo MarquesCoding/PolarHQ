@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { IconBan, IconPlus } from "@tabler/icons-react"
+import { Prohibit, Plus } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -67,7 +67,7 @@ const ColorPalette = ({ kind, value, onChange }: ColorPaletteProps) => {
           onClick={() => pick(undefined)}
           className="hover:bg-accent text-muted-foreground mb-1.5 flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-sm"
         >
-          <IconBan className="size-4" />
+          <Prohibit className="size-4" />
           {t("colorPalette.reset")}
         </button>
         <div className="flex flex-col gap-1">
@@ -94,7 +94,7 @@ const ColorPalette = ({ kind, value, onChange }: ColorPaletteProps) => {
           onClick={() => customRef.current?.click()}
           className="hover:bg-accent text-muted-foreground mt-2 flex w-full items-center gap-2 rounded-md px-1.5 py-1 text-sm"
         >
-          <IconPlus className="size-4" />
+          <Plus className="size-4" />
           {t("colorPalette.custom")}
           <input
             ref={customRef}

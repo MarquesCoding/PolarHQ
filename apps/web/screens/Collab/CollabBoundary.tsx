@@ -4,7 +4,7 @@ import { type ReactNode, useEffect, useState } from "react"
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
 import { type CollabDocument, useCollabDocument } from "@lib/useCollabDocument"
-import { IconShieldLock, IconTrash } from "@tabler/icons-react"
+import { LockKey, Trash } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import DecryptingState from "@pages/Docs/components/DecryptingState/DecryptingState"
@@ -43,7 +43,7 @@ const CollabBoundary = ({ nodeId, backHref, render }: CollabBoundaryProps) => {
   if (collab.status === "deleted") {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
-        <IconTrash className="text-muted-foreground size-8" />
+        <Trash className="text-muted-foreground size-8" />
         <p className="text-muted-foreground text-sm">
           {collab.doc
             ? t("collabBoundary.deletedNamed", { name: collab.doc.name })
@@ -61,7 +61,7 @@ const CollabBoundary = ({ nodeId, backHref, render }: CollabBoundaryProps) => {
   if (collab.status === "locked") {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
-        <IconShieldLock className="text-muted-foreground size-8" />
+        <LockKey className="text-muted-foreground size-8" />
         <p className="text-muted-foreground text-sm">{t("collabBoundary.encrypted")}</p>
         <Button size="sm" onClick={() => setUnlockOpen(true)}>
           {t("collabBoundary.unlock")}

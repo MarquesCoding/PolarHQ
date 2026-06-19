@@ -4,13 +4,13 @@ import { useRef } from "react"
 import { type Variants, motion, useScroll, useTransform } from "motion/react"
 import { Button } from "@workspace/ui/components/button"
 import {
-  IconBrandAndroid,
-  IconBrandAppleFilled,
-  IconBrandGithubFilled,
-  IconBrandUbuntu,
-  IconBrandWindowsFilled,
-  IconWorld,
-} from "@tabler/icons-react"
+  AndroidLogo,
+  AppleLogo,
+  GithubLogo,
+  Globe,
+  LinuxLogo,
+  WindowsLogo,
+} from "@phosphor-icons/react"
 
 const container: Variants = {
   hidden: {},
@@ -114,7 +114,7 @@ const Hero = () => {
                 size="lg"
                 className="gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-white shadow-sm backdrop-blur hover:bg-white/20"
               >
-                <IconBrandAppleFilled className="size-4" />
+                <AppleLogo className="size-4" />
                 Download for Mac
               </Button>
             </motion.div>
@@ -123,7 +123,7 @@ const Hero = () => {
                 size="lg"
                 className="gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-white shadow-sm backdrop-blur hover:bg-white/20"
               >
-                <IconBrandGithubFilled className="size-4" />
+                <GithubLogo className="size-4" />
                 Star on GitHub
               </Button>
             </motion.div>
@@ -142,11 +142,11 @@ const Hero = () => {
             variants={item}
             className="text-foreground/55 flex items-center gap-6"
           >
-            <IconBrandAppleFilled className="size-[18px]" />
-            <IconBrandWindowsFilled className="size-[18px]" />
-            <IconBrandUbuntu className="size-[18px]" />
-            <IconBrandAndroid className="size-[18px]" />
-            <IconWorld className="size-[18px]" />
+            <AppleLogo className="size-[18px]" />
+            <WindowsLogo className="size-[18px]" />
+            <LinuxLogo className="size-[18px]" />
+            <AndroidLogo className="size-[18px]" />
+            <Globe className="size-[18px]" />
           </motion.div>
         </motion.div>
       </motion.div>

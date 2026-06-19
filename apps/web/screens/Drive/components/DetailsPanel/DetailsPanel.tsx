@@ -5,7 +5,7 @@ import type { ReactNode } from "react"
 import { type DriveNode, fetchVersions } from "@lib/drive"
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
-import { IconHistory, IconInfoCircle, IconX } from "@tabler/icons-react"
+import { ClockCounterClockwise, Info, X } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
@@ -157,7 +157,7 @@ const SingleInspector = ({ node }: { node: DriveNode }) => {
     {
       id: "info",
       label: t("detailsPanel.title"),
-      icon: <IconInfoCircle className="size-4" />,
+      icon: <Info className="size-4" />,
       content: (
         <div className="flex flex-col gap-5 p-5">
           <SingleDetails node={node} />
@@ -169,7 +169,7 @@ const SingleInspector = ({ node }: { node: DriveNode }) => {
           {
             id: "history",
             label: t("detailsPanel.history"),
-            icon: <IconHistory className="size-4" />,
+            icon: <ClockCounterClockwise className="size-4" />,
             content: <VersionsTab nodeId={node.id} />,
           },
         ]
@@ -232,7 +232,7 @@ const DetailsPanel = ({ open, nodes, onClose }: DetailsPanelProps) => {
             aria-label={t("detailsPanel.closeDetails")}
             onClick={onClose}
           >
-            <IconX className="size-4" />
+            <X className="size-4" />
           </Button>
         </div>
 

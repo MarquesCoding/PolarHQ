@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Icon } from "@lib/icons"
 import { createTag, fetchTags, tagAssets } from "@lib/photos"
-import { IconPlus, IconTag } from "@tabler/icons-react"
+import { Plus, Tag } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -83,14 +83,14 @@ const TagDialog = ({ assetIds, onDone, open: openProp, onOpenChange }: TagDialog
               }}
             />
             <Button onClick={() => create.mutate()} disabled={!name.trim() || create.isPending}>
-              <IconPlus className="size-4" />
+              <Plus className="size-4" />
               {t("tagDialog.create")}
             </Button>
           </div>
           <div className="flex max-h-72 flex-wrap gap-2 overflow-y-auto">
             {(tags ?? []).map((tag) => (
               <Button key={tag.id} variant="outline" size="sm" onClick={() => apply.mutate(tag.id)}>
-                <IconTag className="size-3.5" />
+                <Tag className="size-3.5" />
                 {tag.name}
               </Button>
             ))}

@@ -14,13 +14,13 @@ import { useAppDispatch, useAppSelector } from "@store/hooks"
 import { setSearchQuery } from "@store/uiSlice"
 import { applyThemeWithReveal } from "@lib/themeTransition"
 import {
-  IconChevronDown,
-  IconLogout,
-  IconMoon,
-  IconSearch,
-  IconSelector,
-  IconSun,
-} from "@tabler/icons-react"
+  CaretDown,
+  CaretUpDown,
+  MagnifyingGlass,
+  Moon,
+  SignOut,
+  Sun,
+} from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
@@ -136,7 +136,7 @@ const FlatSidebar = ({
                   </span>
                   <span className="text-muted-foreground truncate text-[11px]">PolarHQ</span>
                 </span>
-                <IconSelector className="text-muted-foreground ms-auto size-4 shrink-0" />
+                <CaretUpDown className="text-muted-foreground ms-auto size-4 shrink-0" />
               </button>
             }
           />
@@ -183,7 +183,7 @@ const FlatSidebar = ({
       {searchable ? (
         <div className="px-3 pt-3 pb-2">
           <div className="bg-sidebar-accent/40 focus-within:border-ring/40 flex items-center gap-2 rounded-lg border border-transparent px-2.5 py-1.5">
-            <IconSearch className="text-muted-foreground size-4 shrink-0" />
+            <MagnifyingGlass className="text-muted-foreground size-4 shrink-0" />
             <input
               value={query}
               onChange={(event) => dispatch(setSearchQuery(event.target.value))}
@@ -268,7 +268,7 @@ const FlatSidebar = ({
                     {session?.user?.email}
                   </span>
                 </span>
-                <IconChevronDown className="text-muted-foreground ms-auto size-4 shrink-0" />
+                <CaretDown className="text-muted-foreground ms-auto size-4 shrink-0" />
               </button>
             }
           />
@@ -279,7 +279,7 @@ const FlatSidebar = ({
             <DropdownMenuItem onClick={replayOnboarding}>{t("flatSidebar.replayIntro")}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={signOut}>
-              <IconLogout className="size-4" />
+              <SignOut className="size-4" />
               {t("flatSidebar.signOut")}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -312,9 +312,9 @@ const FlatSidebar = ({
               )}
             >
               {dark ? (
-                <IconMoon className="size-2" />
+                <Moon className="size-2" />
               ) : (
-                <IconSun className="size-2 text-amber-500" />
+                <Sun className="size-2 text-amber-500" />
               )}
             </span>
           </button>

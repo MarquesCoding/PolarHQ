@@ -2,7 +2,7 @@
 
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { IconChevronDown } from "@tabler/icons-react"
+import { CaretDown } from "@phosphor-icons/react"
 import { toast } from "sonner"
 import { Input } from "@workspace/ui/components/input"
 import { Kbd } from "@workspace/ui/components/kbd"
@@ -116,7 +116,7 @@ const FormulaBar = ({ sheet }: { sheet: SheetController }) => {
     <div className="bg-card flex items-stretch border-b text-sm">
       <div className="flex w-[120px] shrink-0 items-center justify-between gap-1 border-r px-2.5 py-1">
         <span className="truncate font-medium tabular-nums">{a1Range(sheet.selBox)}</span>
-        <IconChevronDown className="text-muted-foreground size-3.5 shrink-0" />
+        <CaretDown className="text-muted-foreground size-3.5 shrink-0" />
       </div>
       <div className="text-muted-foreground flex w-9 shrink-0 items-center justify-center border-r font-serif italic">
         fx

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { isEnrolled, setupKeys, unlockKeys, unlockWithRecovery } from "@lib/e2e"
-import { IconCopy, IconShieldLock } from "@tabler/icons-react"
+import { Copy, LockKey } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
@@ -81,7 +81,7 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
       <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <IconShieldLock className="size-5" />
+            <LockKey className="size-5" />
             {title}
           </DialogTitle>
         </DialogHeader>
@@ -104,7 +104,7 @@ const UnlockDialog = ({ open, onOpenChange, onUnlocked }: UnlockDialogProps) => 
                   toast.success(t("unlockDialog.recoveryCodeCopied"))
                 }}
               >
-                <IconCopy className="size-4" />
+                <Copy className="size-4" />
               </Button>
             </div>
           </div>

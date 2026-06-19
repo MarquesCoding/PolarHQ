@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "motion/react"
-import { IconList } from "@tabler/icons-react"
+import { ListBullets } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 
 interface Heading {
@@ -66,7 +66,7 @@ const PostToc = () => {
       className="z-40 hidden max-h-[60vh] w-56 overflow-auto xl:block"
     >
       <div className="text-muted-foreground mb-3 flex items-center gap-2 text-xs font-medium">
-        <IconList className="size-4" />
+        <ListBullets className="size-4" />
         On this page
       </div>
       <ul className="space-y-2.5">

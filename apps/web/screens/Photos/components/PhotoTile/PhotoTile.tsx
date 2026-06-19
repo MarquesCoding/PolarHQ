@@ -15,7 +15,7 @@ import {
   fetchDecryptedPhotoOriginal,
   fetchDecryptedPhotoThumbnail,
 } from "@lib/photosE2e"
-import { IconCircle, IconHeartFilled, IconLivePhoto, IconPhoto, IconStack2 } from "@tabler/icons-react"
+import { Circle, Heart, Image, Record, Stack } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
@@ -233,7 +233,7 @@ const PhotoTile = ({
         </div>
       ) : (
         <div className="text-muted-foreground flex h-full w-full flex-col items-center justify-center gap-1">
-          <IconPhoto className="size-5" />
+          <Image className="size-5" />
           {asset.status === "failed" ? (
             <span className="text-[10px]">{t("photoTile.failed")}</span>
           ) : asset.status === "processing" || asset.status === "uploading" ? (
@@ -267,7 +267,7 @@ const PhotoTile = ({
             motionActive ? "opacity-0" : "opacity-100",
           )}
         >
-          <IconLivePhoto className="size-4" />
+          <Record className="size-4" />
         </span>
       ) : null}
 
@@ -290,7 +290,7 @@ const PhotoTile = ({
 
       {asset.stackCount > 1 && !asset.motion ? (
         <span className="pointer-events-none absolute right-1.5 top-1.5 flex items-center gap-0.5 rounded-full bg-black/55 px-1.5 py-0.5 text-[10px] font-semibold text-white tabular-nums drop-shadow">
-          <IconStack2 className="size-3" />
+          <Stack className="size-3" />
           {asset.stackCount}
         </span>
       ) : null}
@@ -311,12 +311,12 @@ const PhotoTile = ({
         {selected ? (
           <Icon name="circle-check" className="size-5 text-white" />
         ) : (
-          <IconCircle className="size-5" />
+          <Circle className="size-5" />
         )}
       </span>
 
       {asset.isFavorite ? (
-        <IconHeartFilled className="absolute bottom-1.5 left-1.5 size-4 text-white drop-shadow" />
+        <Heart weight="fill" className="absolute bottom-1.5 left-1.5 size-4 text-white drop-shadow" />
       ) : null}
     </motion.div>
   )

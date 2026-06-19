@@ -9,7 +9,7 @@ import {
 } from "@lib/docs"
 import { authClient } from "@lib/authClient"
 import { type ShareKeyResult, isDocEncrypted, rekeyDoc, shareDocKey } from "@lib/e2e"
-import { IconTrash } from "@tabler/icons-react"
+import { Trash } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -142,7 +142,7 @@ const ShareDocDialog = ({ nodeId, name, open, onOpenChange }: ShareDocDialogProp
                   aria-label={t("shareDocDialog.remove", { name: collaborator.name })}
                   onClick={() => remove.mutate(collaborator.userId)}
                 >
-                  <IconTrash className="size-4" />
+                  <Trash className="size-4" />
                 </Button>
               </div>
             ))

@@ -5,7 +5,7 @@ import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
 import { useAppSelector } from "@store/hooks"
-import { IconRestore, IconTrashX } from "@tabler/icons-react"
+import { ArrowCounterClockwise, TrashSimple } from "@phosphor-icons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
@@ -79,11 +79,11 @@ const TrashInner = () => {
 
       <SelectionBar>
         <Button variant="ghost" size="sm" onClick={() => void restore(ids)}>
-          <IconRestore className="size-4" />
+          <ArrowCounterClockwise className="size-4" />
           {t("trash.restore")}
         </Button>
         <ConfirmButton
-          icon={<IconTrashX className="size-4" />}
+          icon={<TrashSimple className="size-4" />}
           armed={removeConfirm.armed}
           onTrigger={removeConfirm.trigger}
         >
