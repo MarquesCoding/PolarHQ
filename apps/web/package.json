@@ -63,6 +63,8 @@
     "motion": "^12.40.0",
     "next": "16.2.6",
     "next-themes": "^0.4.6",
+    "nucleo-ui-fill-18": "^1.4.0",
+    "nucleo-ui-outline-18": "^1.4.1",
     "pptxgenjs": "^4.0.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",

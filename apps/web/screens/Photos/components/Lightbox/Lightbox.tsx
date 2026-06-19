@@ -12,7 +12,15 @@ import {
 } from "@lib/photosE2e"
 import { usePersistentNumber } from "@lib/persistentSetting"
 import { useZoomPan } from "@lib/useZoomPan"
-import { IconDots, IconLivePhoto } from "@tabler/icons-react"
+import { IconLivePhoto } from "@tabler/icons-react"
+import {
+  IconCircleInfoOutline18,
+  IconDotsOutline18,
+  IconImageOutline18,
+  IconMagnifierMinusOutline18,
+  IconMagnifierPlusOutline18,
+  IconXmarkOutline18,
+} from "nucleo-ui-outline-18"
 import { useUploadManager } from "@lib/uploadManager"
 import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
@@ -323,7 +331,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
             onClick={onClose}
             className="rounded-full"
           >
-            <Icon name="xmark" className="size-5" />
+            <IconXmarkOutline18 className="size-5" />
           </Button>
           <span className="pointer-events-none absolute top-1/2 left-1/2 max-w-[40vw] -translate-x-1/2 -translate-y-1/2 truncate text-sm font-medium">
             {displayName}
@@ -339,7 +347,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={zoom.zoomOut}
               className="rounded-full"
             >
-              <Icon name="minus" className="size-4" />
+              <IconMagnifierMinusOutline18 className="size-4" />
             </Button>
             <Button
               variant="ghost"
@@ -348,7 +356,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={zoom.zoomIn}
               className="rounded-full"
             >
-              <Icon name="plus" className="size-4" />
+              <IconMagnifierPlusOutline18 className="size-4" />
             </Button>
           </div>
         ) : null}
@@ -373,7 +381,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
                   aria-label={t("lightbox.more")}
                   className="rounded-full"
                 >
-                  <IconDots className="size-5" />
+                  <IconDotsOutline18 className="size-5" />
                 </Button>
               }
             />
@@ -425,7 +433,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={toggleStrip}
               className={cn("rounded-full", showStrip && "bg-muted")}
             >
-              <Icon name="photo" className="size-5" />
+              <IconImageOutline18 className="size-5" />
             </Button>
           </Tip>
           <span className="bg-border mx-0.5 h-5 w-px" />
@@ -437,7 +445,7 @@ const Lightbox = ({ assets, index, onIndexChange, onClose, filmstrip }: Lightbox
               onClick={toggleInfo}
               className={cn("rounded-full", info && "bg-muted")}
             >
-              <Icon name="info" className="size-5" />
+              <IconCircleInfoOutline18 className="size-5" />
             </Button>
           </Tip>
         </div>
