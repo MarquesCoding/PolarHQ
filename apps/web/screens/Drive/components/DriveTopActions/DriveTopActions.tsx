@@ -6,8 +6,8 @@ import { driveFolderIdFromPath, emptyDriveTrash, fetchNodes } from "@workspace/c
 import type { DocType } from "@workspace/core/docs"
 import { createEncryptedDoc } from "@workspace/core/e2e"
 import { useUploadManager } from "@lib/uploadManager"
-import { useAppDispatch, useAppSelector } from "@store/hooks"
-import { setDriveDetailsOpen } from "@store/uiSlice"
+import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
+import { setDriveDetailsOpen } from "@workspace/screens/store/uiSlice"
 import {
   FilePlus,
   FolderPlus,

@@ -4,7 +4,7 @@ import { usePathname } from "@workspace/screens/platform"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
 import { driveFolderIdFromPath } from "@workspace/core/drive"
 import { usePersistentNumber } from "@lib/persistentSetting"
-import { useAppSelector } from "@store/hooks"
+import { useAppSelector } from "@workspace/screens/store/hooks"
 import DriveTopActions from "@pages/Drive/components/DriveTopActions/DriveTopActions"
 import SizeControl from "@pages/Photos/components/SizeControl/SizeControl"
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useReducer, useRef, useState } from "react"
+import { Suspense, lazy, useReducer, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigation } from "@workspace/screens/platform"
 import {
@@ -27,8 +27,8 @@ import { SelectionProvider, useSelection } from "@lib/selection"
 import { useArmedConfirm } from "@lib/useArmedConfirm"
 import { useSelectionHotkeys } from "@lib/useSelectionHotkeys"
 import { useUploadManager } from "@lib/uploadManager"
-import { useAppDispatch, useAppSelector } from "@store/hooks"
-import { setDriveDetailsOpen } from "@store/uiSlice"
+import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
+import { setDriveDetailsOpen } from "@workspace/screens/store/uiSlice"
 import {
   Archive,
   ArrowSquareOut,
@@ -49,7 +49,6 @@ import { PageSpinner } from "@components/Spinner/Spinner"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 import DetailsPanel from "@pages/Drive/components/DetailsPanel/DetailsPanel"
 import DriveBackgroundMenu from "@pages/Drive/components/DriveBackgroundMenu/DriveBackgroundMenu"
-import dynamic from "next/dynamic"
 import { isFolderUnlocked } from "@lib/folderLock"
 import { is3DModelName } from "@lib/model3dExt"
 import FolderLockDialog from "@pages/Drive/components/FolderLockDialog/FolderLockDialog"
@@ -66,9 +65,7 @@ import NodeTable from "@pages/Drive/components/NodeTable/NodeTable"
 import RenameDialog from "@pages/Drive/components/RenameDialog/RenameDialog"
 import VersionHistoryDialog from "@pages/Drive/components/VersionHistoryDialog/VersionHistoryDialog"
 
-const ModelViewer = dynamic(() => import("@pages/Drive/components/ModelViewer/ModelViewer"), {
-  ssr: false,
-})
+const ModelViewer = lazy(() => import("@pages/Drive/components/ModelViewer/ModelViewer"))
 
 interface BrowserProps {
   folderId?: string
@@ -526,7 +523,9 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
         />
       ) : null}
       {viewingModel ? (
-        <ModelViewer key="model" node={viewingModel} onClose={() => setViewingModel(null)} />
+        <Suspense fallback={null}>
+          <ModelViewer key="model" node={viewingModel} onClose={() => setViewingModel(null)} />
+        </Suspense>
       ) : null}
     </AnimatePresence>
     </div>

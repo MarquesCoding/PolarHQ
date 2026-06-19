@@ -605,9 +605,15 @@ importers:
 
   packages/screens:
     dependencies:
+      '@reduxjs/toolkit':
+        specifier: ^2.12.0
+        version: 2.12.0(react-redux@9.3.0(@types/react@19.2.15)(react@19.2.4)(redux@5.0.1))(react@19.2.4)
       react:
         specifier: '*'
         version: 19.2.4
+      react-redux:
+        specifier: ^9.3.0
+        version: 9.3.0(@types/react@19.2.15)(react@19.2.4)(redux@5.0.1)
     devDependencies:
       '@types/react':
         specifier: ^19
