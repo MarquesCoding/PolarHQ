@@ -1,0 +1,20 @@
+{
+  "name": "@workspace/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./crypto": "./src/crypto.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "libsodium-wrappers-sumo": "^0.8.4"
+  },
+  "devDependencies": {
+    "@types/libsodium-wrappers-sumo": "^0.8.2",
+    "@workspace/typescript-config": "workspace:*",
+    "typescript": "^5.7.3"
+  }
+}

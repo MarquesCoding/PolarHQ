@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import Link from "next/link"
-import { secretboxOpen } from "@lib/crypto"
+import { secretboxOpen } from "@workspace/core/crypto"
 import { type DocMeta, fetchDoc, fetchDocContent } from "@lib/docs"
 import { e2eReady, getDocContentKey, isDocEncrypted, isUnlocked } from "@lib/e2e"
 import { RelayProvider } from "@lib/yjsProvider"

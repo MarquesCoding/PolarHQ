@@ -8,7 +8,7 @@ import {
   secretboxOpen,
   secretboxSeal,
   toB64,
-} from "@lib/crypto"
+} from "@workspace/core/crypto"
 import { fetchFolderLock, removeFolderLockApi, setFolderLockApi } from "@lib/drive"
 
 const VERIFIER_PLAINTEXT = new TextEncoder().encode("orbit-folder-lock-v1")

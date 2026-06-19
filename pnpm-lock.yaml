@@ -271,6 +271,9 @@ importers:
       '@workspace/changelog':
         specifier: workspace:*
         version: link:../../packages/changelog
+      '@workspace/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@workspace/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
@@ -445,6 +448,22 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/core:
+    dependencies:
+      libsodium-wrappers-sumo:
+        specifier: ^0.8.4
+        version: 0.8.4
+    devDependencies:
+      '@types/libsodium-wrappers-sumo':
+        specifier: ^0.8.2
+        version: 0.8.2
       '@workspace/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

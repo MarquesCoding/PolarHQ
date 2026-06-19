@@ -12,7 +12,7 @@ import {
   type DocComment,
   findThreadRange,
 } from "@lib/commentMark"
-import { secretboxSeal } from "@lib/crypto"
+import { secretboxSeal } from "@workspace/core/crypto"
 import { renameDriveNode } from "@lib/drive"
 import { FontSize, Indent, LineHeight } from "@lib/docExtensions"
 import { safeLinkOptions } from "@lib/editorConfig"
