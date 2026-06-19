@@ -1,24 +1,22 @@
-"use client"
-
 import type { ReactNode } from "react"
-import NextLink from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { Link as RouterLink, useLocation, useNavigate } from "react-router"
 import { type Platform, PlatformProvider } from "@workspace/screens/platform"
 
-const Link: Platform["Link"] = ({ href, ...rest }) => <NextLink href={href} {...rest} />
+const Link: Platform["Link"] = ({ href, ...rest }) => <RouterLink to={href} {...rest} />
 
 /**
- * Supplies the Next.js implementations of the screens' {@link Platform} contract (router + Link), so
- * shared screen components stay free of `next/*`. The Tauri/Vite desktop shell will provide its own.
+ * Supplies the React Router implementations of the screens' {@link Platform} contract (router +
+ * Link), so shared screen components stay router-agnostic. The same contract is reused by the Tauri
+ * desktop shell (also Vite + React Router).
  */
 export const PlatformAdapter = ({ children }: { children: ReactNode }) => {
-  const router = useRouter()
-  const pathname = usePathname()
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
   const value: Platform = {
     navigation: {
-      push: (href) => router.push(href),
-      replace: (href) => router.replace(href),
-      back: () => router.back(),
+      push: (href) => void navigate(href),
+      replace: (href) => void navigate(href, { replace: true }),
+      back: () => void navigate(-1),
     },
     pathname,
     Link,
