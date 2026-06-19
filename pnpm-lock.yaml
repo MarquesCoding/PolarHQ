@@ -335,6 +335,12 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      nucleo-ui-fill-18:
+        specifier: ^1.4.0
+        version: 1.4.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      nucleo-ui-outline-18:
+        specifier: ^1.4.1
+        version: 1.4.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       pptxgenjs:
         specifier: ^4.0.1
         version: 4.0.1
@@ -5464,8 +5470,20 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
+  nucleo-ui-fill-18@1.4.0:
+    resolution: {integrity: sha512-r3/nD/VWLPzPPkQ/9lfVMq1GB9uRTiWs9cc1Df/Xzwa8/Qb50z2yPZsrXS6Cr+FLg1OChKy21gESlsgFa4SDQA==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+
   nucleo-ui-fill-duo-18@1.4.0:
     resolution: {integrity: sha512-iTkAV2XIYzjiWaE+mg71xwmDgH7/bMYLceMuNcSOzn/SMRt0FoI7Te2e98xlG5p4g21tbxjslmXPu3aH6Phenw==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+
+  nucleo-ui-outline-18@1.4.1:
+    resolution: {integrity: sha512-ir2trm9LJyOvAt7/8yoP2iuLyb4Ru5Senqjoq2KfPdR8uOnW40txLH0dRM+mQIXBYaylbs3YjTTncPGjyf7Ohw==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -11847,7 +11865,19 @@ snapshots:
       react-dom: 19.2.4(react@19.2.4)
       tslib: 2.8.1
 
+  nucleo-ui-fill-18@1.4.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      tslib: 2.8.1
+
   nucleo-ui-fill-duo-18@1.4.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      tslib: 2.8.1
+
+  nucleo-ui-outline-18@1.4.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
