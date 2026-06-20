@@ -5,18 +5,40 @@
     "declarationMap": false,
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "paths": {
-      "@/*": ["./*"],
-      "@components/*": ["./components/*"],
-      "@pages/*": ["./screens/*"],
-      "@lib/*": ["./lib/*"],
-      "@workspace/ui/*": ["../../packages/ui/src/*"]
+      "@/*": [
+        "./*"
+      ],
+      "@components/*": [
+        "../../packages/screens/src/components/*"
+      ],
+      "@pages/*": [
+        "../../packages/screens/src/screens/*"
+      ],
+      "@lib/*": [
+        "./lib/*"
+      ],
+      "@workspace/ui/*": [
+        "../../packages/ui/src/*"
+      ]
     }
   },
-  "include": ["src", "components", "screens", "lib", "vite.config.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src",
+    "lib",
+    "hooks",
+    "vite.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

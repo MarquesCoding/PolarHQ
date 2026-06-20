@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useState } from "react"
 import { usePathname, useNavigation } from "@workspace/screens/platform"
-import logo from "../../public/logo.png"
+import logo from "./logo.png"
 import { fetchApps } from "@workspace/core/apps"
 import { authClient } from "@workspace/core/authClient"
 import { lockKeys } from "@workspace/core/e2e"
@@ -38,7 +38,7 @@ import Changelog from "@components/Changelog/Changelog"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 import StorageDialog from "@components/StorageDialog/StorageDialog"
 import { replayOnboarding } from "@components/OnboardingCard/OnboardingCard"
-import { APP_BUILD, APP_VERSION } from "@lib/env"
+import { coreConfig } from "@workspace/core/config"
 
 /** Stagger the nav rows in on mount. Each app has its own layout/sidebar, so this replays exactly
  *  when switching apps (not on within-app navigation, where the sidebar persists). */
@@ -283,7 +283,7 @@ const FlatSidebar = ({
         </DropdownMenu>
 
         <div className="px-1 pt-0.5 text-center">
-          <Changelog version={APP_VERSION} build={APP_BUILD} />
+          <Changelog version={coreConfig().appVersion} build={coreConfig().appBuild} />
         </div>
 
         <div className="flex justify-center">

@@ -9,7 +9,7 @@ import {
   triggerBackup,
   updateBackupSettings,
 } from "@workspace/core/admin"
-import { API_URL } from "@lib/env"
+import { coreConfig } from "@workspace/core/config"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
@@ -258,7 +258,7 @@ const Backup = () => {
                     <Button
                       size="sm"
                       onClick={() => {
-                        window.location.href = `${API_URL}/api/v1/admin/backup/gdrive/auth`
+                        window.location.href = `${coreConfig().apiUrl}/api/v1/admin/backup/gdrive/auth`
                       }}
                     >
                       {settings?.gdriveConnected ? t("backup.reconnect") : t("backup.connectGdrive")}

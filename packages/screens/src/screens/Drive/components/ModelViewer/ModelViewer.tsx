@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from "react"
 import type { DriveNode } from "@workspace/core/drive"
 import { fetchDecryptedFile } from "@workspace/core/driveE2e"
-import { API_URL } from "@lib/env"
+import { coreConfig } from "@workspace/core/config"
 import { Icon } from "@workspace/screens/icons"
 import {
   type ShadeMode,
@@ -43,7 +43,7 @@ const fetchModelBuffer = async (node: DriveNode): Promise<ArrayBuffer> => {
       URL.revokeObjectURL(url)
     }
   }
-  const href = node.downloadUrl ?? `${API_URL}/api/v1/drive/nodes/${node.id}/download`
+  const href = node.downloadUrl ?? `${coreConfig().apiUrl}/api/v1/drive/nodes/${node.id}/download`
   return fetch(href, { credentials: "include" }).then((r) => r.arrayBuffer())
 }
 
