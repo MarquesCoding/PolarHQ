@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { type AdminLimit, fetchAdminLimits, setInstanceLimit } from "@lib/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"

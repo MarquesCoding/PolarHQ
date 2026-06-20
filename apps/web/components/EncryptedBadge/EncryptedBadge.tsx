@@ -1,5 +1,3 @@
-"use client"
-
 import { ShieldCheck } from "@phosphor-icons/react"
 import { Badge } from "@workspace/ui/components/badge"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"

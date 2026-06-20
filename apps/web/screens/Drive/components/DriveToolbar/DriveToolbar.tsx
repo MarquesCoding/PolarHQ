@@ -1,5 +1,3 @@
-"use client"
-
 import { usePathname } from "@workspace/screens/platform"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
 import { driveFolderIdFromPath } from "@workspace/core/drive"

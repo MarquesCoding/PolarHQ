@@ -1,5 +1,3 @@
-"use client"
-
 import { apiFetch } from "@workspace/core/apiClient"
 import { dbg } from "@lib/debug"
 import { MODEL_VERSION, embedImage, embedderSupported } from "@lib/embedder"

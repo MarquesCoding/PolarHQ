@@ -1,5 +1,3 @@
-"use client"
-
 import { dateLocale } from "@workspace/i18n/format"
 import { type ReactNode, useEffect, useState } from "react"
 import { authClient } from "@lib/authClient"

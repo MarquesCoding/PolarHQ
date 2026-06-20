@@ -1,5 +1,3 @@
-"use client"
-
 import { type CSSProperties, type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react"
 import { HyperFormula } from "hyperformula"
 import * as Y from "yjs"

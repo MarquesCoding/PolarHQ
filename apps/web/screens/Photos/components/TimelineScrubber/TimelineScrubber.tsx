@@ -1,5 +1,3 @@
-"use client"
-
 import { type PointerEvent as ReactPointerEvent, type RefObject, useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { AnimatePresence, motion } from "motion/react"

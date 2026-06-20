@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { isEnrolled, setupKeys, unlockKeys, unlockWithRecovery } from "@workspace/core/e2e"
 import { Copy, LockKey } from "@phosphor-icons/react"

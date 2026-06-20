@@ -1,5 +1,3 @@
-"use client"
-
 import { Suspense, lazy, useReducer, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigation } from "@workspace/screens/platform"

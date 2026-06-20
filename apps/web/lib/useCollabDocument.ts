@@ -1,5 +1,3 @@
-"use client"
-
 import { useCallback, useEffect, useRef, useState } from "react"
 import { secretboxOpen, secretboxSeal } from "@workspace/core/crypto"
 import { type DocMeta, fetchDoc, fetchDocContent, saveDocContent } from "@workspace/core/docs"

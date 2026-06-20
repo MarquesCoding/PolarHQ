@@ -1,5 +1,3 @@
-"use client"
-
 import type { ReactNode } from "react"
 import type { TimelinePage } from "@workspace/core/photos"
 import { downloadItemFor, expandStacksToDownloadItems } from "@workspace/core/photosE2e"

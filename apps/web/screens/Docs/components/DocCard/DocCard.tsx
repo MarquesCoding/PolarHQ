@@ -1,5 +1,3 @@
-"use client"
-
 import { dateLocale } from "@workspace/i18n/format"
 import type { MouseEvent } from "react"
 import { formatBytes } from "@lib/format"

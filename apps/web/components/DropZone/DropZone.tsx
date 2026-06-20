@@ -1,5 +1,3 @@
-"use client"
-
 import { type ReactNode, useRef, useState } from "react"
 import { UploadSimple } from "@phosphor-icons/react"
 import { useTranslation } from "react-i18next"

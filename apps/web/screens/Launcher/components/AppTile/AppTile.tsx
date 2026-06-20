@@ -1,5 +1,3 @@
-"use client"
-
 import { useNavigation } from "@workspace/screens/platform"
 import type { SuiteApp } from "@workspace/core/apps"
 import { Icon } from "@lib/icons"

@@ -1,5 +1,3 @@
-"use client"
-
 import { ApiError } from "./apiClient"
 import i18n from "@workspace/i18n/config"
 

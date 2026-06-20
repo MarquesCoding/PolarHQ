@@ -1,5 +1,3 @@
-"use client"
-
 const VIDEO_EXTENSION = /\.(mov|mp4|m4v)$/i
 
 const basename = (name: string): string => name.replace(/\.[^./\\]+$/, "").toLowerCase()

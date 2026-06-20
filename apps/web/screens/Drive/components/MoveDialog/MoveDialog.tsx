@@ -1,5 +1,3 @@
-"use client"
-
 import { useMemo, useState } from "react"
 import { type DriveNode, fetchFolders, moveDriveNode } from "@workspace/core/drive"
 import { Icon } from "@lib/icons"

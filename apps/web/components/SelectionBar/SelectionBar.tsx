@@ -1,5 +1,3 @@
-"use client"
-
 import { type ReactNode, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Icon } from "@lib/icons"

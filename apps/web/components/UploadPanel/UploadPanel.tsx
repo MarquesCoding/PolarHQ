@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { useUploadManager } from "@lib/uploadManager"
 import { CaretDown } from "@phosphor-icons/react"

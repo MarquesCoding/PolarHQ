@@ -1,5 +1,3 @@
-"use client"
-
 import { fingerprint, fromB64 } from "./crypto"
 
 /**

@@ -1,5 +1,3 @@
-"use client"
-
 import { useTranslation } from "react-i18next"
 import { LOCALES } from "@workspace/i18n/locales"
 import {

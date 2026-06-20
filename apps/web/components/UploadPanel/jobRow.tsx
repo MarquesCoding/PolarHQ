@@ -1,5 +1,3 @@
-"use client"
-
 import { formatBytes } from "@lib/format"
 import { Icon } from "@lib/icons"
 import { t } from "@workspace/i18n/config"

@@ -1,5 +1,3 @@
-"use client"
-
 import { useNavigation } from "@workspace/screens/platform"
 import { fetchApps } from "@workspace/core/apps"
 import { authClient } from "@lib/authClient"

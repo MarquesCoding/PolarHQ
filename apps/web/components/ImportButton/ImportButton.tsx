@@ -1,5 +1,3 @@
-"use client"
-
 import { useRef, useState } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import { type DocType } from "@workspace/core/docs"

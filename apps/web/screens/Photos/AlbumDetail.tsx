@@ -1,5 +1,3 @@
-"use client"
-
 import { useCallback } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import {

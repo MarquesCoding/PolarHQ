@@ -1,17 +1,17 @@
-import { nextJsConfig } from "@workspace/eslint-config/next-js"
+import { reactConfig } from "@workspace/eslint-config/react"
 
 /**
  * Localisation guard: flag new hardcoded user-facing strings so everything keeps going through
- * react-i18next. Scoped to the app's UI (screens/components/app); the design system in
+ * react-i18next. Scoped to the app's UI (screens/components/src); the design system in
  * packages/ui is intentionally exempt. Warnings, not errors, so symbols just need an allowlist
  * entry rather than blocking the build.
  *
  * @type {import("eslint").Linter.Config}
  */
 export default [
-  ...nextJsConfig,
+  ...reactConfig,
   {
-    files: ["screens/**/*.{ts,tsx}", "components/**/*.{ts,tsx}", "app/**/*.{ts,tsx}"],
+    files: ["screens/**/*.{ts,tsx}", "components/**/*.{ts,tsx}", "src/**/*.{ts,tsx}"],
     rules: {
       "react/jsx-no-literals": [
         "warn",

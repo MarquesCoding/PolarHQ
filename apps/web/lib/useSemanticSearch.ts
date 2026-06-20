@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { dbg } from "@lib/debug"
 import { cosine, embedText, embedderSupported } from "@lib/embedder"

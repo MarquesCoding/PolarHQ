@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { decryptName } from "@workspace/core/e2e"
 import { installPhotoDebug } from "@lib/photoDebug"

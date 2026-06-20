@@ -1,5 +1,3 @@
-"use client"
-
 import { monthLong, monthShort, weekdayLong } from "@workspace/i18n/format"
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"

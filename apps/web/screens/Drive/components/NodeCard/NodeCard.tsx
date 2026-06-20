@@ -1,5 +1,3 @@
-"use client"
-
 import { type MouseEvent, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@workspace/core/drive"

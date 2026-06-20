@@ -1,5 +1,3 @@
-"use client"
-
 import { fetchOverview, formatBytes } from "@lib/admin"
 import { Icon } from "@lib/icons"
 import { useQuery } from "@tanstack/react-query"

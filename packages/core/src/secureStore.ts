@@ -1,5 +1,3 @@
-"use client"
-
 /**
  * At-rest protection for the unlocked keypair. The blob is encrypted with a
  * **non-extractable** WebCrypto AES-GCM key kept in IndexedDB — so a dump of

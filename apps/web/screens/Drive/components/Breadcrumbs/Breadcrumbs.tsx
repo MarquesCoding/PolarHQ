@@ -1,5 +1,3 @@
-"use client"
-
 import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
 import { AppLink as Link } from "@workspace/screens/platform"

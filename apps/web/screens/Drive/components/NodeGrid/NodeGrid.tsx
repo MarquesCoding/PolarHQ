@@ -1,5 +1,3 @@
-"use client"
-
 import { type PointerEvent as ReactPointerEvent, useRef, useState } from "react"
 import type { DriveNode } from "@workspace/core/drive"
 import { usePersistentNumber } from "@lib/persistentSetting"

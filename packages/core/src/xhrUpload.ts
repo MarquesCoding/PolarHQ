@@ -1,5 +1,3 @@
-"use client"
-
 import { ApiError } from "./apiClient"
 
 export interface UploadProgress {

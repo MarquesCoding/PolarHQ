@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useRef, useState } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import RecoveryCodeDialog from "@components/RecoveryCodeDialog"

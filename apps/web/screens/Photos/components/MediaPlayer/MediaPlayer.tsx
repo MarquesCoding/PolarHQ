@@ -1,5 +1,3 @@
-"use client"
-
 import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react"
 import { Icon } from "@lib/icons"
 import { cn } from "@workspace/ui/lib/utils"

@@ -1,5 +1,3 @@
-"use client"
-
 import type { ComponentType, ReactNode } from "react"
 import { formatMediumDateTime } from "@workspace/i18n/format"
 import { Suspense, lazy } from "react"

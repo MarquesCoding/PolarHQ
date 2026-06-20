@@ -1,5 +1,3 @@
-"use client"
-
 import { dateLocale } from "@workspace/i18n/format"
 import type { ComponentType, ReactNode } from "react"
 import { type DriveNode, fetchVersions } from "@workspace/core/drive"

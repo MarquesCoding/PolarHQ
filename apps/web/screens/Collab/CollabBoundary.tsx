@@ -1,5 +1,3 @@
-"use client"
-
 import { type ReactNode, useEffect, useState } from "react"
 import { AppLink as Link } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"

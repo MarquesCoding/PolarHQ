@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { renameDriveNode } from "@workspace/core/drive"
 import { useMutation } from "@tanstack/react-query"

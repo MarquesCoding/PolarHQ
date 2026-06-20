@@ -1,5 +1,3 @@
-"use client"
-
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { CaretDown } from "@phosphor-icons/react"

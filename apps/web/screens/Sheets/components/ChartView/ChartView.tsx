@@ -1,5 +1,3 @@
-"use client"
-
 import { type ChartDef, CHART_COLORS, colLabel } from "@pages/Sheets/sheetModel"
 import type { SheetController } from "@pages/Sheets/useSheet"
 

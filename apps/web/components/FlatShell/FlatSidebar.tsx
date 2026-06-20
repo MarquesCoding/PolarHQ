@@ -1,5 +1,3 @@
-"use client"
-
 import { type ReactNode, useEffect, useState } from "react"
 import { usePathname, useNavigation } from "@workspace/screens/platform"
 import logo from "../../public/logo.png"
@@ -34,7 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 import { cn } from "@workspace/ui/lib/utils"
-import { useTheme } from "next-themes"
+import { useTheme } from "@components/theme-provider"
 import { useTranslation } from "react-i18next"
 import Changelog from "@components/Changelog/Changelog"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"

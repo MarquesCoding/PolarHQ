@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { fetchAdminSettings, updateAdminSettings } from "@lib/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"

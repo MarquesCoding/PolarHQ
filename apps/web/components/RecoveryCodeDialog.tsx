@@ -1,5 +1,3 @@
-"use client"
-
 import { Copy, ShieldCheck } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import {

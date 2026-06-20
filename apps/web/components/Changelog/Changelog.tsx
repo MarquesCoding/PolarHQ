@@ -1,5 +1,3 @@
-"use client"
-
 import { formatMediumDate } from "@workspace/i18n/format"
 import type { ReactNode } from "react"
 import { useState } from "react"

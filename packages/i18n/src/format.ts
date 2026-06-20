@@ -1,5 +1,3 @@
-"use client"
-
 import i18n from "./config"
 
 /**

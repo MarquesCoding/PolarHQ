@@ -1,5 +1,3 @@
-"use client"
-
 import { type ReactNode, useEffect, useState } from "react"
 import { toB64 } from "@workspace/core/crypto"
 import type { ShareLink, ShareOptions } from "@workspace/core/drive"
