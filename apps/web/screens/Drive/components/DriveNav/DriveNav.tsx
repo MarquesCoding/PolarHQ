@@ -5,7 +5,7 @@ import {
   fetchNodes,
   fetchSavedSearches,
 } from "@workspace/core/drive"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { motion } from "motion/react"

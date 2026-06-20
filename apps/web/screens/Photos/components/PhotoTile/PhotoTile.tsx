@@ -6,7 +6,7 @@ import {
   useState,
 } from "react"
 import { decryptName } from "@workspace/core/e2e"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import type { GridAsset } from "@workspace/core/photos"
 import {
   fetchDecryptedMotionVideo,

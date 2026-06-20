@@ -1,5 +1,5 @@
 import { type ReactNode } from "react"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { motion } from "motion/react"
 
 interface EmptyStateProps {

@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useState } from "react"
 import { toB64 } from "@workspace/core/crypto"
 import type { ShareLink, ShareOptions } from "@workspace/core/drive"
 import { getDocContentKey } from "@workspace/core/e2e"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { useMutation } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {

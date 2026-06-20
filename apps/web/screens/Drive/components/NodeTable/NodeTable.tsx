@@ -3,8 +3,8 @@ import { type MouseEvent, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@workspace/core/drive"
 import { formatBytes } from "@workspace/core/format"
-import { Icon } from "@lib/icons"
-import type { SelectionApi } from "@lib/selection"
+import { Icon } from "@workspace/screens/icons"
+import type { SelectionApi } from "@workspace/screens/selection"
 import { CaretDown, CaretUp, Star } from "@phosphor-icons/react"
 import {
   type ColumnDef,

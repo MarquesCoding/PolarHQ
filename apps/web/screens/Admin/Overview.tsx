@@ -1,5 +1,5 @@
 import { fetchOverview, formatBytes } from "@workspace/core/admin"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { Card, CardContent } from "@workspace/ui/components/card"

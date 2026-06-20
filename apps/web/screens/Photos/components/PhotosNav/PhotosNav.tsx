@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { AppLink as Link, usePathname } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { fetchAlbums, fetchTags } from "@workspace/core/photos"
 import { CaretRight } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"

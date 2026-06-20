@@ -1,6 +1,6 @@
 import { useNavigation } from "@workspace/screens/platform"
 import type { SuiteApp } from "@workspace/core/apps"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch } from "@workspace/screens/store/hooks"
 import { setActiveApp } from "@workspace/screens/store/uiSlice"
 import { Card } from "@workspace/ui/components/card"

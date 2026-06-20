@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { addToAlbum, createAlbum, fetchAlbums } from "@workspace/core/photos"
 import { Plus } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"

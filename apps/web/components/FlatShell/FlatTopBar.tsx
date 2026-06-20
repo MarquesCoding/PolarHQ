@@ -1,6 +1,6 @@
 import { type ReactNode } from "react"
 import { usePathname } from "@workspace/screens/platform"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import { useTranslation } from "react-i18next"
 

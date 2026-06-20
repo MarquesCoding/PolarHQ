@@ -3,7 +3,7 @@ import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
 import { decryptNodeName, fetchStorageStats, type StorageApp } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { useQuery } from "@tanstack/react-query"
 import {
   Dialog,

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { createDriveFolder } from "@workspace/core/drive"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { useMutation } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {

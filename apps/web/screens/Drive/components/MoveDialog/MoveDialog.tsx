@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { type DriveNode, fetchFolders, moveDriveNode } from "@workspace/core/drive"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import {

@@ -1,7 +1,7 @@
 import { usePathname, useNavigation } from "@workspace/screens/platform"
 import { openEditor } from "@workspace/core/docs"
 import { createEncryptedDoc } from "@workspace/core/e2e"
-import { usePersistentNumber } from "@lib/persistentSetting"
+import { usePersistentNumber } from "@workspace/screens/persistentSetting"
 import { FilePlus } from "@phosphor-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"

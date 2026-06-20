@@ -2,7 +2,7 @@ import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
 import { AppLink as Link } from "@workspace/screens/platform"
 import type { DriveNode } from "@workspace/core/drive"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { cn } from "@workspace/ui/lib/utils"
 
 interface BreadcrumbsProps {
