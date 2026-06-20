@@ -21,10 +21,14 @@ import { AnimatePresence, motion } from "motion/react"
 const DEFAULT_GAP = 12
 const HEADER_HEIGHT = 30
 const HEADER_GAP = 6
+/** Desktop (Tauri) reveals the timeline on hover (it overlays rather than reserving a gutter), so it
+ * drops the rail space and uses a tighter edge margin than the web build. */
+const DESKTOP =
+  typeof document !== "undefined" && document.documentElement.classList.contains("tauri")
 /** Visual margin around the grid, baked into the layout so the surrounding space is still
  * part of the (selectable) grid container rather than dead outer padding. */
-const INSET = 24
-const RAIL = 26
+const INSET = DESKTOP ? 12 : 24
+const RAIL = DESKTOP ? 0 : 26
 const RESIZE_EASE = "cubic-bezier(0.22, 0.61, 0.36, 1)"
 const TILE_RESIZE_CSS = `top 0.3s ${RESIZE_EASE}, left 0.3s ${RESIZE_EASE}, width 0.3s ${RESIZE_EASE}, height 0.3s ${RESIZE_EASE}`
 const HEADER_RESIZE_CSS = `top 0.3s ${RESIZE_EASE}`

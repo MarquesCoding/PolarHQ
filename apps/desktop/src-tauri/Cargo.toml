@@ -1,0 +1,36 @@
+[package]
+name = "polarhq-desktop"
+version = "0.0.1"
+description = "PolarHQ desktop app"
+authors = ["MarquesCoding"]
+edition = "2021"
+rust-version = "1.77.2"
+
+# The library is what Tauri's mobile targets link against; the binary (main.rs) just calls run().
+[lib]
+name = "polarhq_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-store = "2"
+tauri-plugin-process = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Desktop-only: auto-update (the updater plugin isn't built for mobile targets).
+[target."cfg(any(target_os = \"macos\", target_os = \"windows\", target_os = \"linux\"))".dependencies]
+tauri-plugin-updater = "2"
+
+# Attach an invisible NSToolbar to the macOS window (Spacedrive's trick) so it gets the full native
+# Tahoe corner rounding + traffic-light padding, while keeping the real native window controls.
+[target."cfg(target_os = \"macos\")".dependencies]
+objc2 = "0.6"
+objc2-foundation = "0.3"
+
+[features]
+# Bundled when building the app; do not remove unless you know what you're doing.
+custom-protocol = ["tauri/custom-protocol"]

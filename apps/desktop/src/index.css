@@ -1,0 +1,133 @@
+:root {
+  --font-sans: "Geist Variable", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+}
+
+/* Native window only: reserve a draggable strip at the top for the overlaid macOS traffic lights.
+ * The shared FlatShell reads `--titlebar-h` (falling back to 0 on the web, where it's undefined). */
+.tauri {
+  --titlebar-h: 1.75rem;
+}
+
+/* Desktop "floating" sidebar (Spacedrive/Tahoe style): inset the fixed sidebar so its inner panel
+ * reads as a rounded card floating in the window. The card extends to the top with a small even
+ * margin, and its content is padded down by `--titlebar-h` so the overlaid macOS traffic lights sit
+ * INSIDE the card's top (over its background), above the header. Scoped to `.tauri`. */
+.tauri [data-slot="sidebar-container"] {
+  padding: 0.5rem;
+  border-inline-end: 0 !important;
+}
+.tauri [data-slot="sidebar-inner"] {
+  padding-top: var(--titlebar-h);
+  /* Concentric with the native window radius (≈ window radius − the 8px card inset). */
+  border-radius: 1.25rem;
+  border: 1px solid var(--sidebar-border);
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.18),
+    0 8px 24px -12px rgb(0 0 0 / 0.45);
+}
+/* One uniform window canvas (the darkest token); the page content has no separate background, so the
+ * sidebar, top-bar pills, and timeline are the only surfaces — each a lighter bg-sidebar chip with a
+ * border, floating on this canvas. */
+.tauri [data-slot="sidebar-wrapper"] {
+  background-color: var(--background);
+}
+.tauri [data-slot="flat-content"] {
+  background-color: transparent;
+}
+
+/* Finder-style top bar: no full-width bar, just the controls floating over the content. We drop the
+ * divider/blur/fill entirely so it's NOT a bar — just the toggle and actions floating as pills over
+ * the content, each in its own rounded sidebar-styled chip. */
+.tauri [data-slot="flat-topbar"] {
+  background-color: transparent;
+  backdrop-filter: none;
+  border-bottom: 0;
+  pointer-events: none;
+  /* Clear gap from the floating sidebar's right edge so the toggle pill doesn't crowd its corner. */
+  padding-left: 1.25rem;
+  /* Float the pills at the top, inline with the sidebar/traffic-light row — not centred in the bar. */
+  align-items: flex-start;
+  padding-top: 0.5rem;
+}
+/* The floating control pills — same surface as the sidebar (bg-sidebar + border). */
+.tauri [data-slot="flat-topbar"] [data-slot="sidebar-trigger"],
+.tauri [data-slot="flat-topbar"] [data-slot="topbar-actions"] {
+  pointer-events: auto;
+  background-color: var(--sidebar);
+  border: 1px solid var(--sidebar-border);
+  border-radius: 9999px;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.18),
+    0 8px 24px -12px rgb(0 0 0 / 0.45);
+}
+.tauri [data-slot="flat-topbar"] [data-slot="sidebar-trigger"] {
+  height: 2.25rem;
+  width: 2.25rem;
+}
+.tauri [data-slot="flat-topbar"] [data-slot="topbar-actions"] {
+  padding: 0.25rem 0.5rem;
+}
+
+/* When the sidebar is collapsed the content column slides to the window's left edge, putting the top
+ * bar's toggle under the overlaid traffic lights. Shove the bar's contents right to clear them. */
+.tauri [data-slot="sidebar"][data-state="collapsed"] ~ div [data-slot="flat-topbar"] {
+  padding-left: 5rem;
+}
+
+/* On desktop the app name (icon + "All photos" etc.) in the top bar is redundant — the sidebar
+ * already shows it — so hide it for a cleaner Finder-like bar. */
+.tauri [data-slot="topbar-title"] {
+  display: none;
+}
+
+/* Clear the floating pills so page content (e.g. the photo date headers) starts below them, not
+ * underneath. Content still scrolls up under the frost as you scroll. */
+.tauri [data-slot="flat-main"] {
+  padding-top: 3.75rem;
+}
+
+/* Frosted top, Finder-style. Two layers so there's no visible blur edge:
+ *  1. The element is a seamless `--background` gradient (opaque at the very top → transparent) — a pure
+ *     colour fade can't have an edge, and it blends the top into the app canvas.
+ *  2. A `::before` carries the backdrop blur, masked to fade out high up (by ~50%), so the blur's box
+ *     edge lands where the background tint is still mostly opaque and hides it. */
+.tauri [data-slot="content-frost"] {
+  height: 6rem;
+  background: linear-gradient(to bottom, var(--background) 0%, var(--background) 25%, transparent 100%);
+}
+.tauri [data-slot="content-frost"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  mask-image: linear-gradient(to bottom, black 0%, black 20%, transparent 55%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 20%, transparent 55%);
+}
+
+/* Desktop: the photo timeline is hidden by default and reveals on hover over the left edge of the
+ * content. It's absolutely pinned top/bottom (guaranteed full app height regardless of % quirks),
+ * styled like the sidebar (surface + border), and fades in on hover. */
+.tauri #app-content-overlay {
+  top: 0;
+}
+.tauri [data-slot="timeline-rail"] {
+  position: absolute;
+  inset-block: 0.5rem;
+  inset-inline-start: 0;
+  width: 1.75rem;
+  height: auto;
+  border: 1px solid var(--sidebar-border);
+  border-radius: 9999px;
+  background-color: var(--sidebar);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.18),
+    0 8px 24px -12px rgb(0 0 0 / 0.45);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.tauri [data-slot="timeline-rail"]:hover {
+  opacity: 1;
+}

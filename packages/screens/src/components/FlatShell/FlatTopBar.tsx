@@ -29,15 +29,18 @@ const FlatTopBar = ({ titles, extra }: FlatTopBarProps) => {
   const current = titles.find((entry) => entry.match(pathname)) ?? titles[0]
 
   return (
-    <header className="border-border/60 bg-sidebar/55 flex h-14 shrink-0 items-center gap-2.5 border-b px-4 backdrop-blur-xl">
+    <header
+      data-slot="flat-topbar"
+      className="border-border/60 bg-sidebar/55 flex h-14 shrink-0 items-center gap-2.5 border-b px-4 backdrop-blur-xl"
+    >
       <SidebarTrigger className="-ms-1" aria-label={t("flatTopBar.toggleSidebar")} />
       {current ? (
-        <>
+        <span data-slot="topbar-title" className="flex items-center gap-2.5">
           <Icon name={current.icon} className="text-muted-foreground size-[18px]" />
           <span className="text-sm font-medium">{current.label}</span>
-        </>
+        </span>
       ) : null}
-      <div className="ms-auto flex items-center gap-2">
+      <div data-slot="topbar-actions" className="ms-auto flex items-center gap-2 empty:hidden">
         <div id={TOPBAR_SLOT_ID} className="flex items-center gap-2 empty:hidden" />
         {extra}
       </div>
