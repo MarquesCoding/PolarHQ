@@ -1,5 +1,5 @@
 import { setDebug } from "@workspace/core/debug"
-import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "@lib/embedder"
+import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "./embedder"
 import { isUnlocked } from "@workspace/core/e2e"
 import {
   embedAsset,
@@ -9,8 +9,8 @@ import {
   getSearchThreshold,
   searchPrompt,
   setSearchThreshold,
-} from "@lib/photoIndex"
-import { labelAsset } from "@lib/photoLabels"
+} from "./photoIndex"
+import { labelAsset } from "./photoLabels"
 
 /** Attach `window.orbit.ml` console helpers to inspect and drive the semantic index. */
 export const installPhotoDebug = (): void => {

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import type { CollabDocument } from "@lib/useCollabDocument"
+import type { CollabDocument } from "@workspace/screens/useCollabDocument"
 import CollabHeader from "@components/CollabHeader/CollabHeader"
 import CollabBoundary from "@pages/Collab/CollabBoundary"
 import BoardCanvas from "./BoardCanvas"

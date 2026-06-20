@@ -46,6 +46,7 @@ export const FontSize = Extension.create({
       unsetFontSize:
         () =>
         ({ chain }: CommandProps) =>
+          // @ts-ignore removeEmptyTextStyle is contributed by @tiptap/extension-text-style, which the editor loads
           chain().setMark("textStyle", { fontSize: null }).removeEmptyTextStyle().run(),
     }
   },

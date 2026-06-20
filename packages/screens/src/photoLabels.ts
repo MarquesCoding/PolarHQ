@@ -1,5 +1,5 @@
-import { cosine, embedText } from "@lib/embedder"
-import { fetchIndex } from "@lib/photoIndex"
+import { cosine, embedText } from "./embedder"
+import { fetchIndex } from "./photoIndex"
 
 /**
  * Zero-shot labels: CLIP stores a vector per photo, not tags. To get human-readable "tags"

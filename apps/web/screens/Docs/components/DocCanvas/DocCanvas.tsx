@@ -9,16 +9,16 @@ import {
   type CommentThread,
   type DocComment,
   findThreadRange,
-} from "@lib/commentMark"
+} from "@workspace/screens/commentMark"
 import { secretboxSeal } from "@workspace/core/crypto"
 import { renameDriveNode } from "@workspace/core/drive"
-import { FontSize, Indent, LineHeight } from "@lib/docExtensions"
-import { safeLinkOptions } from "@lib/editorConfig"
+import { FontSize, Indent, LineHeight } from "@workspace/screens/docExtensions"
+import { safeLinkOptions } from "@workspace/screens/editorConfig"
 import { type DocMeta, saveDocContent } from "@workspace/core/docs"
 import { encryptNameWith } from "@workspace/core/e2e"
-import { imageFilesFrom, insertImageFiles } from "@lib/editorImages"
-import { applyImportName, takeImport } from "@lib/importFlow"
-import type { RelayProvider } from "@lib/yjsProvider"
+import { imageFilesFrom, insertImageFiles } from "@workspace/screens/editorImages"
+import { applyImportName, takeImport } from "@workspace/screens/importFlow"
+import type { RelayProvider } from "@workspace/screens/yjsProvider"
 import { Collaboration } from "@tiptap/extension-collaboration"
 import { CollaborationCaret } from "@tiptap/extension-collaboration-caret"
 import { Color } from "@tiptap/extension-color"

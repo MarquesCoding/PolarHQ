@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import { useNavigation } from "@workspace/screens/platform"
-import { sanitizeLinkHref } from "@lib/editorConfig"
+import { sanitizeLinkHref } from "@workspace/screens/editorConfig"
 import type { Editor } from "@tiptap/react"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -46,7 +46,7 @@ const DocMenuBar = ({ editor, title, commentsOpen, onToggleComments, onAddCommen
   const { t } = useTranslation("docs")
   const exportDocx = async () => {
     try {
-      const { exportDocument } = await import("@lib/officeExport")
+      const { exportDocument } = await import("@workspace/screens/officeExport")
       await exportDocument(editor.getHTML(), title || "Document")
     } catch {
       toast.error(t("docMenuBar.couldNotExport"))

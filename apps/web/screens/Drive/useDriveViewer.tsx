@@ -6,7 +6,7 @@ import {
   trashDriveNode,
 } from "@workspace/core/drive"
 import { downloadDriveFile, fetchDecryptedFile, fetchDecryptedThumbnail } from "@workspace/core/driveE2e"
-import { useUploadManager } from "@lib/uploadManager"
+import { useUploadManager } from "@workspace/screens/uploadManager"
 import type { ViewerController, ViewerItem } from "@pages/Photos/components/Lightbox/viewer"
 import { useQueryClient } from "@tanstack/react-query"
 import DriveInfoPanel from "@pages/Drive/components/DriveInfoPanel/DriveInfoPanel"

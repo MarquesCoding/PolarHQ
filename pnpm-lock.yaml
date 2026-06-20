@@ -620,22 +620,67 @@ importers:
 
   packages/screens:
     dependencies:
+      '@huggingface/transformers':
+        specifier: ^4.2.0
+        version: 4.2.0
       '@reduxjs/toolkit':
         specifier: ^2.12.0
         version: 2.12.0(react-redux@9.3.0(@types/react@19.2.15)(react@19.2.4)(redux@5.0.1))(react@19.2.4)
+      '@tanstack/react-query':
+        specifier: ^5.101.0
+        version: 5.101.0(react@19.2.4)
+      '@tiptap/core':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/pm@3.26.0)
+      '@tiptap/pm':
+        specifier: ^3.26.0
+        version: 3.26.0
+      '@workspace/core':
+        specifier: workspace:*
+        version: link:../core
       '@workspace/ui':
         specifier: workspace:*
         version: link:../ui
+      html-docx-js-typescript:
+        specifier: ^0.1.5
+        version: 0.1.5
+      lib0:
+        specifier: ^0.2.117
+        version: 0.2.117
+      mammoth:
+        specifier: ^1.12.0
+        version: 1.12.0
       react:
         specifier: '*'
         version: 19.2.4
+      react-i18next:
+        specifier: ^17.0.8
+        version: 17.0.8(i18next@26.3.1(typescript@5.9.3))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
       react-redux:
         specifier: ^9.3.0
         version: 9.3.0(@types/react@19.2.15)(react@19.2.4)(redux@5.0.1)
+      sonner:
+        specifier: ^2.0.7
+        version: 2.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      three:
+        specifier: ^0.184.0
+        version: 0.184.0
+      xlsx:
+        specifier: ^0.18.5
+        version: 0.18.5
+      y-protocols:
+        specifier: ^1.0.7
+        version: 1.0.7(yjs@13.6.31)
+      yjs:
+        specifier: ^13.6.31
+        version: 13.6.31
     devDependencies:
       '@types/react':
         specifier: ^19
         version: 19.2.15
+      '@types/three':
+        specifier: ^0.184.1
+        version: 0.184.1
       '@workspace/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

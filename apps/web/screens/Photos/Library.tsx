@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { decryptName } from "@workspace/core/e2e"
-import { installPhotoDebug } from "@lib/photoDebug"
-import { ensureIndexing } from "@lib/photoIndex"
+import { installPhotoDebug } from "@workspace/screens/photoDebug"
+import { ensureIndexing } from "@workspace/screens/photoIndex"
 import {
   type GridAsset,
   favoriteAssets,
@@ -13,10 +13,10 @@ import {
 import { downloadItemFor, expandStacksToDownloadItems } from "@workspace/core/photosE2e"
 import { SelectionProvider, useSelection } from "@workspace/screens/selection"
 import { useArmedConfirm } from "@workspace/screens/useArmedConfirm"
-import { useAssetFeed } from "@lib/useAssetFeed"
+import { useAssetFeed } from "@workspace/screens/useAssetFeed"
 import { useSelectionHotkeys } from "@workspace/screens/useSelectionHotkeys"
-import { useSemanticSearch } from "@lib/useSemanticSearch"
-import { useUploadManager } from "@lib/uploadManager"
+import { useSemanticSearch } from "@workspace/screens/useSemanticSearch"
+import { useUploadManager } from "@workspace/screens/uploadManager"
 import { useAppSelector } from "@workspace/screens/store/hooks"
 import DropZone from "@components/DropZone/DropZone"
 import SelectionBar from "@components/SelectionBar/SelectionBar"

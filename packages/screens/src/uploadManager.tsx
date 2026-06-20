@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react"
-import { API_URL } from "@lib/env"
+import { coreConfig } from "@workspace/core/config"
 import { ApiError } from "@workspace/core/apiClient"
 import { authClient } from "@workspace/core/authClient"
 import { apiErrorMessage } from "@workspace/core/apiError"
@@ -28,7 +28,7 @@ import {
 } from "@workspace/core/photosE2e"
 import { type DownloadProgress, downloadAsset, downloadAssetsZip } from "@workspace/core/download"
 import { deleteAssets, fetchProcessing, stackAssets } from "@workspace/core/photos"
-import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
+import { type LiveEvent, useLiveEvents } from "./useLiveEvents"
 import { useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
@@ -128,8 +128,8 @@ const isMediaFile = (file: File): boolean =>
 
 const endpointFor = (target: UploadTarget): string =>
   target.kind === "drive"
-    ? `${API_URL}/api/v1/drive/nodes/upload`
-    : `${API_URL}/api/v1/photos/assets`
+    ? `${coreConfig().apiUrl}/api/v1/drive/nodes/upload`
+    : `${coreConfig().apiUrl}/api/v1/photos/assets`
 
 const normalizeResponse = (
   target: UploadTarget,

@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useState } from "react"
 import { AppLink as Link } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
-import { type CollabDocument, useCollabDocument } from "@lib/useCollabDocument"
+import { type CollabDocument, useCollabDocument } from "@workspace/screens/useCollabDocument"
 import { LockKey, Trash } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { PageSpinner } from "@components/Spinner/Spinner"

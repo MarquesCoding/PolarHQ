@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useUploadManager } from "@lib/uploadManager"
+import { useUploadManager } from "@workspace/screens/uploadManager"
 import { CaretDown } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"

@@ -1,5 +1,5 @@
 import { secretboxOpen, secretboxSeal } from "@workspace/core/crypto"
-import { API_URL } from "@lib/env"
+import { coreConfig } from "@workspace/core/config"
 import * as decoding from "lib0/decoding"
 import * as encoding from "lib0/encoding"
 import {
@@ -16,7 +16,7 @@ const MESSAGE_AWARENESS = 1
 const RECONNECT_DELAY = 1500
 
 const wsUrl = (nodeId: string): string =>
-  `${API_URL.replace(/^http/, "ws")}/ws/doc?doc=${encodeURIComponent(nodeId)}`
+  `${coreConfig().apiUrl.replace(/^http/, "ws")}/ws/doc?doc=${encodeURIComponent(nodeId)}`
 
 interface AwarenessChange {
   added: number[]

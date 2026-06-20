@@ -1,6 +1,6 @@
 import { useEffect } from "react"
-import { applyImportName, takeImport } from "@lib/importFlow"
-import type { CollabDocument } from "@lib/useCollabDocument"
+import { applyImportName, takeImport } from "@workspace/screens/importFlow"
+import type { CollabDocument } from "@workspace/screens/useCollabDocument"
 import CollabBoundary from "@pages/Collab/CollabBoundary"
 import FormulaBar from "@pages/Sheets/components/FormulaBar/FormulaBar"
 import ChartsPanel from "@pages/Sheets/components/ChartsPanel/ChartsPanel"

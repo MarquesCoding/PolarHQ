@@ -2,7 +2,7 @@ import { type DocType, type DocMeta, openEditor } from "@workspace/core/docs"
 import { type DriveNode, renameDriveNode } from "@workspace/core/drive"
 import { fetchDecryptedFile } from "@workspace/core/driveE2e"
 import { createEncryptedDoc, encryptNameWith } from "@workspace/core/e2e"
-import type { ImportPayload } from "@lib/officeImport"
+import type { ImportPayload } from "./officeImport"
 
 const IMPORT_PREFIX = "orbit:import:"
 
@@ -16,7 +16,7 @@ export const officeTypeForName = (name: string): DocType | null => {
 
 /** Lazy-load the heavy Office parsers (xlsx/mammoth/fflate) only when a file is imported. */
 const parseFor = async (file: File, type: DocType): Promise<ImportPayload> => {
-  const parsers = await import("@lib/officeImport")
+  const parsers = await import("./officeImport")
   if (type === "sheet") return parsers.parseSpreadsheet(file)
   return parsers.parseDocument(file)
 }

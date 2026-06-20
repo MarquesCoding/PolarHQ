@@ -1,6 +1,6 @@
 import { dateLocale } from "@workspace/i18n/format"
 import { useState } from "react"
-import type { CommentThread, DocComment } from "@lib/commentMark"
+import type { CommentThread, DocComment } from "@workspace/screens/commentMark"
 import { Check, ChatCircleSlash, X } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"

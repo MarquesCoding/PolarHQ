@@ -15,7 +15,7 @@ import {
   fetchDecryptedPhotoThumbnail,
   uploadEncryptedMedia,
 } from "@workspace/core/photosE2e"
-import { useUploadManager } from "@lib/uploadManager"
+import { useUploadManager } from "@workspace/screens/uploadManager"
 import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
 import { useQueryClient } from "@tanstack/react-query"
