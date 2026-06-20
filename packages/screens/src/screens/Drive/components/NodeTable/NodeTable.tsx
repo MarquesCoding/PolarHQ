@@ -5,6 +5,7 @@ import type { DriveNode } from "@workspace/core/drive"
 import { formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import type { SelectionApi } from "@workspace/screens/selection"
+import { FileIcon } from "../../fileIcon"
 import { CaretDown, CaretUp, Star } from "@phosphor-icons/react"
 import {
   type ColumnDef,
@@ -267,10 +268,7 @@ const NodeTable = ({
               onClick={(event) => event.stopPropagation()}
             />
             <div className="flex min-w-0 items-center gap-2">
-              <Icon
-                name={iconFor(node)}
-                className={cn("size-4 shrink-0", isFolder ? "text-blue-400" : "text-muted-foreground")}
-              />
+              <FileIcon node={node} className="size-5 shrink-0" />
               <span className="truncate">{node.name}</span>
               {node.favorite ? (
                 <Star weight="fill" className="size-3.5 shrink-0 text-amber-400" />

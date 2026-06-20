@@ -2,8 +2,8 @@ import { dateLocale } from "@workspace/i18n/format"
 import type { ComponentType, ReactNode } from "react"
 import { type DriveNode, fetchVersions } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
-import { Icon } from "@workspace/screens/icons"
 import { Calendar, ClockCounterClockwise, File, Info, X } from "@phosphor-icons/react"
+import { FileIcon } from "../../fileIcon"
 import NumberFlow from "@number-flow/react"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
@@ -61,16 +61,14 @@ const typeIcon = (node: DriveNode): { name: string; color: string } => {
   return { name: "file-text", color: "text-muted-foreground" }
 }
 
-const Preview = ({ node }: { node: DriveNode }) => {
-  const icon = typeIcon(node)
-  return node.thumbnailUrl ? (
+const Preview = ({ node }: { node: DriveNode }) =>
+  node.thumbnailUrl ? (
     <img src={node.thumbnailUrl} alt={node.name} className="h-full w-full object-cover" />
   ) : (
     <div className="bg-sidebar-accent/50 flex h-full w-full items-center justify-center">
-      <Icon name={icon.name} className={cn("size-14", icon.color)} />
+      <FileIcon node={node} className="size-16" />
     </div>
   )
-}
 
 const Row = ({ label, value }: { label: string; value?: ReactNode }) =>
   value ? (

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { type DriveNode, fetchNodes } from "@workspace/core/drive"
-import { Icon } from "@workspace/screens/icons"
+import { FileIcon } from "../../fileIcon"
 import type { SelectionApi } from "@workspace/screens/selection"
 import { CaretRight } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
@@ -10,7 +10,6 @@ import Spinner from "@components/Spinner/Spinner"
 import NodeContextMenu, {
   type DriveNodeActions,
 } from "@pages/Drive/components/NodeContextMenu/NodeContextMenu"
-import { iconFor } from "@pages/Drive/components/NodeTable/NodeTable"
 
 const sortNodes = (nodes: DriveNode[]): DriveNode[] =>
   [...nodes].sort((a, b) => {
@@ -68,13 +67,7 @@ const MillerColumn = ({
                     active ? "bg-sidebar-accent" : "hover:bg-sidebar-accent/50",
                   )}
                 >
-                  <Icon
-                    name={iconFor(node)}
-                    className={cn(
-                      "size-4 shrink-0",
-                      node.kind === "folder" ? "text-blue-400" : "text-muted-foreground",
-                    )}
-                  />
+                  <FileIcon node={node} className="size-5 shrink-0" />
                   <span className="min-w-0 flex-1 truncate">{node.name}</span>
                   {node.kind === "folder" ? (
                     <CaretRight className="text-muted-foreground size-3.5 shrink-0" />
