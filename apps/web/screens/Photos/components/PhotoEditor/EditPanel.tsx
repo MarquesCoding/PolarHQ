@@ -1,4 +1,4 @@
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { ArrowClockwise, Crop, Sparkle, TextT } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"

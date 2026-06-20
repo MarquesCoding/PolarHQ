@@ -1,4 +1,4 @@
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import SizeControlBase, { type SizeControlProps } from "@workspace/ui/components/size-control"
 import { useTranslation } from "react-i18next"
 

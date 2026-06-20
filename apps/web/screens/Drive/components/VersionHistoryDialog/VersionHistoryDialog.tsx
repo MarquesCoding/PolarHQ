@@ -1,7 +1,7 @@
 import { dateLocale } from "@workspace/i18n/format"
 import { type DriveNode, fetchVersions, restoreDriveVersion } from "@workspace/core/drive"
 import { formatBytes } from "@workspace/core/format"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button, buttonVariants } from "@workspace/ui/components/button"
 import {

@@ -1,5 +1,5 @@
 import type { GridAsset } from "@workspace/core/photos"
-import { useElementWidth } from "@lib/useElementWidth"
+import { useElementWidth } from "@workspace/screens/useElementWidth"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
 
 const TARGET_ROW_HEIGHT = 180

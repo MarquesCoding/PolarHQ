@@ -1,6 +1,6 @@
 import { type ReactElement, useEffect, useRef, useState } from "react"
-import { usePersistentNumber } from "@lib/persistentSetting"
-import { useZoomPan } from "@lib/useZoomPan"
+import { usePersistentNumber } from "@workspace/screens/persistentSetting"
+import { useZoomPan } from "@workspace/screens/useZoomPan"
 import {
   Aperture,
   ArrowLeft,

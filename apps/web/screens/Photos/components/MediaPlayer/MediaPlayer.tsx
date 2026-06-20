@@ -1,5 +1,5 @@
 import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"

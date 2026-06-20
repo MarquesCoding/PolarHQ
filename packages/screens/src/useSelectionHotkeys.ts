@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import type { ArmedConfirm } from "@lib/useArmedConfirm"
+import type { ArmedConfirm } from "./useArmedConfirm"
 
 interface SelectionHotkeysOptions {
   active: boolean

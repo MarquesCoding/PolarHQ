@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from "react"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import type { GridAsset } from "@workspace/core/photos"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"
 import { Button } from "@workspace/ui/components/button"

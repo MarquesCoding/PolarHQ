@@ -1,5 +1,5 @@
 import { favoriteAssets, fetchAssets, trashAssets } from "@workspace/core/photos"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import CollectionView from "@pages/Photos/components/CollectionView/CollectionView"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import EmptyState from "@components/EmptyState/EmptyState"

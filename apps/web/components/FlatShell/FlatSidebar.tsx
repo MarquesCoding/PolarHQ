@@ -6,10 +6,10 @@ import { authClient } from "@workspace/core/authClient"
 import { lockKeys } from "@workspace/core/e2e"
 import { fetchStorageStats } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setSearchQuery } from "@workspace/screens/store/uiSlice"
-import { applyThemeWithReveal } from "@lib/themeTransition"
+import { applyThemeWithReveal } from "@workspace/screens/themeTransition"
 import {
   CaretDown,
   CaretUpDown,

@@ -1,7 +1,7 @@
 import { authClient } from "@workspace/core/authClient"
 import { type StorageKind, decryptNodeName, fetchStorageStats } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
-import { Icon } from "@lib/icons"
+import { Icon } from "@workspace/screens/icons"
 import { squarify } from "@lib/treemap"
 import { Devices } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"

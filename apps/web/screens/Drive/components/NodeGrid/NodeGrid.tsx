@@ -1,7 +1,7 @@
 import { type PointerEvent as ReactPointerEvent, useRef, useState } from "react"
 import type { DriveNode } from "@workspace/core/drive"
-import { usePersistentNumber } from "@lib/persistentSetting"
-import type { SelectionApi } from "@lib/selection"
+import { usePersistentNumber } from "@workspace/screens/persistentSetting"
+import type { SelectionApi } from "@workspace/screens/selection"
 import NodeCard from "@pages/Drive/components/NodeCard/NodeCard"
 import NodeContextMenu, {
   type DriveNodeActions,

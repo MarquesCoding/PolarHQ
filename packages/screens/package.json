@@ -7,7 +7,15 @@
     "./platform": "./src/platform.tsx",
     "./store": "./src/store/store.ts",
     "./store/hooks": "./src/store/hooks.ts",
-    "./store/uiSlice": "./src/store/uiSlice.ts"
+    "./store/uiSlice": "./src/store/uiSlice.ts",
+    "./selection": "./src/selection.tsx",
+    "./persistentSetting": "./src/persistentSetting.ts",
+    "./useArmedConfirm": "./src/useArmedConfirm.ts",
+    "./useZoomPan": "./src/useZoomPan.ts",
+    "./useElementWidth": "./src/useElementWidth.ts",
+    "./themeTransition": "./src/themeTransition.ts",
+    "./useSelectionHotkeys": "./src/useSelectionHotkeys.ts",
+    "./icons": "./src/icons.tsx"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
@@ -22,6 +30,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
+    "@workspace/ui": "workspace:*",
     "react-redux": "^9.3.0"
   }
 }
