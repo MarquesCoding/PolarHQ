@@ -8,6 +8,35 @@ commits; you may polish the wording in the Release PR before merging.
 Format: each release is `## [version] - date — Title`, an optional `<!-- tags: a, b -->` line,
 then Markdown notes.
 
+## [0.5.0-alpha] - 2026-06-20 — PolarHQ Desktop + a shared-everything rebuild
+<!-- tags: Release, Desktop, Architecture -->
+
+The headline: **PolarHQ Desktop** — a native app for macOS, Windows, and Linux that runs the *exact same code* as the web app. Underneath it is a ground-up re-architecture that lets one codebase power web, desktop, and (soon) mobile, plus a big round of Photos and Drive polish.
+
+### Added
+- **PolarHQ Desktop** — a native Tauri 2 app with proper macOS chrome: a Tahoe-rounded window, a floating sidebar, the traffic-light controls tucked into the sidebar, and a frosted top bar. Downloads for macOS (Intel + Apple Silicon), Windows, and Linux are on the releases page.
+- **Auto-update** — a Discord-style launch updater that checks for new versions, downloads, installs, and relaunches automatically; signed end-to-end.
+- **Pick your server on the sign-in page** — one animated, split-screen sign-in with a *Self-hosted* / *PolarHQ Hosted* (managed storage, coming soon) toggle and server field right above your credentials.
+- **The Photos lightbox, now in Drive** — image previews in the file browser use the exact same viewer as Photos, filmstrip and all.
+- **A Spacedrive-style Drive** — a Library Overview dashboard, a Miller-column (cascading) view, smart views for Recents / Favorites / File Kinds, pinned saved searches, a storage treemap, and proper file-type icons.
+- **Inline photo editor** — edit straight inside the lightbox.
+
+### Improved
+- **Re-architected into shared packages** — the i18n, data/crypto core, and the entire UI + feature logic now live in `@workspace/*` packages, so web, desktop, and future mobile are thin shells over one codebase with no duplication.
+- **Migrated the web app from Next.js to Vite + React Router**, for one consistent stack across every shell.
+- **Redesigned the Photos lightbox** — a windowed viewer, an animated filmstrip, an ambient blurred backdrop, a minimal toolbar, and an attached details panel.
+- **Frosted top bar** — content scrolls cleanly under a translucent, blurred header.
+- Migrated every icon to a single Phosphor set.
+- Parallelized encrypted part uploads, so one large file can saturate the connection.
+
+### Fixed
+- The desktop webview no longer prompts for the macOS keychain on every launch (the local-cache key is stored as raw bytes there).
+- Uploads stay alive across in-app navigation, and chunked uploads resume through transient failures.
+- The viewer no longer crashes the tab on very large encrypted videos.
+
+### Notes
+- Still alpha, still moving fast. Keep your **recovery code** safe — without your password, encrypted data can't be recovered.
+
 ## [0.3.0] - 2026-06-08 — A full office suite — Sheets & Docs
 <!-- tags: Release, Docs, Sheets -->
 
