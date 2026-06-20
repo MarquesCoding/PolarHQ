@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { dbg } from "@workspace/core/debug"
-import { cosine, embedText, embedderSupported } from "@lib/embedder"
+import { cosine, embedText, embedderSupported } from "./embedder"
 import { isUnlocked } from "@workspace/core/e2e"
-import { fetchIndex, getSearchThreshold, onIndexChanged, searchPrompt } from "@lib/photoIndex"
+import { fetchIndex, getSearchThreshold, onIndexChanged, searchPrompt } from "./photoIndex"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 interface SemanticSearch {

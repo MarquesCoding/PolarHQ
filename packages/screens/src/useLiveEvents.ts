@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { API_URL } from "@lib/env"
+import { coreConfig } from "@workspace/core/config"
 
 export interface LiveEvent {
   type: string
@@ -28,7 +28,7 @@ export const useLiveEvents = (onEvent: (event: LiveEvent) => void, enabled = tru
 
   useEffect(() => {
     if (!enabled) return
-    const url = `${API_URL.replace(/^http/, "ws")}/ws`
+    const url = `${coreConfig().apiUrl.replace(/^http/, "ws")}/ws`
     let socket: WebSocket | null = null
     let closed = false
     let retry: ReturnType<typeof setTimeout> | undefined

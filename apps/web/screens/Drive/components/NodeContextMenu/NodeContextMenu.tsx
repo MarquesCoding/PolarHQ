@@ -3,8 +3,8 @@ import { useNavigation } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
 import { type DriveNode, isArchiveName } from "@workspace/core/drive"
 import { docTypeOf } from "@workspace/core/docs"
-import { officeTypeForName } from "@lib/importFlow"
-import { is3DModelName } from "@lib/model3dExt"
+import { officeTypeForName } from "@workspace/screens/importFlow"
+import { is3DModelName } from "@workspace/screens/model3dExt"
 import {
   ArrowsOutCardinal,
   ArrowSquareOut,

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import { ThemeProvider } from "@components/theme-provider"
-import { UploadProvider } from "@lib/uploadManager"
+import { UploadProvider } from "@workspace/screens/uploadManager"
 import I18nProvider from "@workspace/i18n/provider"
 import { makeQueryClient } from "@workspace/core/queryClient"
 import { setMediaIndexer } from "@workspace/core/photosE2e"
@@ -16,7 +16,7 @@ import PlatformAdapter from "@components/PlatformAdapter/PlatformAdapter"
 /** Wire the app's on-device search indexer into core's post-upload hook (kept out of core so the
  *  embedder/model stays app-side). The dynamic import keeps the model off the initial bundle. */
 setMediaIndexer((assetId, source) => {
-  void import("@lib/photoIndex")
+  void import("@workspace/screens/photoIndex")
     .then((index) => index.embedAndStore(assetId, source))
     .catch(() => undefined)
 })

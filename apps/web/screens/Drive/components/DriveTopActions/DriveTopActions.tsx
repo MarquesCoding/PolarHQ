@@ -3,7 +3,7 @@ import { usePathname, useNavigation } from "@workspace/screens/platform"
 import { driveFolderIdFromPath, emptyDriveTrash, fetchNodes } from "@workspace/core/drive"
 import type { DocType } from "@workspace/core/docs"
 import { createEncryptedDoc } from "@workspace/core/e2e"
-import { useUploadManager } from "@lib/uploadManager"
+import { useUploadManager } from "@workspace/screens/uploadManager"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setDriveDetailsOpen } from "@workspace/screens/store/uiSlice"
 import {

@@ -89,7 +89,7 @@ const SheetMenuBar = ({ sheet, title }: { sheet: SheetController; title: string 
       rows.push(row)
     }
     try {
-      const { exportSpreadsheet } = await import("@lib/officeExport")
+      const { exportSpreadsheet } = await import("@workspace/screens/officeExport")
       await exportSpreadsheet(rows, title || "Spreadsheet")
     } catch {
       toast.error(t("sheetMenuBar.couldNotExport"))

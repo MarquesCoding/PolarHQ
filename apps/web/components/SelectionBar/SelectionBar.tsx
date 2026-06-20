@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { Icon } from "@workspace/screens/icons"
 import { sharePhoto } from "@workspace/core/photos"
 import { useSelection } from "@workspace/screens/selection"
-import { type DownloadItem, useUploadManager } from "@lib/uploadManager"
+import { type DownloadItem, useUploadManager } from "@workspace/screens/uploadManager"
 import NumberFlow from "@number-flow/react"
 import { Button } from "@workspace/ui/components/button"
 import {

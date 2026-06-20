@@ -1,8 +1,8 @@
 import { apiFetch } from "@workspace/core/apiClient"
 import { dbg } from "@workspace/core/debug"
-import { MODEL_VERSION, embedImage, embedderSupported } from "@lib/embedder"
+import { MODEL_VERSION, embedImage, embedderSupported } from "./embedder"
 import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@workspace/core/e2e"
-import { API_URL } from "@lib/env"
+import { coreConfig } from "@workspace/core/config"
 import { fetchDecryptedPhotoOriginal } from "@workspace/core/photosE2e"
 
 /**
@@ -69,7 +69,7 @@ const photoBlobForEmbedding = async (assetId: string): Promise<Blob | null> => {
       URL.revokeObjectURL(decrypted)
     }
   }
-  const response = await fetch(`${API_URL}/api/v1/photos/assets/${assetId}/original`, {
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`, {
     credentials: "include",
   })
   return response.ok ? response.blob() : null

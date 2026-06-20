@@ -1,7 +1,7 @@
 import { formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import { t } from "@workspace/i18n/config"
-import type { UploadItem } from "@lib/uploadManager"
+import type { UploadItem } from "@workspace/screens/uploadManager"
 import { ArrowClockwise, X } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"

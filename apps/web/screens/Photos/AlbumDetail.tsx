@@ -9,7 +9,7 @@ import {
 } from "@workspace/core/photos"
 import { downloadItemFor, expandStacksToDownloadItems } from "@workspace/core/photosE2e"
 import { SelectionProvider, useSelection } from "@workspace/screens/selection"
-import { type LiveEvent, useLiveEvents } from "@lib/useLiveEvents"
+import { type LiveEvent, useLiveEvents } from "@workspace/screens/useLiveEvents"
 import { useArmedConfirm } from "@workspace/screens/useArmedConfirm"
 import { useSelectionHotkeys } from "@workspace/screens/useSelectionHotkeys"
 import SelectionBar from "@components/SelectionBar/SelectionBar"

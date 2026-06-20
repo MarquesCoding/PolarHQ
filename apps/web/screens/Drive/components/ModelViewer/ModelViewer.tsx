@@ -11,7 +11,7 @@ import {
   disposeModel,
   hasTextures,
   loadModel,
-} from "@lib/model3d"
+} from "@workspace/screens/model3d"
 import {
   ArrowsClockwise,
   Cube,
