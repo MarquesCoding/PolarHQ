@@ -7,7 +7,7 @@ import {
   fetchAdminUser,
   setLimitFor,
   unassignRole,
-} from "@lib/admin"
+} from "@workspace/core/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"

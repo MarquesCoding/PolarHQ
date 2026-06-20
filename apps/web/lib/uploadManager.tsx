@@ -9,7 +9,7 @@ import {
 } from "react"
 import { API_URL } from "@lib/env"
 import { ApiError } from "@workspace/core/apiClient"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@workspace/core/authClient"
 import { apiErrorMessage } from "@workspace/core/apiError"
 import { type UploadOptions, postFormWithProgress } from "@workspace/core/xhrUpload"
 import { archiveDriveNodes } from "@workspace/core/drive"
@@ -18,7 +18,7 @@ import {
   uploadEncryptedDriveFile,
   uploadEncryptedDriveFileChunked,
 } from "@workspace/core/driveE2e"
-import { detectBurstGroups } from "@lib/burst"
+import { detectBurstGroups } from "@workspace/core/burst"
 import { isUnlocked } from "@workspace/core/e2e"
 import { pairLivePhotos } from "@workspace/core/motionPhoto"
 import {

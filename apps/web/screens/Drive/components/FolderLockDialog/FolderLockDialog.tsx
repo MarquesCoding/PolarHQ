@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import type { DriveNode } from "@workspace/core/drive"
-import { lockFolder, removeFolderLock, unlockFolder } from "@lib/folderLock"
+import { lockFolder, removeFolderLock, unlockFolder } from "@workspace/core/folderLock"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,

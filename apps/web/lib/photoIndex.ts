@@ -1,5 +1,5 @@
 import { apiFetch } from "@workspace/core/apiClient"
-import { dbg } from "@lib/debug"
+import { dbg } from "@workspace/core/debug"
 import { MODEL_VERSION, embedImage, embedderSupported } from "@lib/embedder"
 import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@workspace/core/e2e"
 import { API_URL } from "@lib/env"

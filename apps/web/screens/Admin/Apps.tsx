@@ -1,4 +1,4 @@
-import { fetchAdminApps, setAppEnabled } from "@lib/admin"
+import { fetchAdminApps, setAppEnabled } from "@workspace/core/admin"
 import { Icon } from "@lib/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@workspace/ui/components/badge"

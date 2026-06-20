@@ -5,7 +5,7 @@ import {
   fetchDocCollaborators,
   removeDocCollaborator,
 } from "@workspace/core/docs"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@workspace/core/authClient"
 import { type ShareKeyResult, isDocEncrypted, rekeyDoc, shareDocKey } from "@workspace/core/e2e"
 import { Trash } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"

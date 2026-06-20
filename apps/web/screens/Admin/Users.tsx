@@ -4,7 +4,7 @@ import {
   fetchAdminUsers,
   setUserBanned,
   setUserRole,
-} from "@lib/admin"
+} from "@workspace/core/admin"
 import UserDetailSheet from "@pages/Admin/components/UserDetailSheet/UserDetailSheet"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"

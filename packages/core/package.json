@@ -24,7 +24,14 @@
     "./driveE2e": "./src/driveE2e.ts",
     "./photos": "./src/photos.ts",
     "./photosE2e": "./src/photosE2e.ts",
-    "./apiError": "./src/apiError.ts"
+    "./apiError": "./src/apiError.ts",
+    "./format": "./src/format.ts",
+    "./admin": "./src/admin.ts",
+    "./setup": "./src/setup.ts",
+    "./authClient": "./src/authClient.ts",
+    "./folderLock": "./src/folderLock.ts",
+    "./burst": "./src/burst.ts",
+    "./debug": "./src/debug.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
@@ -32,6 +39,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.101.0",
     "@workspace/i18n": "workspace:*",
+    "better-auth": "^1.6.14",
     "exifr": "^7.1.3",
     "heic2any": "^0.0.4",
     "libsodium-wrappers-sumo": "^0.8.4"

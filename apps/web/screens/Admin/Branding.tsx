@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { fetchAdminSettings, updateAdminSettings } from "@lib/admin"
+import { fetchAdminSettings, updateAdminSettings } from "@workspace/core/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"

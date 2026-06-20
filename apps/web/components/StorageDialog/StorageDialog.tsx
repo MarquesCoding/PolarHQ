@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
 import { decryptNodeName, fetchStorageStats, type StorageApp } from "@workspace/core/drive"
-import { bytesParts, formatBytes } from "@lib/format"
+import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@lib/icons"
 import { useQuery } from "@tanstack/react-query"
 import {

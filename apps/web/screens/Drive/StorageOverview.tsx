@@ -1,6 +1,6 @@
-import { authClient } from "@lib/authClient"
+import { authClient } from "@workspace/core/authClient"
 import { type StorageKind, decryptNodeName, fetchStorageStats } from "@workspace/core/drive"
-import { bytesParts, formatBytes } from "@lib/format"
+import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@lib/icons"
 import { squarify } from "@lib/treemap"
 import { Devices } from "@phosphor-icons/react"

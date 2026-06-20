@@ -1,4 +1,4 @@
-import { isDebug } from "@lib/debug"
+import { isDebug } from "@workspace/core/debug"
 import { MODEL_VERSION } from "./model"
 
 export { MODEL_VERSION }

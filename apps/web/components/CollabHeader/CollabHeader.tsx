@@ -1,6 +1,6 @@
 import { dateLocale } from "@workspace/i18n/format"
 import { type ReactNode, useEffect, useState } from "react"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@workspace/core/authClient"
 import { type DocMeta } from "@workspace/core/docs"
 import { renameDriveNode } from "@workspace/core/drive"
 import { encryptNameWith } from "@workspace/core/e2e"

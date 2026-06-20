@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigation } from "@workspace/screens/platform"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@workspace/core/authClient"
 import { Icon } from "@lib/icons"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 import LanguageSelector from "@components/LanguageSelector/LanguageSelector"

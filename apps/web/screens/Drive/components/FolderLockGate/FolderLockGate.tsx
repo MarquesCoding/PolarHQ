@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@workspace/core/drive"
-import { unlockFolder } from "@lib/folderLock"
+import { unlockFolder } from "@workspace/core/folderLock"
 import { Lock } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"

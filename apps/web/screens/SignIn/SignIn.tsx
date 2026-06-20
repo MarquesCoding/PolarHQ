@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import RecoveryCodeDialog from "@components/RecoveryCodeDialog"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@workspace/core/authClient"
 import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@workspace/core/e2e"
 import { APP_NAME } from "@lib/env"
 import { useForm } from "@tanstack/react-form"

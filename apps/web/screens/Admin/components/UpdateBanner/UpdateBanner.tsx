@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { ArrowCircleUp, X } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
-import { fetchUpdateCheck } from "@lib/admin"
+import { fetchUpdateCheck } from "@workspace/core/admin"
 import { Button } from "@workspace/ui/components/button"
 
 const DISMISS_KEY = "polarhq.dismissedUpdate"

@@ -1,6 +1,6 @@
 import { dateLocale } from "@workspace/i18n/format"
 import type { MouseEvent } from "react"
-import { formatBytes } from "@lib/format"
+import { formatBytes } from "@workspace/core/format"
 import type { DocMeta } from "@workspace/core/docs"
 import { Icon } from "@lib/icons"
 import { Circle, CheckCircle } from "@phosphor-icons/react"

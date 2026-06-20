@@ -1,4 +1,4 @@
-import { apiFetch } from "@workspace/core/apiClient"
+import { apiFetch } from "./apiClient"
 
 export type RegistrationMode = "invite_only" | "open" | "closed"
 
