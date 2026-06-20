@@ -124,7 +124,7 @@ const NodeCard = ({
       onDoubleClick={() => onOpen(node)}
       className={cn(
         "group relative flex cursor-pointer flex-col items-center gap-1.5 rounded-xl p-2 transition",
-        selected ? "bg-sidebar-accent" : "hover:bg-sidebar-accent/40",
+        selected ? "bg-sidebar-accent/50" : "hover:bg-sidebar-accent/40",
         over && "ring-primary ring-2",
         blink && "ring-primary animate-pulse ring-4",
       )}
