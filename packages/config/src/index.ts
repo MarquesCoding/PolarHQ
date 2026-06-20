@@ -95,7 +95,20 @@ export const config = {
   web: {
     url: env.WEB_URL.split(",")[0]!.trim(),
     origins: Array.from(
-      new Set([env.API_URL, ...env.WEB_URL.split(",")].map((o) => o.trim()).filter(Boolean)),
+      new Set(
+        [
+          env.API_URL,
+          ...env.WEB_URL.split(","),
+          // Desktop (Tauri) shell origins: the Vite dev server under `tauri dev` and the packaged
+          // custom protocol (`tauri://localhost` on macOS/Linux, `http://tauri.localhost` on
+          // Windows). First-party clients, so always trusted for CORS and better-auth.
+          "http://localhost:1420",
+          "tauri://localhost",
+          "http://tauri.localhost",
+        ]
+          .map((origin) => origin.trim())
+          .filter(Boolean),
+      ),
     ),
   },
   auth: {
