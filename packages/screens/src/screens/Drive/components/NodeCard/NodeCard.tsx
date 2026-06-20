@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@workspace/core/drive"
 import { fetchDecryptedThumbnail } from "@workspace/core/driveE2e"
 import { formatBytes } from "@workspace/core/format"
-import { CheckCircle, Circle, Star } from "@phosphor-icons/react"
+import { Star } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import Spinner from "@components/Spinner/Spinner"
 import { FileIcon } from "../../fileIcon"
@@ -129,25 +129,6 @@ const NodeCard = ({
         blink && "ring-primary animate-pulse ring-4",
       )}
     >
-      <button
-        type="button"
-        aria-label={selected ? t("nodeCard.deselect") : t("nodeCard.select")}
-        onClick={(event) => {
-          event.stopPropagation()
-          onToggle(node)
-        }}
-        className={cn(
-          "absolute top-1 left-1 z-10 flex size-6 items-center justify-center rounded-full transition",
-          selected ? "opacity-100" : "opacity-0 group-hover:opacity-100",
-        )}
-      >
-        {selected ? (
-          <CheckCircle weight="fill" className="text-primary bg-background size-5 rounded-full" />
-        ) : (
-          <Circle className="text-muted-foreground bg-background/70 size-5 rounded-full" />
-        )}
-      </button>
-
       {node.favorite ? (
         <span className="absolute top-1 right-1 z-10 flex size-6 items-center justify-center">
           <Star weight="fill" className="size-4 text-amber-400 drop-shadow" />
@@ -187,7 +168,7 @@ const NodeCard = ({
       <div className="flex w-full flex-col items-center gap-0.5">
         <span
           className={cn(
-            "max-w-full truncate rounded px-1.5 text-sm",
+            "w-full truncate rounded px-1.5 text-center text-sm",
             selected && "bg-primary text-primary-foreground",
           )}
         >

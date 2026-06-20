@@ -13,7 +13,7 @@ import {
   fetchDecryptedPhotoOriginal,
   fetchDecryptedPhotoThumbnail,
 } from "@workspace/core/photosE2e"
-import { Circle, Heart, Image, Record, Stack } from "@phosphor-icons/react"
+import { Heart, Image, Record, Stack } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
@@ -293,25 +293,6 @@ const PhotoTile = ({
         </span>
       ) : null}
 
-      <span
-        role="button"
-        tabIndex={-1}
-        aria-label={selected ? t("photoTile.deselect") : t("photoTile.select")}
-        onClick={(event) => {
-          event.stopPropagation()
-          onToggle(event.shiftKey)
-        }}
-        className={cn(
-          "absolute left-1.5 top-1.5 text-white drop-shadow transition",
-          selected ? "opacity-100" : "opacity-0 group-hover:opacity-100",
-        )}
-      >
-        {selected ? (
-          <Icon name="circle-check" className="size-5 text-white" />
-        ) : (
-          <Circle className="size-5" />
-        )}
-      </span>
 
       {asset.isFavorite ? (
         <Heart weight="fill" className="absolute bottom-1.5 left-1.5 size-4 text-white drop-shadow" />
