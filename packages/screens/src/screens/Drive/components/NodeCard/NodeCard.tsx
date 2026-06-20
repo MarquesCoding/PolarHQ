@@ -3,10 +3,10 @@ import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@workspace/core/drive"
 import { fetchDecryptedThumbnail } from "@workspace/core/driveE2e"
 import { formatBytes } from "@workspace/core/format"
-import { Icon } from "@workspace/screens/icons"
 import { CheckCircle, Circle, Star } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import Spinner from "@components/Spinner/Spinner"
+import { FileIcon } from "../../fileIcon"
 
 export const DRIVE_NODES_MIME = "application/x-drive-nodes"
 
@@ -22,34 +22,6 @@ interface NodeCardProps {
   dragIds: string[]
   onDropNodes?: (folder: DriveNode, ids: string[]) => void
   onSpringInto?: (folder: DriveNode) => void
-}
-
-const ARCHIVE = /\.(zip|tar|gz|tgz|rar|7z|bz2|xz|dmg)$/i
-const DATABASE = /\.(db|sqlite|sqlite3|sql)$/i
-const TEXTUAL = /\.(txt|md|json|js|ts|tsx|jsx|css|html|ya?ml|csv|sh)$/i
-
-const typeIcon = (node: DriveNode): { name: string; color: string } => {
-  const name = node.name.toLowerCase()
-  const mime = node.mimeType ?? ""
-  if (mime === "application/vnd.orbit.doc")
-    return { name: "document", color: "text-muted-foreground" }
-  if (mime === "application/vnd.orbit.sheet")
-    return { name: "table", color: "text-muted-foreground" }
-  if (mime === "application/vnd.orbit.board")
-    return { name: "palette", color: "text-muted-foreground" }
-  if (/\.(xlsx|xls|csv|tsv|ods)$/i.test(name)) return { name: "table", color: "text-emerald-500" }
-  if (/\.docx$/i.test(name)) return { name: "document", color: "text-blue-500" }
-  if (/\.pptx$/i.test(name)) return { name: "presentation", color: "text-amber-500" }
-  if (mime.startsWith("audio/")) return { name: "music", color: "text-emerald-400" }
-  if (mime.startsWith("video/")) return { name: "video", color: "text-rose-400" }
-  if (mime === "application/pdf" || name.endsWith(".pdf"))
-    return { name: "file-pdf", color: "text-red-400" }
-  if (ARCHIVE.test(name)) return { name: "file-zip", color: "text-muted-foreground" }
-  if (DATABASE.test(name)) return { name: "database", color: "text-violet-400" }
-  if (mime.startsWith("image/")) return { name: "photo", color: "text-sky-400" }
-  if (mime.startsWith("text/") || TEXTUAL.test(name))
-    return { name: "file-text", color: "text-muted-foreground" }
-  return { name: "file-text", color: "text-muted-foreground" }
 }
 
 const NodeCard = ({
@@ -71,7 +43,6 @@ const NodeCard = ({
     node.thumbnailUrl ? loadedThumbnails.has(node.thumbnailUrl) : false,
   )
   const [decryptedThumb, setDecryptedThumb] = useState<string | null>(null)
-  const type = typeIcon(node)
   const springTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const thumbUrl = node.thumbnailUrl ?? decryptedThumb
 
@@ -208,14 +179,7 @@ const NodeCard = ({
           </div>
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            {isFolder ? (
-              <Icon
-                name={node.special ? "folder-shield" : node.locked ? "folder-key" : "folder"}
-                className="size-16 text-blue-400"
-              />
-            ) : (
-              <Icon name={type.name} className={cn("size-14", type.color)} />
-            )}
+            <FileIcon node={node} className="size-20" />
           </div>
         )}
       </div>
