@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { dbg } from "@lib/debug"
+import { dbg } from "@workspace/core/debug"
 import { cosine, embedText, embedderSupported } from "@lib/embedder"
 import { isUnlocked } from "@workspace/core/e2e"
 import { fetchIndex, getSearchThreshold, onIndexChanged, searchPrompt } from "@lib/photoIndex"

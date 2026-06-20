@@ -1,5 +1,5 @@
 import { dateLocale } from "@workspace/i18n/format"
-import { fetchAdminAudit } from "@lib/admin"
+import { fetchAdminAudit } from "@workspace/core/admin"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { Badge } from "@workspace/ui/components/badge"

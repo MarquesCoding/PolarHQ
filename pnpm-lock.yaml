@@ -478,6 +478,9 @@ importers:
       '@workspace/i18n':
         specifier: workspace:*
         version: link:../i18n
+      better-auth:
+        specifier: ^1.6.14
+        version: 1.6.14(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(kysely@0.29.2)(postgres@3.4.9))(next@16.2.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.1.8(@types/node@24.13.0)(msw@2.14.6(@types/node@24.13.0)(typescript@5.9.3))(vite@8.0.16(@types/node@24.13.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.4)))
       exifr:
         specifier: ^7.1.3
         version: 7.1.3

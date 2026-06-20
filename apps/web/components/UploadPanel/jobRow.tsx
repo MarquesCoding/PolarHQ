@@ -1,4 +1,4 @@
-import { formatBytes } from "@lib/format"
+import { formatBytes } from "@workspace/core/format"
 import { Icon } from "@lib/icons"
 import { t } from "@workspace/i18n/config"
 import type { UploadItem } from "@lib/uploadManager"

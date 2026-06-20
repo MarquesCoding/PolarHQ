@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useState } from "react"
 import { usePathname, useNavigation } from "@workspace/screens/platform"
-import { authClient } from "@lib/authClient"
+import { authClient } from "@workspace/core/authClient"
 import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@workspace/core/e2e"
 import { SidebarProvider, useSidebar } from "@workspace/ui/components/sidebar"
 import OnboardingCard from "@components/OnboardingCard/OnboardingCard"

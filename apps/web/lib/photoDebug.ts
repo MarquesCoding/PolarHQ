@@ -1,4 +1,4 @@
-import { setDebug } from "@lib/debug"
+import { setDebug } from "@workspace/core/debug"
 import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "@lib/embedder"
 import { isUnlocked } from "@workspace/core/e2e"
 import {

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { apiErrorMessage } from "@workspace/core/apiError"
-import { type Group, createGroup } from "@lib/setup"
+import { type Group, createGroup } from "@workspace/core/setup"
 import { useForm } from "@tanstack/react-form"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"

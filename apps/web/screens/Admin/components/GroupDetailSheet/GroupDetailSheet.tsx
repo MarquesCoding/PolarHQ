@@ -7,7 +7,7 @@ import {
   fetchAdminUsers,
   removeGroupMember,
   setLimitFor,
-} from "@lib/admin"
+} from "@workspace/core/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"

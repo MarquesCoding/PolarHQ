@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { type AdminLimit, fetchAdminLimits, setInstanceLimit } from "@lib/admin"
+import { type AdminLimit, fetchAdminLimits, setInstanceLimit } from "@workspace/core/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"

@@ -1,4 +1,4 @@
-import { apiFetch } from "@workspace/core/apiClient"
+import { apiFetch } from "./apiClient"
 
 export interface AdminUser {
   id: string

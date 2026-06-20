@@ -8,7 +8,7 @@ import {
   formatBytes,
   triggerBackup,
   updateBackupSettings,
-} from "@lib/admin"
+} from "@workspace/core/admin"
 import { API_URL } from "@lib/env"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@workspace/ui/components/badge"

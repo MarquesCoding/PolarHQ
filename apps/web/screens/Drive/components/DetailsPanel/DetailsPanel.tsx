@@ -1,7 +1,7 @@
 import { dateLocale } from "@workspace/i18n/format"
 import type { ComponentType, ReactNode } from "react"
 import { type DriveNode, fetchVersions } from "@workspace/core/drive"
-import { bytesParts, formatBytes } from "@lib/format"
+import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@lib/icons"
 import { Calendar, ClockCounterClockwise, File, Info, X } from "@phosphor-icons/react"
 import NumberFlow from "@number-flow/react"
