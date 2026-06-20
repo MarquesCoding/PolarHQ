@@ -9,15 +9,7 @@ import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setSearchQuery } from "@workspace/screens/store/uiSlice"
-import { applyThemeWithReveal } from "@workspace/screens/themeTransition"
-import {
-  CaretDown,
-  CaretUpDown,
-  MagnifyingGlass,
-  Moon,
-  SignOut,
-  Sun,
-} from "@phosphor-icons/react"
+import { CaretDown, CaretUpDown, MagnifyingGlass, SignOut } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
@@ -31,8 +23,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
-import { cn } from "@workspace/ui/lib/utils"
-import { useTheme } from "@components/theme-provider"
 import { useTranslation } from "react-i18next"
 import Changelog from "@components/Changelog/Changelog"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
@@ -78,7 +68,6 @@ const FlatSidebar = ({
   const dispatch = useAppDispatch()
   const query = useAppSelector((state) => state.ui.searchQuery)
   const { data: session } = authClient.useSession()
-  const { resolvedTheme, setTheme } = useTheme()
 
   const { data: apps } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
   const { data: usage } = useQuery({ queryKey: ["drive", "storage"], queryFn: fetchStorageStats })
@@ -106,8 +95,6 @@ const FlatSidebar = ({
     const frame = requestAnimationFrame(() => setShownUsed(bytesParts(usage.usedBytes).value))
     return () => cancelAnimationFrame(frame)
   }, [usage])
-
-  const dark = resolvedTheme === "dark"
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -284,37 +271,6 @@ const FlatSidebar = ({
 
         <div className="px-1 pt-0.5 text-center">
           <Changelog version={coreConfig().appVersion} build={coreConfig().appBuild} />
-        </div>
-
-        <div className="flex justify-center">
-          <button
-            type="button"
-            role="switch"
-            aria-checked={dark}
-            aria-label={t("flatSidebar.toggleDarkMode")}
-            onClick={(event) => {
-              const rect = event.currentTarget.getBoundingClientRect()
-              applyThemeWithReveal(
-                () => setTheme(dark ? "light" : "dark"),
-                { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
-                dark,
-              )
-            }}
-            className="bg-sidebar-accent relative h-4 w-7 shrink-0 rounded-full transition-colors"
-          >
-            <span
-              className={cn(
-                "bg-background absolute top-0.5 start-0.5 flex size-3 items-center justify-center rounded-full shadow transition-transform",
-                dark && "translate-x-3 rtl:-translate-x-3",
-              )}
-            >
-              {dark ? (
-                <Moon className="size-2" />
-              ) : (
-                <Sun className="size-2 text-amber-500" />
-              )}
-            </span>
-          </button>
         </div>
       </div>
 
