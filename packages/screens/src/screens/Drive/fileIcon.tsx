@@ -79,7 +79,7 @@ const MODEL3D = /\.(stl|obj|ply|fbx|gltf|glb)$/i
 const iconKeyFor = (node: DriveNode): string => {
   const name = node.name.toLowerCase()
   const mime = node.mimeType ?? ""
-  if (node.kind === "folder") return node.special || node.locked ? "FolderGrey" : "Folder"
+  if (node.kind === "folder") return "Folder"
   if (mime === "application/vnd.orbit.doc") return "Document_doc"
   if (mime === "application/vnd.orbit.sheet") return "Document_xls"
   if (mime === "application/vnd.orbit.board") return "Image"
