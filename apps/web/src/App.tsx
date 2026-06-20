@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router"
 import Providers from "@components/Providers/Providers"
-import { AppRoutes } from "./routes"
+import { AppRoutes } from "@workspace/screens/router"
 
 export const App = () => (
   <BrowserRouter>

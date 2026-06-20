@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./router": "./src/router/routes.tsx",
     "./platform": "./src/platform.tsx",
     "./store": "./src/store/store.ts",
     "./store/hooks": "./src/store/hooks.ts",
