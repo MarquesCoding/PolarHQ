@@ -3,6 +3,7 @@
 import { useRef } from "react"
 import { type Variants, motion, useScroll, useTransform } from "motion/react"
 import { Button } from "@workspace/ui/components/button"
+import { RELEASES } from "@lib/changelog"
 import {
   AndroidLogo,
   AppleLogo,
@@ -11,6 +12,10 @@ import {
   LinuxLogo,
   WindowsLogo,
 } from "@phosphor-icons/react"
+
+const REPO_URL = "https://github.com/MarquesCoding/PolarHQ"
+const DOWNLOAD_URL = `${REPO_URL}/releases/latest`
+const VERSION = RELEASES[0]?.version ?? "0.5.0-alpha"
 
 const container: Variants = {
   hidden: {},
@@ -111,15 +116,17 @@ const Hero = () => {
           >
             <motion.div variants={item}>
               <Button
+                render={<a href={DOWNLOAD_URL} target="_blank" rel="noreferrer" />}
                 size="lg"
                 className="gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-white shadow-sm backdrop-blur hover:bg-white/20"
               >
                 <AppleLogo className="size-4" />
-                Download for Mac
+                Download for desktop
               </Button>
             </motion.div>
             <motion.div variants={item}>
               <Button
+                render={<a href={REPO_URL} target="_blank" rel="noreferrer" />}
                 size="lg"
                 className="gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-white shadow-sm backdrop-blur hover:bg-white/20"
               >
@@ -133,20 +140,41 @@ const Hero = () => {
             variants={item}
             className="text-foreground/55 flex items-center gap-3 text-sm"
           >
-            <span>Alpha v0.1.0</span>
+            <span>Alpha v{VERSION}</span>
             <span aria-hidden className="bg-foreground/25 h-3 w-px" />
-            <span>macOS 12+</span>
+            <span>macOS · Windows · Linux</span>
           </motion.div>
 
-          <motion.div
-            variants={item}
-            className="text-foreground/55 flex items-center gap-6"
-          >
-            <AppleLogo className="size-[18px]" />
-            <WindowsLogo className="size-[18px]" />
-            <LinuxLogo className="size-[18px]" />
-            <AndroidLogo className="size-[18px]" />
-            <Globe className="size-[18px]" />
+          <motion.div variants={item} className="flex items-center gap-6">
+            <a
+              href={DOWNLOAD_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Download for macOS"
+              className="text-foreground/55 hover:text-foreground transition-colors"
+            >
+              <AppleLogo className="size-[18px]" />
+            </a>
+            <a
+              href={DOWNLOAD_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Download for Windows"
+              className="text-foreground/55 hover:text-foreground transition-colors"
+            >
+              <WindowsLogo className="size-[18px]" />
+            </a>
+            <a
+              href={DOWNLOAD_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Download for Linux"
+              className="text-foreground/55 hover:text-foreground transition-colors"
+            >
+              <LinuxLogo className="size-[18px]" />
+            </a>
+            <AndroidLogo className="text-foreground/30 size-[18px]" />
+            <Globe className="text-foreground/55 size-[18px]" />
           </motion.div>
         </motion.div>
       </motion.div>

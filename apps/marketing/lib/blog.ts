@@ -11,6 +11,45 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "polarhq-desktop",
+    title: "PolarHQ Desktop — the whole suite, now native",
+    excerpt:
+      "A native app for macOS, Windows, and Linux that runs the exact same code as the web — built on a ground-up rebuild that lets one codebase power every platform.",
+    author: "Marques",
+    date: "2026-06-20",
+    eyebrow: "Alpha v0.5",
+    tags: ["News", "Release", "Desktop"],
+    content: `PolarHQ now lives on your desktop. **A native app for macOS, Windows, and Linux** — not a browser tab pretending to be an app, but a real window in your dock that opens instantly and feels like it belongs on your machine.
+
+And here's the part we're proud of: it runs the *exact same code* as the web app. Not a port, not a fork — the same Photos, the same Drive, the same encryption. One codebase, every platform.
+
+## How it's the same app, everywhere
+
+Getting here meant tearing the app apart and rebuilding it as a set of shared packages. The UI, the feature logic, the translations, and the entire data and crypto layer now live in libraries that any "shell" can import. The web app is one thin shell. The desktop app is another. Mobile will be a third.
+
+> The goal: write a feature once, and it shows up — identical — on web, desktop, and mobile.
+
+The desktop shell is built on **Tauri**, so the binary is tiny and fast, with a real Rust core underneath for the native pieces still to come (peer-to-peer device sync, on-device processing).
+
+## Native where it counts
+
+It doesn't just *work* on macOS — it feels native. A properly rounded window, a floating sidebar with the traffic-light controls tucked right into it, and a frosted top bar that content slides under as you scroll. Little things, but they're the difference between "a web page in a window" and "an app."
+
+## It updates itself
+
+Like the apps you already trust, PolarHQ Desktop checks for new versions on launch, downloads them, installs them, and relaunches — no manual downloads, no "a new version is available" nagging. Every update is cryptographically signed end-to-end, so you only ever install builds we actually shipped.
+
+## Sign in, your way
+
+The sign-in screen now asks the one question that matters for a self-hosted app: *where does your data live?* Choose **Self-hosted** and point it at your server, or — soon — choose **PolarHQ Hosted** and let us run it for you. Either way it's the same private, end-to-end encrypted suite.
+
+## Get it
+
+Downloads for macOS (Intel and Apple Silicon), Windows, and Linux are on the [releases page](https://github.com/MarquesCoding/PolarHQ/releases/latest). The web app isn't going anywhere — it's the same app, after all — but if you want PolarHQ in your dock, it's there now.
+
+This is **Alpha v0.5**. Next up: the mobile apps, built on the very same shared core.`,
+  },
+  {
     slug: "introducing-polarhq",
     title: "Introducing PolarHQ — your private home for everything",
     excerpt:
