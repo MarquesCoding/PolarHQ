@@ -21,6 +21,8 @@ import icon_Folder from "./fileIcons/Folder.png"
 import icon_FolderGrey from "./fileIcons/FolderGrey.png"
 import icon_FolderGrey_Light from "./fileIcons/FolderGrey_Light.png"
 import icon_Folder_Light from "./fileIcons/Folder_Light.png"
+import icon_Home from "./fileIcons/Home.png"
+import icon_Home_Light from "./fileIcons/Home_Light.png"
 import icon_Image from "./fileIcons/Image.png"
 import icon_Image_Light from "./fileIcons/Image_Light.png"
 import icon_Mesh from "./fileIcons/Mesh.png"
@@ -56,6 +58,8 @@ const ICONS: Record<string, string> = {
   "FolderGrey": icon_FolderGrey,
   "FolderGrey_Light": icon_FolderGrey_Light,
   "Folder_Light": icon_Folder_Light,
+  "Home": icon_Home,
+  "Home_Light": icon_Home_Light,
   "Image": icon_Image,
   "Image_Light": icon_Image_Light,
   "Mesh": icon_Mesh,
@@ -79,7 +83,7 @@ const MODEL3D = /\.(stl|obj|ply|fbx|gltf|glb)$/i
 const iconKeyFor = (node: DriveNode): string => {
   const name = node.name.toLowerCase()
   const mime = node.mimeType ?? ""
-  if (node.kind === "folder") return node.special || node.locked ? "FolderGrey" : "Folder"
+  if (node.kind === "folder") return "Folder"
   if (mime === "application/vnd.orbit.doc") return "Document_doc"
   if (mime === "application/vnd.orbit.sheet") return "Document_xls"
   if (mime === "application/vnd.orbit.board") return "Image"
@@ -102,5 +106,12 @@ export const FileIcon = ({ node, className }: { node: DriveNode; className?: str
   const key = iconKeyFor(node)
   const variant = resolvedTheme === "light" ? `${key}_Light` : key
   const src = ICONS[variant] ?? ICONS[key] ?? ICONS.Document
+  return <img src={src} alt="" draggable={false} className={cn("object-contain", className)} />
+}
+
+/** Icon for the parent (".." up one level) entry — Spacedrive's Home icon. */
+export const ParentIcon = ({ className }: { className?: string }) => {
+  const { resolvedTheme } = useTheme()
+  const src = resolvedTheme === "light" ? ICONS.Home_Light : ICONS.Home
   return <img src={src} alt="" draggable={false} className={cn("object-contain", className)} />
 }

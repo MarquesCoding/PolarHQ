@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Icon } from "@workspace/screens/icons"
 import { cn } from "@workspace/ui/lib/utils"
+import { ParentIcon } from "../../fileIcon"
 import { DRIVE_NODES_MIME } from "@pages/Drive/components/NodeCard/NodeCard"
 
 interface ParentCardProps {
@@ -71,7 +71,7 @@ const ParentCard = ({ onOpen, onDrop }: ParentCardProps) => {
       )}
     >
       <div className="flex aspect-square w-full items-center justify-center">
-        <Icon name="folder-open" className="text-muted-foreground size-16" />
+        <ParentIcon className="size-16" />
       </div>
       <div className="flex w-full flex-col items-center gap-0.5">
         <span className="truncate text-sm font-medium">..</span>
