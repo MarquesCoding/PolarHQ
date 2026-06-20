@@ -3,9 +3,8 @@ import { type MouseEvent, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@workspace/core/drive"
 import { formatBytes } from "@workspace/core/format"
-import { Icon } from "@workspace/screens/icons"
 import type { SelectionApi } from "@workspace/screens/selection"
-import { FileIcon } from "../../fileIcon"
+import { FileIcon, ParentIcon } from "../../fileIcon"
 import { CaretDown, CaretUp, Star } from "@phosphor-icons/react"
 import {
   type ColumnDef,
@@ -191,7 +190,7 @@ const NodeTable = ({
         >
           <span />
           <div className="flex min-w-0 items-center gap-2">
-            <Icon name="folder-open" className="text-muted-foreground size-4 shrink-0" />
+            <ParentIcon className="size-5 shrink-0" />
             <span className="truncate">..</span>
           </div>
           <span className="text-muted-foreground">—</span>
