@@ -1,5 +1,3 @@
-"use client"
-
 import { useCallback, useState } from "react"
 import { uploadAsset } from "@workspace/core/photos"
 import { toast } from "sonner"

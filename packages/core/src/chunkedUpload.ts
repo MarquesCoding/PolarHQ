@@ -1,5 +1,3 @@
-"use client"
-
 import { apiFetch } from "./apiClient"
 import { STREAM_CHUNK_SIZE, type StreamSealer } from "./crypto"
 import { type UploadOptions, retryOnTransient } from "./xhrUpload"

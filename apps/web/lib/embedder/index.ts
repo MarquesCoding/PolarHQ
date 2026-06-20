@@ -1,5 +1,3 @@
-"use client"
-
 import { isDebug } from "@lib/debug"
 import { MODEL_VERSION } from "./model"
 

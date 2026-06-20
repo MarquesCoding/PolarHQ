@@ -1,5 +1,3 @@
-"use client"
-
 import { type ReactNode } from "react"
 import { usePathname } from "@workspace/screens/platform"
 import { Icon } from "@lib/icons"

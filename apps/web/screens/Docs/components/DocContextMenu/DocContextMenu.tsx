@@ -1,5 +1,3 @@
-"use client"
-
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import type { DocMeta } from "@workspace/core/docs"

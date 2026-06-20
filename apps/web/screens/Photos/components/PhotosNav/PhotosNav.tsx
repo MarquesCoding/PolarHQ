@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { AppLink as Link, usePathname } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"

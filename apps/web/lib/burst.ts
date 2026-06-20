@@ -1,5 +1,3 @@
-"use client"
-
 import exifr from "exifr"
 
 /** A run of at least this many rapid frames from one camera is treated as a burst. */

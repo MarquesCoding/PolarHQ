@@ -1,5 +1,3 @@
-"use client"
-
 import type { GridAsset } from "@workspace/core/photos"
 import { useElementWidth } from "@lib/useElementWidth"
 import PhotoTile from "@pages/Photos/components/PhotoTile/PhotoTile"

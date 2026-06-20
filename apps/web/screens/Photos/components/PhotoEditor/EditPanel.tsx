@@ -1,5 +1,3 @@
-"use client"
-
 import { Icon } from "@lib/icons"
 import { ArrowClockwise, Crop, Sparkle, TextT } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"

@@ -1,5 +1,3 @@
-"use client"
-
 import { type ReactNode } from "react"
 import { Icon } from "@lib/icons"
 import { motion } from "motion/react"

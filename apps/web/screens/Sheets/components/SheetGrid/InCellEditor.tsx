@@ -1,5 +1,3 @@
-"use client"
-
 import { type KeyboardEvent as ReactKeyboardEvent, type RefObject, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { cn } from "@workspace/ui/lib/utils"

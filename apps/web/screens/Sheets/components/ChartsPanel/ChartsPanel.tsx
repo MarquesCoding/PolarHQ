@@ -1,5 +1,3 @@
-"use client"
-
 import { X } from "@phosphor-icons/react"
 import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"

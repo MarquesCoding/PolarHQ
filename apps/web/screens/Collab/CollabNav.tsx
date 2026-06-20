@@ -1,5 +1,3 @@
-"use client"
-
 import { usePathname } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
 import { type DocType, editorHref, editorOpensNewTab, fetchDocs } from "@workspace/core/docs"

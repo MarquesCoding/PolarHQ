@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import RecoveryCodeDialog from "@components/RecoveryCodeDialog"
 import { authClient } from "@lib/authClient"

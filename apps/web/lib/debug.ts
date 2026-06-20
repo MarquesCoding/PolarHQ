@@ -1,5 +1,3 @@
-"use client"
-
 const KEY = "orbit.debug"
 
 export const isDebug = (): boolean => {

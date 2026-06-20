@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Icon } from "@lib/icons"
 import { createTag, fetchTags, tagAssets } from "@workspace/core/photos"

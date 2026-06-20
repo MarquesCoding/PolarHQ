@@ -1,5 +1,3 @@
-"use client"
-
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setViewMode } from "@workspace/screens/store/uiSlice"
 import { Columns, GridFour, ListBullets } from "@phosphor-icons/react"

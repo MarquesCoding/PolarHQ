@@ -1,5 +1,3 @@
-"use client"
-
 import { authClient } from "@lib/authClient"
 import { type StorageKind, decryptNodeName, fetchStorageStats } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@lib/format"

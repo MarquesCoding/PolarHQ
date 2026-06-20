@@ -1,5 +1,3 @@
-"use client"
-
 import { apiFetch } from "./apiClient"
 import { uploadStreamingParts } from "./chunkedUpload"
 import {

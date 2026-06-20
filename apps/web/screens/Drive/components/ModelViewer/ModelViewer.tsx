@@ -1,4 +1,3 @@
-"use client"
 /* eslint-disable react/no-unknown-property */
 
 import { Suspense, useEffect, useMemo, useState } from "react"

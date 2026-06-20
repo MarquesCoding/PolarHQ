@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"

@@ -1,5 +1,3 @@
-"use client"
-
 import { apiFetch } from "@workspace/core/apiClient"
 import { decryptWithMetaKey, encryptWithMetaKey, isUnlocked } from "@workspace/core/e2e"
 import { encryptedGpsFor, fetchDecryptedPhotoOriginal } from "@workspace/core/photosE2e"

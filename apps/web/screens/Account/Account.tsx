@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import { authClient } from "@lib/authClient"
@@ -10,7 +8,7 @@ import { PageSpinner } from "@components/Spinner/Spinner"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
-import { useTheme } from "next-themes"
+import { useTheme } from "@components/theme-provider"
 import { useTranslation } from "react-i18next"
 
 const Section = ({
@@ -49,7 +47,7 @@ const Account = () => {
     { value: "light", label: t("light") },
     { value: "dark", label: t("dark") },
     { value: "system", label: t("system") },
-  ]
+  ] as const
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">

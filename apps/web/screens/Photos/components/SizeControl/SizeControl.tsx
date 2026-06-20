@@ -1,5 +1,3 @@
-"use client"
-
 import { Icon } from "@lib/icons"
 import SizeControlBase, { type SizeControlProps } from "@workspace/ui/components/size-control"
 import { useTranslation } from "react-i18next"

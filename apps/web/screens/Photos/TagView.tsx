@@ -1,5 +1,3 @@
-"use client"
-
 import { favoriteAssets, fetchAssets, fetchTags, trashAssets } from "@workspace/core/photos"
 import { Icon } from "@lib/icons"
 import CollectionView from "@pages/Photos/components/CollectionView/CollectionView"

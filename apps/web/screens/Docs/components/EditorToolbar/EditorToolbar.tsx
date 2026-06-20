@@ -1,5 +1,3 @@
-"use client"
-
 import { type ReactNode, useRef } from "react"
 import { useTranslation } from "react-i18next"
 import { sanitizeLinkHref } from "@lib/editorConfig"

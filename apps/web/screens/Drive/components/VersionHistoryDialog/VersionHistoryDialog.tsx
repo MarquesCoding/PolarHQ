@@ -1,5 +1,3 @@
-"use client"
-
 import { dateLocale } from "@workspace/i18n/format"
 import { type DriveNode, fetchVersions, restoreDriveVersion } from "@workspace/core/drive"
 import { formatBytes } from "@lib/format"

@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { AppLink as Link } from "@workspace/screens/platform"
 import { type Album, createAlbum, fetchAlbums } from "@workspace/core/photos"

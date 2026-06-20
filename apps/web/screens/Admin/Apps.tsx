@@ -1,5 +1,3 @@
-"use client"
-
 import { fetchAdminApps, setAppEnabled } from "@lib/admin"
 import { Icon } from "@lib/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"

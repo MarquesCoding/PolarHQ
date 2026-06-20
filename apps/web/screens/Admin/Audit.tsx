@@ -1,5 +1,3 @@
-"use client"
-
 import { dateLocale } from "@workspace/i18n/format"
 import { fetchAdminAudit } from "@lib/admin"
 import { useQuery } from "@tanstack/react-query"

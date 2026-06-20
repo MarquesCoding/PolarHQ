@@ -1,5 +1,3 @@
-"use client"
-
 import { setDebug } from "@lib/debug"
 import { MODEL_VERSION, cosine, embedText, embedderSupported, warmupEmbedder } from "@lib/embedder"
 import { isUnlocked } from "@workspace/core/e2e"

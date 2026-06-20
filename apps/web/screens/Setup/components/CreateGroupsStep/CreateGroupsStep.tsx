@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { apiErrorMessage } from "@workspace/core/apiError"
 import { type Group, createGroup } from "@lib/setup"

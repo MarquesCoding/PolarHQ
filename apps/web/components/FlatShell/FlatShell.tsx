@@ -1,5 +1,3 @@
-"use client"
-
 import { type ReactNode, useEffect, useState } from "react"
 import { usePathname, useNavigation } from "@workspace/screens/platform"
 import { authClient } from "@lib/authClient"

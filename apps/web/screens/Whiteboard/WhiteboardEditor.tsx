@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import type { CollabDocument } from "@lib/useCollabDocument"
 import CollabHeader from "@components/CollabHeader/CollabHeader"

@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import { type DocMeta, type DocType, fetchDocs, openEditor } from "@workspace/core/docs"

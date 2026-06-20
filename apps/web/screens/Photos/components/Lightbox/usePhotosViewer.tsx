@@ -1,5 +1,3 @@
-"use client"
-
 import { useMemo } from "react"
 import { decryptName } from "@workspace/core/e2e"
 import {

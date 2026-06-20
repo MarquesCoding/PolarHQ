@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect } from "react"
 import { applyImportName, takeImport } from "@lib/importFlow"
 import type { CollabDocument } from "@lib/useCollabDocument"

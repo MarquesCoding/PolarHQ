@@ -1,5 +1,3 @@
-"use client"
-
 import { usePathname, useNavigation } from "@workspace/screens/platform"
 import { type DocType } from "@workspace/core/docs"
 import { createEncryptedDoc } from "@workspace/core/e2e"

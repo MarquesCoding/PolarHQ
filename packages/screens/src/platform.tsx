@@ -1,5 +1,3 @@
-"use client"
-
 import { type AnchorHTMLAttributes, type ComponentType, type ReactNode, createContext, useContext } from "react"
 
 /** The subset of routing the screens use, injected per shell (Next router on web, a Vite/Tauri

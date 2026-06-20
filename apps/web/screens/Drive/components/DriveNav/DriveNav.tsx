@@ -1,5 +1,3 @@
-"use client"
-
 import { AppLink as Link, usePathname } from "@workspace/screens/platform"
 import {
   deleteSavedSearch,

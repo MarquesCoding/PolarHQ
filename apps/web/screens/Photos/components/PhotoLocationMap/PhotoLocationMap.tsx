@@ -1,5 +1,3 @@
-"use client"
-
 import { Map, MapMarker, MarkerContent } from "@workspace/ui/components/map"
 
 interface PhotoLocationMapProps {

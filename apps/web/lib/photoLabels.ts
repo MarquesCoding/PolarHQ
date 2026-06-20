@@ -1,5 +1,3 @@
-"use client"
-
 import { cosine, embedText } from "@lib/embedder"
 import { fetchIndex } from "@lib/photoIndex"
 

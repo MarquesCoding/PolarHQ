@@ -1,5 +1,3 @@
-"use client"
-
 import { dateLocale } from "@workspace/i18n/format"
 import { type MouseEvent, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"

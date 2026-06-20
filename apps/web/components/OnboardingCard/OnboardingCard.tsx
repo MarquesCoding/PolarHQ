@@ -1,5 +1,3 @@
-"use client"
-
 import { type ReactNode, useEffect, useState } from "react"
 import { Icon } from "@lib/icons"
 import type { GridAsset } from "@workspace/core/photos"
