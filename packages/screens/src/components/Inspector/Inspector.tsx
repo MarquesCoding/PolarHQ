@@ -10,7 +10,7 @@ export interface InspectorTab {
   content: ReactNode
 }
 
-/** Shared tabbed inspector shell (Spacedrive-style rail): a row of icon tabs over a scrolling
+/** Shared tabbed inspector shell (icon-tab rail): a row of icon tabs over a scrolling
  *  content area. Drive and Photos supply their own tabs; the chrome + tab state live here. The
  *  active tab persists across selections and falls back to the first when it no longer exists. */
 const Inspector = ({ tabs }: { tabs: InspectorTab[] }) => {

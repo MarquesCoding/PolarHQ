@@ -9,7 +9,7 @@
   --titlebar-h: 1.75rem;
 }
 
-/* Desktop "floating" sidebar (Spacedrive/Tahoe style): inset the fixed sidebar so its inner panel
+/* Desktop "floating" sidebar (macOS Tahoe style): inset the fixed sidebar so its inner panel
  * reads as a rounded card floating in the window. The card extends to the top with a small even
  * margin, and its content is padded down by `--titlebar-h` so the overlaid macOS traffic lights sit
  * INSIDE the card's top (over its background), above the header. Scoped to `.tauri`. */

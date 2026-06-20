@@ -56,7 +56,7 @@ fn build_main_window(app: &tauri::App) -> tauri::Result<()> {
     Ok(())
 }
 
-/// Attach an invisible `NSToolbar` to the native window (the approach Spacedrive uses). On macOS
+/// Attach an invisible `NSToolbar` to the native window. On macOS
 /// Tahoe a window *with a toolbar* gets the full native corner rounding and correctly padded traffic
 /// lights, whereas a plain full-size-content overlay window gets a smaller radius. This keeps the
 /// real native window controls — no transparency, no frameless window.

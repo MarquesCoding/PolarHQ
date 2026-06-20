@@ -36,7 +36,7 @@ import icon_Undefined_Light from "./fileIcons/Undefined_Light.png"
 import icon_Video from "./fileIcons/Video.png"
 import icon_Video_Light from "./fileIcons/Video_Light.png"
 
-/** Spacedrive file-type icons (https://github.com/spacedriveapp/spacedrive), dark + _Light variants. */
+/** File-type icons, with dark + _Light variants. */
 const ICONS: Record<string, string> = {
   "Archive": icon_Archive,
   "Archive_Light": icon_Archive_Light,
@@ -79,7 +79,7 @@ const DATABASE = /\.(db|sqlite|sqlite3|sql)$/i
 const TEXTUAL = /\.(txt|md|json|ya?ml|toml|ini|log|js|ts|tsx|jsx|py|rb|go|rs|c|cpp|h|java|css|html|xml|sh)$/i
 const MODEL3D = /\.(stl|obj|ply|fbx|gltf|glb)$/i
 
-/** Map a Drive node to a Spacedrive icon key. */
+/** Map a Drive node to an icon key. */
 const iconKeyFor = (node: DriveNode): string => {
   const name = node.name.toLowerCase()
   const mime = node.mimeType ?? ""
@@ -100,7 +100,7 @@ const iconKeyFor = (node: DriveNode): string => {
   return "Document"
 }
 
-/** A file-type icon for a Drive node, using the theme-appropriate Spacedrive PNG. */
+/** A file-type icon for a Drive node, using the theme-appropriate PNG. */
 export const FileIcon = ({ node, className }: { node: DriveNode; className?: string }) => {
   const { resolvedTheme } = useTheme()
   const key = iconKeyFor(node)
@@ -109,7 +109,7 @@ export const FileIcon = ({ node, className }: { node: DriveNode; className?: str
   return <img src={src} alt="" draggable={false} className={cn("object-contain", className)} />
 }
 
-/** Icon for the parent (".." up one level) entry — Spacedrive's Home icon. */
+/** Icon for the parent (".." up one level) entry — the Home icon. */
 export const ParentIcon = ({ className }: { className?: string }) => {
   const { resolvedTheme } = useTheme()
   const src = resolvedTheme === "light" ? ICONS.Home_Light : ICONS.Home
