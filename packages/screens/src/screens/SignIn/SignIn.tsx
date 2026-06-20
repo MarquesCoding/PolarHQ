@@ -3,7 +3,7 @@ import { useNavigation } from "@workspace/screens/platform"
 import RecoveryCodeDialog from "@components/RecoveryCodeDialog"
 import { authClient } from "@workspace/core/authClient"
 import { e2eReady, isEnrolled, setupKeys, unlockKeys } from "@workspace/core/e2e"
-import { APP_NAME } from "@lib/env"
+import { coreConfig } from "@workspace/core/config"
 import { useForm } from "@tanstack/react-form"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -95,7 +95,7 @@ const SignIn = () => {
     <main className="flex min-h-svh items-center justify-center p-6">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>{t("signIn.title", { appName: APP_NAME })}</CardTitle>
+          <CardTitle>{t("signIn.title", { appName: coreConfig().appName })}</CardTitle>
           <CardDescription>{t("signIn.description")}</CardDescription>
         </CardHeader>
         <CardContent>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
-import { APP_NAME } from "@lib/env"
+import { coreConfig } from "@workspace/core/config"
 import { fetchSetupStatus } from "@workspace/core/setup"
 import AdminAccountStep from "@pages/Setup/components/AdminAccountStep/AdminAccountStep"
 import CreateGroupsStep from "@pages/Setup/components/CreateGroupsStep/CreateGroupsStep"
@@ -30,7 +30,7 @@ const Setup = () => {
     <main className="flex min-h-svh items-center justify-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>{t("setup.welcome", { name: APP_NAME })}</CardTitle>
+          <CardTitle>{t("setup.welcome", { name: coreConfig().appName })}</CardTitle>
           <CardDescription>
             {step === "admin"
               ? t("setup.adminDescription")

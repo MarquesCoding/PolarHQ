@@ -620,48 +620,183 @@ importers:
 
   packages/screens:
     dependencies:
+      '@glideapps/glide-data-grid':
+        specifier: ^6.0.3
+        version: 6.0.3(lodash@4.18.1)(marked@16.4.2)(react-dom@19.2.4(react@19.2.4))(react-responsive-carousel@3.2.23)(react@19.2.4)
       '@huggingface/transformers':
         specifier: ^4.2.0
         version: 4.2.0
+      '@number-flow/react':
+        specifier: ^0.6.0
+        version: 0.6.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@phosphor-icons/react':
+        specifier: ^2.1.10
+        version: 2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@react-three/drei':
+        specifier: ^10.7.7
+        version: 10.7.7(@react-three/fiber@9.6.1(@types/react@19.2.15)(immer@11.1.8)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.184.0))(@types/react@19.2.15)(@types/three@0.184.1)(immer@11.1.8)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.184.0)
+      '@react-three/fiber':
+        specifier: ^9.6.1
+        version: 9.6.1(@types/react@19.2.15)(immer@11.1.8)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.184.0)
       '@reduxjs/toolkit':
         specifier: ^2.12.0
         version: 2.12.0(react-redux@9.3.0(@types/react@19.2.15)(react@19.2.4)(redux@5.0.1))(react@19.2.4)
+      '@tanstack/react-form':
+        specifier: ^1.33.0
+        version: 1.33.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.101.0
         version: 5.101.0(react@19.2.4)
+      '@tanstack/react-table':
+        specifier: ^8.21.3
+        version: 8.21.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@tiptap/core':
         specifier: ^3.26.0
         version: 3.26.0(@tiptap/pm@3.26.0)
+      '@tiptap/extension-collaboration':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0)(@tiptap/y-tiptap@3.0.4(prosemirror-model@1.25.7)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31))(yjs@13.6.31)
+      '@tiptap/extension-collaboration-caret':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0)(@tiptap/y-tiptap@3.0.4(prosemirror-model@1.25.7)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31))
+      '@tiptap/extension-color':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/extension-text-style@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0)))
+      '@tiptap/extension-font-family':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/extension-text-style@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0)))
+      '@tiptap/extension-highlight':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))
+      '@tiptap/extension-image':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))
+      '@tiptap/extension-link':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0)
+      '@tiptap/extension-placeholder':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/extensions@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
+      '@tiptap/extension-table':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0)
+      '@tiptap/extension-table-cell':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/extension-table@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
+      '@tiptap/extension-table-header':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/extension-table@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
+      '@tiptap/extension-table-row':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/extension-table@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
+      '@tiptap/extension-task-item':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/extension-list@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
+      '@tiptap/extension-task-list':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/extension-list@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
+      '@tiptap/extension-text-align':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))
+      '@tiptap/extension-text-style':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))
+      '@tiptap/extension-underline':
+        specifier: ^3.26.0
+        version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))
       '@tiptap/pm':
         specifier: ^3.26.0
         version: 3.26.0
+      '@tiptap/react':
+        specifier: ^3.26.0
+        version: 3.26.0(@floating-ui/dom@1.7.6)(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@tiptap/starter-kit':
+        specifier: ^3.26.0
+        version: 3.26.0
+      '@workspace/changelog':
+        specifier: workspace:*
+        version: link:../changelog
       '@workspace/core':
         specifier: workspace:*
         version: link:../core
+      '@workspace/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@workspace/ui':
         specifier: workspace:*
         version: link:../ui
+      better-auth:
+        specifier: ^1.6.14
+        version: 1.6.14(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(kysely@0.29.2)(postgres@3.4.9))(next@16.2.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.1.8(@types/node@24.13.0)(msw@2.14.6(@types/node@24.13.0)(typescript@5.9.3))(vite@8.0.16(@types/node@24.13.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.4)))
+      exifr:
+        specifier: ^7.1.3
+        version: 7.1.3
+      fflate:
+        specifier: ^0.8.3
+        version: 0.8.3
+      heic2any:
+        specifier: ^0.0.4
+        version: 0.0.4
       html-docx-js-typescript:
         specifier: ^0.1.5
         version: 0.1.5
+      hyperformula:
+        specifier: ^3.3.0
+        version: 3.3.0
+      i18next:
+        specifier: ^26.3.1
+        version: 26.3.1(typescript@5.9.3)
+      i18next-browser-languagedetector:
+        specifier: ^8.2.1
+        version: 8.2.1
+      i18next-http-backend:
+        specifier: ^4.0.0
+        version: 4.0.0
+      i18next-resources-to-backend:
+        specifier: ^1.2.1
+        version: 1.2.1
       lib0:
         specifier: ^0.2.117
         version: 0.2.117
+      libsodium-wrappers-sumo:
+        specifier: ^0.8.4
+        version: 0.8.4
+      lodash:
+        specifier: ^4.18.1
+        version: 4.18.1
       mammoth:
         specifier: ^1.12.0
         version: 1.12.0
+      maplibre-gl:
+        specifier: ^5.24.0
+        version: 5.24.0
+      motion:
+        specifier: ^12.40.0
+        version: 12.40.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      pptxgenjs:
+        specifier: ^4.0.1
+        version: 4.0.1
       react:
-        specifier: '*'
+        specifier: 19.2.4
         version: 19.2.4
+      react-dom:
+        specifier: 19.2.4
+        version: 19.2.4(react@19.2.4)
       react-i18next:
         specifier: ^17.0.8
         version: 17.0.8(i18next@26.3.1(typescript@5.9.3))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
       react-redux:
         specifier: ^9.3.0
         version: 9.3.0(@types/react@19.2.15)(react@19.2.4)(redux@5.0.1)
+      react-router:
+        specifier: ^8.0.1
+        version: 8.0.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      supercluster:
+        specifier: ^8.0.1
+        version: 8.0.1
       three:
         specifier: ^0.184.0
         version: 0.184.0
@@ -674,10 +809,22 @@ importers:
       yjs:
         specifier: ^13.6.31
         version: 13.6.31
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
+      '@types/lodash':
+        specifier: ^4.17.24
+        version: 4.17.24
       '@types/react':
         specifier: ^19
         version: 19.2.15
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.15)
+      '@types/supercluster':
+        specifier: ^7.1.3
+        version: 7.1.3
       '@types/three':
         specifier: ^0.184.1
         version: 0.184.1

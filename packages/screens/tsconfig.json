@@ -6,8 +6,26 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "noEmit": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@pages/*": [
+        "./src/screens/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@workspace/ui/*": [
+        "../ui/src/*"
+      ]
+    }
   },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

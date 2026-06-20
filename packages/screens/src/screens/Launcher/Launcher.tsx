@@ -1,7 +1,7 @@
 import { useNavigation } from "@workspace/screens/platform"
 import { fetchApps } from "@workspace/core/apps"
 import { authClient } from "@workspace/core/authClient"
-import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
+import { coreConfig } from "@workspace/core/config"
 import { formatBytes } from "@workspace/core/format"
 import { fetchUsage } from "@workspace/core/photos"
 import AppTile from "@pages/Launcher/components/AppTile/AppTile"
@@ -29,7 +29,7 @@ const Launcher = () => {
   return (
     <main className="mx-auto flex min-h-svh w-full max-w-5xl flex-col gap-8 p-6">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">{APP_NAME}</h1>
+        <h1 className="text-xl font-semibold">{coreConfig().appName}</h1>
         <div className="flex items-center gap-3">
           {session?.user ? (
             <span className="text-muted-foreground hidden text-sm sm:inline">
@@ -83,7 +83,7 @@ const Launcher = () => {
           <span />
         )}
         <p className="text-muted-foreground/60 font-mono text-[10px] tracking-tight">
-          {t("launcher.versionBuild", { version: APP_VERSION, build: APP_BUILD })}
+          {t("launcher.versionBuild", { version: coreConfig().appVersion, build: coreConfig().appBuild })}
         </p>
       </footer>
     </main>
