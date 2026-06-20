@@ -8,7 +8,13 @@
 const DB_NAME = "orbit-secure"
 const STORE = "kv"
 const WRAP_KEY = "wrap-key"
+const WRAP_KEY_RAW = "wrap-key-raw"
 const BLOB_KEY = "kp-blob"
+
+/** True inside the Tauri desktop webview (WKWebView). There, persisting a non-extractable CryptoKey
+ *  makes WebKit stash a master key in the macOS keychain, which re-prompts on every launch. */
+const isDesktopWebview = (): boolean =>
+  typeof window !== "undefined" && "__TAURI_INTERNALS__" in window
 
 const openDb = (): Promise<IDBDatabase> =>
   new Promise((resolve, reject) => {
@@ -48,6 +54,19 @@ const idbDel = async (key: string): Promise<void> => {
 }
 
 const getWrapKey = async (): Promise<CryptoKey> => {
+  if (isDesktopWebview()) {
+    // Store the raw key bytes (not a CryptoKey object), so WebKit never wraps it with a keychain
+    // master key — no per-launch keychain prompt. The bytes live in IndexedDB in the app's sandboxed
+    // data dir; the imported key is still non-extractable in memory. A separate IDB key from the web
+    // path, so we never deserialize the web CryptoKey (which would itself hit the keychain).
+    const existingRaw = await idbGet<Uint8Array>(WRAP_KEY_RAW)
+    const raw = existingRaw ?? crypto.getRandomValues(new Uint8Array(32))
+    if (!existingRaw) await idbSet(WRAP_KEY_RAW, raw)
+    return crypto.subtle.importKey("raw", raw as BufferSource, { name: "AES-GCM" }, false, [
+      "encrypt",
+      "decrypt",
+    ])
+  }
   const existing = await idbGet<CryptoKey>(WRAP_KEY)
   if (existing) return existing
   const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, false, [
@@ -91,4 +110,5 @@ export const secureStoreGet = async (): Promise<Uint8Array | null> => {
 export const secureStoreClear = async (): Promise<void> => {
   await idbDel(BLOB_KEY).catch(() => undefined)
   await idbDel(WRAP_KEY).catch(() => undefined)
+  await idbDel(WRAP_KEY_RAW).catch(() => undefined)
 }
