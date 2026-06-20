@@ -11,6 +11,12 @@ rust-version = "1.77.2"
 name = "polarhq_desktop_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+# Name the binary "PolarHQ" so the dev process — and thus the macOS menu bar / dock / prompts — shows
+# the product name instead of the crate name. Packaged builds already use productName from the config.
+[[bin]]
+name = "PolarHQ"
+path = "src/main.rs"
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
