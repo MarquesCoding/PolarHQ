@@ -126,3 +126,34 @@ jobs:
 Bump `version` in `src-tauri/tauri.conf.json`, tag `desktop-vX.Y.Z`, push — the running app picks it
 up on next launch. Until a release exists the updater check just finds nothing and proceeds.
 
+> Note: the bundle `version` must be plain `MAJOR.MINOR.PATCH` (the Windows MSI target rejects a
+> non-numeric pre-release like `-alpha`); put the alpha/beta designation in the git tag instead.
+
+## macOS code-signing + notarization
+
+Without an Apple signature, a downloaded macOS build is quarantined by Gatekeeper ("PolarHQ is
+damaged and can't be opened"). To run an unsigned build locally, strip the quarantine flag:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/PolarHQ.app
+```
+
+For distributable builds, the release workflow signs + notarizes automatically **once these repo
+secrets are set** (it no-ops until then — the build just stays un-notarized):
+
+| Secret | What it is |
+| --- | --- |
+| `APPLE_CERTIFICATE` | base64 of your **Developer ID Application** cert exported as `.p12` (`base64 -i cert.p12 | pbcopy`) |
+| `APPLE_CERTIFICATE_PASSWORD` | the password you set when exporting the `.p12` |
+| `APPLE_SIGNING_IDENTITY` | the identity name, e.g. `Developer ID Application: Your Name (TEAMID)` |
+| `APPLE_ID` | your Apple ID email (for notarization) |
+| `APPLE_PASSWORD` | an [app-specific password](https://support.apple.com/en-us/102654) for that Apple ID |
+| `APPLE_TEAM_ID` | your 10-character Apple Developer Team ID |
+
+Requires an [Apple Developer Program](https://developer.apple.com/programs/) membership. With these
+set, `tauri-action` imports the cert into a temp keychain, signs with the hardened runtime, submits
+to Apple's notary service, and staples the ticket — so the `.dmg`/`.app` open with no warning.
+
+(Windows is similar but milder: an unsigned `.exe` triggers a SmartScreen "unknown publisher"
+warning rather than blocking; fixable later with a code-signing certificate.)
+
