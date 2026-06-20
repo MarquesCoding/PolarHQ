@@ -1,0 +1,5 @@
+# Local macOS dev only: route `cargo run` (used by `tauri dev`) through sign-and-run.sh so each build
+# is re-signed with the stable "PolarHQ Dev Signing" identity. Keeps the keychain ACL valid across
+# rebuilds — no repeated WebCrypto "Always Allow" prompts. No-op without the identity (see the script).
+[target.aarch64-apple-darwin]
+runner = "./sign-and-run.sh"

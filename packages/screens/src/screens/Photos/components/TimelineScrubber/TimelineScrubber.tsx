@@ -57,6 +57,7 @@ const TimelineScrubber = ({ rootRef, markers, totalHeight, onScrubTo }: Timeline
   const rail = (
     <div
       ref={rootRef}
+      data-slot="timeline-rail"
       className="bg-sidebar/40 border-border pointer-events-auto h-full w-6 touch-none border-r"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => {

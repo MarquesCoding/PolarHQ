@@ -77,9 +77,19 @@ const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
   }
 
   const content = (
-    <div className="relative flex min-h-0 flex-1 flex-col">
+    <div
+      data-slot="flat-content"
+      className="bg-background relative flex min-h-0 flex-1 flex-col"
+    >
+      <div
+        data-slot="content-frost"
+        className="pointer-events-none absolute inset-x-0 top-0 z-20"
+      />
       <div className="absolute inset-x-0 top-0 z-30">{topBar}</div>
-      <main className="scrollbar-slim min-h-0 flex-1 overflow-y-auto overscroll-none pt-14">
+      <main
+        data-slot="flat-main"
+        className="scrollbar-slim min-h-0 flex-1 overflow-y-auto overscroll-none pt-14"
+      >
         {children}
       </main>
       <div id={CONTENT_OVERLAY_ID} className="pointer-events-none absolute inset-x-0 top-14 bottom-0 z-40" />
