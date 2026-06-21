@@ -1,0 +1,142 @@
+import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
+import {
+  type GoogleStatus,
+  type MigrateProgress,
+  googleConnectUrl,
+  googleDisconnect,
+  googleStatus,
+  importGoogleDrive,
+  importGooglePhotos,
+} from "@workspace/core/migrate"
+import { Button } from "@workspace/ui/components/button"
+import { Icon } from "@workspace/screens/icons"
+import Spinner from "@components/Spinner/Spinner"
+import { toast } from "sonner"
+
+type Kind = "photos" | "drive"
+
+/** Account section: link a Google account and import Photos/Drive (E2E — see @workspace/core/migrate). */
+const MigrateGoogle = () => {
+  const { t } = useTranslation("account")
+  const [status, setStatus] = useState<GoogleStatus | null>(null)
+  const [busy, setBusy] = useState<Kind | null>(null)
+  const [progress, setProgress] = useState<MigrateProgress | null>(null)
+  const cancel = useRef<AbortController | null>(null)
+
+  const refresh = () => {
+    void googleStatus()
+      .then(setStatus)
+      .catch(() => setStatus({ connected: false, email: null, configured: false }))
+  }
+
+  useEffect(() => {
+    refresh()
+    return () => cancel.current?.abort()
+  }, [])
+
+  const connect = async () => {
+    try {
+      const { url } = await googleConnectUrl()
+      window.location.href = url
+    } catch {
+      toast.error(t("importError"))
+    }
+  }
+
+  const disconnect = async () => {
+    await googleDisconnect().catch(() => undefined)
+    refresh()
+  }
+
+  const run = async (kind: Kind) => {
+    setBusy(kind)
+    setProgress({ total: 0, done: 0, failed: 0, current: null })
+    const controller = new AbortController()
+    cancel.current = controller
+    let last: MigrateProgress = { total: 0, done: 0, failed: 0, current: null }
+    try {
+      const importer = kind === "photos" ? importGooglePhotos : importGoogleDrive
+      await importer((p) => {
+        last = p
+        setProgress(p)
+      }, controller.signal)
+      if (!controller.signal.aborted) {
+        toast.success(t("importDone", { done: last.done, failed: last.failed }))
+      }
+    } catch {
+      toast.error(t("importError"))
+    } finally {
+      setBusy(null)
+      setProgress(null)
+      cancel.current = null
+    }
+  }
+
+  if (!status) {
+    return <Spinner className="size-4" />
+  }
+
+  if (!status.configured) {
+    return <p className="text-muted-foreground text-sm">{t("importNotConfigured")}</p>
+  }
+
+  if (!status.connected) {
+    return (
+      <Button variant="outline" size="sm" className="w-fit" onClick={connect}>
+        <Icon name="apps" className="size-4" />
+        {t("importConnect")}
+      </Button>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-muted-foreground text-sm">
+          {status.email ? t("importConnectedAs", { email: status.email }) : t("importConnected")}
+        </span>
+        <Button variant="ghost" size="sm" disabled={Boolean(busy)} onClick={disconnect}>
+          {t("importDisconnect")}
+        </Button>
+      </div>
+
+      {busy && progress ? (
+        <div className="flex items-center gap-3">
+          <Spinner className="size-4" />
+          <span className="text-sm">
+            {t("importing", { done: progress.done, total: progress.total })}
+          </span>
+          {progress.current ? (
+            <span className="text-muted-foreground max-w-[12rem] truncate text-xs">
+              {progress.current}
+            </span>
+          ) : null}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="ms-auto"
+            onClick={() => cancel.current?.abort()}
+          >
+            {t("importCancel")}
+          </Button>
+        </div>
+      ) : (
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => run("photos")}>
+            <Icon name="photo" className="size-4" />
+            {t("importPhotos")}
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => run("drive")}>
+            <Icon name="folder" className="size-4" />
+            {t("importDrive")}
+          </Button>
+        </div>
+      )}
+
+      <p className="text-muted-foreground text-xs">{t("importNote")}</p>
+    </div>
+  )
+}
+
+export default MigrateGoogle

@@ -18,5 +18,19 @@
   "devicesHint": "Review and sign out devices that are signed in.",
   "manageDevices": "Manage devices",
   "signOut": "Sign out",
-  "languageChanged": "Language updated"
+  "languageChanged": "Language updated",
+  "import": "Import from Google",
+  "importHint": "Bring your Google Photos and Drive into PolarHQ — downloaded, encrypted on your device, then uploaded.",
+  "importNotConfigured": "Google import isn't set up on this server (an admin needs to configure the Google client).",
+  "importConnect": "Connect Google",
+  "importConnectedAs": "Connected as {{email}}",
+  "importConnected": "Google account connected",
+  "importDisconnect": "Disconnect",
+  "importPhotos": "Import Photos",
+  "importDrive": "Import Drive",
+  "importNote": "This downloads everything from Google and re-uploads it encrypted. Large libraries can take a while — keep this tab open.",
+  "importing": "Importing {{done}} of {{total}}…",
+  "importCancel": "Cancel",
+  "importDone": "Imported {{done}} items ({{failed}} failed).",
+  "importError": "Couldn't reach Google. Try reconnecting."
 }
