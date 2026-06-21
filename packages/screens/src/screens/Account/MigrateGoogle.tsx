@@ -22,7 +22,10 @@ const MigrateGoogle = () => {
   const [status, setStatus] = useState<GoogleStatus | null>(null)
   const [busy, setBusy] = useState<Kind | null>(null)
   const [progress, setProgress] = useState<MigrateProgress | null>(null)
+  const [pickerUrl, setPickerUrl] = useState<string | null>(null)
   const cancel = useRef<AbortController | null>(null)
+
+  const openPicker = (url: string) => window.open(url, "_blank", "noopener,noreferrer")
 
   const refresh = () => {
     void googleStatus()
@@ -52,23 +55,39 @@ const MigrateGoogle = () => {
   const run = async (kind: Kind) => {
     setBusy(kind)
     setProgress({ total: 0, done: 0, failed: 0, current: null })
+    setPickerUrl(null)
     const controller = new AbortController()
     cancel.current = controller
     let last: MigrateProgress = { total: 0, done: 0, failed: 0, current: null }
+    const onProgress = (p: MigrateProgress) => {
+      last = p
+      setProgress(p)
+    }
     try {
-      const importer = kind === "photos" ? importGooglePhotos : importGoogleDrive
-      await importer((p) => {
-        last = p
-        setProgress(p)
-      }, controller.signal)
+      if (kind === "photos") {
+        await importGooglePhotos(
+          {
+            onPickerUrl: (url) => {
+              setPickerUrl(url)
+              openPicker(url)
+            },
+            onPicked: () => setPickerUrl(null),
+            onProgress,
+          },
+          controller.signal,
+        )
+      } else {
+        await importGoogleDrive(onProgress, controller.signal)
+      }
       if (!controller.signal.aborted) {
         toast.success(t("importDone", { done: last.done, failed: last.failed }))
       }
     } catch {
-      toast.error(t("importError"))
+      if (!controller.signal.aborted) toast.error(t("importError"))
     } finally {
       setBusy(null)
       setProgress(null)
+      setPickerUrl(null)
       cancel.current = null
     }
   }
@@ -101,7 +120,23 @@ const MigrateGoogle = () => {
         </Button>
       </div>
 
-      {busy && progress ? (
+      {busy && pickerUrl ? (
+        <div className="flex items-center gap-3">
+          <Spinner className="size-4" />
+          <span className="text-sm">{t("importPicking")}</span>
+          <Button variant="ghost" size="sm" onClick={() => openPicker(pickerUrl)}>
+            {t("importOpenPicker")}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="ms-auto"
+            onClick={() => cancel.current?.abort()}
+          >
+            {t("importCancel")}
+          </Button>
+        </div>
+      ) : busy && progress ? (
         <div className="flex items-center gap-3">
           <Spinner className="size-4" />
           <span className="text-sm">
@@ -135,6 +170,9 @@ const MigrateGoogle = () => {
       )}
 
       <p className="text-muted-foreground text-xs">{t("importNote")}</p>
+      {!busy ? (
+        <p className="text-muted-foreground text-xs">{t("importPickerNote")}</p>
+      ) : null}
     </div>
   )
 }

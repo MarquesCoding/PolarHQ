@@ -46,11 +46,30 @@ export interface GoogleDriveFile {
   parents: string[]
 }
 
-const listPhotosPage = (
+export interface PickerSession {
+  id: string
+  pickerUri: string
+  mediaItemsSet: boolean
+  pollIntervalMs: number
+}
+
+const createPickerSession = (): Promise<PickerSession> =>
+  apiFetch("/api/v1/migrate/google/picker/session", { method: "POST" })
+
+const pollPickerSession = (id: string): Promise<PickerSession> =>
+  apiFetch(`/api/v1/migrate/google/picker/session/${id}`)
+
+const closePickerSession = (id: string): Promise<{ ok: boolean }> =>
+  apiFetch(`/api/v1/migrate/google/picker/session/${id}`, { method: "DELETE" })
+
+const listPickedPage = (
+  sessionId: string,
   pageToken?: string,
 ): Promise<{ items: GooglePhotoItem[]; nextPageToken?: string }> =>
   apiFetch(
-    `/api/v1/migrate/google/photos${pageToken ? `?pageToken=${encodeURIComponent(pageToken)}` : ""}`,
+    `/api/v1/migrate/google/picker/items?sessionId=${encodeURIComponent(sessionId)}${
+      pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : ""
+    }`,
   )
 
 const listDrivePage = (
@@ -77,16 +96,58 @@ export interface MigrateProgress {
   current: string | null
 }
 
-/** Import the whole Google Photos library into PolarHQ Photos, E2E-encrypted. Best-effort per item. */
+const sleep = (ms: number, signal?: AbortSignal): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(resolve, ms)
+    signal?.addEventListener(
+      "abort",
+      () => {
+        clearTimeout(timer)
+        reject(new DOMException("Aborted", "AbortError"))
+      },
+      { once: true },
+    )
+  })
+
+export interface PhotoImportHandlers {
+  /** The user must open this URL (in Google Photos) and choose what to import. */
+  onPickerUrl: (url: string) => void
+  /** Called once the user has finished selecting and the actual import begins. */
+  onPicked?: () => void
+  onProgress: (progress: MigrateProgress) => void
+}
+
+/**
+ * Import Google Photos into PolarHQ Photos via the **Picker API**, E2E-encrypted. Google no longer
+ * allows whole-library reads, so the user opens `pickerUri`, chooses media, and we import their
+ * selection. Best-effort per item; resolves when the import finishes (or rejects on abort).
+ */
 export const importGooglePhotos = async (
-  onProgress: (progress: MigrateProgress) => void,
+  handlers: PhotoImportHandlers,
   signal?: AbortSignal,
 ): Promise<void> => {
+  const { onPickerUrl, onPicked, onProgress } = handlers
+  const session = await createPickerSession()
+  onPickerUrl(session.pickerUri)
+  onProgress({ total: 0, done: 0, failed: 0, current: null })
+
+  // Wait for the user to finish picking in Google Photos.
+  let picked = session.mediaItemsSet
+  while (!picked) {
+    if (signal?.aborted) {
+      await closePickerSession(session.id).catch(() => undefined)
+      return
+    }
+    await sleep(session.pollIntervalMs, signal)
+    picked = (await pollPickerSession(session.id)).mediaItemsSet
+  }
+  onPicked?.()
+
   const items: GooglePhotoItem[] = []
   let pageToken: string | undefined
   do {
-    if (signal?.aborted) return
-    const page = await listPhotosPage(pageToken)
+    if (signal?.aborted) break
+    const page = await listPickedPage(session.id, pageToken)
     items.push(...page.items)
     pageToken = page.nextPageToken
   } while (pageToken)
@@ -94,7 +155,7 @@ export const importGooglePhotos = async (
   let done = 0
   let failed = 0
   for (const item of items) {
-    if (signal?.aborted) return
+    if (signal?.aborted) break
     onProgress({ total: items.length, done, failed, current: item.filename })
     try {
       const isVideo = item.mimeType.startsWith("video/")
@@ -109,6 +170,7 @@ export const importGooglePhotos = async (
     }
     done += 1
   }
+  await closePickerSession(session.id).catch(() => undefined)
   onProgress({ total: items.length, done, failed, current: null })
 }
 

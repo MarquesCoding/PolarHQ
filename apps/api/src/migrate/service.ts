@@ -31,6 +31,71 @@ export const googleAccessToken = async (userId: string): Promise<string | null> 
   return accessTokenFromRefresh(account.refreshToken)
 }
 
+const PICKER_BASE = "https://photospicker.googleapis.com/v1"
+
+/** Parse a protobuf duration string like "5s" into milliseconds (default 3s). */
+const durationToMs = (value: string | undefined, fallback: number): number => {
+  const seconds = value ? Number(value.replace(/s$/, "")) : NaN
+  return Number.isFinite(seconds) ? seconds * 1000 : fallback
+}
+
+export interface PickerSession {
+  id: string
+  /** The URL the user opens (in Google Photos) to choose what to import. */
+  pickerUri: string
+  /** Whether the user has finished selecting; once true, the picked items can be listed. */
+  mediaItemsSet: boolean
+  /** How often the client should poll the session while waiting, in ms. */
+  pollIntervalMs: number
+}
+
+interface PickerSessionResponse {
+  id: string
+  pickerUri: string
+  mediaItemsSet?: boolean
+  pollingConfig?: { pollInterval?: string }
+}
+
+const toPickerSession = (json: PickerSessionResponse): PickerSession => ({
+  id: json.id,
+  pickerUri: json.pickerUri,
+  mediaItemsSet: Boolean(json.mediaItemsSet),
+  pollIntervalMs: durationToMs(json.pollingConfig?.pollInterval, 3000),
+})
+
+/** Create a Picker session — the user opens `pickerUri` and chooses the media to import. */
+export const createPickerSession = async (accessToken: string): Promise<PickerSession> => {
+  const response = await fetch(`${PICKER_BASE}/sessions`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
+  })
+  if (!response.ok) throw new Error("migrate.google.pickerSessionFailed")
+  return toPickerSession((await response.json()) as PickerSessionResponse)
+}
+
+/** Poll a Picker session to see whether the user has finished selecting. */
+export const getPickerSession = async (
+  accessToken: string,
+  sessionId: string,
+): Promise<PickerSession> => {
+  const response = await fetch(`${PICKER_BASE}/sessions/${sessionId}`, {
+    headers: { authorization: `Bearer ${accessToken}` },
+  })
+  if (!response.ok) throw new Error("migrate.google.pickerSessionFailed")
+  return toPickerSession((await response.json()) as PickerSessionResponse)
+}
+
+/** Best-effort: delete a finished/abandoned Picker session. */
+export const deletePickerSession = async (
+  accessToken: string,
+  sessionId: string,
+): Promise<void> => {
+  await fetch(`${PICKER_BASE}/sessions/${sessionId}`, {
+    method: "DELETE",
+    headers: { authorization: `Bearer ${accessToken}` },
+  }).catch(() => undefined)
+}
+
 export interface GooglePhotoItem {
   id: string
   filename: string
@@ -39,35 +104,38 @@ export interface GooglePhotoItem {
   createdAt: string | null
 }
 
-/** One page of the user's Google Photos library. */
-export const listGooglePhotos = async (
+/** One page of the media the user picked in a Picker session. */
+export const listPickedMediaItems = async (
   accessToken: string,
+  sessionId: string,
   pageToken?: string,
 ): Promise<{ items: GooglePhotoItem[]; nextPageToken?: string }> => {
-  const params = new URLSearchParams({ pageSize: "100" })
+  const params = new URLSearchParams({ sessionId, pageSize: "100" })
   if (pageToken) params.set("pageToken", pageToken)
-  const response = await fetch(`https://photoslibrary.googleapis.com/v1/mediaItems?${params}`, {
+  const response = await fetch(`${PICKER_BASE}/mediaItems?${params}`, {
     headers: { authorization: `Bearer ${accessToken}` },
   })
   if (!response.ok) throw new Error("migrate.google.photosListFailed")
   const json = (await response.json()) as {
     mediaItems?: Array<{
       id: string
-      filename: string
-      mimeType: string
-      baseUrl: string
-      mediaMetadata?: { creationTime?: string }
+      createTime?: string
+      mediaFile?: { baseUrl: string; mimeType: string; filename: string }
     }>
     nextPageToken?: string
   }
   return {
-    items: (json.mediaItems ?? []).map((m) => ({
-      id: m.id,
-      filename: m.filename,
-      mimeType: m.mimeType,
-      baseUrl: m.baseUrl,
-      createdAt: m.mediaMetadata?.creationTime ?? null,
-    })),
+    items: (json.mediaItems ?? [])
+      .filter((m): m is typeof m & { mediaFile: NonNullable<(typeof m)["mediaFile"]> } =>
+        Boolean(m.mediaFile),
+      )
+      .map((m) => ({
+        id: m.id,
+        filename: m.mediaFile.filename,
+        mimeType: m.mediaFile.mimeType,
+        baseUrl: m.mediaFile.baseUrl,
+        createdAt: m.createTime ?? null,
+      })),
     nextPageToken: json.nextPageToken,
   }
 }

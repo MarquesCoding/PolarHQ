@@ -3,13 +3,16 @@ import { type Context, Hono } from "hono"
 import { getSessionUser } from "../context"
 import { buildConsentUrl, exchangeCode } from "./google"
 import {
+  createPickerSession,
+  deletePickerSession,
   disconnectGoogle,
   fetchGoogleDriveBytes,
   fetchGooglePhotoBytes,
   getGoogleAccount,
+  getPickerSession,
   googleAccessToken,
   listGoogleDriveFiles,
-  listGooglePhotos,
+  listPickedMediaItems,
   saveGoogleAccount,
 } from "./service"
 
@@ -82,13 +85,43 @@ routes.delete("/google", async (c) => {
   return c.json({ ok: true })
 })
 
-/** A page of the user's Google Photos library. */
-routes.get("/google/photos", async (c) => {
+/** Create a Photos Picker session — the client opens `pickerUri` so the user can choose what to import. */
+routes.post("/google/picker/session", async (c) => {
   const userId = await requireUser(c)
   if (!userId) return c.json({ error: "unauthorized" }, 401)
   const token = await googleAccessToken(userId)
   if (!token) return c.json({ error: "migrate.google.notConnected" }, 409)
-  return c.json(await listGooglePhotos(token, c.req.query("pageToken")))
+  return c.json(await createPickerSession(token))
+})
+
+/** Poll a Picker session — `mediaItemsSet` flips true once the user finishes selecting. */
+routes.get("/google/picker/session/:id", async (c) => {
+  const userId = await requireUser(c)
+  if (!userId) return c.json({ error: "unauthorized" }, 401)
+  const token = await googleAccessToken(userId)
+  if (!token) return c.json({ error: "migrate.google.notConnected" }, 409)
+  return c.json(await getPickerSession(token, c.req.param("id")))
+})
+
+/** Discard a Picker session once the import is done or abandoned. */
+routes.delete("/google/picker/session/:id", async (c) => {
+  const userId = await requireUser(c)
+  if (!userId) return c.json({ error: "unauthorized" }, 401)
+  const token = await googleAccessToken(userId)
+  if (!token) return c.json({ error: "migrate.google.notConnected" }, 409)
+  await deletePickerSession(token, c.req.param("id"))
+  return c.json({ ok: true })
+})
+
+/** A page of the media the user picked in a Picker session. */
+routes.get("/google/picker/items", async (c) => {
+  const userId = await requireUser(c)
+  if (!userId) return c.json({ error: "unauthorized" }, 401)
+  const token = await googleAccessToken(userId)
+  if (!token) return c.json({ error: "migrate.google.notConnected" }, 409)
+  const sessionId = c.req.query("sessionId")
+  if (!sessionId) return c.json({ error: "invalidInput" }, 400)
+  return c.json(await listPickedMediaItems(token, sessionId, c.req.query("pageToken")))
 })
 
 /** A page of the user's Google Drive files. */
