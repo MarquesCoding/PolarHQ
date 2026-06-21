@@ -177,10 +177,27 @@ export const importGooglePhotos = async (
 
 const DRIVE_FOLDER_MIME = "application/vnd.google-apps.folder"
 
+/** Google-native types we can export to an Office format (others — Forms, Drawings — are skipped). */
+const GOOGLE_EXPORTS: Record<string, { mime: string; ext: string }> = {
+  "application/vnd.google-apps.document": {
+    mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ext: ".docx",
+  },
+  "application/vnd.google-apps.spreadsheet": {
+    mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ext: ".xlsx",
+  },
+  "application/vnd.google-apps.presentation": {
+    mime: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ext: ".pptx",
+  },
+}
+
 /**
  * Import Google Drive into PolarHQ Drive **preserving the folder hierarchy**, E2E-encrypted. We first
  * recreate the folders (parent-before-child), then upload each file into its mapped folder. Google-native
- * formats (Docs/Sheets/Slides) are skipped — they need export conversion, handled later.
+ * Docs/Sheets/Slides are **exported to Office formats** (.docx/.xlsx/.pptx); other native types (Forms,
+ * Drawings) are skipped.
  */
 export const importGoogleDrive = async (
   onProgress: (progress: MigrateProgress) => void,
@@ -194,6 +211,7 @@ export const importGoogleDrive = async (
     const page = await listDrivePage(pageToken)
     for (const entry of page.files) {
       if (entry.mimeType === DRIVE_FOLDER_MIME) folders.push(entry)
+      else if (GOOGLE_EXPORTS[entry.mimeType]) files.push(entry)
       else if (!entry.mimeType.startsWith("application/vnd.google-apps") && entry.mimeType !== "")
         files.push(entry)
     }
@@ -240,9 +258,15 @@ export const importGoogleDrive = async (
     onProgress({ total: files.length, done, failed, current: file.name })
     try {
       const parentId = resolvedParent(file.parents)
-      const blob = await downloadProxy(`source=drive&fileId=${encodeURIComponent(file.id)}`)
-      const upload = new File([blob], file.name, {
-        type: file.mimeType || "application/octet-stream",
+      const exp = GOOGLE_EXPORTS[file.mimeType]
+      const blob = await downloadProxy(
+        exp
+          ? `source=drive-export&fileId=${encodeURIComponent(file.id)}&exportMime=${encodeURIComponent(exp.mime)}`
+          : `source=drive&fileId=${encodeURIComponent(file.id)}`,
+      )
+      const name = exp && !file.name.endsWith(exp.ext) ? `${file.name}${exp.ext}` : file.name
+      const upload = new File([blob], name, {
+        type: exp ? exp.mime : file.mimeType || "application/octet-stream",
       })
       if (upload.size > CHUNKED_UPLOAD_THRESHOLD)
         await uploadEncryptedDriveFileChunked(parentId, upload)

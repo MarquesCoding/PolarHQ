@@ -6,6 +6,7 @@ import {
   createPickerSession,
   deletePickerSession,
   disconnectGoogle,
+  fetchGoogleDocExport,
   fetchGoogleDriveBytes,
   fetchGooglePhotoBytes,
   getGoogleAccount,
@@ -154,6 +155,11 @@ routes.get("/google/download", async (c) => {
     const fileId = c.req.query("fileId")
     if (!fileId) return c.json({ error: "invalidInput" }, 400)
     upstream = await fetchGoogleDriveBytes(token, fileId)
+  } else if (source === "drive-export") {
+    const fileId = c.req.query("fileId")
+    const exportMime = c.req.query("exportMime")
+    if (!fileId || !exportMime) return c.json({ error: "invalidInput" }, 400)
+    upstream = await fetchGoogleDocExport(token, fileId, exportMime)
   } else {
     return c.json({ error: "invalidInput" }, 400)
   }

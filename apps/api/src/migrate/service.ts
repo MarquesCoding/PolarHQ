@@ -203,3 +203,19 @@ export const fetchGoogleDriveBytes = (accessToken: string, fileId: string): Prom
   fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
     headers: { authorization: `Bearer ${accessToken}` },
   })
+
+/**
+ * Export a Google-native doc (Docs/Sheets/Slides) to an Office format (`exportMime`) for the download
+ * proxy. Google's export endpoint caps the exported file at ~10MB; larger docs return an error.
+ */
+export const fetchGoogleDocExport = (
+  accessToken: string,
+  fileId: string,
+  exportMime: string,
+): Promise<Response> =>
+  fetch(
+    `https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=${encodeURIComponent(
+      exportMime,
+    )}`,
+    { headers: { authorization: `Bearer ${accessToken}` } },
+  )
