@@ -8,7 +8,9 @@ import {
   googleStatus,
   importGoogleDrive,
   importGooglePhotos,
+  waitForGoogleConnected,
 } from "@workspace/core/migrate"
+import { getHost } from "@workspace/core/host"
 import { Button } from "@workspace/ui/components/button"
 import { Icon } from "@workspace/screens/icons"
 import Spinner from "@components/Spinner/Spinner"
@@ -23,9 +25,14 @@ const MigrateGoogle = () => {
   const [busy, setBusy] = useState<Kind | null>(null)
   const [progress, setProgress] = useState<MigrateProgress | null>(null)
   const [pickerUrl, setPickerUrl] = useState<string | null>(null)
+  const [connectUrl, setConnectUrl] = useState<string | null>(null)
   const cancel = useRef<AbortController | null>(null)
 
-  const openPicker = (url: string) => window.open(url, "_blank", "noopener,noreferrer")
+  const openExternal = (url: string) => {
+    const host = getHost()
+    if (host.isDesktop && host.openExternal) void host.openExternal(url)
+    else window.open(url, "_blank", "noopener,noreferrer")
+  }
 
   const refresh = () => {
     void googleStatus()
@@ -39,11 +46,33 @@ const MigrateGoogle = () => {
   }, [])
 
   const connect = async () => {
+    const host = getHost()
+    let url: string
     try {
-      const { url } = await googleConnectUrl()
-      window.location.href = url
+      ;({ url } = await googleConnectUrl(host.isDesktop ? "desktop" : undefined))
     } catch {
       toast.error(t("importError"))
+      return
+    }
+    // Web navigates to Google directly; desktop must use the system browser (Google blocks its consent
+    // flow inside webviews), then poll until the server-side callback links the account.
+    if (!host.isDesktop) {
+      window.location.href = url
+      return
+    }
+    setConnectUrl(url)
+    openExternal(url)
+    const controller = new AbortController()
+    cancel.current = controller
+    try {
+      const ok = await waitForGoogleConnected(controller.signal)
+      if (ok) {
+        refresh()
+        toast.success(t("importConnected"))
+      }
+    } finally {
+      setConnectUrl(null)
+      cancel.current = null
     }
   }
 
@@ -69,7 +98,7 @@ const MigrateGoogle = () => {
           {
             onPickerUrl: (url) => {
               setPickerUrl(url)
-              openPicker(url)
+              openExternal(url)
             },
             onPicked: () => setPickerUrl(null),
             onProgress,
@@ -101,6 +130,25 @@ const MigrateGoogle = () => {
   }
 
   if (!status.connected) {
+    if (connectUrl) {
+      return (
+        <div className="flex items-center gap-3">
+          <Spinner className="size-4" />
+          <span className="text-sm">{t("importConnecting")}</span>
+          <Button variant="ghost" size="sm" onClick={() => openExternal(connectUrl)}>
+            {t("importOpenBrowser")}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="ms-auto"
+            onClick={() => cancel.current?.abort()}
+          >
+            {t("importCancel")}
+          </Button>
+        </div>
+      )
+    }
     return (
       <Button variant="outline" size="sm" className="w-fit" onClick={connect}>
         <Icon name="apps" className="size-4" />
@@ -124,7 +172,7 @@ const MigrateGoogle = () => {
         <div className="flex items-center gap-3">
           <Spinner className="size-4" />
           <span className="text-sm">{t("importPicking")}</span>
-          <Button variant="ghost" size="sm" onClick={() => openPicker(pickerUrl)}>
+          <Button variant="ghost" size="sm" onClick={() => openExternal(pickerUrl)}>
             {t("importOpenPicker")}
           </Button>
           <Button

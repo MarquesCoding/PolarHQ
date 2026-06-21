@@ -23,12 +23,41 @@ export interface GoogleStatus {
 
 export const googleStatus = (): Promise<GoogleStatus> => apiFetch("/api/v1/migrate/google/status")
 
-/** Get the consent URL to open so the user can link their Google account. */
-export const googleConnectUrl = (): Promise<{ url: string }> =>
-  apiFetch("/api/v1/migrate/google/connect")
+/**
+ * Get the consent URL to open so the user can link their Google account. Pass `client:"desktop"` so
+ * the server's callback shows a "return to the app" page instead of redirecting into the web app
+ * (the desktop shell opens this URL in the system browser and polls {@link waitForGoogleConnected}).
+ */
+export const googleConnectUrl = (client?: "desktop"): Promise<{ url: string }> =>
+  apiFetch(`/api/v1/migrate/google/connect${client ? `?client=${client}` : ""}`)
 
 export const googleDisconnect = (): Promise<{ ok: boolean }> =>
   apiFetch("/api/v1/migrate/google", { method: "DELETE" })
+
+/**
+ * Poll the connection status until the account links (desktop OAuth finishes in the external browser),
+ * the signal aborts, or the deadline passes. Resolves true once connected, false otherwise.
+ */
+export const waitForGoogleConnected = async (
+  signal?: AbortSignal,
+  { intervalMs = 2500, timeoutMs = 5 * 60 * 1000 }: { intervalMs?: number; timeoutMs?: number } = {},
+): Promise<boolean> => {
+  const started = performance.now()
+  while (performance.now() - started < timeoutMs) {
+    if (signal?.aborted) return false
+    try {
+      if ((await googleStatus()).connected) return true
+    } catch {
+      // transient — keep polling
+    }
+    try {
+      await sleep(intervalMs, signal)
+    } catch {
+      return false // aborted during the wait
+    }
+  }
+  return false
+}
 
 export interface GooglePhotoItem {
   id: string

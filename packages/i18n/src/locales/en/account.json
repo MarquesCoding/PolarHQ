@@ -23,6 +23,8 @@
   "importHint": "Bring your Google Photos and Drive into PolarHQ — downloaded, encrypted on your device, then uploaded.",
   "importNotConfigured": "Google import isn't set up on this server (an admin needs to configure the Google client).",
   "importConnect": "Connect Google",
+  "importConnecting": "Waiting for you to finish in your browser…",
+  "importOpenBrowser": "Reopen browser",
   "importConnectedAs": "Connected as {{email}}",
   "importConnected": "Google account connected",
   "importDisconnect": "Disconnect",

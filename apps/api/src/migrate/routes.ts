@@ -21,18 +21,28 @@ const routes = new Hono()
 
 // Short-lived OAuth `state` → userId map (CSRF + ties the callback to the user). In-memory is fine for
 // a single instance; entries expire after 10 minutes.
-const pendingStates = new Map<string, { userId: string; expires: number }>()
+const pendingStates = new Map<string, { userId: string; desktop: boolean; expires: number }>()
 const STATE_TTL = 10 * 60 * 1000
 
-const newState = (userId: string): string => {
+const newState = (userId: string, desktop: boolean): string => {
   const state = crypto.randomUUID()
-  pendingStates.set(state, { userId, expires: Date.now() + STATE_TTL })
+  pendingStates.set(state, { userId, desktop, expires: Date.now() + STATE_TTL })
   return state
 }
-const takeState = (state: string): string | null => {
+const takeState = (state: string): { userId: string; desktop: boolean } | null => {
   const entry = pendingStates.get(state)
   pendingStates.delete(state)
-  return entry && entry.expires >= Date.now() ? entry.userId : null
+  if (!entry || entry.expires < Date.now()) return null
+  return { userId: entry.userId, desktop: entry.desktop }
+}
+
+/** Minimal self-contained page shown to the desktop user after the browser-based OAuth round-trip. */
+const desktopResultPage = (ok: boolean): string => {
+  const title = ok ? "Google connected" : "Connection failed"
+  const body = ok
+    ? "Your Google account is linked. You can close this tab and return to PolarHQ."
+    : "Something went wrong linking your Google account. Close this tab and try again in PolarHQ."
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:system-ui,-apple-system,sans-serif;background:#0b0b0f;color:#e7e7ea;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0}main{max-width:28rem;padding:2rem;text-align:center}h1{font-size:1.1rem;margin:0 0 .5rem}p{color:#a1a1aa;margin:0;line-height:1.5}</style></head><body><main><h1>${title}</h1><p>${body}</p></main></body></html>`
 }
 
 /** Resolve the session user, or send 401. Returns null if unauthorized (caller should return early). */
@@ -46,23 +56,30 @@ routes.get("/google/connect", async (c) => {
   const userId = await requireUser(c)
   if (!userId) return c.json({ error: "unauthorized" }, 401)
   if (!config.google.clientId) return c.json({ error: "migrate.google.notConfigured" }, 503)
-  return c.json({ url: buildConsentUrl(newState(userId)) })
+  const desktop = c.req.query("client") === "desktop"
+  return c.json({ url: buildConsentUrl(newState(userId, desktop)) })
 })
 
-/** OAuth callback — exchanges the code, stores the refresh token, redirects back into the app. */
+/**
+ * OAuth callback — exchanges the code and stores the refresh token. Web flows redirect back into the
+ * app; desktop flows (which run in the system browser and poll status) get a static "return to the
+ * app" page so they don't depend on the web app being reachable.
+ */
 routes.get("/google/callback", async (c) => {
   const code = c.req.query("code")
   const state = c.req.query("state")
+  const entry = state ? takeState(state) : null
+  const desktop = entry?.desktop ?? false
   const back = `${config.web.url}/account?google=`
-  if (!code || !state) return c.redirect(`${back}error`)
-  const userId = takeState(state)
-  if (!userId) return c.redirect(`${back}error`)
+  const fail = () =>
+    desktop ? c.html(desktopResultPage(false), 400) : c.redirect(`${back}error`)
+  if (!code || !entry) return fail()
   try {
     const { refreshToken, email } = await exchangeCode(code)
-    await saveGoogleAccount(userId, refreshToken, email)
-    return c.redirect(`${back}connected`)
+    await saveGoogleAccount(entry.userId, refreshToken, email)
+    return desktop ? c.html(desktopResultPage(true)) : c.redirect(`${back}connected`)
   } catch {
-    return c.redirect(`${back}error`)
+    return fail()
   }
 })
 

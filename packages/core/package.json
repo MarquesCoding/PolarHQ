@@ -29,6 +29,7 @@
     "./format": "./src/format.ts",
     "./admin": "./src/admin.ts",
     "./setup": "./src/setup.ts",
+    "./host": "./src/host.ts",
     "./authClient": "./src/authClient.ts",
     "./folderLock": "./src/folderLock.ts",
     "./burst": "./src/burst.ts",
