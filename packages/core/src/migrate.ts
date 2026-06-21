@@ -1,5 +1,6 @@
 import { apiFetch } from "./apiClient"
 import { coreConfig } from "./config"
+import { createDriveFolder } from "./drive"
 import {
   CHUNKED_UPLOAD_THRESHOLD,
   uploadEncryptedDriveFile,
@@ -174,26 +175,63 @@ export const importGooglePhotos = async (
   onProgress({ total: items.length, done, failed, current: null })
 }
 
+const DRIVE_FOLDER_MIME = "application/vnd.google-apps.folder"
+
 /**
- * Import Google Drive files into PolarHQ Drive (flat in the root for now), E2E-encrypted. Google-native
+ * Import Google Drive into PolarHQ Drive **preserving the folder hierarchy**, E2E-encrypted. We first
+ * recreate the folders (parent-before-child), then upload each file into its mapped folder. Google-native
  * formats (Docs/Sheets/Slides) are skipped — they need export conversion, handled later.
  */
 export const importGoogleDrive = async (
   onProgress: (progress: MigrateProgress) => void,
   signal?: AbortSignal,
 ): Promise<void> => {
+  const folders: GoogleDriveFile[] = []
   const files: GoogleDriveFile[] = []
   let pageToken: string | undefined
   do {
     if (signal?.aborted) return
     const page = await listDrivePage(pageToken)
-    files.push(
-      ...page.files.filter(
-        (f) => !f.mimeType.startsWith("application/vnd.google-apps") && f.mimeType !== "",
-      ),
-    )
+    for (const entry of page.files) {
+      if (entry.mimeType === DRIVE_FOLDER_MIME) folders.push(entry)
+      else if (!entry.mimeType.startsWith("application/vnd.google-apps") && entry.mimeType !== "")
+        files.push(entry)
+    }
     pageToken = page.nextPageToken
   } while (pageToken)
+
+  // Recreate the folder tree, parent before child. A Google parent that isn't itself one of the
+  // folders we're importing (e.g. the "My Drive" root) maps to PolarHQ's root (null).
+  const isOurFolder = new Set(folders.map((f) => f.id))
+  const folderMap = new Map<string, string>() // Google folder id → PolarHQ node id
+  const polarParent = (parents: string[]): string | null | undefined => {
+    const inSet = parents.find((p) => isOurFolder.has(p))
+    if (!inSet) return null // top-level / outside the import
+    if (!folderMap.has(inSet)) return undefined // parent not made yet
+    const mapped = folderMap.get(inSet)!
+    return mapped === "" ? null : mapped // "" = a folder we gave up on → fall back to root
+  }
+
+  let guard = 0
+  while (folderMap.size < folders.length && guard <= folders.length) {
+    guard += 1
+    for (const folder of folders) {
+      if (signal?.aborted) return
+      if (folderMap.has(folder.id)) continue
+      const parent = polarParent(folder.parents)
+      if (parent === undefined) continue // wait until its parent exists
+      try {
+        const { node } = await createDriveFolder(parent, folder.name)
+        folderMap.set(folder.id, node.id)
+      } catch {
+        folderMap.set(folder.id, "") // give up on this folder; its children fall back to root
+      }
+    }
+  }
+  const resolvedParent = (parents: string[]): string | null => {
+    const p = polarParent(parents)
+    return p ? p : null
+  }
 
   let done = 0
   let failed = 0
@@ -201,12 +239,14 @@ export const importGoogleDrive = async (
     if (signal?.aborted) return
     onProgress({ total: files.length, done, failed, current: file.name })
     try {
+      const parentId = resolvedParent(file.parents)
       const blob = await downloadProxy(`source=drive&fileId=${encodeURIComponent(file.id)}`)
       const upload = new File([blob], file.name, {
         type: file.mimeType || "application/octet-stream",
       })
-      if (upload.size > CHUNKED_UPLOAD_THRESHOLD) await uploadEncryptedDriveFileChunked(null, upload)
-      else await uploadEncryptedDriveFile(null, upload)
+      if (upload.size > CHUNKED_UPLOAD_THRESHOLD)
+        await uploadEncryptedDriveFileChunked(parentId, upload)
+      else await uploadEncryptedDriveFile(parentId, upload)
     } catch {
       failed += 1
     }
