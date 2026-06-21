@@ -105,6 +105,15 @@ packages/
   ui/          Shared shadcn-style component library
 ```
 
+## Security
+
+PolarHQ is end-to-end encrypted: keys are derived from your password in the browser, and the server
+only ever stores ciphertext. For a full, code-referenced breakdown of **how files are encrypted, how
+they're stored, what the server can and cannot see, and the known trade-offs**, read
+**[ENCRYPTION.md](ENCRYPTION.md)**.
+
+Found a vulnerability? Please report it privately — see [SECURITY.md](SECURITY.md).
+
 ## Contributing
 
 Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set up the
