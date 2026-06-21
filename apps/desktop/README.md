@@ -38,8 +38,8 @@ The frontend builds with Node alone, but producing/running the native app needs 
 ## Develop
 
 ```bash
-pnpm --filter desktop tauri dev      # native window with HMR (runs `vite` under the hood)
-pnpm --filter desktop dev            # just the Vite frontend in a browser (no native shell)
+pnpm --filter desktop dev            # native window with HMR (runs `vite` under the hood)
+pnpm --filter desktop dev:vite       # just the Vite frontend in a browser (no native shell)
 ```
 
 Point the app at an API with `VITE_API_URL` (defaults to `http://localhost:3001`).
