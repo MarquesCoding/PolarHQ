@@ -26,6 +26,11 @@ tauri-plugin-store = "2"
 tauri-plugin-process = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+# Folder sync engine: a gitignore-aware directory walker (ripgrep's `ignore`), native file watching,
+# and fast content hashing (blake3 with sampling for large files, à la Spacedrive's cas_id).
+ignore = "0.4"
+notify = "6"
+blake3 = "1"
 
 # Desktop-only: auto-update (the updater plugin isn't built for mobile targets).
 [target."cfg(any(target_os = \"macos\", target_os = \"windows\", target_os = \"linux\"))".dependencies]
