@@ -1,12 +1,14 @@
 import { configureCore } from "@workspace/core/config"
+import { RELEASES } from "@workspace/changelog"
 
 /** Public client config. `APP_NAME` is the single source for the product name. */
 export const APP_NAME = import.meta.env.VITE_APP_NAME ?? "PolarHQ"
 
 export const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001"
 
-/** App version + build identifier shown in the sidebar footer. */
-export const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? "0.0.1"
+/** App version + build identifier shown in the sidebar footer. Defaults to the latest changelog
+ *  release (the single source of truth) so it's correct even without a build-time `VITE_APP_VERSION`. */
+export const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? RELEASES[0]?.version ?? "0.0.1"
 export const APP_BUILD = import.meta.env.VITE_APP_BUILD ?? "dev"
 
 /**
