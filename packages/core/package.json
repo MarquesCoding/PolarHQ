@@ -24,6 +24,7 @@
     "./driveE2e": "./src/driveE2e.ts",
     "./photos": "./src/photos.ts",
     "./photosE2e": "./src/photosE2e.ts",
+    "./migrate": "./src/migrate.ts",
     "./apiError": "./src/apiError.ts",
     "./format": "./src/format.ts",
     "./admin": "./src/admin.ts",
