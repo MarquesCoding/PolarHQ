@@ -1,4 +1,5 @@
 mod commands;
+mod sync;
 
 /// Boots the Tauri runtime and registers the native command surface the frontend reaches through
 /// `@tauri-apps/api`'s `invoke` (see `lib/native.ts`). The mobile entry-point attribute lets the same
@@ -16,6 +17,7 @@ pub fn run() {
     }
 
     builder
+        .manage(sync::SyncState::default())
         .setup(|app| {
             build_main_window(app)?;
             Ok(())
@@ -24,6 +26,9 @@ pub fn run() {
             commands::generate_splat,
             commands::p2p_status,
             commands::sync_now,
+            sync::sync_index,
+            sync::sync_start_watch,
+            sync::sync_stop_watch,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
