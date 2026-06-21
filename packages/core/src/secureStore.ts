@@ -1,20 +1,21 @@
 /**
- * At-rest protection for the unlocked keypair. The blob is encrypted with a
- * **non-extractable** WebCrypto AES-GCM key kept in IndexedDB — so a dump of
- * storage (backup, stolen disk, extension reading localStorage) is useless
- * without the key, and the key's raw bytes can never be exported.
+ * At-rest cache for the unlocked keypair, so the app doesn't prompt for the password on every page
+ * load. The keypair blob is AES-GCM encrypted with a wrap key kept in IndexedDB as **raw bytes**.
+ *
+ * We deliberately do NOT store a non-extractable `CryptoKey` object here: persisting one makes
+ * WebKit/Safari (and the Tauri webview) protect it with an OS keychain master key, which can become
+ * inaccessible — and then the cached keypair can't be decrypted, so the app re-prompts to unlock on
+ * **every refresh** (the bug this fixes). Raw bytes always persist. The trade-off is that the wrap key
+ * is extractable from IndexedDB, so this local cache is only as strong as the browser's storage
+ * isolation — but the keypair stays fully password-protected server-side; this merely avoids
+ * re-entering the password each session.
  */
 
 const DB_NAME = "orbit-secure"
 const STORE = "kv"
-const WRAP_KEY = "wrap-key"
+const WRAP_KEY = "wrap-key" // legacy non-extractable CryptoKey entry — cleared, never written
 const WRAP_KEY_RAW = "wrap-key-raw"
 const BLOB_KEY = "kp-blob"
-
-/** True inside the Tauri desktop webview (WKWebView). There, persisting a non-extractable CryptoKey
- *  makes WebKit stash a master key in the macOS keychain, which re-prompts on every launch. */
-const isDesktopWebview = (): boolean =>
-  typeof window !== "undefined" && "__TAURI_INTERNALS__" in window
 
 const openDb = (): Promise<IDBDatabase> =>
   new Promise((resolve, reject) => {
@@ -54,27 +55,15 @@ const idbDel = async (key: string): Promise<void> => {
 }
 
 const getWrapKey = async (): Promise<CryptoKey> => {
-  if (isDesktopWebview()) {
-    // Store the raw key bytes (not a CryptoKey object), so WebKit never wraps it with a keychain
-    // master key — no per-launch keychain prompt. The bytes live in IndexedDB in the app's sandboxed
-    // data dir; the imported key is still non-extractable in memory. A separate IDB key from the web
-    // path, so we never deserialize the web CryptoKey (which would itself hit the keychain).
-    const existingRaw = await idbGet<Uint8Array>(WRAP_KEY_RAW)
-    const raw = existingRaw ?? crypto.getRandomValues(new Uint8Array(32))
-    if (!existingRaw) await idbSet(WRAP_KEY_RAW, raw)
-    return crypto.subtle.importKey("raw", raw as BufferSource, { name: "AES-GCM" }, false, [
-      "encrypt",
-      "decrypt",
-    ])
-  }
-  const existing = await idbGet<CryptoKey>(WRAP_KEY)
-  if (existing) return existing
-  const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, false, [
+  // Raw key bytes, imported to a (non-extractable in-memory) AES-GCM key. Stored as bytes so it
+  // always persists, independent of any browser/OS keychain — see the module comment.
+  const existing = await idbGet<Uint8Array>(WRAP_KEY_RAW)
+  const raw = existing ?? crypto.getRandomValues(new Uint8Array(32))
+  if (!existing) await idbSet(WRAP_KEY_RAW, raw)
+  return crypto.subtle.importKey("raw", raw as BufferSource, { name: "AES-GCM" }, false, [
     "encrypt",
     "decrypt",
   ])
-  await idbSet(WRAP_KEY, key)
-  return key
 }
 
 /** Encrypt and persist the keypair blob. */
