@@ -1,5 +1,5 @@
 import { db, schema } from "@workspace/db"
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { accessTokenFromRefresh } from "./google"
 
 export const saveGoogleAccount = async (
@@ -29,6 +29,39 @@ export const googleAccessToken = async (userId: string): Promise<string | null> 
   const account = await getGoogleAccount(userId)
   if (!account) return null
   return accessTokenFromRefresh(account.refreshToken)
+}
+
+/** Every already-imported item for a source: Google id → PolarHQ node id (null for files/photos). */
+export const listImported = async (
+  userId: string,
+  source: string,
+): Promise<Array<{ googleId: string; polarId: string | null }>> =>
+  db
+    .select({
+      googleId: schema.importedItem.googleId,
+      polarId: schema.importedItem.polarId,
+    })
+    .from(schema.importedItem)
+    .where(and(eq(schema.importedItem.userId, userId), eq(schema.importedItem.source, source)))
+
+/** Mark a Google item imported (idempotent). `polarId` is the created node id for folders. */
+export const recordImported = async (
+  userId: string,
+  source: string,
+  googleId: string,
+  polarId: string | null,
+): Promise<void> => {
+  await db
+    .insert(schema.importedItem)
+    .values({ userId, source, googleId, polarId })
+    .onConflictDoUpdate({
+      target: [
+        schema.importedItem.userId,
+        schema.importedItem.source,
+        schema.importedItem.googleId,
+      ],
+      set: { polarId },
+    })
 }
 
 const PICKER_BASE = "https://photospicker.googleapis.com/v1"

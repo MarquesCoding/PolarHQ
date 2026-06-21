@@ -109,6 +109,25 @@ const listDrivePage = (
     `/api/v1/migrate/google/drive${pageToken ? `?pageToken=${encodeURIComponent(pageToken)}` : ""}`,
   )
 
+type ImportSource = "photos" | "drive"
+
+/** The ledger of items already imported for a source (resumability). `polarId` is set for folders. */
+const fetchImported = (
+  source: ImportSource,
+): Promise<{ items: Array<{ googleId: string; polarId: string | null }> }> =>
+  apiFetch(`/api/v1/migrate/imported?source=${source}`)
+
+/** Record an item as imported. Best-effort — failures just mean it may re-import on the next run. */
+const markImported = (
+  source: ImportSource,
+  googleId: string,
+  polarId?: string | null,
+): Promise<unknown> =>
+  apiFetch("/api/v1/migrate/imported", {
+    method: "POST",
+    body: JSON.stringify({ source, googleId, polarId: polarId ?? null }),
+  }).catch(() => undefined)
+
 /** Stream an item's original bytes back from Google via the server proxy. */
 const downloadProxy = async (query: string): Promise<Blob> => {
   const response = await fetch(`${coreConfig().apiUrl}/api/v1/migrate/google/download?${query}`, {
@@ -182,11 +201,15 @@ export const importGooglePhotos = async (
     pageToken = page.nextPageToken
   } while (pageToken)
 
+  // Skip anything already imported in a previous run (resumability).
+  const imported = new Set((await fetchImported("photos")).items.map((i) => i.googleId))
+  const pending = items.filter((item) => !imported.has(item.id))
+
   let done = 0
   let failed = 0
-  for (const item of items) {
+  for (const item of pending) {
     if (signal?.aborted) break
-    onProgress({ total: items.length, done, failed, current: item.filename })
+    onProgress({ total: pending.length, done, failed, current: item.filename })
     try {
       const isVideo = item.mimeType.startsWith("video/")
       const blob = await downloadProxy(
@@ -195,13 +218,14 @@ export const importGooglePhotos = async (
       const file = new File([blob], item.filename, { type: item.mimeType })
       if (file.size > CHUNKED_UPLOAD_THRESHOLD) await uploadEncryptedMediaChunked(file)
       else await uploadEncryptedMedia(file)
+      await markImported("photos", item.id)
     } catch {
       failed += 1
     }
     done += 1
   }
   await closePickerSession(session.id).catch(() => undefined)
-  onProgress({ total: items.length, done, failed, current: null })
+  onProgress({ total: pending.length, done, failed, current: null })
 }
 
 const DRIVE_FOLDER_MIME = "application/vnd.google-apps.folder"
@@ -247,10 +271,18 @@ export const importGoogleDrive = async (
     pageToken = page.nextPageToken
   } while (pageToken)
 
+  // Resumability: what we've imported before. Folder entries carry their created PolarHQ node id, so a
+  // resumed run reuses the existing tree instead of duplicating it; files are simply skipped.
+  const imported = (await fetchImported("drive")).items
+  const importedFiles = new Set(imported.map((entry) => entry.googleId))
+
   // Recreate the folder tree, parent before child. A Google parent that isn't itself one of the
   // folders we're importing (e.g. the "My Drive" root) maps to PolarHQ's root (null).
   const isOurFolder = new Set(folders.map((f) => f.id))
   const folderMap = new Map<string, string>() // Google folder id → PolarHQ node id
+  for (const entry of imported) {
+    if (entry.polarId && isOurFolder.has(entry.googleId)) folderMap.set(entry.googleId, entry.polarId)
+  }
   const polarParent = (parents: string[]): string | null | undefined => {
     const inSet = parents.find((p) => isOurFolder.has(p))
     if (!inSet) return null // top-level / outside the import
@@ -270,6 +302,7 @@ export const importGoogleDrive = async (
       try {
         const { node } = await createDriveFolder(parent, folder.name)
         folderMap.set(folder.id, node.id)
+        await markImported("drive", folder.id, node.id)
       } catch {
         folderMap.set(folder.id, "") // give up on this folder; its children fall back to root
       }
@@ -280,11 +313,12 @@ export const importGoogleDrive = async (
     return p ? p : null
   }
 
+  const pending = files.filter((file) => !importedFiles.has(file.id))
   let done = 0
   let failed = 0
-  for (const file of files) {
+  for (const file of pending) {
     if (signal?.aborted) return
-    onProgress({ total: files.length, done, failed, current: file.name })
+    onProgress({ total: pending.length, done, failed, current: file.name })
     try {
       const parentId = resolvedParent(file.parents)
       const exp = GOOGLE_EXPORTS[file.mimeType]
@@ -300,10 +334,11 @@ export const importGoogleDrive = async (
       if (upload.size > CHUNKED_UPLOAD_THRESHOLD)
         await uploadEncryptedDriveFileChunked(parentId, upload)
       else await uploadEncryptedDriveFile(parentId, upload)
+      await markImported("drive", file.id, null)
     } catch {
       failed += 1
     }
     done += 1
   }
-  onProgress({ total: files.length, done, failed, current: null })
+  onProgress({ total: pending.length, done, failed, current: null })
 }

@@ -8,7 +8,7 @@ export default defineConfig({
   dbCredentials: {
     url: config.databaseUrl,
   },
-  schemaFilter: ["public", "core", "photos"],
+  schemaFilter: ["public", "core", "photos", "migrate"],
   verbose: true,
   strict: true,
 })

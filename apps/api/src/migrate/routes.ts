@@ -13,7 +13,9 @@ import {
   getPickerSession,
   googleAccessToken,
   listGoogleDriveFiles,
+  listImported,
   listPickedMediaItems,
+  recordImported,
   saveGoogleAccount,
 } from "./service"
 
@@ -140,6 +142,26 @@ routes.get("/google/picker/items", async (c) => {
   const sessionId = c.req.query("sessionId")
   if (!sessionId) return c.json({ error: "invalidInput" }, 400)
   return c.json(await listPickedMediaItems(token, sessionId, c.req.query("pageToken")))
+})
+
+/** The ledger of already-imported items for a source, so the client can skip them (resumability). */
+routes.get("/imported", async (c) => {
+  const userId = await requireUser(c)
+  if (!userId) return c.json({ error: "unauthorized" }, 401)
+  const source = c.req.query("source")
+  if (source !== "photos" && source !== "drive") return c.json({ error: "invalidInput" }, 400)
+  return c.json({ items: await listImported(userId, source) })
+})
+
+/** Record an item as imported (idempotent). `polarId` carries a created folder's node id. */
+routes.post("/imported", async (c) => {
+  const userId = await requireUser(c)
+  if (!userId) return c.json({ error: "unauthorized" }, 401)
+  const body = await c.req.json<{ source?: string; googleId?: string; polarId?: string | null }>()
+  if ((body.source !== "photos" && body.source !== "drive") || !body.googleId)
+    return c.json({ error: "invalidInput" }, 400)
+  await recordImported(userId, body.source, body.googleId, body.polarId ?? null)
+  return c.json({ ok: true })
 })
 
 /** A page of the user's Google Drive files. */
