@@ -47,6 +47,20 @@
     "share": "Share",
     "title": "Title"
   },
+  "commandPalette": {
+    "title": "Command palette",
+    "description": "Search for a page or run a command.",
+    "placeholder": "Type a command or search…",
+    "empty": "No results.",
+    "groupNavigate": "Go to",
+    "groupActions": "Actions",
+    "favourites": "Favourites",
+    "albums": "Albums",
+    "map": "Map",
+    "recent": "Recent",
+    "trash": "Trash",
+    "toggleTheme": "Toggle light / dark"
+  },
   "confirmButton": {
     "confirm": "Confirm"
   },
