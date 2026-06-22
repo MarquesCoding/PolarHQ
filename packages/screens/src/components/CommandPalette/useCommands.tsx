@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import { type ReactNode, useEffect, useRef } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import { useTheme } from "@components/theme-provider"
 import { authClient } from "@workspace/core/authClient"
@@ -22,6 +22,15 @@ import {
 
 export type CommandGroupId = "navigate" | "actions"
 
+/**
+ * A keyboard shortcut. `keys` is the lowercased sequence to press in order (e.g. `["g","p"]` for the
+ * GitHub-style "go to" chords); `label` is its display form (e.g. `"G P"`).
+ */
+export interface Shortcut {
+  keys: string[]
+  label: string
+}
+
 /** One entry in the command palette. `keywords` are extra search terms not shown in the label. */
 export interface AppCommand {
   id: string
@@ -29,8 +38,11 @@ export interface AppCommand {
   title: string
   keywords?: string
   icon: ReactNode
+  shortcut?: Shortcut
   run: () => void
 }
+
+const chord = (second: string): Shortcut => ({ keys: ["g", second], label: `G ${second.toUpperCase()}` })
 
 /**
  * The central command registry — the single source of truth for what the ⌘K palette (and, later,
@@ -54,15 +66,16 @@ export const useCommands = (close: () => void): AppCommand[] => {
   const drive = t("apps.drive")
 
   return [
-    { id: "nav-photos", group: "navigate", title: photos, icon: <Image />, run: go("/photos") },
-    { id: "nav-drive", group: "navigate", title: drive, icon: <FolderSimple />, run: go("/drive") },
-    { id: "nav-docs", group: "navigate", title: t("apps.docs"), icon: <FileText />, run: go("/docs") },
-    { id: "nav-sheets", group: "navigate", title: t("apps.sheets"), icon: <Table />, run: go("/sheets") },
+    { id: "nav-photos", group: "navigate", title: photos, icon: <Image />, shortcut: chord("p"), run: go("/photos") },
+    { id: "nav-drive", group: "navigate", title: drive, icon: <FolderSimple />, shortcut: chord("d"), run: go("/drive") },
+    { id: "nav-docs", group: "navigate", title: t("apps.docs"), icon: <FileText />, shortcut: chord("o"), run: go("/docs") },
+    { id: "nav-sheets", group: "navigate", title: t("apps.sheets"), icon: <Table />, shortcut: chord("s"), run: go("/sheets") },
     {
       id: "nav-whiteboards",
       group: "navigate",
       title: t("apps.whiteboard"),
       icon: <PenNib />,
+      shortcut: chord("w"),
       run: go("/whiteboards"),
     },
     {
@@ -111,6 +124,7 @@ export const useCommands = (close: () => void): AppCommand[] => {
       title: t("flatSidebar.account"),
       keywords: "settings preferences profile",
       icon: <Gear />,
+      shortcut: chord("a"),
       run: go("/account"),
     },
     {
@@ -141,4 +155,62 @@ export const useCommands = (close: () => void): AppCommand[] => {
       }),
     },
   ]
+}
+
+/** How long after the first key of a chord we wait for the second, in ms. */
+const SEQUENCE_TIMEOUT = 1200
+
+/**
+ * Bind the registry's shortcuts globally. Supports GitHub-style two-key chords — press `g`, then the
+ * second key within {@link SEQUENCE_TIMEOUT}. Never fires while a modifier is held, while typing in a
+ * field, or while any dialog/palette is open, so it won't fight in-screen handlers.
+ */
+export const useShortcuts = (commands: AppCommand[]): void => {
+  const commandsRef = useRef(commands)
+  commandsRef.current = commands
+  const pendingRef = useRef<{ key: string; at: number } | null>(null)
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return
+      const el = event.target as HTMLElement | null
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return
+      if (document.querySelector('[data-slot="dialog-content"]')) return
+
+      const key = event.key.toLowerCase()
+      const all = commandsRef.current
+      const pending = pendingRef.current
+
+      if (pending && Date.now() - pending.at < SEQUENCE_TIMEOUT) {
+        pendingRef.current = null
+        const match = all.find(
+          (c) =>
+            !!c.shortcut &&
+            c.shortcut.keys.length === 2 &&
+            c.shortcut.keys[0] === pending.key &&
+            c.shortcut.keys[1] === key,
+        )
+        if (match) {
+          event.preventDefault()
+          match.run()
+          return
+        }
+      }
+
+      if (all.some((c) => !!c.shortcut && c.shortcut.keys.length === 2 && c.shortcut.keys[0] === key)) {
+        pendingRef.current = { key, at: Date.now() }
+        return
+      }
+
+      const single = all.find(
+        (c) => !!c.shortcut && c.shortcut.keys.length === 1 && c.shortcut.keys[0] === key,
+      )
+      if (single) {
+        event.preventDefault()
+        single.run()
+      }
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [])
 }

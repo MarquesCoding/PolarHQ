@@ -8,8 +8,9 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
+  CommandShortcut,
 } from "@workspace/ui/components/command"
-import { type CommandGroupId, useCommands } from "@components/CommandPalette/useCommands"
+import { type CommandGroupId, useCommands, useShortcuts } from "@components/CommandPalette/useCommands"
 
 /** Event other UI (e.g. the top-bar button) dispatches to open the palette without sharing state. */
 const OPEN_EVENT = "polarhq:command-palette"
@@ -44,6 +45,7 @@ const CommandPalette = () => {
   }, [])
 
   const commands = useCommands(() => setOpen(false))
+  useShortcuts(commands)
   const groups: Array<{ id: CommandGroupId; label: string }> = [
     { id: "navigate", label: t("commandPalette.groupNavigate") },
     { id: "actions", label: t("commandPalette.groupActions") },
@@ -74,6 +76,9 @@ const CommandPalette = () => {
                   >
                     {command.icon}
                     <span>{command.title}</span>
+                    {command.shortcut ? (
+                      <CommandShortcut>{command.shortcut.label}</CommandShortcut>
+                    ) : null}
                   </CommandItem>
                 ))}
               </CommandGroup>
