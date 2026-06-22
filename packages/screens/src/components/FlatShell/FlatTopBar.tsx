@@ -1,15 +1,8 @@
 import { type ReactNode } from "react"
 import { usePathname } from "@workspace/screens/platform"
 import { Icon } from "@workspace/screens/icons"
-import { openCommandPalette } from "@components/CommandPalette/CommandPalette"
-import { Button } from "@workspace/ui/components/button"
-import { Kbd } from "@workspace/ui/components/kbd"
 import { SidebarTrigger } from "@workspace/ui/components/sidebar"
-import { MagnifyingGlass } from "@phosphor-icons/react"
 import { useTranslation } from "react-i18next"
-
-const isMac =
-  typeof navigator !== "undefined" && /mac/i.test(navigator.platform || navigator.userAgent)
 
 export interface TopBarTitle {
   /** Returns true when this entry should be shown for the given pathname. */
@@ -47,18 +40,7 @@ const FlatTopBar = ({ titles, extra }: FlatTopBarProps) => {
           <span className="text-sm font-medium">{current.label}</span>
         </span>
       ) : null}
-      <div data-slot="topbar-actions" className="ms-auto flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={openCommandPalette}
-          aria-label={t("commandPalette.title")}
-          className="text-muted-foreground gap-2 font-normal"
-        >
-          <MagnifyingGlass className="size-4" />
-          <span className="hidden sm:inline">{t("flatTopBar.search")}</span>
-          <Kbd className="hidden sm:inline-flex">{isMac ? "⌘K" : "Ctrl K"}</Kbd>
-        </Button>
+      <div data-slot="topbar-actions" className="ms-auto flex items-center gap-2 empty:hidden">
         <div id={TOPBAR_SLOT_ID} className="flex items-center gap-2 empty:hidden" />
         {extra}
       </div>
