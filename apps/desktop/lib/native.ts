@@ -40,3 +40,8 @@ export const syncStartWatch = (path: string): Promise<void> => invoke("sync_star
 
 /** Stop watching a synced folder. */
 export const syncStopWatch = (path: string): Promise<void> => invoke("sync_stop_watch", { path })
+
+/** Read a synced file's raw bytes (Rust-native, no fs-plugin path scope) for the sync controller to
+ *  encrypt + upload. Returns an `ArrayBuffer` — bytes ride the binary IPC channel, not JSON. */
+export const syncReadFile = (path: string): Promise<ArrayBuffer> =>
+  invoke<ArrayBuffer>("sync_read_file", { path })

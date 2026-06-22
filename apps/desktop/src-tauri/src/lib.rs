@@ -9,7 +9,8 @@ pub fn run() {
     #[allow(unused_mut)]
     let mut builder = tauri::Builder::default()
         .plugin(tauri_plugin_store::Builder::new().build())
-        .plugin(tauri_plugin_process::init());
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_dialog::init());
 
     #[cfg(desktop)]
     {
@@ -27,6 +28,7 @@ pub fn run() {
             commands::p2p_status,
             commands::sync_now,
             sync::sync_index,
+            sync::sync_read_file,
             sync::sync_start_watch,
             sync::sync_stop_watch,
         ])

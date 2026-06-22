@@ -18,5 +18,19 @@
   "devicesHint": "Review and sign out devices that are signed in.",
   "manageDevices": "Manage devices",
   "signOut": "Sign out",
-  "languageChanged": "Language updated"
+  "languageChanged": "Language updated",
+  "sync": {
+    "title": "Synced folders",
+    "hint": "Keep a folder on this computer backed up to your Drive, end-to-end encrypted.",
+    "addFolder": "Add folder",
+    "empty": "No synced folders yet. Add one to back it up to Drive.",
+    "syncNow": "Sync now",
+    "remove": "Stop syncing",
+    "syncing": "Syncing {{done}}/{{total}}…",
+    "synced": "Synced {{count}} files ({{failed}} failed)",
+    "syncError": "Sync failed",
+    "addError": "Couldn't add that folder",
+    "lastSynced": "Synced {{time}}",
+    "never": "Never synced"
+  }
 }

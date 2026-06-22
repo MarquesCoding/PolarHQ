@@ -58,6 +58,9 @@ export const Bootstrap = () => {
           void saveServerUrl(url)
         },
       }
+      if (inTauri) {
+        void import("@lib/sync").then((mod) => mod.registerSyncBridge()).catch(() => undefined)
+      }
       if (active) setPhase("ready")
     })()
     return () => {

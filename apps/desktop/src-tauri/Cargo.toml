@@ -24,6 +24,8 @@ tauri-build = { version = "2", features = [] }
 tauri = { version = "2", features = [] }
 tauri-plugin-store = "2"
 tauri-plugin-process = "2"
+# Native folder picker for "add a synced folder".
+tauri-plugin-dialog = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # Folder sync engine: a gitignore-aware directory walker (ripgrep's `ignore`), native file watching,

@@ -19,6 +19,7 @@
     "./icons": "./src/icons.tsx",
     "./uploadManager": "./src/uploadManager.tsx",
     "./useLiveEvents": "./src/useLiveEvents.ts",
+    "./syncBridge": "./src/syncBridge.ts",
     "./useAssetFeed": "./src/useAssetFeed.ts",
     "./useCollabDocument": "./src/useCollabDocument.ts",
     "./useUploader": "./src/useUploader.ts",

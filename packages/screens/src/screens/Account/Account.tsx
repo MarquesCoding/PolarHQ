@@ -4,6 +4,7 @@ import { authClient } from "@workspace/core/authClient"
 import { Icon } from "@workspace/screens/icons"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 import LanguageSelector from "@components/LanguageSelector/LanguageSelector"
+import SyncedFolders from "@pages/Account/SyncedFolders"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
@@ -118,6 +119,8 @@ const Account = () => {
           {t("manageDevices")}
         </Button>
       </Section>
+
+      <SyncedFolders />
 
       <DevicesDialog open={devicesOpen} onOpenChange={setDevicesOpen} />
     </div>
