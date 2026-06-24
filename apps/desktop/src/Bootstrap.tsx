@@ -1,5 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from "react"
+import { openUrl } from "@tauri-apps/plugin-opener"
 import { configureCore } from "@workspace/core/config"
+import { configureHost } from "@workspace/core/host"
 import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
 import { loadLastServerUrl, loadServerUrl, saveServerUrl } from "@lib/server"
 import Updater from "./Updater"
@@ -50,6 +52,9 @@ export const Bootstrap = () => {
     void (async () => {
       const [stored, last] = await Promise.all([loadServerUrl(), loadLastServerUrl()])
       connect(stored ?? last ?? "http://localhost:3001")
+      if (inTauri) {
+        configureHost({ isDesktop: true, openExternal: (url) => void openUrl(url) })
+      }
       const win = window as Window & { __polarServer?: ServerBridge }
       win.__polarServer = {
         last: last ?? stored ?? null,
