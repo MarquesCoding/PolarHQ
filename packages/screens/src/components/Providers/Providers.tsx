@@ -11,6 +11,7 @@ import { Toaster } from "@workspace/ui/components/sonner"
 import { TooltipProvider } from "@workspace/ui/components/tooltip"
 import { Provider as ReduxProvider } from "react-redux"
 import UploadPanel from "@components/UploadPanel/UploadPanel"
+import CommandPalette from "@components/CommandPalette/CommandPalette"
 import PlatformAdapter from "@components/PlatformAdapter/PlatformAdapter"
 
 /** Wire the app's on-device search indexer into core's post-upload hook (kept out of core so the
@@ -38,6 +39,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
                 <PlatformAdapter>
                   {children}
                   <UploadPanel />
+                  <CommandPalette />
                 </PlatformAdapter>
               </UploadProvider>
             </TooltipProvider>
