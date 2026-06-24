@@ -10,6 +10,7 @@
     "updater:default",
     "process:default",
     "process:allow-restart",
+    "dialog:allow-open",
     "opener:allow-open-url"
   ]
 }
