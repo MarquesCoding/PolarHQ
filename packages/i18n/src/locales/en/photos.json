@@ -115,6 +115,7 @@
     "edit": "Edit",
     "editImage": "Edit image",
     "favourite": "Favourite",
+    "unfavourite": "Remove from favourites",
     "filmstrip": "Thumbnails",
     "frame": "Frame {{position}} of {{total}}",
     "imageCopied": "Image copied to clipboard",
