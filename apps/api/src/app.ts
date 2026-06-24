@@ -21,6 +21,7 @@ import { docsRoutes } from "./docs/routes"
 import { canAccessDoc } from "./docs/service"
 import { registerDriveModule } from "./drive/module"
 import { driveRoutes } from "./drive/routes"
+import { migrateRoutes } from "./migrate/routes"
 import {
   getShareView,
   recordShareDownload,
@@ -120,6 +121,7 @@ app.route("/api/v1/apps", appsRoutes)
 app.route("/api/v1/photos", photosRoutes)
 app.route("/api/v1/drive", driveRoutes)
 app.route("/api/v1/docs", docsRoutes)
+app.route("/api/v1/migrate", migrateRoutes)
 
 app.get(
   "/ws",
