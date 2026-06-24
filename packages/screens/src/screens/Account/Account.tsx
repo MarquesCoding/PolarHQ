@@ -4,6 +4,7 @@ import { authClient } from "@workspace/core/authClient"
 import { Icon } from "@workspace/screens/icons"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 import LanguageSelector from "@components/LanguageSelector/LanguageSelector"
+import MigrateGoogle from "@pages/Account/MigrateGoogle"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
@@ -117,6 +118,10 @@ const Account = () => {
           <Icon name="key" className="size-4" />
           {t("manageDevices")}
         </Button>
+      </Section>
+
+      <Section title={t("import")} hint={t("importHint")}>
+        <MigrateGoogle />
       </Section>
 
       <DevicesDialog open={devicesOpen} onOpenChange={setDevicesOpen} />
