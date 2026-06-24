@@ -142,6 +142,17 @@ pub fn sync_index(path: String) -> Result<Vec<IndexEntry>, String> {
     Ok(index_folder(&root))
 }
 
+/// Read a file's raw bytes for the JS controller to encrypt + upload. Returns them as a binary IPC
+/// payload (an `ArrayBuffer` on the JS side), so large files don't pass through JSON. Rust has native
+/// filesystem access, so this sidesteps the fs plugin's path-scope restrictions for the user-granted
+/// synced folder.
+#[tauri::command]
+pub fn sync_read_file(path: String) -> Result<tauri::ipc::Response, String> {
+    std::fs::read(&path)
+        .map(tauri::ipc::Response::new)
+        .map_err(|e| e.to_string())
+}
+
 /// Start watching a synced folder; emits `sync://change` (payload = the folder path) on any FS change.
 /// Idempotent per path. Debouncing/coalescing is done on the JS side.
 #[tauri::command]
