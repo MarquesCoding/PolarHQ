@@ -23,6 +23,9 @@ import EditPanel from "@pages/Photos/components/PhotoEditor/EditPanel"
 import EditStage from "@pages/Photos/components/PhotoEditor/EditStage"
 import { usePhotoEditor } from "@pages/Photos/components/PhotoEditor/usePhotoEditor"
 import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
+import PhotoContextMenu, {
+  type PhotoMenuActions,
+} from "@pages/Photos/components/PhotoContextMenu/PhotoContextMenu"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
@@ -324,6 +327,18 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
   const shareConfig = controller.share?.(item)
   const infoOpen = controller.renderInfo ? info : false
 
+  const menuActions: PhotoMenuActions = {
+    favorite: controller.toggleFavorite
+      ? { active: Boolean(item.isFavorite), toggle: () => void toggleFavourite() }
+      : undefined,
+    edit: canEdit && !editing ? () => setEditing(true) : undefined,
+    share: shareConfig ? () => setShareOpen(true) : undefined,
+    download: controller.download ? download : undefined,
+    copy: item.kind === "image" ? () => void copyImage() : undefined,
+    info: controller.renderInfo ? toggleInfo : undefined,
+    trash: controller.trash ? () => void moveToTrash() : undefined,
+  }
+
   return (
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6"
@@ -501,6 +516,7 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
         ) : null}
       </div>
 
+        <PhotoContextMenu actions={menuActions}>
         <div
           ref={zoom.stageRef}
           className={cn(
@@ -604,6 +620,7 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
             </Button>
           ) : null}
         </div>
+        </PhotoContextMenu>
 
         <AnimatePresence initial={false}>
         {showStrip && !editing ? (
