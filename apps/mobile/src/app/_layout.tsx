@@ -33,7 +33,16 @@ export default function RootLayout() {
             <Stack.Screen name="connect" />
             <Stack.Screen name="sign-in" />
             <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="account" options={{ presentation: 'modal' }} />
+            <Stack.Screen
+              name="account"
+              options={{
+                presentation: 'formSheet',
+                sheetGrabberVisible: true,
+                sheetAllowedDetents: [0.65, 1],
+                sheetCornerRadius: 24,
+                contentStyle: { backgroundColor: 'transparent' },
+              }}
+            />
             <Stack.Screen name="search" options={{ animation: 'fade' }} />
             <Stack.Screen name="folder/[id]" />
             <Stack.Screen name="album/[id]" />

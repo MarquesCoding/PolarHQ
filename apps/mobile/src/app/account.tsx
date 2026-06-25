@@ -4,7 +4,6 @@ import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { coreConfig } from '@workspace/core/config';
 import { lockKeys } from '@workspace/core/e2e';
 import { formatBytes } from '@workspace/core/format';
@@ -42,7 +41,7 @@ export default function Account() {
   };
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]} edges={['top']}>
+    <View style={[styles.safe, { backgroundColor: c.background }]}>
       <View style={styles.head}>
         <Text style={[styles.email, { color: c.textSecondary }]} numberOfLines={1}>
           {email}
@@ -92,7 +91,7 @@ export default function Account() {
           <Button title="Disconnect server" variant="ghost" onPress={onDisconnect} disabled={busy} />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
