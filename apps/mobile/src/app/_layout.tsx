@@ -47,6 +47,16 @@ export default function RootLayout() {
             <Stack.Screen name="album/[id]" />
             <Stack.Screen name="collection/[view]" />
             <Stack.Screen name="photo/[id]" options={{ presentation: 'transparentModal', animation: 'fade' }} />
+            <Stack.Screen
+              name="photo-info"
+              options={{
+                presentation: 'formSheet',
+                sheetGrabberVisible: true,
+                sheetAllowedDetents: [0.5, 0.9],
+                sheetCornerRadius: 24,
+                contentStyle: { backgroundColor: 'transparent' },
+              }}
+            />
           </Stack>
         </QueryClientProvider>
       </SafeAreaProvider>

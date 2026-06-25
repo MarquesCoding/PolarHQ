@@ -20,6 +20,8 @@ export {
   deleteAssets,
   fetchAlbums,
   fetchAlbum,
+  createAlbum,
+  addToAlbum,
 } from '@workspace/core/photos';
 export type { GridAsset, TimelinePage, AssetView, Album, AlbumDetail } from '@workspace/core/photos';
 
@@ -120,14 +122,28 @@ export const fetchOriginalUri = async (
   }
 };
 
+const extForMime = (mime: string): string => {
+  if (mime.includes('quicktime')) return 'mov';
+  if (mime.includes('webm')) return 'webm';
+  if (mime.startsWith('video/')) return 'mp4';
+  if (mime.includes('png')) return 'png';
+  if (mime.includes('heic')) return 'heic';
+  if (mime.includes('heif')) return 'heif';
+  if (mime.includes('gif')) return 'gif';
+  if (mime.includes('webp')) return 'webp';
+  if (mime.startsWith('image/')) return 'jpg';
+  if (mime.startsWith('audio/')) return 'm4a';
+  return 'bin';
+};
+
 /**
- * Fetch + decrypt an asset's original to a temp `file://` so a native player (expo-video) can
- * stream it from disk — videos are far too large to hold as a base64 data URI in JS.
+ * Fetch + decrypt an asset's original to a temp `file://` (with a correct extension for its type).
+ * Used by the native video player (too large for a base64 data URI) and by share / save-to-device.
  */
-export const fetchOriginalFile = async (
+export const decryptOriginalToFile = async (
   assetId: string,
   encrypted: boolean,
-  mimeType = 'video/mp4',
+  mimeType = 'application/octet-stream',
 ): Promise<string | null> => {
   const response = await fetch(
     `${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`,
@@ -147,10 +163,13 @@ export const fetchOriginalFile = async (
     }
   }
 
-  const ext = mimeType.includes('quicktime') ? 'mov' : mimeType.includes('webm') ? 'webm' : 'mp4';
-  const uri = `${FileSystem.cacheDirectory}vid-${assetId}.${ext}`;
+  const uri = `${FileSystem.cacheDirectory}orig-${assetId}.${extForMime(mimeType)}`;
   await FileSystem.writeAsStringAsync(uri, bytesToBase64(plain), {
     encoding: FileSystem.EncodingType.Base64,
   });
   return uri;
 };
+
+/** @deprecated use {@link decryptOriginalToFile} — kept for the existing video-player call site. */
+export const fetchOriginalFile = (assetId: string, encrypted: boolean, mimeType = 'video/mp4') =>
+  decryptOriginalToFile(assetId, encrypted, mimeType);

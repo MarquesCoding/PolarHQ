@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -9,6 +10,7 @@ import { FloatingTopBar, TopBarButton, useTopInset } from '@/components/floating
 import { PromptModal } from '@/components/prompt-modal';
 import { Tappable } from '@/components/ui/tappable';
 import { useColors } from '@/components/ui';
+import { showActionSheet } from '@/lib/action-menu';
 import { fetchDriveThumbnailUri } from '@/lib/photos';
 import {
   createDriveFolder,
@@ -77,11 +79,14 @@ function Row({
   };
 
   const onLongPress = () => {
-    Alert.alert(node.name, undefined, [
-      { text: 'Rename', onPress: () => onRename(node) },
-      { text: 'Delete', style: 'destructive', onPress: () => onDelete(node) },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
+    void Haptics.selectionAsync();
+    showActionSheet(
+      [
+        { label: 'Rename', onPress: () => onRename(node) },
+        { label: 'Delete', destructive: true, onPress: () => onDelete(node) },
+      ],
+      node.name,
+    );
   };
 
   return (
