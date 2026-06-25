@@ -7,3 +7,4 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   msw: false
+  react-native-libsodium: true
