@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
-import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
 import Animated, {
@@ -52,11 +51,16 @@ export function FloatingTabBar({ state, navigation }: TabBarProps) {
   const barWidth = Math.min(width - 24 - FAB - 10, 300);
   const slot = (barWidth - PADDING * 2) / tabs.length;
 
-  const x = useSharedValue(state.index * slot);
+  // state.index counts every route (incl. the hidden search tab); map it back to a button index.
+  const activeName = state.routes[state.index]?.name;
+  const searchActive = activeName === 'search';
+  const activeIndex = Math.max(tabs.findIndex((t) => t.name === activeName), 0);
+
+  const x = useSharedValue(activeIndex * slot);
   useEffect(() => {
-    x.value = withTiming(state.index * slot, { duration: 240 });
-  }, [state.index, slot, x]);
-  const indicatorStyle = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
+    x.value = withTiming(activeIndex * slot, { duration: 240 });
+  }, [activeIndex, slot, x]);
+  const indicatorStyle = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }], opacity: searchActive ? 0 : 1 }));
 
   return (
     <View style={[styles.wrap, { bottom: Math.max(insets.bottom, 10) }]} pointerEvents="box-none">
@@ -71,9 +75,9 @@ export function FloatingTabBar({ state, navigation }: TabBarProps) {
               style={[styles.indicator, { width: slot, backgroundColor: c.primary }, indicatorStyle]}
               pointerEvents="none"
             />
-            {tabs.map((route, index) => {
+            {tabs.map((route) => {
               const meta = TABS[route.name];
-              const active = state.index === index;
+              const active = route.name === activeName;
               const onPress = () => {
                 const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
                 if (active) return;
@@ -103,12 +107,13 @@ export function FloatingTabBar({ state, navigation }: TabBarProps) {
           <BlurView intensity={48} tint={scheme} style={[styles.fab, { borderColor: c.border, backgroundColor: glass }]}>
             <Pressable
               onPress={() => {
+                if (searchActive) return;
                 void Haptics.selectionAsync();
-                router.push('/search');
+                navigation.navigate('search');
               }}
               style={styles.fabPress}
             >
-              <Ionicons name="search" size={21} color={c.text} />
+              <Ionicons name="search" size={21} color={searchActive ? c.primary : c.text} />
             </Pressable>
           </BlurView>
         </View>
