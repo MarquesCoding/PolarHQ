@@ -1,11 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { type ReactElement, useState } from 'react';
+import { useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { FloatingTopBar, TopBarButton, useTopInset } from '@/components/floating-top-bar';
 import { PromptModal } from '@/components/prompt-modal';
+import { Tappable } from '@/components/ui/tappable';
 import { useColors } from '@/components/ui';
+import { fetchDriveThumbnailUri } from '@/lib/photos';
 import {
   createDriveFolder,
   decryptNodeName,
@@ -50,6 +54,16 @@ function Row({
 }) {
   const c = useColors();
   const isFolder = node.kind === 'folder';
+  const mime = node.mimeType ?? '';
+  const isVideo = mime.startsWith('video/');
+  const hasThumb = !isFolder && (node.thumbnailUrl != null || mime.startsWith('image/') || isVideo);
+
+  const { data: thumbUri } = useQuery({
+    queryKey: ['drive-thumb', node.id],
+    queryFn: () => fetchDriveThumbnailUri(node.id, node.encrypted ?? false),
+    enabled: hasThumb,
+    staleTime: Infinity,
+  });
 
   const onPress = () => {
     if (isFolder) {
@@ -73,7 +87,18 @@ function Row({
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} style={styles.row}>
       <View style={[styles.iconWrap, { backgroundColor: c.backgroundElement }]}>
-        <Ionicons name={iconFor(node)} size={20} color={isFolder ? c.primary : c.textSecondary} />
+        {thumbUri ? (
+          <>
+            <Image source={{ uri: thumbUri }} style={styles.thumb} contentFit="cover" transition={140} />
+            {isVideo ? (
+              <View style={styles.playBadge}>
+                <Ionicons name="play" size={9} color="#fff" />
+              </View>
+            ) : null}
+          </>
+        ) : (
+          <Ionicons name={iconFor(node)} size={20} color={isFolder ? c.primary : c.textSecondary} />
+        )}
       </View>
       <View style={styles.rowText}>
         <Text style={[styles.name, { color: c.text }]} numberOfLines={1}>
@@ -90,10 +115,12 @@ function Row({
 
 type Prompt = { mode: 'new' } | { mode: 'rename'; node: DriveNode };
 
-export function DriveList({ parentId, header }: { parentId: string | null; header?: ReactElement }) {
+export function DriveList({ parentId, title }: { parentId: string | null; title?: string }) {
   const c = useColors();
   const queryClient = useQueryClient();
+  const topInset = useTopInset();
   const [prompt, setPrompt] = useState<Prompt | null>(null);
+  const openNewFolder = () => setPrompt({ mode: 'new' });
 
   const { data, isLoading, isError, refetch, isRefetching } = useQuery({
     queryKey: ['nodes', parentId ?? 'root'],
@@ -131,15 +158,15 @@ export function DriveList({ parentId, header }: { parentId: string | null; heade
     });
 
   const body = isLoading ? (
-    <View style={styles.center}>
+    <View style={[styles.center, { paddingTop: topInset }]}>
       <ActivityIndicator color={c.primary} />
     </View>
   ) : isError ? (
-    <View style={styles.center}>
+    <View style={[styles.center, { paddingTop: topInset }]}>
       <Text style={{ color: c.textSecondary }}>Couldn’t load this folder.</Text>
     </View>
   ) : children.length === 0 ? (
-    <View style={styles.center}>
+    <View style={[styles.center, { paddingTop: topInset }]}>
       <Ionicons name="folder-open-outline" size={40} color={c.textSecondary} />
       <Text style={[styles.emptyText, { color: c.textSecondary }]}>This folder is empty</Text>
     </View>
@@ -148,9 +175,8 @@ export function DriveList({ parentId, header }: { parentId: string | null; heade
       data={children}
       keyExtractor={(n) => n.id}
       renderItem={({ item }) => <Row node={item} onRename={(n) => setPrompt({ mode: 'rename', node: n })} onDelete={onDelete} />}
-      contentContainerStyle={{ paddingVertical: 6, paddingBottom: 120 }}
+      contentContainerStyle={{ paddingTop: topInset, paddingBottom: 120 }}
       ItemSeparatorComponent={() => <View style={[styles.sep, { backgroundColor: c.border }]} />}
-      ListHeaderComponent={header}
       onRefresh={refetch}
       refreshing={isRefetching}
     />
@@ -160,12 +186,25 @@ export function DriveList({ parentId, header }: { parentId: string | null; heade
     <View style={styles.fill}>
       {body}
 
-      <Pressable
-        onPress={() => setPrompt({ mode: 'new' })}
-        style={[styles.fab, { backgroundColor: c.primary }]}
-      >
-        <Ionicons name="add" size={28} color={c.primaryForeground} />
-      </Pressable>
+      {title ? (
+        <FloatingTopBar
+          showAvatar={false}
+          left={
+            <Tappable onPress={() => router.back()} haptic="selection" style={styles.back}>
+              <Ionicons name="chevron-back" size={24} color={c.primary} />
+              <Text style={[styles.folderTitle, { color: c.text }]} numberOfLines={1}>
+                {title}
+              </Text>
+            </Tappable>
+          }
+        >
+          <TopBarButton icon="add" onPress={openNewFolder} />
+        </FloatingTopBar>
+      ) : (
+        <FloatingTopBar>
+          <TopBarButton icon="add" onPress={openNewFolder} />
+        </FloatingTopBar>
+      )}
 
       <PromptModal
         visible={prompt !== null}
@@ -185,24 +224,23 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 },
   emptyText: { fontSize: 14 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 18, paddingVertical: 11 },
-  iconWrap: { width: 40, height: 40, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
+  iconWrap: { width: 40, height: 40, borderRadius: 11, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  thumb: { width: 40, height: 40 },
+  playBadge: {
+    position: 'absolute',
+    right: 3,
+    bottom: 3,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   rowText: { flex: 1, gap: 2 },
   name: { fontSize: 15, fontWeight: '500' },
   meta: { fontSize: 12 },
   sep: { height: StyleSheet.hairlineWidth, marginLeft: 72 },
-  fab: {
-    position: 'absolute',
-    right: 20,
-    bottom: 24,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
-  },
+  back: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 2 },
+  folderTitle: { fontSize: 19, fontWeight: '700', flexShrink: 1 },
 });

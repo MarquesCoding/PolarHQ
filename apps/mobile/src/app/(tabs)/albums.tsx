@@ -4,10 +4,9 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { FloatingTopBar, useTopInset } from '@/components/floating-top-bar';
 import { useColors } from '@/components/ui';
-import { authClient } from '@/lib/auth';
 import { fetchAlbums, fetchThumbnailUri, type Album } from '@/lib/photos';
 
 type Item =
@@ -46,8 +45,7 @@ function AlbumCard({ album, size }: { album: Album; size: number }) {
 export default function Albums() {
   const c = useColors();
   const { width } = useWindowDimensions();
-  const { data: session } = authClient.useSession();
-  const initial = (session?.user?.email ?? '?').trim().charAt(0).toUpperCase();
+  const topInset = useTopInset();
   const GAP = 14;
   const tile = (width - 16 * 2 - GAP) / 2;
 
@@ -59,9 +57,9 @@ export default function Albums() {
   ];
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]} edges={['top']}>
+    <View style={[styles.root, { backgroundColor: c.background }]}>
       {isLoading ? (
-        <View style={styles.center}>
+        <View style={[styles.center, { paddingTop: topInset }]}>
           <ActivityIndicator color={c.primary} />
         </View>
       ) : (
@@ -70,18 +68,10 @@ export default function Albums() {
           keyExtractor={(i) => i.key}
           numColumns={2}
           columnWrapperStyle={{ gap: GAP, paddingHorizontal: 16 }}
-          contentContainerStyle={{ gap: 18, paddingBottom: 110 }}
+          contentContainerStyle={{ gap: 18, paddingTop: topInset + 6, paddingBottom: 110 }}
           onRefresh={refetch}
           refreshing={isRefetching}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View style={styles.header}>
-              <Text style={[styles.heading, { color: c.text }]}>Albums</Text>
-              <Pressable onPress={() => router.push('/account')} hitSlop={8} style={[styles.avatar, { backgroundColor: c.primary }]}>
-                <Text style={styles.avatarText}>{initial}</Text>
-              </Pressable>
-            </View>
-          }
           renderItem={({ item }) =>
             item.kind === 'collection' ? (
               <Pressable
@@ -101,17 +91,14 @@ export default function Albums() {
           }
         />
       )}
-    </SafeAreaView>
+      <FloatingTopBar />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 14 },
-  heading: { fontSize: 28, fontWeight: '800' },
-  avatar: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
-  avatarText: { color: '#fff', fontSize: 15, fontWeight: '700' },
+  root: { flex: 1 },
+  center: { flex: 1, alignItems: 'center' },
   cover: { borderRadius: 16, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
   collection: { gap: 10 },
   collectionLabel: { fontSize: 14, fontWeight: '600' },
