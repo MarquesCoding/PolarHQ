@@ -2,6 +2,7 @@ import { createRequire } from "node:module"
 import { Readable } from "node:stream"
 import { config } from "@workspace/config"
 import { publishUserEvent } from "@workspace/jobs"
+import { sendPushToUser } from "../notifications/push"
 import { assetObjectKeys, storage } from "@workspace/storage"
 import type { Archiver, ArchiverOptions, Format } from "archiver"
 import { type Context, Hono } from "hono"
@@ -73,6 +74,15 @@ const notify = (userId: string) =>
     payload: {},
   })
 
+/** Wake a user's other devices to sync newly-added content. Fire-and-forget; never blocks. */
+const pushSync = (userId: string, type: string) =>
+  void sendPushToUser(userId, {
+    type,
+    title: "PolarHQ",
+    body: "New items are ready to sync",
+    data: { type },
+  })
+
 const parse = async <T>(c: Context, schema: z.ZodType<T>) => {
   const body = await c.req.json().catch(() => null)
   return schema.safeParse(body)
@@ -115,6 +125,7 @@ photosRoutes.post("/assets", async (c) => {
       placeholderName: file.name || "encrypted",
     })
     await notify(c.get("userId"))
+    pushSync(c.get("userId"), "photos.asset.changed")
     return c.json({ asset: await serializeAsset(asset), mirrorNodeId, deduped: false }, 201)
   }
 
@@ -127,7 +138,10 @@ photosRoutes.post("/assets", async (c) => {
   })
 
   const asset = await serializeAsset(result.asset)
-  if (!result.deduped) await notify(c.get("userId"))
+  if (!result.deduped) {
+    await notify(c.get("userId"))
+    pushSync(c.get("userId"), "photos.asset.changed")
+  }
   return c.json({ asset, deduped: result.deduped }, result.deduped ? 200 : 201)
 })
 
@@ -233,6 +247,7 @@ photosRoutes.post("/assets/upload/:sessionId/complete", async (c) => {
   })
   await deletePhotoUploadSession(sessionId)
   await notify(userId)
+  pushSync(userId, "photos.asset.changed")
   return c.json({ asset: await serializeAsset(asset), mirrorNodeId, deduped: false }, 201)
 })
 
