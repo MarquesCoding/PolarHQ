@@ -28,6 +28,7 @@ pub fn run() {
             commands::generate_splat,
             commands::p2p_status,
             commands::sync_now,
+            commands::write_temp_media,
             sync::sync_index,
             sync::sync_read_file,
             sync::sync_start_watch,
