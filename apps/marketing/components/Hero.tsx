@@ -27,7 +27,7 @@ const item: Variants = {
 }
 
 const Hero = () => (
-  <section className="relative isolate flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 pt-28 pb-20 text-center">
+  <section className="relative isolate overflow-hidden px-6 pt-36 pb-28 text-center sm:pt-40 sm:pb-36">
     {/* Soft violet aurora backdrop. */}
     <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
       <div className="absolute inset-0 bg-[radial-gradient(70%_55%_at_50%_-8%,rgba(124,92,252,0.40),transparent_70%)]" />
@@ -36,27 +36,27 @@ const Hero = () => (
       <div className="to-background absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent" />
     </div>
 
+    {/* Waving bear sticker wedged into the bottom-left corner, tilted — peeking in from the edge. */}
+    <motion.img
+      src="/stickers/bear-wave.png"
+      alt=""
+      width={340}
+      height={340}
+      className="pointer-events-none absolute -bottom-10 -left-10 z-10 w-44 rotate-[14deg] drop-shadow-[0_24px_48px_rgba(124,92,252,0.45)] sm:-bottom-12 sm:-left-12 sm:w-72 lg:w-80"
+      initial={{ opacity: 0, y: 60, rotate: 26 }}
+      animate={{ opacity: 1, y: 0, rotate: 14 }}
+      transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
+    />
+
     <motion.div
       variants={container}
       initial="hidden"
       animate="show"
       className="mx-auto flex max-w-4xl flex-col items-center"
     >
-      <motion.div variants={item}>
-        <motion.img
-          src="/stickers/bear-wave.png"
-          alt=""
-          width={224}
-          height={224}
-          className="mx-auto w-36 drop-shadow-[0_24px_48px_rgba(124,92,252,0.45)] sm:w-52"
-          animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </motion.div>
-
       <motion.div
         variants={item}
-        className="border-primary/30 bg-primary/10 text-primary mt-2 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-semibold backdrop-blur"
+        className="border-primary/30 bg-primary/10 text-primary inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-semibold backdrop-blur"
       >
         Open source · self-hosted · end-to-end encrypted
       </motion.div>

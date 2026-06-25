@@ -5,16 +5,26 @@ interface PageHeroProps {
 }
 
 const PageHero = ({ title, subtitle, eyebrow }: PageHeroProps) => (
-  <section className="relative flex min-h-[360px] w-full flex-col items-center justify-center px-6 pt-28 pb-14 text-center sm:min-h-[420px]">
-    <div className="relative max-w-2xl [text-shadow:0_1px_14px_rgba(0,0,0,0.4)]">
+  <section className="relative flex min-h-[360px] w-full flex-col items-center justify-center overflow-hidden px-6 pt-28 pb-14 text-center sm:min-h-[420px]">
+    {/* Reading bear peeking in from the bottom-right edge. */}
+    <img
+      src="/stickers/bear-read.png"
+      alt=""
+      width={220}
+      height={220}
+      className="pointer-events-none absolute -right-8 -bottom-8 w-28 -rotate-12 drop-shadow-[0_18px_36px_rgba(124,92,252,0.4)] sm:right-2 sm:w-40"
+    />
+    <div className="relative max-w-2xl">
       {eyebrow ? (
-        <span className="mb-3 block text-[11px] font-medium tracking-[0.35em] text-white/60 uppercase">
+        <span className="text-primary mb-3 block text-[11px] font-bold tracking-[0.35em] uppercase">
           {eyebrow}
         </span>
       ) : null}
-      <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-6xl">{title}</h1>
+      <h1 className="font-display text-foreground text-4xl font-bold tracking-tight sm:text-6xl">
+        {title}
+      </h1>
       {subtitle ? (
-        <p className="mx-auto mt-5 max-w-xl text-base text-white/80 sm:text-lg">{subtitle}</p>
+        <p className="text-foreground/75 mx-auto mt-5 max-w-xl text-base sm:text-lg">{subtitle}</p>
       ) : null}
     </div>
   </section>

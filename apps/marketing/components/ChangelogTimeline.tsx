@@ -107,7 +107,7 @@ const ChangelogTimeline = ({ versions }: ChangelogTimelineProps) => {
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
               className={cn(
                 "h-1 cursor-pointer rounded-full",
-                selected ? "bg-foreground" : "bg-foreground/55",
+                selected ? "bg-primary" : "bg-foreground/45",
               )}
             />
           )
