@@ -43,7 +43,6 @@ export default function RootLayout() {
                 contentStyle: { backgroundColor: 'transparent' },
               }}
             />
-            <Stack.Screen name="search" options={{ animation: 'fade' }} />
             <Stack.Screen name="folder/[id]" />
             <Stack.Screen name="album/[id]" />
             <Stack.Screen name="collection/[view]" />

@@ -1,8 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
-import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PhotoGrid } from '@/components/photo-grid';
@@ -23,9 +22,6 @@ export default function Search() {
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]} edges={['top']}>
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()} hitSlop={12} style={styles.back}>
-          <Ionicons name="chevron-back" size={24} color={c.primary} />
-        </Pressable>
         <View style={[styles.searchBar, { backgroundColor: c.backgroundElement }]}>
           <Ionicons name="search" size={16} color={c.textSecondary} />
           <TextInput
@@ -33,7 +29,6 @@ export default function Search() {
             onChangeText={setQ}
             placeholder="Search your photos"
             placeholderTextColor={c.textSecondary}
-            autoFocus
             autoCapitalize="none"
             autoCorrect={false}
             style={[styles.input, { color: c.text }]}
@@ -64,9 +59,8 @@ export default function Search() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  header: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingTop: 8, paddingBottom: 10 },
-  back: { padding: 4 },
-  searchBar: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 12, height: 40, borderRadius: 12 },
+  header: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 10 },
+  searchBar: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 12, height: 42, borderRadius: 12 },
   input: { flex: 1, fontSize: 15, paddingVertical: 0 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 },
   hint: { fontSize: 14 },
