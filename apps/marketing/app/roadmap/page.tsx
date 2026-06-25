@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const DOT: Record<RoadmapStatus, string> = {
   shipped: "bg-emerald-400",
-  "in-progress": "bg-blue-400",
+  "in-progress": "bg-primary",
   planned: "bg-amber-400",
   exploring: "bg-foreground/40",
 }

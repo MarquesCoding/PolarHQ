@@ -33,7 +33,7 @@ const ChangelogPage = () => (
           <PostBanner eyebrow={`Alpha v${release.version}`} className="mb-8" />
 
           <div className="mb-4 flex flex-wrap items-center gap-3">
-            <span className="rounded-md bg-blue-500/15 px-2 py-0.5 text-xs font-medium text-blue-300">
+            <span className="bg-primary/15 text-primary rounded-md px-2 py-0.5 text-xs font-medium">
               v{release.version}
             </span>
             <span className="text-muted-foreground text-sm">{formatDate(release.date)}</span>
