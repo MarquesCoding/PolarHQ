@@ -137,68 +137,8 @@
  *  tints, not shadows.
  * ========================================================================== */
 
-:root {
-  /* One consistent, slightly tighter radius family (sm 6 · md 8 · lg 10 · xl 14). */
-  --radius: 0.625rem;
-
-  --background: #ececf1; /* cool light canvas (the window behind the floating panels) */
-  --foreground: #1b1b22;
-  --card: #ffffff;
-  --card-foreground: #1b1b22;
-  --popover: #ffffff;
-  --popover-foreground: #1b1b22;
-  --primary: #6366f1; /* brand indigo / periwinkle */
-  --primary-foreground: #ffffff;
-  --secondary: #f1f1f6;
-  --secondary-foreground: #1b1b22;
-  --muted: #f1f1f6;
-  --muted-foreground: #71717f;
-  --accent: #ededf3;
-  --accent-foreground: #1b1b22;
-  --destructive: #e5484d;
-  --border: #e6e6ee;
-  --input: #e0e0ea;
-  --ring: #6366f1;
-
-  --sidebar: #ffffff;
-  --sidebar-foreground: #1b1b22;
-  --sidebar-primary: #6366f1;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f1f6;
-  --sidebar-accent-foreground: #1b1b22;
-  --sidebar-border: #e6e6ee;
-  --sidebar-ring: #6366f1;
-}
-
-.dark {
-  --background: #0e0e13;
-  --foreground: #ececf1;
-  --card: #17171e;
-  --card-foreground: #ececf1;
-  --popover: #17171e;
-  --popover-foreground: #ececf1;
-  --primary: #7c7cf8;
-  --primary-foreground: #ffffff;
-  --secondary: #23232c;
-  --secondary-foreground: #ececf1;
-  --muted: #23232c;
-  --muted-foreground: #9b9ba8;
-  --accent: #262630;
-  --accent-foreground: #ececf1;
-  --destructive: #f2555a;
-  --border: #272730;
-  --input: #2e2e39;
-  --ring: #7c7cf8;
-
-  --sidebar: #17171e;
-  --sidebar-foreground: #ececf1;
-  --sidebar-primary: #7c7cf8;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #23232c;
-  --sidebar-accent-foreground: #ececf1;
-  --sidebar-border: #272730;
-  --sidebar-ring: #7c7cf8;
-}
+/* Colour tokens (violet brand, deep-navy dark) live in @workspace/ui globals.css — the single source
+ * of truth for both web + desktop. This file only carries desktop chrome + the flat/depth overrides. */
 
 /* Flatten the beveled "depth" utilities → flat fills + hairline borders.
  * (Unlayered rules here win over the @utility definitions in globals.css.) */
