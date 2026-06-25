@@ -2,7 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useVideoPlayer, VideoView } from 'expo-video';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -15,17 +16,25 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { favoriteAssets, fetchOriginalUri, trashAssets, type GridAsset } from '@/lib/photos';
+import {
+  favoriteAssets,
+  fetchOriginalFile,
+  fetchOriginalUri,
+  trashAssets,
+  type GridAsset,
+} from '@/lib/photos';
 import { queryClient } from '@/lib/query';
 
+type Kind = 'image' | 'video' | 'audio';
 interface Item {
   id: string;
   encrypted: boolean;
   mime: string;
+  type: Kind;
   favorite: boolean;
 }
 
-function Page({ item, width, height }: { item: Item; width: number; height: number }) {
+function ImagePage({ item, width, height }: { item: Item; width: number; height: number }) {
   const { data: uri } = useQuery({
     queryKey: ['original', item.id],
     queryFn: () => fetchOriginalUri(item.id, item.encrypted, item.mime),
@@ -33,11 +42,34 @@ function Page({ item, width, height }: { item: Item; width: number; height: numb
   });
   const thumb = queryClient.getQueryData<string | null>(['thumb', item.id]);
   const source = uri ?? thumb ?? undefined;
-
   return (
-    <View style={{ width, height, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={[styles.page, { width, height }]}>
       {source ? (
         <Image source={{ uri: source }} style={{ width, height }} contentFit="contain" transition={120} />
+      ) : (
+        <ActivityIndicator color="#fff" />
+      )}
+    </View>
+  );
+}
+
+function VideoPage({ item, width, height }: { item: Item; width: number; height: number }) {
+  const { data: uri } = useQuery({
+    queryKey: ['video-file', item.id],
+    queryFn: () => fetchOriginalFile(item.id, item.encrypted, item.mime),
+    staleTime: 5 * 60 * 1000,
+  });
+  const player = useVideoPlayer(null, (p) => {
+    p.loop = false;
+  });
+  useEffect(() => {
+    if (uri) player.replace(uri);
+  }, [uri, player]);
+
+  return (
+    <View style={[styles.page, { width, height }]}>
+      {uri ? (
+        <VideoView player={player} style={{ width, height }} contentFit="contain" nativeControls />
       ) : (
         <ActivityIndicator color="#fff" />
       )}
@@ -51,21 +83,33 @@ export default function PhotoViewer() {
     encrypted?: string;
     mime?: string;
     fav?: string;
+    type?: string;
     view?: string;
   }>();
   const { width, height } = useWindowDimensions();
 
-  // Pull the list the photo was opened from (Photos grid) so the viewer can swipe between items.
-  // Falls back to a single item (e.g. opened from Drive) when there's no list in cache.
   const list = queryClient.getQueryData<{ assets: GridAsset[] }>(['assets', params.view ?? 'library']);
   const items: Item[] = list?.assets.length
-    ? list.assets.map((a) => ({ id: a.id, encrypted: a.encrypted, mime: a.mimeType, favorite: a.isFavorite }))
-    : [{ id: params.id, encrypted: params.encrypted === '1', mime: params.mime ?? 'image/jpeg', favorite: params.fav === '1' }];
+    ? list.assets.map((a) => ({
+        id: a.id,
+        encrypted: a.encrypted,
+        mime: a.mimeType,
+        type: a.type,
+        favorite: a.isFavorite,
+      }))
+    : [
+        {
+          id: params.id,
+          encrypted: params.encrypted === '1',
+          mime: params.mime ?? 'image/jpeg',
+          type: (params.type as Kind) ?? 'image',
+          favorite: params.fav === '1',
+        },
+      ];
 
   const startIndex = Math.max(0, items.findIndex((i) => i.id === params.id));
   const [index, setIndex] = useState(startIndex);
   const [favOverrides, setFavOverrides] = useState<Record<string, boolean>>({});
-  const listRef = useRef<FlatList<Item>>(null);
 
   const current = items[index] ?? items[0];
   const favorite = favOverrides[current.id] ?? current.favorite;
@@ -91,7 +135,6 @@ export default function PhotoViewer() {
   return (
     <View style={styles.root}>
       <FlatList
-        ref={listRef}
         data={items}
         keyExtractor={(i) => i.id}
         horizontal
@@ -100,7 +143,13 @@ export default function PhotoViewer() {
         initialScrollIndex={startIndex}
         getItemLayout={(_, i) => ({ length: width, offset: width * i, index: i })}
         onMomentumScrollEnd={onScrollEnd}
-        renderItem={({ item }) => <Page item={item} width={width} height={height} />}
+        renderItem={({ item }) =>
+          item.type === 'video' ? (
+            <VideoPage item={item} width={width} height={height} />
+          ) : (
+            <ImagePage item={item} width={width} height={height} />
+          )
+        }
         windowSize={3}
         maxToRenderPerBatch={3}
       />
@@ -128,6 +177,7 @@ export default function PhotoViewer() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#000' },
+  page: { alignItems: 'center', justifyContent: 'center' },
   chrome: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'space-between' },
   close: {
     margin: 12,

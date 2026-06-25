@@ -4,6 +4,8 @@
  * <Image>) and uses raw cookie fetch. Here we authenticate the raw media fetch with the better-auth
  * cookie and return a `data:` URI that expo-image can render, reusing core's crypto for decryption.
  */
+import * as FileSystem from 'expo-file-system/legacy';
+
 import { coreConfig } from '@workspace/core/config';
 import { isStreamBlob, secretboxOpen, secretstreamOpenAll } from '@workspace/core/crypto';
 import { getDocContentKey } from '@workspace/core/e2e';
@@ -80,4 +82,39 @@ export const fetchOriginalUri = async (
   } catch {
     return null;
   }
+};
+
+/**
+ * Fetch + decrypt an asset's original to a temp `file://` so a native player (expo-video) can
+ * stream it from disk — videos are far too large to hold as a base64 data URI in JS.
+ */
+export const fetchOriginalFile = async (
+  assetId: string,
+  encrypted: boolean,
+  mimeType = 'video/mp4',
+): Promise<string | null> => {
+  const response = await fetch(
+    `${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`,
+    { headers: authHeaders() },
+  );
+  if (!response.ok) return null;
+  const bytes = new Uint8Array(await response.arrayBuffer());
+
+  let plain: Uint8Array = bytes;
+  if (encrypted) {
+    const key = await getDocContentKey(assetId);
+    if (!key) return null;
+    try {
+      plain = isStreamBlob(bytes) ? secretstreamOpenAll(bytes, key) : secretboxOpen(bytes, key);
+    } catch {
+      return null;
+    }
+  }
+
+  const ext = mimeType.includes('quicktime') ? 'mov' : mimeType.includes('webm') ? 'webm' : 'mp4';
+  const uri = `${FileSystem.cacheDirectory}vid-${assetId}.${ext}`;
+  await FileSystem.writeAsStringAsync(uri, bytesToBase64(plain), {
+    encoding: FileSystem.EncodingType.Base64,
+  });
+  return uri;
 };
