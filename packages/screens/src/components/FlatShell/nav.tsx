@@ -22,7 +22,7 @@ export const ActiveBg = () => (
   <motion.span
     layoutId={NAV_LAYOUT_ID}
     transition={navSpring}
-    className="depth-active absolute inset-0 rounded-lg"
+    className="bg-sidebar-accent absolute inset-0 rounded-lg"
   />
 )
 

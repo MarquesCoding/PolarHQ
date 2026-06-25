@@ -32,6 +32,7 @@ pub fn run() {
             sync::sync_read_file,
             sync::sync_start_watch,
             sync::sync_stop_watch,
+            updater_window_mode,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -85,5 +86,55 @@ fn apply_invisible_toolbar(window: &tauri::WebviewWindow) {
         let toolbar: *mut AnyObject = msg_send![toolbar, initWithIdentifier: &*identifier];
         let _: () = msg_send![toolbar, setShowsBaselineSeparator: Bool::NO];
         let _: () = msg_send![ns_window, setToolbar: toolbar];
+    }
+}
+
+/// Toggle the launch updater's window between a small, traffic-light-free splash (Discord-style) and
+/// the full app window. Called from the JS Updater on mount, and again when it hands off to the app.
+#[tauri::command]
+fn updater_window_mode(window: tauri::WebviewWindow, compact: bool) {
+    let _ = window.set_resizable(!compact);
+    let (w, h) = if compact {
+        (380.0, 460.0)
+    } else {
+        (1280.0, 832.0)
+    };
+    let _ = window.set_size(tauri::LogicalSize::new(w, h));
+    // Center on the active monitor using the NEW size (Tauri's center() can use the pre-resize size,
+    // leaving the small window off-centre).
+    if let Ok(Some(monitor)) = window.current_monitor() {
+        let scale = monitor.scale_factor();
+        let screen = monitor.size().to_logical::<f64>(scale);
+        let origin = monitor.position().to_logical::<f64>(scale);
+        let x = origin.x + (screen.width - w) / 2.0;
+        let y = origin.y + (screen.height - h) / 2.0;
+        let _ = window.set_position(tauri::LogicalPosition::new(x, y));
+    } else {
+        let _ = window.center();
+    }
+    #[cfg(target_os = "macos")]
+    set_traffic_lights_hidden(&window, compact);
+}
+
+/// Hide/show the macOS traffic-light window buttons (close/minimise/zoom) without dropping the window
+/// decorations, so the updater splash keeps its rounded chrome but loses the controls.
+#[cfg(target_os = "macos")]
+fn set_traffic_lights_hidden(window: &tauri::WebviewWindow, hidden: bool) {
+    use objc2::msg_send;
+    use objc2::runtime::{AnyObject, Bool};
+
+    let Ok(ptr) = window.ns_window() else {
+        return;
+    };
+    let ns_window = ptr as *mut AnyObject;
+    let value = if hidden { Bool::YES } else { Bool::NO };
+    unsafe {
+        // NSWindowButton: 0 = close, 1 = miniaturize, 2 = zoom.
+        for index in 0u64..3 {
+            let button: *mut AnyObject = msg_send![ns_window, standardWindowButton: index];
+            if !button.is_null() {
+                let _: () = msg_send![button, setHidden: value];
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@ import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setSearchQuery } from "@workspace/screens/store/uiSlice"
-import { CaretDown, CaretUpDown, MagnifyingGlass, SignOut } from "@phosphor-icons/react"
+import { CaretUpDown, MagnifyingGlass, SignOut } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
@@ -98,7 +98,7 @@ const FlatSidebar = ({
 
   return (
     <Sidebar collapsible="offcanvas">
-      <div className="border-border flex h-14 shrink-0 items-center border-b px-3">
+      <div className="flex h-14 shrink-0 items-center gap-2 px-3">
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
@@ -125,19 +125,7 @@ const FlatSidebar = ({
             }
           />
           <DropdownMenuContent align="start" sideOffset={6} className="w-64 p-2">
-            <div className="flex items-center gap-2.5 px-1 pt-0.5 pb-2">
-              <span className="flex size-8 items-center justify-center overflow-hidden rounded-lg">
-                <img src={logo} alt="PolarHQ" width={32} height={32} className="size-8" />
-              </span>
-              <span className="flex min-w-0 flex-col leading-tight">
-                <span className="truncate text-sm font-semibold">PolarHQ</span>
-                <span className="text-muted-foreground truncate text-[11px]">
-                  {t("flatSidebar.personalWorkspace")}
-                </span>
-              </span>
-            </div>
-            <div className="depth-divider mb-1" />
-            <p className="text-muted-foreground/70 px-1.5 pt-1.5 pb-1 text-[11px] font-medium tracking-wider uppercase">
+            <p className="text-muted-foreground/70 px-1.5 pt-0.5 pb-1 text-[11px] font-medium tracking-wider uppercase">
               {t("flatSidebar.apps")}
             </p>
             {(apps ?? [])
@@ -160,6 +148,56 @@ const FlatSidebar = ({
                   </DropdownMenuItem>
                 )
               })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <button
+                type="button"
+                aria-label={t("flatSidebar.account")}
+                className="hover:ring-ring/30 focus-visible:ring-ring/50 ms-auto shrink-0 rounded-full ring-2 ring-transparent outline-none transition"
+              >
+                <Avatar className="size-7">
+                  <AvatarImage
+                    src={`https://api.dicebear.com/10.x/notionists-neutral/svg?seed=${encodeURIComponent(
+                      session?.user?.email ?? session?.user?.name ?? "user",
+                    )}`}
+                    alt={session?.user?.name ?? t("flatSidebar.account")}
+                  />
+                  <AvatarFallback className="text-xs">
+                    {(session?.user?.name ?? "U").slice(0, 1).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </button>
+            }
+          />
+          <DropdownMenuContent align="end" sideOffset={8} className="w-56">
+            <div className="flex flex-col px-2 py-1.5 leading-tight">
+              <span className="truncate text-sm font-medium">{session?.user?.name}</span>
+              <span className="text-muted-foreground truncate text-xs">
+                {session?.user?.email}
+              </span>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => router.push("/account")}>
+              {t("flatSidebar.account")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setDevicesOpen(true)}>
+              {t("flatSidebar.devices")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/admin")}>
+              {t("flatSidebar.settings")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={replayOnboarding}>
+              {t("flatSidebar.replayIntro")}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={signOut}>
+              <SignOut className="size-4" />
+              {t("flatSidebar.signOut")}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -198,7 +236,7 @@ const FlatSidebar = ({
           variant="ghost"
           onClick={() => setStorageOpen(true)}
           aria-label={t("storageDialog.open")}
-          className="panel hover:border-ring/30 flex h-auto w-full flex-col items-stretch gap-0 rounded-lg p-2.5 text-start transition [background-clip:padding-box,border-box]!"
+          className="flex h-auto w-full flex-col items-stretch gap-0 rounded-lg bg-transparent px-1 py-1.5 text-start transition hover:bg-transparent hover:opacity-80"
         >
           <div className="mb-1.5 flex items-center justify-between text-xs">
             <span className="text-muted-foreground font-medium">{t("flatSidebar.storage")}</span>
@@ -227,47 +265,6 @@ const FlatSidebar = ({
             />
           </div>
         </Button>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <button
-                type="button"
-                className="panel hover:border-ring/30 flex w-full items-center gap-2.5 rounded-lg p-2 text-start transition"
-              >
-                <Avatar className="size-8">
-                  <AvatarImage
-                    src={`https://api.dicebear.com/10.x/notionists-neutral/svg?seed=${encodeURIComponent(
-                      session?.user?.email ?? session?.user?.name ?? "user",
-                    )}`}
-                    alt={session?.user?.name ?? t("flatSidebar.account")}
-                  />
-                  <AvatarFallback className="text-xs">
-                    {(session?.user?.name ?? "U").slice(0, 1).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="flex min-w-0 flex-col leading-tight">
-                  <span className="truncate text-sm font-medium">{session?.user?.name}</span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {session?.user?.email}
-                  </span>
-                </span>
-                <CaretDown className="text-muted-foreground ms-auto size-4 shrink-0" />
-              </button>
-            }
-          />
-          <DropdownMenuContent align="end" side="top" className="w-[var(--anchor-width)]">
-            <DropdownMenuItem onClick={() => router.push("/account")}>{t("flatSidebar.account")}</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setDevicesOpen(true)}>{t("flatSidebar.devices")}</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push("/admin")}>{t("flatSidebar.settings")}</DropdownMenuItem>
-            <DropdownMenuItem onClick={replayOnboarding}>{t("flatSidebar.replayIntro")}</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={signOut}>
-              <SignOut className="size-4" />
-              {t("flatSidebar.signOut")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
 
         <div className="px-1 pt-0.5 text-center">
           <Changelog version={coreConfig().appVersion} build={coreConfig().appBuild} />
