@@ -13,28 +13,24 @@ export default function Drive() {
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: c.text }]}>Drive</Text>
-        <Pressable onPress={() => router.push('/account')} hitSlop={8} style={[styles.avatar, { backgroundColor: c.primary }]}>
-          <Text style={styles.avatarText}>{initial}</Text>
-        </Pressable>
-      </View>
-      <DriveList parentId={null} />
+      <DriveList
+        parentId={null}
+        header={
+          <View style={styles.header}>
+            <View style={{ flex: 1 }} />
+            <Pressable onPress={() => router.push('/account')} hitSlop={8} style={[styles.avatar, { backgroundColor: c.primary }]}>
+              <Text style={styles.avatarText}>{initial}</Text>
+            </Pressable>
+          </View>
+        }
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  title: { fontSize: 30, fontWeight: '800' },
+  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 6, paddingBottom: 10 },
   avatar: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
   avatarText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 });
