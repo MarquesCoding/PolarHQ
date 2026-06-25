@@ -2,77 +2,122 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { favoriteAssets, fetchOriginalUri, trashAssets, type GridAsset } from '@/lib/photos';
 import { queryClient } from '@/lib/query';
-import { favoriteAssets, fetchOriginalUri, trashAssets } from '@/lib/photos';
+
+interface Item {
+  id: string;
+  encrypted: boolean;
+  mime: string;
+  favorite: boolean;
+}
+
+function Page({ item, width, height }: { item: Item; width: number; height: number }) {
+  const { data: uri } = useQuery({
+    queryKey: ['original', item.id],
+    queryFn: () => fetchOriginalUri(item.id, item.encrypted, item.mime),
+    staleTime: 5 * 60 * 1000,
+  });
+  const thumb = queryClient.getQueryData<string | null>(['thumb', item.id]);
+  const source = uri ?? thumb ?? undefined;
+
+  return (
+    <View style={{ width, height, alignItems: 'center', justifyContent: 'center' }}>
+      {source ? (
+        <Image source={{ uri: source }} style={{ width, height }} contentFit="contain" transition={120} />
+      ) : (
+        <ActivityIndicator color="#fff" />
+      )}
+    </View>
+  );
+}
 
 export default function PhotoViewer() {
-  const { id, encrypted, mime, fav } = useLocalSearchParams<{
+  const params = useLocalSearchParams<{
     id: string;
     encrypted?: string;
     mime?: string;
     fav?: string;
+    view?: string;
   }>();
   const { width, height } = useWindowDimensions();
-  const [favorite, setFavorite] = useState(fav === '1');
-  const [busy, setBusy] = useState(false);
 
-  const { data: uri, isLoading } = useQuery({
-    queryKey: ['original', id],
-    queryFn: () => fetchOriginalUri(id, encrypted === '1', mime || 'image/jpeg'),
-    staleTime: 5 * 60 * 1000,
-    enabled: Boolean(id),
-  });
+  // Pull the list the photo was opened from (Photos grid) so the viewer can swipe between items.
+  // Falls back to a single item (e.g. opened from Drive) when there's no list in cache.
+  const list = queryClient.getQueryData<{ assets: GridAsset[] }>(['assets', params.view ?? 'library']);
+  const items: Item[] = list?.assets.length
+    ? list.assets.map((a) => ({ id: a.id, encrypted: a.encrypted, mime: a.mimeType, favorite: a.isFavorite }))
+    : [{ id: params.id, encrypted: params.encrypted === '1', mime: params.mime ?? 'image/jpeg', favorite: params.fav === '1' }];
 
-  // Instant placeholder: reuse the already-decrypted grid thumbnail while the original loads.
-  const thumb = queryClient.getQueryData<string | null>(['thumb', id]);
-  const source = uri ?? thumb ?? undefined;
+  const startIndex = Math.max(0, items.findIndex((i) => i.id === params.id));
+  const [index, setIndex] = useState(startIndex);
+  const [favOverrides, setFavOverrides] = useState<Record<string, boolean>>({});
+  const listRef = useRef<FlatList<Item>>(null);
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['assets'] });
+  const current = items[index] ?? items[0];
+  const favorite = favOverrides[current.id] ?? current.favorite;
+
+  const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const next = Math.round(e.nativeEvent.contentOffset.x / width);
+    if (next !== index) setIndex(next);
+  };
 
   const onToggleFavorite = async () => {
     const next = !favorite;
-    setFavorite(next);
-    await favoriteAssets([id], next).catch(() => setFavorite(!next));
-    invalidate();
+    setFavOverrides((m) => ({ ...m, [current.id]: next }));
+    await favoriteAssets([current.id], next).catch(() => undefined);
+    queryClient.invalidateQueries({ queryKey: ['assets'] });
   };
 
   const onTrash = async () => {
-    setBusy(true);
-    await trashAssets([id]).catch(() => undefined);
-    invalidate();
+    await trashAssets([current.id]).catch(() => undefined);
+    queryClient.invalidateQueries({ queryKey: ['assets'] });
     router.back();
   };
 
   return (
     <View style={styles.root}>
-      {source ? (
-        <Image source={{ uri: source }} style={{ width, height }} contentFit="contain" transition={150} />
-      ) : null}
-
-      {isLoading && !uri ? (
-        <View style={styles.center}>
-          <ActivityIndicator color="#fff" />
-        </View>
-      ) : null}
+      <FlatList
+        ref={listRef}
+        data={items}
+        keyExtractor={(i) => i.id}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        initialScrollIndex={startIndex}
+        getItemLayout={(_, i) => ({ length: width, offset: width * i, index: i })}
+        onMomentumScrollEnd={onScrollEnd}
+        renderItem={({ item }) => <Page item={item} width={width} height={height} />}
+        windowSize={3}
+        maxToRenderPerBatch={3}
+      />
 
       <SafeAreaView style={styles.chrome} edges={['top', 'bottom']} pointerEvents="box-none">
         <Pressable onPress={() => router.back()} hitSlop={12} style={styles.close}>
           <Ionicons name="chevron-down" size={26} color="#fff" />
         </Pressable>
-
         <View style={styles.actions}>
-          <Pressable onPress={onToggleFavorite} hitSlop={12} style={styles.action} disabled={busy}>
+          <Pressable onPress={onToggleFavorite} hitSlop={12} style={styles.action}>
             <Ionicons
               name={favorite ? 'heart' : 'heart-outline'}
               size={26}
               color={favorite ? '#fb5e7e' : '#fff'}
             />
           </Pressable>
-          <Pressable onPress={onTrash} hitSlop={12} style={styles.action} disabled={busy}>
+          <Pressable onPress={onTrash} hitSlop={12} style={styles.action}>
             <Ionicons name="trash-outline" size={24} color="#fff" />
           </Pressable>
         </View>
@@ -82,24 +127,8 @@ export default function PhotoViewer() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#000', alignItems: 'center', justifyContent: 'center' },
-  center: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  chrome: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'space-between',
-  },
+  root: { flex: 1, backgroundColor: '#000' },
+  chrome: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'space-between' },
   close: {
     margin: 12,
     width: 38,
@@ -109,12 +138,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 28,
-    paddingBottom: 12,
-  },
+  actions: { flexDirection: 'row', justifyContent: 'center', gap: 28, paddingBottom: 12 },
   action: {
     width: 52,
     height: 52,
