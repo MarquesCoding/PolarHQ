@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import { type ReactNode } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Tappable } from '@/components/ui/tappable';
@@ -14,12 +15,34 @@ export const TOP_BAR_H = 50;
 /** Top inset every scroll view should use so content clears the floating bar. */
 export const useTopInset = () => useSafeAreaInsets().top + TOP_BAR_H;
 
+const isIOS = Platform.OS === 'ios';
+
+/** A circular control: frosted Liquid-Glass on iOS, a solid fill on Android. `tint` colours it. */
+function GlassCircle({ size, tint, children }: { size: number; tint?: string; children: ReactNode }) {
+  const c = useColors();
+  const scheme = useColorScheme() === 'light' ? 'light' : 'dark';
+  const base = { width: size, height: size, borderRadius: size / 2 };
+
+  if (isIOS) {
+    return (
+      <View style={[styles.circle, base, styles.glassBorder, { borderColor: c.border }]}>
+        <BlurView intensity={70} tint={scheme} style={StyleSheet.absoluteFill} />
+        {tint ? <View style={[StyleSheet.absoluteFill, { backgroundColor: tint }]} /> : null}
+        {children}
+      </View>
+    );
+  }
+  return <View style={[styles.circle, base, { backgroundColor: tint ?? c.backgroundElement }]}>{children}</View>;
+}
+
 /** A circular top-bar action button (e.g. add / new folder), matching the Photos `+`. */
 export function TopBarButton({ icon, onPress }: { icon: keyof typeof Ionicons.glyphMap; onPress: () => void }) {
   const c = useColors();
   return (
-    <Tappable onPress={onPress} style={[styles.btn, { backgroundColor: c.backgroundElement }]}>
-      <Ionicons name={icon} size={23} color={c.primary} />
+    <Tappable onPress={onPress}>
+      <GlassCircle size={40}>
+        <Ionicons name={icon} size={23} color={c.primary} />
+      </GlassCircle>
     </Tappable>
   );
 }
@@ -49,8 +72,10 @@ export function FloatingTopBar({
         {left ?? <View style={styles.flex} />}
         {children}
         {showAvatar ? (
-          <Tappable onPress={() => router.push('/account')} haptic="selection" style={[styles.avatar, { backgroundColor: c.primary }]}>
-            <Text style={styles.avatarText}>{initial}</Text>
+          <Tappable onPress={() => router.push('/account')} haptic="selection">
+            <GlassCircle size={34} tint={isIOS ? `${c.primary}A6` : c.primary}>
+              <Text style={styles.avatarText}>{initial}</Text>
+            </GlassCircle>
           </Tappable>
         ) : null}
       </View>
@@ -62,7 +87,7 @@ const styles = StyleSheet.create({
   bar: { position: 'absolute', top: 0, left: 0, right: 0 },
   inner: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16 },
   flex: { flex: 1 },
-  btn: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  avatar: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+  circle: { alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  glassBorder: { borderWidth: StyleSheet.hairlineWidth },
   avatarText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 });
