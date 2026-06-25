@@ -44,6 +44,7 @@ interface TabBarProps {
 export function FloatingTabBar({ state, navigation }: TabBarProps) {
   const c = useColors();
   const scheme = useColorScheme() === 'light' ? 'light' : 'dark';
+  const glass = scheme === 'dark' ? 'rgba(20,20,28,0.55)' : 'rgba(255,255,255,0.62)';
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
@@ -62,10 +63,9 @@ export function FloatingTabBar({ state, navigation }: TabBarProps) {
       <View style={styles.group}>
         <View style={[styles.barShadow, { width: barWidth }]}>
           <BlurView
-            intensity={64}
+            intensity={48}
             tint={scheme}
-            experimentalBlurMethod="dimezisBlurView"
-            style={[styles.bar, { borderColor: c.border }]}
+            style={[styles.bar, { borderColor: c.border, backgroundColor: glass }]}
           >
             <Animated.View
               style={[styles.indicator, { width: slot, backgroundColor: c.primary }, indicatorStyle]}
@@ -100,12 +100,7 @@ export function FloatingTabBar({ state, navigation }: TabBarProps) {
         </View>
 
         <View style={styles.fabShadow}>
-          <BlurView
-            intensity={64}
-            tint={scheme}
-            experimentalBlurMethod="dimezisBlurView"
-            style={[styles.fab, { borderColor: c.border }]}
-          >
+          <BlurView intensity={48} tint={scheme} style={[styles.fab, { borderColor: c.border, backgroundColor: glass }]}>
             <Pressable
               onPress={() => {
                 void Haptics.selectionAsync();
