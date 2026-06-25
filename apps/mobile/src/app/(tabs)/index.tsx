@@ -57,6 +57,7 @@ function PhotoTile({ asset, size, view }: { asset: GridAsset; size: number; view
             encrypted: asset.encrypted ? '1' : '0',
             mime: asset.mimeType,
             fav: asset.isFavorite ? '1' : '0',
+            type: asset.type,
             view,
           },
         })
@@ -74,6 +75,11 @@ function PhotoTile({ asset, size, view }: { asset: GridAsset; size: number; view
           )}
         </View>
       )}
+      {asset.type === 'video' ? (
+        <View style={styles.playBadge} pointerEvents="none">
+          <Ionicons name="play" size={12} color="#fff" />
+        </View>
+      ) : null}
     </Pressable>
   );
 }
@@ -204,6 +210,17 @@ const styles = StyleSheet.create({
   pill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 999 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   tilePlaceholder: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  playBadge: {
+    position: 'absolute',
+    right: 6,
+    bottom: 6,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32, gap: 14 },
   iconWrap: { width: 72, height: 72, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   emptyTitle: { fontSize: 18, fontWeight: '700' },

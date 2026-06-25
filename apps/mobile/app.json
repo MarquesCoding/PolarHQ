@@ -42,8 +42,11 @@
       "react-native-libsodium",
       [
         "expo-image-picker",
-        { "photosPermission": "Allow PolarHQ to upload photos from your library." }
-      ]
+        {
+          "photosPermission": "Allow PolarHQ to upload photos from your library."
+        }
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,
