@@ -4,7 +4,19 @@ import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { type ReactElement, useMemo } from 'react';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  type ViewabilityConfig,
+  type ViewToken,
+  View,
+} from 'react-native';
 
 import { useColors } from '@/components/ui';
 import { fetchThumbnailUri, type GridAsset } from '@/lib/photos';
@@ -79,16 +91,16 @@ const monthLabel = (asset: GridAsset): string => {
   return d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 };
 
-type Row = { key: string; header: string } | { key: string; items: GridAsset[] };
+export type Row = { key: string; header: string } | { key: string; items: GridAsset[]; month: string };
 
-/** Group a timeline-ordered asset list into month-headed rows of 3 for a sectioned FlatList. */
+/** Group a timeline-ordered asset list into month-headed rows of 3 for a sectioned list. */
 const buildRows = (assets: GridAsset[]): Row[] => {
   const rows: Row[] = [];
   let current = '';
   let bucket: GridAsset[] = [];
   const flush = () => {
     for (let i = 0; i < bucket.length; i += COLUMNS) {
-      rows.push({ key: `r-${bucket[i].id}`, items: bucket.slice(i, i + COLUMNS) });
+      rows.push({ key: `r-${bucket[i].id}`, items: bucket.slice(i, i + COLUMNS), month: current });
     }
     bucket = [];
   };
@@ -117,9 +129,26 @@ interface PhotoGridProps {
   refreshing?: boolean;
   ListHeaderComponent?: ReactElement | null;
   ListEmptyComponent?: ReactElement | null;
+  /** Top padding so content clears a floating/auto-hiding header. */
+  topInset?: number;
+  onScroll?: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  onViewableItemsChanged?: (info: { viewableItems: ViewToken<Row>[] }) => void;
+  viewabilityConfig?: ViewabilityConfig;
 }
 
-export function PhotoGrid({ assets, view, grouped, onRefresh, refreshing, ListHeaderComponent, ListEmptyComponent }: PhotoGridProps) {
+export function PhotoGrid({
+  assets,
+  view,
+  grouped,
+  onRefresh,
+  refreshing,
+  ListHeaderComponent,
+  ListEmptyComponent,
+  topInset = 0,
+  onScroll,
+  onViewableItemsChanged,
+  viewabilityConfig,
+}: PhotoGridProps) {
   const c = useColors();
   const { width } = useWindowDimensions();
   const tile = (width - EDGE * 2 - GAP * (COLUMNS - 1)) / COLUMNS;
@@ -148,7 +177,7 @@ export function PhotoGrid({ assets, view, grouped, onRefresh, refreshing, ListHe
     <FlashList
       data={rows}
       keyExtractor={(r) => r.key}
-      contentContainerStyle={{ paddingHorizontal: EDGE, paddingBottom: FLOATING_PAD }}
+      contentContainerStyle={{ paddingHorizontal: EDGE, paddingTop: topInset, paddingBottom: FLOATING_PAD }}
       renderItem={({ item }) =>
         'header' in item ? (
           <Text style={[styles.section, { color: c.text }]}>{item.header}</Text>
@@ -160,6 +189,10 @@ export function PhotoGrid({ assets, view, grouped, onRefresh, refreshing, ListHe
           </View>
         )
       }
+      onScroll={onScroll}
+      scrollEventThrottle={16}
+      onViewableItemsChanged={onViewableItemsChanged}
+      viewabilityConfig={viewabilityConfig}
       onRefresh={onRefresh}
       refreshing={refreshing}
       ListHeaderComponent={ListHeaderComponent}
