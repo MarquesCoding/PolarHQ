@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,6 +9,7 @@ import { AlbumCarousel } from '@/components/album-carousel';
 import { PhotoGrid } from '@/components/photo-grid';
 import { useColors } from '@/components/ui';
 import { useBackupStatus } from '@/hooks/use-backup-status';
+import { authClient } from '@/lib/auth';
 import { assetName, fetchAssets, type AssetView } from '@/lib/photos';
 import { pickAndUploadPhoto } from '@/lib/upload';
 
@@ -47,6 +49,8 @@ export default function Photos() {
   const [uploading, setUploading] = useState(false);
   const queryClient = useQueryClient();
   const backup = useBackupStatus();
+  const { data: session } = authClient.useSession();
+  const initial = (session?.user?.email ?? '?').trim().charAt(0).toUpperCase();
 
   const { data, isLoading, isError, refetch, isRefetching } = useQuery({
     queryKey: ['assets', view],
@@ -87,13 +91,18 @@ export default function Photos() {
         ) : (
           <Text style={[styles.title, { color: c.text }]}>Photos</Text>
         )}
-        <Pressable onPress={onAdd} disabled={uploading} hitSlop={10} style={[styles.add, { backgroundColor: c.backgroundElement }]}>
-          {uploading ? (
-            <ActivityIndicator size="small" color={c.primary} />
-          ) : (
-            <Ionicons name="add" size={24} color={c.primary} />
-          )}
-        </Pressable>
+        <View style={styles.headerActions}>
+          <Pressable onPress={onAdd} disabled={uploading} hitSlop={10} style={[styles.add, { backgroundColor: c.backgroundElement }]}>
+            {uploading ? (
+              <ActivityIndicator size="small" color={c.primary} />
+            ) : (
+              <Ionicons name="add" size={24} color={c.primary} />
+            )}
+          </Pressable>
+          <Pressable onPress={() => router.navigate('/settings')} hitSlop={8} style={[styles.avatar, { backgroundColor: c.primary }]}>
+            <Text style={styles.avatarText}>{initial}</Text>
+          </Pressable>
+        </View>
       </View>
 
       <View style={[styles.searchBar, { backgroundColor: c.backgroundElement }]}>
@@ -169,7 +178,10 @@ const styles = StyleSheet.create({
   title: { fontSize: 30, fontWeight: '800' },
   backupPill: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingLeft: 10, paddingRight: 14, height: 36, borderRadius: 18 },
   backupText: { fontSize: 14, fontWeight: '600' },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   add: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  avatar: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+  avatarText: { color: '#fff', fontSize: 15, fontWeight: '700' },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',

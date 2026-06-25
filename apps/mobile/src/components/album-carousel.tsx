@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { useColors } from '@/components/ui';
 import { fetchAlbums, fetchThumbnailUri, type Album } from '@/lib/photos';
@@ -11,7 +12,7 @@ import { fetchAlbums, fetchThumbnailUri, type Album } from '@/lib/photos';
 const CARD_W = 124;
 const CARD_H = 156;
 
-function Card({ album }: { album: Album }) {
+function Card({ album, index }: { album: Album; index: number }) {
   const c = useColors();
   const { data: uri } = useQuery({
     queryKey: ['thumb', album.coverAssetId],
@@ -21,25 +22,30 @@ function Card({ album }: { album: Album }) {
   });
 
   return (
-    <Pressable
-      onPress={() => router.push({ pathname: '/album/[id]', params: { id: album.id, title: album.name } })}
-      style={[styles.card, { backgroundColor: c.backgroundElement }]}
-    >
-      {uri ? (
-        <Image source={{ uri }} style={styles.cover} contentFit="cover" transition={120} />
-      ) : (
-        <View style={styles.cover}>
-          <Ionicons name="albums" size={26} color={c.textSecondary} />
+    <Animated.View entering={FadeInDown.delay(index * 55).duration(360)}>
+      <Pressable
+        onPress={() => router.push({ pathname: '/album/[id]', params: { id: album.id, title: album.name } })}
+        style={({ pressed }) => [
+          styles.card,
+          { backgroundColor: c.backgroundElement, transform: [{ scale: pressed ? 0.96 : 1 }] },
+        ]}
+      >
+        {uri ? (
+          <Image source={{ uri }} style={styles.cover} contentFit="cover" transition={160} />
+        ) : (
+          <View style={styles.cover}>
+            <Ionicons name="albums" size={26} color={c.textSecondary} />
+          </View>
+        )}
+        <LinearGradient colors={['transparent', 'rgba(0,0,0,0.75)']} style={styles.shade} />
+        <View style={styles.label}>
+          <Text style={styles.name} numberOfLines={2}>
+            {album.name}
+          </Text>
+          <Text style={styles.count}>{album.assetCount}</Text>
         </View>
-      )}
-      <LinearGradient colors={['transparent', 'rgba(0,0,0,0.75)']} style={styles.shade} />
-      <View style={styles.label}>
-        <Text style={styles.name} numberOfLines={2}>
-          {album.name}
-        </Text>
-        <Text style={styles.count}>{album.assetCount}</Text>
-      </View>
-    </Pressable>
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -58,7 +64,7 @@ export function AlbumCarousel() {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.row}
-        renderItem={({ item }) => <Card album={item} />}
+        renderItem={({ item, index }) => <Card album={item} index={index} />}
       />
     </View>
   );
