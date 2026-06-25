@@ -10,7 +10,13 @@ import { getDocContentKey } from '@workspace/core/e2e';
 
 import { authClient } from '@/lib/auth';
 
-export { fetchAssets } from '@workspace/core/photos';
+export {
+  fetchAssets,
+  favoriteAssets,
+  trashAssets,
+  restoreAssets,
+  deleteAssets,
+} from '@workspace/core/photos';
 export type { GridAsset, TimelinePage, AssetView } from '@workspace/core/photos';
 
 const authHeaders = (): Record<string, string> => {
