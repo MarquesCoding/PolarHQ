@@ -7,6 +7,7 @@
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
+import * as VideoThumbnails from 'expo-video-thumbnails';
 
 import { coreConfig } from '@workspace/core/config';
 import { secretboxSeal } from '@workspace/core/crypto';
@@ -55,19 +56,26 @@ export interface ImageUploadInput {
   height?: number | null;
 }
 
+/** Videos larger than this are skipped by backup — the in-memory encrypt path would OOM. */
+const MAX_VIDEO_BYTES = 120 * 1024 * 1024;
+
+interface MediaUploadInput extends ImageUploadInput {
+  /** Source image to derive the encrypted thumbnail from (the asset itself, or a video poster). */
+  posterUri?: string;
+}
+
 /**
- * Encrypt + upload a single image end-to-end. Shared by the manual picker and the auto-backup loop:
- * encrypt the original under a fresh content key (multipart POST), wrap the key to the owner, and
- * upload an encrypted client-generated thumbnail. Throws on a failed upload.
+ * Encrypt + upload one media original end-to-end: encrypt under a fresh content key (multipart
+ * POST), wrap the key to the owner, and (when a poster is available) upload an encrypted thumbnail.
+ * Shared by the manual picker, video backup, and the auto-backup loop. Throws on a failed upload.
  */
-export const uploadEncryptedImage = async (input: ImageUploadInput): Promise<void> => {
+const uploadEncryptedMedia = async (input: MediaUploadInput): Promise<void> => {
   const key = createContentKey();
   const filename = input.fileName ?? 'photo.jpg';
   const mimeType = input.mimeType ?? 'image/jpeg';
   const encName = encryptName(filename);
   const placeholderName = encName ? encryptedPlaceholder() : filename;
 
-  // Original → encrypt → temp file (the multipart part the server stores as opaque bytes).
   const original = base64ToBytes(
     await FileSystem.readAsStringAsync(input.uri, { encoding: FileSystem.EncodingType.Base64 }),
   );
@@ -100,9 +108,11 @@ export const uploadEncryptedImage = async (input: ImageUploadInput): Promise<voi
   await storeContentKey(created.id, key);
   if (mirrorNodeId) await storeContentKey(mirrorNodeId, key);
 
+  if (!input.posterUri) return;
+
   // Client-side thumbnail → encrypt → binary PUT.
   const thumb = await ImageManipulator.manipulateAsync(
-    input.uri,
+    input.posterUri,
     [{ resize: { width: 512 } }],
     { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG, base64: true },
   );
@@ -123,6 +133,24 @@ export const uploadEncryptedImage = async (input: ImageUploadInput): Promise<voi
         () => undefined,
       );
   }
+};
+
+/** Encrypt + upload an image (its own pixels are the thumbnail source). */
+export const uploadEncryptedImage = (input: ImageUploadInput): Promise<void> =>
+  uploadEncryptedMedia({ ...input, posterUri: input.uri });
+
+/** Encrypt + upload a video: a poster frame becomes the thumbnail. Skips files over the size cap. */
+export const uploadEncryptedVideo = async (input: ImageUploadInput): Promise<void> => {
+  const info = await FileSystem.getInfoAsync(input.uri);
+  if (info.exists && typeof info.size === 'number' && info.size > MAX_VIDEO_BYTES) {
+    throw new Error('Video exceeds the backup size limit');
+  }
+  const poster = await VideoThumbnails.getThumbnailAsync(input.uri, { time: 1000 }).catch(() => null);
+  await uploadEncryptedMedia({
+    ...input,
+    mimeType: input.mimeType ?? 'video/mp4',
+    posterUri: poster?.uri,
+  });
 };
 
 /** Pick a photo from the library, encrypt it end-to-end, and upload it. */

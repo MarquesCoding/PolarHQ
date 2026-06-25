@@ -10,7 +10,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import { isUnlocked } from '@workspace/core/e2e';
 
-import { uploadEncryptedImage } from '@/lib/upload';
+import { uploadEncryptedImage, uploadEncryptedVideo } from '@/lib/upload';
 
 const ENABLED_KEY = 'polarhq.backup.enabled';
 const STATE_FILE = `${FileSystem.documentDirectory}backup-state.json`;
@@ -41,6 +41,14 @@ const mimeFromName = (name?: string): string => {
   if (ext === 'webp') return 'image/webp';
   if (ext === 'gif') return 'image/gif';
   return 'image/jpeg';
+};
+
+const videoMimeFromName = (name?: string): string => {
+  const ext = (name?.split('.').pop() ?? '').toLowerCase();
+  if (ext === 'mov') return 'video/quicktime';
+  if (ext === 'm4v') return 'video/x-m4v';
+  if (ext === 'webm') return 'video/webm';
+  return 'video/mp4';
 };
 
 export interface BackupProgress {
@@ -91,7 +99,7 @@ export const runBackup = async (onProgress?: (p: BackupProgress) => void): Promi
     let after: string | undefined;
     do {
       const page = await MediaLibrary.getAssetsAsync({
-        mediaType: MediaLibrary.MediaType.photo,
+        mediaType: [MediaLibrary.MediaType.photo, MediaLibrary.MediaType.video],
         first: 100,
         after,
         sortBy: [MediaLibrary.SortBy.creationTime],
@@ -112,17 +120,28 @@ export const runBackup = async (onProgress?: (p: BackupProgress) => void): Promi
     for (const asset of pending) {
       try {
         const info = await MediaLibrary.getAssetInfoAsync(asset);
-        await uploadEncryptedImage({
-          uri: info.localUri ?? asset.uri,
-          fileName: asset.filename,
-          mimeType: mimeFromName(asset.filename),
-          width: asset.width,
-          height: asset.height,
-        });
+        const uri = info.localUri ?? asset.uri;
+        if (asset.mediaType === MediaLibrary.MediaType.video) {
+          await uploadEncryptedVideo({
+            uri,
+            fileName: asset.filename,
+            mimeType: videoMimeFromName(asset.filename),
+            width: asset.width,
+            height: asset.height,
+          });
+        } else {
+          await uploadEncryptedImage({
+            uri,
+            fileName: asset.filename,
+            mimeType: mimeFromName(asset.filename),
+            width: asset.width,
+            height: asset.height,
+          });
+        }
         uploaded.add(asset.id);
         if (done % 5 === 0) await saveUploaded(uploaded);
       } catch {
-        /* skip this asset, continue with the rest */
+        /* skip this asset (e.g. oversized video), continue with the rest */
       }
       done += 1;
       report({ done, total, running: true });

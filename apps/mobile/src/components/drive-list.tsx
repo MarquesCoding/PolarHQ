@@ -9,6 +9,7 @@ import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View }
 import { PromptModal } from '@/components/prompt-modal';
 import { useColors } from '@/components/ui';
 import { showActionSheet } from '@/lib/action-menu';
+import { downloadAndShareDriveFile } from '@/lib/drive-files';
 import { fetchDriveThumbnailUri } from '@/lib/photos';
 import { decryptNodeName, fetchNodes, renameDriveNode, trashDriveNode, type DriveNode } from '@/lib/drive';
 
@@ -68,6 +69,8 @@ function Row({
         pathname: '/photo/[id]',
         params: { id: node.photoAssetId, encrypted: node.encrypted ? '1' : '0', mime: node.mimeType ?? 'image/jpeg' },
       });
+    } else {
+      void downloadAndShareDriveFile(node).catch(() => undefined);
     }
   };
 

@@ -10,7 +10,10 @@
     "ios": {
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "app.polarhq.mobile",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"]
+      }
     },
     "android": {
       "package": "app.polarhq.mobile",
@@ -49,11 +52,18 @@
       [
         "expo-media-library",
         {
-          "photosPermission": "Allow PolarHQ to back up photos from your library.",
+          "photosPermission": "Allow PolarHQ to back up photos and videos from your library.",
           "isAccessMediaLocationEnabled": true
         }
       ],
-      "expo-video"
+      "expo-video",
+      "expo-background-task",
+      [
+        "expo-notifications",
+        {
+          "color": "#7c5cfc"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

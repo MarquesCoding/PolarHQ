@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Alert, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
@@ -10,7 +10,9 @@ import { FloatingTopBar, TopBarButton, useTopInset } from '@/components/floating
 import { PromptModal } from '@/components/prompt-modal';
 import { Tappable } from '@/components/ui/tappable';
 import { useColors } from '@/components/ui';
+import { showActionSheet } from '@/lib/action-menu';
 import { createDriveFolder, type DriveNode } from '@/lib/drive';
+import { pickAndUploadFile } from '@/lib/drive-files';
 
 interface Crumb {
   id: string | null;
@@ -52,6 +54,21 @@ export default function Drive() {
     queryClient.invalidateQueries({ queryKey: ['nodes', current.id ?? 'root'] });
   };
 
+  const onUploadFile = async () => {
+    const outcome = await pickAndUploadFile(current.id).catch(() => 'error' as const);
+    if (outcome === 'uploaded') queryClient.invalidateQueries({ queryKey: ['nodes', current.id ?? 'root'] });
+    else if (outcome === 'too-large') Alert.alert('File too large', 'Files must be under 120 MB to upload from mobile.');
+    else if (outcome === 'locked') Alert.alert('Locked', 'Sign in to unlock encryption before uploading.');
+    else if (outcome === 'error') Alert.alert('Upload failed', 'Could not upload this file. Please try again.');
+  };
+
+  const onPlus = () => {
+    showActionSheet([
+      { label: 'New folder', onPress: () => setNewFolder(true) },
+      { label: 'Upload file', onPress: () => void onUploadFile() },
+    ]);
+  };
+
   // Edge back-swipe: a rightward drag from the left edge pops the folder.
   const backSwipe = Gesture.Pan()
     .enabled(canPop)
@@ -83,11 +100,11 @@ export default function Drive() {
             </Tappable>
           }
         >
-          <TopBarButton icon="add" onPress={() => setNewFolder(true)} />
+          <TopBarButton icon="add" onPress={onPlus} />
         </FloatingTopBar>
       ) : (
         <FloatingTopBar>
-          <TopBarButton icon="add" onPress={() => setNewFolder(true)} />
+          <TopBarButton icon="add" onPress={onPlus} />
         </FloatingTopBar>
       )}
 

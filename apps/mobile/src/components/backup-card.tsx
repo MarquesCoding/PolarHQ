@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { Button, Card, useColors } from '@/components/ui';
+import { registerBackgroundSync, unregisterBackgroundSync } from '@/lib/background-sync';
 import {
   backedUpCount,
   isBackupEnabled,
@@ -31,7 +32,12 @@ export function BackupCard() {
   const onToggle = async (value: boolean) => {
     setEnabled(value);
     await setBackupEnabled(value);
-    if (value) void start();
+    if (value) {
+      void registerBackgroundSync();
+      void start();
+    } else {
+      void unregisterBackgroundSync();
+    }
   };
 
   const running = progress?.running ?? false;
