@@ -38,7 +38,7 @@ const GAP = 2;
 const COLUMNS = 3;
 const EDGE = 2;
 
-function PhotoTile({ asset, size }: { asset: GridAsset; size: number }) {
+function PhotoTile({ asset, size, view }: { asset: GridAsset; size: number; view: AssetView }) {
   const c = useColors();
   const { data: uri, isLoading } = useQuery({
     queryKey: ['thumb', asset.id],
@@ -57,6 +57,7 @@ function PhotoTile({ asset, size }: { asset: GridAsset; size: number }) {
             encrypted: asset.encrypted ? '1' : '0',
             mime: asset.mimeType,
             fav: asset.isFavorite ? '1' : '0',
+            view,
           },
         })
       }
@@ -177,7 +178,7 @@ export default function Photos() {
           contentContainerStyle={{ padding: EDGE }}
           columnWrapperStyle={{ gap: GAP }}
           ItemSeparatorComponent={() => <View style={{ height: GAP }} />}
-          renderItem={({ item }) => <PhotoTile asset={item} size={tile} />}
+          renderItem={({ item }) => <PhotoTile asset={item} size={tile} view={view} />}
           onRefresh={refetch}
           refreshing={isRefetching}
           showsVerticalScrollIndicator={false}
