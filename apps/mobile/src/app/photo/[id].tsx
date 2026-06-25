@@ -31,7 +31,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { showActionSheet, type MenuAction } from '@/lib/action-menu';
 import {
@@ -126,6 +126,7 @@ export default function PhotoViewer() {
     view?: string;
   }>();
   const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const view = params.view ?? 'library';
   const isTrash = view === 'trash';
 
@@ -360,9 +361,9 @@ export default function PhotoViewer() {
       <Animated.View style={[styles.chrome, chromeStyle]} pointerEvents="box-none">
         <LinearGradient colors={['rgba(0,0,0,0.55)', 'transparent']} style={styles.topScrim} pointerEvents="none" />
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.6)']} style={styles.bottomScrim} pointerEvents="none" />
-        <SafeAreaView style={[styles.fill, styles.chromeInner]} edges={['top', 'bottom']} pointerEvents="box-none">
+        <SafeAreaView style={[styles.fill, styles.chromeInner]} edges={['bottom']} pointerEvents="box-none">
           {/* Top bar */}
-          <View style={styles.topBar} pointerEvents="box-none">
+          <View style={[styles.topBar, { paddingTop: insets.top + 6 }]} pointerEvents="box-none">
             <Pressable onPress={dismiss} hitSlop={10} style={styles.iconBtn}>
               <Ionicons name="chevron-back" size={26} color="#fff" />
             </Pressable>
