@@ -76,10 +76,19 @@ export const analyzeVideo = (file: File, maxDimension = MAX_DIMENSION): Promise<
     video.preload = "metadata"
     video.muted = true
     let meta = { width: 0, height: 0, durationMs: 0 }
-    const fail = () => {
+    // Guarded resolve: some webviews (notably Tauri's macOS WKWebView with HEVC/.mov) never fire
+    // loadedmetadata/seeked/error, which would hang the whole upload. A timeout resolves with no
+    // poster so the upload still completes; the timer + revoke run exactly once.
+    let settled = false
+    const finish = (result: VideoAnalysis) => {
+      if (settled) return
+      settled = true
+      clearTimeout(timer)
       URL.revokeObjectURL(url)
-      resolve({ poster: null, ...meta })
+      resolve(result)
     }
+    const fail = () => finish({ poster: null, ...meta })
+    const timer = setTimeout(fail, 8000)
     video.onerror = fail
     video.onloadedmetadata = () => {
       meta = {
@@ -100,12 +109,8 @@ export const analyzeVideo = (file: File, maxDimension = MAX_DIMENSION): Promise<
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
         canvas.toBlob(
           (blob) => {
-            URL.revokeObjectURL(url)
-            if (!blob) {
-              resolve({ poster: null, ...meta })
-              return
-            }
-            blob.arrayBuffer().then((buf) => resolve({ poster: new Uint8Array(buf), ...meta }))
+            if (!blob) return finish({ poster: null, ...meta })
+            blob.arrayBuffer().then((buf) => finish({ poster: new Uint8Array(buf), ...meta }))
           },
           "image/jpeg",
           QUALITY,
