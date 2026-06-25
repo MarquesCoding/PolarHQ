@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { formatBytes } from '@workspace/core/format';
 
 import { Card, useColors } from '@/components/ui';
@@ -44,7 +44,7 @@ export default function PhotoInfo() {
 
   return (
     <View style={[styles.root, { backgroundColor: c.background }]}>
-      <View style={styles.head}>
+      <View style={[styles.head, Platform.OS === 'ios' && styles.headIos]}>
         <Text style={[styles.title, { color: c.text }]}>Details</Text>
         <Pressable onPress={() => router.back()} hitSlop={10}>
           <Text style={[styles.done, { color: c.primary }]}>Done</Text>
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   flex: { flex: 1 },
   head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 },
+  headIos: { paddingTop: 30 },
   title: { fontSize: 20, fontWeight: '700' },
   done: { fontSize: 16, fontWeight: '600' },
   content: { paddingHorizontal: 20, paddingBottom: 30, gap: 16 },
