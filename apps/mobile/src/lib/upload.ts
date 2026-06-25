@@ -47,35 +47,35 @@ const writeTemp = async (bytes: Uint8Array, name: string): Promise<string> => {
 
 export type UploadOutcome = 'uploaded' | 'cancelled' | 'denied' | 'locked';
 
-/** Pick a photo from the library, encrypt it end-to-end, and upload it. */
-export const pickAndUploadPhoto = async (): Promise<UploadOutcome> => {
-  if (!isUnlocked()) return 'locked';
+export interface ImageUploadInput {
+  uri: string;
+  fileName?: string | null;
+  mimeType?: string | null;
+  width?: number | null;
+  height?: number | null;
+}
 
-  const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (!permission.granted) return 'denied';
-
-  const picked = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ['images'],
-    quality: 1,
-  });
-  if (picked.canceled || !picked.assets[0]) return 'cancelled';
-  const asset = picked.assets[0];
-
+/**
+ * Encrypt + upload a single image end-to-end. Shared by the manual picker and the auto-backup loop:
+ * encrypt the original under a fresh content key (multipart POST), wrap the key to the owner, and
+ * upload an encrypted client-generated thumbnail. Throws on a failed upload.
+ */
+export const uploadEncryptedImage = async (input: ImageUploadInput): Promise<void> => {
   const key = createContentKey();
-  const filename = asset.fileName ?? 'photo.jpg';
-  const mimeType = asset.mimeType ?? 'image/jpeg';
+  const filename = input.fileName ?? 'photo.jpg';
+  const mimeType = input.mimeType ?? 'image/jpeg';
   const encName = encryptName(filename);
   const placeholderName = encName ? encryptedPlaceholder() : filename;
 
   // Original → encrypt → temp file (the multipart part the server stores as opaque bytes).
   const original = base64ToBytes(
-    await FileSystem.readAsStringAsync(asset.uri, { encoding: FileSystem.EncodingType.Base64 }),
+    await FileSystem.readAsStringAsync(input.uri, { encoding: FileSystem.EncodingType.Base64 }),
   );
   const originalUri = await writeTemp(secretboxSeal(original, key), placeholderName);
 
   const parameters: Record<string, string> = { encrypted: 'true', mimeType };
-  if (asset.width) parameters.width = String(asset.width);
-  if (asset.height) parameters.height = String(asset.height);
+  if (input.width) parameters.width = String(input.width);
+  if (input.height) parameters.height = String(input.height);
   if (encName) parameters.encryptedName = encName;
 
   const response = await FileSystem.uploadAsync(
@@ -102,7 +102,7 @@ export const pickAndUploadPhoto = async (): Promise<UploadOutcome> => {
 
   // Client-side thumbnail → encrypt → binary PUT.
   const thumb = await ImageManipulator.manipulateAsync(
-    asset.uri,
+    input.uri,
     [{ resize: { width: 512 } }],
     { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG, base64: true },
   );
@@ -123,6 +123,25 @@ export const pickAndUploadPhoto = async (): Promise<UploadOutcome> => {
         () => undefined,
       );
   }
+};
 
+/** Pick a photo from the library, encrypt it end-to-end, and upload it. */
+export const pickAndUploadPhoto = async (): Promise<UploadOutcome> => {
+  if (!isUnlocked()) return 'locked';
+
+  const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (!permission.granted) return 'denied';
+
+  const picked = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1 });
+  if (picked.canceled || !picked.assets[0]) return 'cancelled';
+  const asset = picked.assets[0];
+
+  await uploadEncryptedImage({
+    uri: asset.uri,
+    fileName: asset.fileName,
+    mimeType: asset.mimeType,
+    width: asset.width,
+    height: asset.height,
+  });
   return 'uploaded';
 };
