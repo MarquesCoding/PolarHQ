@@ -25,19 +25,33 @@ const AuthLayout = ({ tagline, children }: AuthLayoutProps) => {
             className="absolute inset-0"
             style={{
               backgroundImage:
-                "linear-gradient(130deg, var(--primary) 0%, #5b9bff 22%, #6366f1 45%, #3b82f6 68%, #60a5fa 85%, var(--primary) 100%)",
+                "linear-gradient(130deg, var(--primary) 0%, #8b6cfb 22%, #6d5cf6 45%, #7c5cfc 68%, #a78bfa 85%, var(--primary) 100%)",
               backgroundSize: "300% 300%",
             }}
             animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
             transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/12 via-transparent to-black/25" />
+          <div className="absolute inset-0 [background-image:radial-gradient(circle,rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:26px_26px] [mask-image:radial-gradient(80%_70%_at_50%_40%,black,transparent)]" />
         </div>
+
+        {/* Welcoming bear — sits on the bottom edge of the brand panel. */}
+        <motion.img
+          src="/stickers/bear-wave.png"
+          alt=""
+          width={360}
+          height={360}
+          className="pointer-events-none absolute -right-6 bottom-0 z-0 w-60 rotate-6 drop-shadow-[0_24px_48px_rgba(0,0,0,0.35)] xl:w-72"
+          initial={{ opacity: 0, y: 40, rotate: 14 }}
+          animate={{ opacity: 1, y: 0, rotate: 6 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
+        />
+
         <div className="relative z-10 flex items-center gap-3">
           <img src={logo} alt="" className="size-9" draggable={false} />
-          <span className="text-lg font-semibold">{appName}</span>
+          <span className="text-lg font-bold">{appName}</span>
         </div>
-        <h1 className="relative z-10 max-w-md text-3xl leading-snug font-semibold text-balance">
+        <h1 className="relative z-10 max-w-md text-4xl leading-[1.1] font-bold tracking-tight text-balance">
           {tagline}
         </h1>
       </div>
