@@ -18,8 +18,17 @@ export {
   trashAssets,
   restoreAssets,
   deleteAssets,
+  fetchAlbums,
+  fetchAlbum,
 } from '@workspace/core/photos';
-export type { GridAsset, TimelinePage, AssetView } from '@workspace/core/photos';
+export type { GridAsset, TimelinePage, AssetView, Album, AlbumDetail } from '@workspace/core/photos';
+
+import { decryptName } from '@workspace/core/e2e';
+import type { GridAsset } from '@workspace/core/photos';
+
+/** The display name of an asset: its decrypted name, falling back to the plaintext filename. */
+export const assetName = (asset: GridAsset): string =>
+  decryptName(asset.encryptedName) ?? asset.originalFilename ?? '';
 
 const authHeaders = (): Record<string, string> => {
   const cookie = authClient.getCookie();
