@@ -13,24 +13,26 @@ body {
 }
 
 /* Pure-black page for the landing site. */
+/* Deep navy-violet landing canvas (matches the app's dark theme, warmer than pure black). */
 .dark {
-  --background: oklch(0 0 0);
+  --background: #0a0a12;
 }
 
-.wordmark {
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 0.8;
-}
-
+/* Bold, rounded, cartoon-leaning display type for headlines. */
+.wordmark,
 .font-display {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-display), ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+}
+.wordmark {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.85;
 }
 
-/* Flat primary button with a small, subtle border (no heavy gradient/embossed ring). */
+/* Flat violet primary button (no embossed ring). */
 .btn-primary {
   background-image: none !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18) !important;
+  box-shadow: none !important;
 }
 
 /* Rendered markdown — tuned to the pure-black landing theme. */
@@ -71,10 +73,10 @@ body {
   margin-bottom: 1.25rem;
 }
 .prose-polar a {
-  color: var(--color-blue-400, #60a5fa);
+  color: var(--primary);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: color-mix(in oklch, var(--color-blue-400, #60a5fa) 45%, transparent);
+  text-decoration-color: color-mix(in oklch, var(--primary) 45%, transparent);
 }
 .prose-polar a:hover {
   text-decoration-color: currentColor;
@@ -117,7 +119,7 @@ body {
 .prose-polar blockquote {
   margin: 1.5rem 0;
   padding: 0.25rem 0 0.25rem 1.1rem;
-  border-left: 2px solid color-mix(in oklch, var(--color-blue-400, #60a5fa) 60%, transparent);
+  border-left: 2px solid color-mix(in oklch, var(--primary) 60%, transparent);
   color: color-mix(in oklch, var(--foreground) 70%, transparent);
   font-style: italic;
 }

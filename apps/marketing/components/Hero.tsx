@@ -1,7 +1,6 @@
 "use client"
 
-import { useRef } from "react"
-import { type Variants, motion, useScroll, useTransform } from "motion/react"
+import { type Variants, motion } from "motion/react"
 import { Button } from "@workspace/ui/components/button"
 import { RELEASES } from "@lib/changelog"
 import {
@@ -19,167 +18,124 @@ const VERSION = RELEASES[0]?.version ?? "0.5.0-alpha"
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.16, delayChildren: 1.1 } },
-}
-
-const group: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.09 } },
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
 }
 
 const item: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 0.61, 0.36, 1] } },
+  hidden: { opacity: 0, y: 22 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 0.61, 0.36, 1] } },
 }
 
-const Hero = () => {
-  const ref = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] })
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.86])
-  const borderRadius = useTransform(scrollYProgress, [0, 1], [28, 48])
-  return (
-    <section ref={ref} className="relative isolate flex h-svh flex-col overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10 p-4 sm:p-5">
-        <motion.div
-          style={{ scale, borderRadius }}
-          className="relative h-full w-full overflow-hidden mt-4"
-        >
-          <motion.video
-            src="/player.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            initial={{ scale: 1.15 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 2.8, ease: [0.22, 0.61, 0.36, 1] }}
-            className="h-full w-full object-cover"
-          />
-          <div className="from-background/45 via-background/15 to-background/80 absolute inset-0 bg-gradient-to-b" />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: "radial-gradient(56% 48% at 50% 44%, rgba(0,0,0,0.34), transparent 72%)",
-            }}
-          />
-        </motion.div>
-      </div>
+const Hero = () => (
+  <section className="relative isolate flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 pt-28 pb-20 text-center">
+    {/* Soft violet aurora backdrop. */}
+    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+      <div className="absolute inset-0 bg-[radial-gradient(70%_55%_at_50%_-8%,rgba(124,92,252,0.40),transparent_70%)]" />
+      <div className="bg-primary/25 absolute top-24 -left-32 size-[520px] rounded-full blur-[160px]" />
+      <div className="absolute top-48 -right-32 size-[480px] rounded-full bg-indigo-500/20 blur-[150px]" />
+      <div className="to-background absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent" />
+    </div>
 
-      <a
-        href="https://store.steampowered.com/app/1608230/Planet_of_Lana/"
-        target="_blank"
-        rel="noreferrer"
-        className="text-foreground/35 hover:text-foreground/60 absolute right-6 bottom-6 z-10 text-[11px] tracking-wide transition-colors sm:right-8 sm:bottom-8"
-      >
-        Artwork from Planet of Lana (2023)
-      </a>
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="mx-auto flex max-w-4xl flex-col items-center"
+    >
+      <motion.div variants={item}>
+        <motion.img
+          src="/stickers/bear-wave.png"
+          alt=""
+          width={224}
+          height={224}
+          className="mx-auto w-36 drop-shadow-[0_24px_48px_rgba(124,92,252,0.45)] sm:w-52"
+          animate={{ y: [0, -12, 0] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </motion.div>
 
       <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="mx-auto flex max-w-5xl flex-1 flex-col items-center justify-center px-6 text-center [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]"
+        variants={item}
+        className="border-primary/30 bg-primary/10 text-primary mt-2 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-semibold backdrop-blur"
       >
-        <motion.div
-          variants={item}
-          className="border-border/70 bg-background/70 text-foreground/80 inline-flex items-center rounded-full border px-3 py-1 text-[13px] font-medium backdrop-blur"
-        >
-          Open source · self-hosted · end-to-end encrypted
-        </motion.div>
-
-        <motion.h1
-          variants={item}
-          className="text-foreground mt-7 text-5xl font-medium leading-16 tracking-tight sm:text-7xl"
-        >
-          Your digital life,
-          <br />
-          under your{" "}
-          <span className="text-blue-400 italic" style={{ fontFamily: "var(--font-serif)" }}>
-            control
-          </span>
-          .
-        </motion.h1>
-
-        <motion.p variants={item} className="text-foreground/90 mx-auto mt-6 max-w-2xl text-lg">
-          A modern home for your photos, files, and documents, built around ownership instead of
-          lock-in.
-        </motion.p>
-
-        <motion.div
-          variants={group}
-          className="mt-9 flex flex-col items-center gap-5 [text-shadow:none]"
-        >
-          <motion.div
-            variants={group}
-            className="flex flex-col items-center gap-3 sm:flex-row"
-          >
-            <motion.div variants={item}>
-              <Button
-                render={<a href={DOWNLOAD_URL} target="_blank" rel="noreferrer" />}
-                size="lg"
-                className="gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-white shadow-sm backdrop-blur hover:bg-white/20"
-              >
-                <AppleLogo className="size-4" />
-                Download for desktop
-              </Button>
-            </motion.div>
-            <motion.div variants={item}>
-              <Button
-                render={<a href={REPO_URL} target="_blank" rel="noreferrer" />}
-                size="lg"
-                className="gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-white shadow-sm backdrop-blur hover:bg-white/20"
-              >
-                <GithubLogo className="size-4" />
-                Star on GitHub
-              </Button>
-            </motion.div>
-          </motion.div>
-
-          <motion.div
-            variants={item}
-            className="text-foreground/55 flex items-center gap-3 text-sm"
-          >
-            <span>Alpha v{VERSION}</span>
-            <span aria-hidden className="bg-foreground/25 h-3 w-px" />
-            <span>macOS · Windows · Linux</span>
-          </motion.div>
-
-          <motion.div variants={item} className="flex items-center gap-6">
-            <a
-              href={DOWNLOAD_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Download for macOS"
-              className="text-foreground/55 hover:text-foreground transition-colors"
-            >
-              <AppleLogo className="size-[18px]" />
-            </a>
-            <a
-              href={DOWNLOAD_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Download for Windows"
-              className="text-foreground/55 hover:text-foreground transition-colors"
-            >
-              <WindowsLogo className="size-[18px]" />
-            </a>
-            <a
-              href={DOWNLOAD_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Download for Linux"
-              className="text-foreground/55 hover:text-foreground transition-colors"
-            >
-              <LinuxLogo className="size-[18px]" />
-            </a>
-            <AndroidLogo className="text-foreground/30 size-[18px]" />
-            <Globe className="text-foreground/55 size-[18px]" />
-          </motion.div>
-        </motion.div>
+        Open source · self-hosted · end-to-end encrypted
       </motion.div>
-    </section>
-  )
-}
+
+      <motion.h1
+        variants={item}
+        className="font-display text-foreground mt-6 text-5xl leading-[1.04] font-bold tracking-tight sm:text-7xl"
+      >
+        Your digital life,
+        <br />
+        under your <span className="text-primary">control</span>.
+      </motion.h1>
+
+      <motion.p
+        variants={item}
+        className="text-foreground/75 mx-auto mt-6 max-w-xl text-lg sm:text-xl"
+      >
+        A friendly home for your photos, files and documents — built around ownership, not lock-in.
+      </motion.p>
+
+      <motion.div variants={item} className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
+        <Button
+          render={<a href={DOWNLOAD_URL} target="_blank" rel="noreferrer" />}
+          size="lg"
+          className="gap-2 rounded-xl px-6 text-base font-semibold"
+        >
+          <AppleLogo className="size-4" weight="fill" />
+          Download for desktop
+        </Button>
+        <Button
+          variant="outline"
+          render={<a href={REPO_URL} target="_blank" rel="noreferrer" />}
+          size="lg"
+          className="gap-2 rounded-xl px-6 text-base font-semibold"
+        >
+          <GithubLogo className="size-4" weight="fill" />
+          Star on GitHub
+        </Button>
+      </motion.div>
+
+      <motion.div variants={item} className="text-foreground/50 mt-6 flex items-center gap-3 text-sm">
+        <span>Alpha v{VERSION}</span>
+        <span aria-hidden className="bg-foreground/25 h-3 w-px" />
+        <span>macOS · Windows · Linux</span>
+      </motion.div>
+
+      <motion.div variants={item} className="mt-7 flex items-center gap-6">
+        <a
+          href={DOWNLOAD_URL}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Download for macOS"
+          className="text-foreground/45 hover:text-foreground transition-colors"
+        >
+          <AppleLogo className="size-[18px]" />
+        </a>
+        <a
+          href={DOWNLOAD_URL}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Download for Windows"
+          className="text-foreground/45 hover:text-foreground transition-colors"
+        >
+          <WindowsLogo className="size-[18px]" />
+        </a>
+        <a
+          href={DOWNLOAD_URL}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Download for Linux"
+          className="text-foreground/45 hover:text-foreground transition-colors"
+        >
+          <LinuxLogo className="size-[18px]" />
+        </a>
+        <AndroidLogo className="text-foreground/25 size-[18px]" />
+        <Globe className="text-foreground/45 size-[18px]" />
+      </motion.div>
+    </motion.div>
+  </section>
+)
 
 export default Hero

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google"
+import { Fredoka, Geist, Geist_Mono, Instrument_Serif } from "next/font/google"
 import Nav from "@components/Nav"
 import ContentHeroBackdrop from "@components/ContentHeroBackdrop"
 import PageTransition from "@components/PageTransition"
@@ -13,6 +13,12 @@ const serif = Instrument_Serif({
   weight: "400",
   style: ["normal", "italic"],
   variable: "--font-serif",
+})
+/** Rounded, friendly display face for the cartoon-leaning landing headlines. */
+const display = Fredoka({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
 })
 
 const TITLE = "PolarHQ — your private home for everything"
@@ -39,13 +45,13 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#3b82f6",
+  themeColor: "#7c5cfc",
 }
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
   <html lang="en" className="dark">
     <body
-      className={`${geist.variable} ${geistMono.variable} ${serif.variable} bg-background antialiased`}
+      className={`${geist.variable} ${geistMono.variable} ${serif.variable} ${display.variable} bg-background antialiased`}
     >
       <Nav />
       <ContentHeroBackdrop />

@@ -8,12 +8,12 @@ const AppShowcase = () => (
       aria-hidden
       className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center"
     >
-      <div className="size-[680px] max-w-full rounded-full bg-blue-500/10 blur-[140px]" />
+      <div className="bg-primary/15 size-[680px] max-w-full rounded-full blur-[140px]" />
     </div>
 
     <div className="mx-auto max-w-2xl text-center">
-      <p className="text-sm font-medium text-blue-400">See it in action</p>
-      <h2 className="text-foreground mt-2 text-3xl font-medium tracking-tight sm:text-4xl">
+      <p className="text-primary text-sm font-semibold tracking-wide">See it in action</p>
+      <h2 className="font-display text-foreground mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
         Your whole library, in one calm place
       </h2>
       <p className="text-muted-foreground mt-3 text-base">

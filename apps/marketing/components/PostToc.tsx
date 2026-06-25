@@ -77,7 +77,7 @@ const PostToc = () => {
               {isActive ? (
                 <motion.span
                   layoutId="toc-active"
-                  className="absolute top-1 -left-3 h-3.5 w-0.5 rounded-full bg-blue-400"
+                  className="bg-primary absolute top-1 -left-3 h-3.5 w-0.5 rounded-full"
                   transition={{ type: "spring", stiffness: 500, damping: 38 }}
                 />
               ) : null}
@@ -90,7 +90,7 @@ const PostToc = () => {
                 className={cn(
                   "block text-sm leading-snug transition-colors duration-300",
                   isActive
-                    ? "text-blue-400"
+                    ? "text-primary"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
