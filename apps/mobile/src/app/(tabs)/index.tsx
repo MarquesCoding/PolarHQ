@@ -13,7 +13,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { clamp, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PhotoGrid, type Row } from '@/components/photo-grid';
@@ -49,7 +49,6 @@ export default function Photos() {
   const barY = useSharedValue(0);
   const badge = useSharedValue(0);
   const lastY = useRef(0);
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [date, setDate] = useState('');
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -60,15 +59,8 @@ export default function Photos() {
     else if (dy < -5) barY.value = withTiming(0, { duration: 220 });
     lastY.current = y;
 
-    if (y > 40) {
-      badge.value = withTiming(1, { duration: 110 });
-      if (hideTimer.current) clearTimeout(hideTimer.current);
-      hideTimer.current = setTimeout(() => {
-        badge.value = withTiming(0, { duration: 320 });
-      }, 1100);
-    } else {
-      badge.value = withTiming(0, { duration: 200 });
-    }
+    // Date badge stays while scrolled; only hides back at the very top.
+    badge.value = withTiming(y > 40 ? 1 : 0, { duration: 160 });
   };
 
   const onViewable = ({ viewableItems }: { viewableItems: { item: Row }[] }) => {
@@ -95,10 +87,14 @@ export default function Photos() {
   const remaining = backup?.running ? Math.max(0, backup.total - backup.done) : 0;
 
   const barStyle = useAnimatedStyle(() => ({ transform: [{ translateY: barY.value }] }));
-  const badgeStyle = useAnimatedStyle(() => ({
-    opacity: badge.value,
-    transform: [{ translateY: (1 - badge.value) * -8 }],
-  }));
+  // Badge sits near the top when the bar is hidden, and slides down below it as the bar reveals.
+  const badgeStyle = useAnimatedStyle(() => {
+    const factor = clamp(1 + barY.value / (barTotal + 14), 0, 1);
+    return {
+      opacity: badge.value,
+      transform: [{ translateY: insets.top + 4 + factor * (BAR_H - 8) }],
+    };
+  });
 
   const empty = isLoading ? (
     <View style={[styles.center, { paddingTop: barTotal + 80 }]}>
@@ -131,16 +127,19 @@ export default function Photos() {
         ListEmptyComponent={empty}
       />
 
-      {/* Floating date badge while scrolling. */}
-      <Animated.View style={[styles.badgeWrap, { top: barTotal + 2 }, badgeStyle]} pointerEvents="none">
+      {/* Floating date badge — stays while scrolled, slides with the bar. */}
+      <Animated.View style={[styles.badgeWrap, badgeStyle]} pointerEvents="none">
         <BlurView intensity={40} tint={scheme} style={[styles.badge, { backgroundColor: glass, borderColor: c.border }]}>
           <Text style={[styles.badgeText, { color: c.text }]}>{date}</Text>
         </BlurView>
       </Animated.View>
 
-      {/* Auto-hiding glass top bar. */}
-      <Animated.View style={[styles.topBar, { height: barTotal, paddingTop: insets.top }, barStyle]}>
-        <BlurView intensity={48} tint={scheme} style={[styles.topBarInner, { backgroundColor: glass }]}>
+      {/* Auto-hiding transparent top bar — buttons float over the content (no panel). */}
+      <Animated.View
+        style={[styles.topBar, { height: barTotal, paddingTop: insets.top }, barStyle]}
+        pointerEvents="box-none"
+      >
+        <View style={styles.topBarInner} pointerEvents="box-none">
           {backup?.running ? (
             <View style={[styles.backupPill, { backgroundColor: c.backgroundElement }]}>
               <ActivityIndicator size="small" color={c.primary} />
@@ -155,7 +154,7 @@ export default function Photos() {
           <Tappable onPress={() => router.push('/account')} haptic="selection" style={[styles.avatar, { backgroundColor: c.primary }]}>
             <Text style={styles.avatarText}>{initial}</Text>
           </Tappable>
-        </BlurView>
+        </View>
       </Animated.View>
     </View>
   );
