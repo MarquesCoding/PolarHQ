@@ -5,7 +5,7 @@
  * cookie and return a `data:` URI that expo-image can render, reusing core's crypto for decryption.
  */
 import { coreConfig } from '@workspace/core/config';
-import { secretboxOpen } from '@workspace/core/crypto';
+import { isStreamBlob, secretboxOpen, secretstreamOpenAll } from '@workspace/core/crypto';
 import { getDocContentKey } from '@workspace/core/e2e';
 
 import { authClient } from '@/lib/auth';
@@ -46,6 +46,31 @@ export const fetchThumbnailUri = async (
   if (!key) return null;
   try {
     return `data:image/jpeg;base64,${bytesToBase64(secretboxOpen(bytes, key))}`;
+  } catch {
+    return null;
+  }
+};
+
+/** Fetch + decrypt an asset's full-resolution original into a `data:` URI (or null). */
+export const fetchOriginalUri = async (
+  assetId: string,
+  encrypted: boolean,
+  mimeType = 'image/jpeg',
+): Promise<string | null> => {
+  const response = await fetch(
+    `${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`,
+    { headers: authHeaders() },
+  );
+  if (!response.ok) return null;
+  const bytes = new Uint8Array(await response.arrayBuffer());
+
+  if (!encrypted) return `data:${mimeType};base64,${bytesToBase64(bytes)}`;
+
+  const key = await getDocContentKey(assetId);
+  if (!key) return null;
+  try {
+    const plain = isStreamBlob(bytes) ? secretstreamOpenAll(bytes, key) : secretboxOpen(bytes, key);
+    return `data:${mimeType};base64,${bytesToBase64(plain)}`;
   } catch {
     return null;
   }

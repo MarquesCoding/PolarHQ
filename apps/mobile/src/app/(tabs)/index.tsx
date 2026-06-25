@@ -1,7 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
-import { ActivityIndicator, FlatList, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { router } from 'expo-router';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useColors } from '@/components/ui';
@@ -21,7 +30,15 @@ function PhotoTile({ asset, size }: { asset: GridAsset; size: number }) {
   });
 
   return (
-    <View style={{ width: size, height: size, backgroundColor: c.backgroundElement }}>
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: '/photo/[id]',
+          params: { id: asset.id, encrypted: asset.encrypted ? '1' : '0', mime: asset.mimeType },
+        })
+      }
+      style={{ width: size, height: size, backgroundColor: c.backgroundElement }}
+    >
       {uri ? (
         <Image source={{ uri }} style={{ width: size, height: size }} contentFit="cover" transition={120} />
       ) : (
@@ -33,7 +50,7 @@ function PhotoTile({ asset, size }: { asset: GridAsset; size: number }) {
           )}
         </View>
       )}
-    </View>
+    </Pressable>
   );
 }
 
