@@ -38,7 +38,7 @@ export default function RootLayout() {
             <Stack.Screen name="folder/[id]" />
             <Stack.Screen name="album/[id]" />
             <Stack.Screen name="collection/[view]" />
-            <Stack.Screen name="photo/[id]" options={{ animation: 'fade' }} />
+            <Stack.Screen name="photo/[id]" options={{ presentation: 'transparentModal', animation: 'fade' }} />
           </Stack>
         </QueryClientProvider>
       </SafeAreaProvider>
