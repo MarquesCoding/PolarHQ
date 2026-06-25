@@ -8,6 +8,12 @@ export interface HostCapabilities {
   isDesktop: boolean
   /** Open a URL in the user's real browser (not the app webview). Desktop-only. */
   openExternal?: (url: string) => Promise<void> | void
+  /**
+   * Write decrypted media bytes to a temp file and return a webview-loadable URL for it. The Tauri
+   * desktop shell provides this so video plays through a real file (decoded by macOS's native
+   * codecs, e.g. HEVC) instead of a `blob:` URL, which WKWebView can't decode for many formats.
+   */
+  nativeMediaUrl?: (bytes: Uint8Array, mimeType: string) => Promise<string>
 }
 
 let host: HostCapabilities = { isDesktop: false }

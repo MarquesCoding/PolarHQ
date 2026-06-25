@@ -19,6 +19,7 @@ import {
   storeContentKey,
 } from "./e2e"
 import { coreConfig } from "./config"
+import { getHost } from "./host"
 import { extractMotionVideo } from "./motionPhoto"
 import { type Asset, type GridAsset, fetchStackMembers } from "./photos"
 import { analyzeAudio, analyzeImage, analyzeVideo } from "./thumbnails"
@@ -411,6 +412,12 @@ export const fetchDecryptedPhotoOriginal = async (
   try {
     const bytes = new Uint8Array(await response.arrayBuffer())
     const plain = isStreamBlob(bytes) ? secretstreamOpenAll(bytes, key) : secretboxOpen(bytes, key)
+    // On desktop, route video through a real temp file so WKWebView decodes it with macOS's native
+    // codecs (HEVC/.mov), which it can't do from a blob: URL. Images stay as blob URLs everywhere.
+    const native = getHost().nativeMediaUrl
+    if (native && mimeType.startsWith("video/")) {
+      return native(plain, mimeType)
+    }
     return URL.createObjectURL(new Blob([plain as BlobPart], { type: mimeType || "image/jpeg" }))
   } catch {
     return null
