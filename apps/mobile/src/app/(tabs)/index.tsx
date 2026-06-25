@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Pressable,
   StyleSheet,
@@ -16,6 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useColors } from '@/components/ui';
 import { fetchAssets, fetchThumbnailUri, type AssetView, type GridAsset } from '@/lib/photos';
+import { pickAndUploadPhoto } from '@/lib/upload';
 
 const VIEWS: { key: AssetView; label: string }[] = [
   { key: 'library', label: 'All' },
@@ -94,6 +96,8 @@ export default function Photos() {
   const { width } = useWindowDimensions();
   const tile = (width - EDGE * 2 - GAP * (COLUMNS - 1)) / COLUMNS;
   const [view, setView] = useState<AssetView>('library');
+  const [uploading, setUploading] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data, isLoading, isError, refetch, isRefetching } = useQuery({
     queryKey: ['assets', view],
@@ -101,10 +105,35 @@ export default function Photos() {
   });
   const assets = data?.assets ?? [];
 
+  const onAdd = async () => {
+    setUploading(true);
+    try {
+      const outcome = await pickAndUploadPhoto();
+      if (outcome === 'uploaded') {
+        await queryClient.invalidateQueries({ queryKey: ['assets'] });
+      } else if (outcome === 'locked') {
+        Alert.alert('Locked', 'Sign in again to unlock encryption before uploading.');
+      } else if (outcome === 'denied') {
+        Alert.alert('Permission needed', 'Allow photo library access to upload.');
+      }
+    } catch (e) {
+      Alert.alert('Upload failed', String(e instanceof Error ? e.message : e));
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]} edges={['top']}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: c.text }]}>Photos</Text>
+        <Pressable onPress={onAdd} disabled={uploading} hitSlop={10} style={[styles.add, { backgroundColor: c.backgroundElement }]}>
+          {uploading ? (
+            <ActivityIndicator size="small" color={c.primary} />
+          ) : (
+            <Ionicons name="add" size={24} color={c.primary} />
+          )}
+        </Pressable>
       </View>
 
       <View style={styles.pills}>
@@ -160,8 +189,16 @@ export default function Photos() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
   title: { fontSize: 30, fontWeight: '800' },
+  add: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
   pills: { flexDirection: 'row', paddingHorizontal: 16, paddingBottom: 12, gap: 8 },
   pill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 999 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },

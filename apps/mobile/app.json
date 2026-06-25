@@ -39,7 +39,11 @@
         }
       ],
       "expo-secure-store",
-      "react-native-libsodium"
+      "react-native-libsodium",
+      [
+        "expo-image-picker",
+        { "photosPermission": "Allow PolarHQ to upload photos from your library." }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
