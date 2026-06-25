@@ -29,9 +29,14 @@ export default function SignIn() {
       setError(err.message ?? 'Sign in failed');
       return;
     }
-    // The account password is also the E2E password — unlock the keypair now (no separate prompt)
-    // so encrypted content decrypts on entry. Best-effort: the UnlockGate re-prompts if this misses.
-    await unlockKeys(password).catch(() => false);
+    // The account password is also the E2E password — unlock the keypair now so encrypted content
+    // decrypts on entry, with no separate prompt. Retry once in case the session cookie (which the
+    // key-bundle fetch needs) hasn't settled the instant sign-in resolves.
+    let unlocked = await unlockKeys(password).catch(() => false);
+    if (!unlocked) {
+      await new Promise((r) => setTimeout(r, 400));
+      unlocked = await unlockKeys(password).catch(() => false);
+    }
     setBusy(false);
     router.replace('/(tabs)');
   };
