@@ -12,7 +12,7 @@ const PageHero = ({ title, subtitle, eyebrow }: PageHeroProps) => (
       alt=""
       width={220}
       height={220}
-      className="pointer-events-none absolute -right-8 -bottom-8 w-28 -rotate-12 drop-shadow-[0_18px_36px_rgba(124,92,252,0.4)] sm:right-2 sm:w-40"
+      className="pointer-events-none absolute -right-8 -bottom-8 w-28 -rotate-12 drop-shadow-[0_16px_32px_rgba(0,0,0,0.3)] sm:right-2 sm:w-40"
     />
     <div className="relative max-w-2xl">
       {eyebrow ? (
