@@ -91,7 +91,7 @@ function ImagePage({ item, width, height }: { item: Item; width: number; height:
   return (
     <View style={[styles.page, { width, height }]}>
       {source ? (
-        <Image source={{ uri: source }} style={{ width, height }} contentFit="contain" transition={140} />
+        <Image source={{ uri: source }} style={{ width, height }} contentFit="contain" transition={140} recyclingKey={item.id} />
       ) : (
         <ActivityIndicator color="#fff" />
       )}
@@ -130,7 +130,11 @@ function StripThumb({ item, active, onPress }: { item: Item; active: boolean; on
   });
   return (
     <Pressable onPress={onPress} style={[styles.thumb, active && styles.thumbActive]}>
-      {uri ? <Image source={{ uri }} style={styles.thumbImg} contentFit="cover" /> : <View style={styles.thumbImg} />}
+      {uri ? (
+        <Image source={{ uri }} style={styles.thumbImg} contentFit="cover" recyclingKey={item.id} />
+      ) : (
+        <View style={styles.thumbImg} />
+      )}
       {item.type === 'video' ? (
         <View style={styles.thumbVideo}>
           <Ionicons name="play" size={8} color="#fff" />
