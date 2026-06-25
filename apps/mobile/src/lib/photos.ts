@@ -68,6 +68,33 @@ export const fetchThumbnailUri = async (
   }
 };
 
+/**
+ * Fetch + decrypt a Drive node's thumbnail into a `data:` URI (or null). Mirrors core's
+ * `fetchDecryptedThumbnail`, but returns a `data:` URI (RN has no `URL.createObjectURL`) and
+ * authenticates the raw fetch with the better-auth cookie.
+ */
+export const fetchDriveThumbnailUri = async (
+  nodeId: string,
+  encrypted: boolean,
+): Promise<string | null> => {
+  const response = await fetch(
+    `${coreConfig().apiUrl}/api/v1/drive/nodes/${nodeId}/thumbnail`,
+    { headers: authHeaders() },
+  );
+  if (!response.ok) return null;
+  const bytes = new Uint8Array(await response.arrayBuffer());
+
+  if (!encrypted) return `data:image/jpeg;base64,${bytesToBase64(bytes)}`;
+
+  const key = await getDocContentKey(nodeId);
+  if (!key) return null;
+  try {
+    return `data:image/jpeg;base64,${bytesToBase64(secretboxOpen(bytes, key))}`;
+  } catch {
+    return null;
+  }
+};
+
 /** Fetch + decrypt an asset's full-resolution original into a `data:` URI (or null). */
 export const fetchOriginalUri = async (
   assetId: string,
