@@ -43,13 +43,9 @@ export default function Account() {
 
   return (
     <View style={[styles.safe, { backgroundColor: c.background }]}>
-      {Platform.OS === 'ios' ? <View style={styles.grabberGap} /> : null}
-      <View style={styles.head}>
-        <View style={styles.flex} />
-        <Pressable onPress={() => router.back()} hitSlop={10}>
-          <Text style={[styles.done, { color: c.primary }]}>Done</Text>
-        </Pressable>
-      </View>
+      <Pressable onPress={() => router.back()} hitSlop={12} style={styles.done}>
+        <Text style={[styles.doneText, { color: c.primary }]}>Done</Text>
+      </Pressable>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.hero}>
@@ -112,13 +108,11 @@ function Row({ label, value }: { label: string; value: string }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  flex: { flex: 1 },
-  grabberGap: { height: 28 },
-  head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 4 },
+  done: { position: 'absolute', top: Platform.select({ ios: 18, default: 14 }), right: 20, zIndex: 10, padding: 4 },
+  doneText: { fontSize: 16, fontWeight: '600' },
   email: { fontSize: 14, marginTop: 2 },
-  done: { fontSize: 16, fontWeight: '600' },
-  content: { paddingHorizontal: 20, paddingTop: 4, paddingBottom: 40, gap: 18 },
-  hero: { alignItems: 'center', gap: 8, paddingVertical: 4 },
+  content: { paddingHorizontal: 20, paddingTop: Platform.select({ ios: 64, default: 52 }), paddingBottom: 40, gap: 18 },
+  hero: { alignItems: 'center', gap: 8 },
   avatar: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center' },
   avatarText: { color: '#fff', fontSize: 30, fontWeight: '700' },
   greeting: { fontSize: 22, fontWeight: '700' },
