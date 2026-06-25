@@ -34,6 +34,7 @@ export default function RootLayout() {
             <Stack.Screen name="sign-in" />
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="folder/[id]" />
+            <Stack.Screen name="album/[id]" />
             <Stack.Screen name="photo/[id]" options={{ animation: 'fade' }} />
           </Stack>
         </QueryClientProvider>
