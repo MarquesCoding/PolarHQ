@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { e2eReady } from '@workspace/core/e2e';
 
 import { useColors } from '@/components/ui';
+import { useLiveSync } from '@/hooks/use-live-sync';
 
 export default function TabsLayout() {
   const c = useColors();
@@ -14,6 +15,9 @@ export default function TabsLayout() {
   useEffect(() => {
     void e2eReady();
   }, []);
+
+  // Live updates: refresh Photos/Drive when changes arrive from other devices.
+  useLiveSync();
 
   return (
     <Tabs
