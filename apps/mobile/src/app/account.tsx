@@ -20,8 +20,9 @@ export default function Account() {
   const [busy, setBusy] = useState(false);
 
   const email = session?.user?.email ?? '';
-  const name = session?.user?.name?.trim() || email.split('@')[0] || 'there';
-  const firstName = name.charAt(0).toUpperCase() + name.slice(1).split(' ')[0].slice(1);
+  const rawName = session?.user?.name?.trim() || email.split('@')[0] || 'there';
+  const firstWord = rawName.split(/[ ._-]+/)[0] || 'there';
+  const firstName = firstWord.charAt(0).toUpperCase() + firstWord.slice(1);
   const initial = (email || '?').charAt(0).toUpperCase();
 
   const { data: usage } = useQuery({ queryKey: ['usage'], queryFn: fetchUsage });
