@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as MediaLibrary from 'expo-media-library/legacy';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -31,8 +31,9 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Glass } from '@/components/ui/glass';
 import { showActionSheet, type MenuAction } from '@/lib/action-menu';
 import {
   addToAlbum,
@@ -43,6 +44,7 @@ import {
   fetchAlbums,
   fetchOriginalFile,
   fetchOriginalUri,
+  fetchThumbnailUri,
   restoreAssets,
   trashAssets,
   type GridAsset,
@@ -59,6 +61,10 @@ function formatDateTime(iso?: string): { date: string; time: string } | null {
   const mm = String(d.getMinutes()).padStart(2, '0');
   return { date: `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`, time: `${hh}:${mm}` };
 }
+
+const STRIP_THUMB = 44;
+const STRIP_GAP = 5;
+const STRIP_STRIDE = STRIP_THUMB + STRIP_GAP;
 
 type Kind = 'image' | 'video' | 'audio';
 interface Item {
@@ -116,6 +122,44 @@ function VideoPage({ item, width, height }: { item: Item; width: number; height:
   );
 }
 
+function StripThumb({ item, active, onPress }: { item: Item; active: boolean; onPress: () => void }) {
+  const { data: uri } = useQuery({
+    queryKey: ['thumb', item.id],
+    queryFn: () => fetchThumbnailUri(item.id, item.encrypted),
+    staleTime: Infinity,
+  });
+  return (
+    <Pressable onPress={onPress} style={[styles.thumb, active && styles.thumbActive]}>
+      {uri ? <Image source={{ uri }} style={styles.thumbImg} contentFit="cover" /> : <View style={styles.thumbImg} />}
+      {item.type === 'video' ? (
+        <View style={styles.thumbVideo}>
+          <Ionicons name="play" size={8} color="#fff" />
+        </View>
+      ) : null}
+    </Pressable>
+  );
+}
+
+function FilmStrip({ items, index, onSelect }: { items: Item[]; index: number; onSelect: (i: number) => void }) {
+  const ref = useRef<FlatList<Item>>(null);
+  useEffect(() => {
+    ref.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 });
+  }, [index]);
+  return (
+    <FlatList
+      ref={ref}
+      data={items}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      keyExtractor={(i) => i.id}
+      contentContainerStyle={styles.stripContent}
+      getItemLayout={(_, i) => ({ length: STRIP_STRIDE, offset: STRIP_STRIDE * i, index: i })}
+      onScrollToIndexFailed={() => undefined}
+      renderItem={({ item, index: i }) => <StripThumb item={item} active={i === index} onPress={() => onSelect(i)} />}
+    />
+  );
+}
+
 export default function PhotoViewer() {
   const params = useLocalSearchParams<{
     id: string;
@@ -129,6 +173,7 @@ export default function PhotoViewer() {
   const insets = useSafeAreaInsets();
   const view = params.view ?? 'library';
   const isTrash = view === 'trash';
+  const listRef = useRef<FlatList<Item>>(null);
 
   const list = queryClient.getQueryData<{ assets: GridAsset[] }>(['assets', view]);
   const items: Item[] = list?.assets.length
@@ -163,8 +208,8 @@ export default function PhotoViewer() {
   const current = items[index] ?? items[0];
   const favorite = favOverrides[current.id] ?? current.favorite;
   const dt = formatDateTime(current.takenAt);
+  const showStrip = items.length > 1;
 
-  // Drag-to-dismiss + pinch-to-peek.
   const translateY = useSharedValue(0);
   const dragScale = useSharedValue(1);
   const pinchScale = useSharedValue(1);
@@ -178,6 +223,12 @@ export default function PhotoViewer() {
   const flashToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 1600);
+  };
+
+  const jumpTo = (i: number) => {
+    void Haptics.selectionAsync();
+    setIndex(i);
+    listRef.current?.scrollToIndex({ index: i, animated: true });
   };
 
   const pan = Gesture.Pan()
@@ -337,6 +388,7 @@ export default function PhotoViewer() {
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.fill, containerStyle]}>
           <FlatList
+            ref={listRef}
             data={items}
             keyExtractor={(i) => i.id}
             horizontal
@@ -359,35 +411,32 @@ export default function PhotoViewer() {
       </GestureDetector>
 
       <Animated.View style={[styles.chrome, chromeStyle]} pointerEvents="box-none">
-        <LinearGradient colors={['rgba(0,0,0,0.55)', 'transparent']} style={styles.topScrim} pointerEvents="none" />
-        <LinearGradient colors={['transparent', 'rgba(0,0,0,0.6)']} style={styles.bottomScrim} pointerEvents="none" />
-        <SafeAreaView style={[styles.fill, styles.chromeInner]} edges={['bottom']} pointerEvents="box-none">
+        <LinearGradient colors={['rgba(0,0,0,0.5)', 'transparent']} style={styles.topScrim} pointerEvents="none" />
+        <LinearGradient colors={['transparent', 'rgba(0,0,0,0.55)']} style={styles.bottomScrim} pointerEvents="none" />
+
+        <View style={[styles.chromeInner, { paddingTop: insets.top + 6 }]} pointerEvents="box-none">
           {/* Top bar */}
-          <View style={[styles.topBar, { paddingTop: insets.top + 6 }]} pointerEvents="box-none">
-            <Pressable onPress={dismiss} hitSlop={10} style={styles.iconBtn}>
-              <Ionicons name="chevron-back" size={26} color="#fff" />
-            </Pressable>
+          <View style={styles.topBar} pointerEvents="box-none">
+            <Glass style={styles.circle}>
+              <Pressable onPress={dismiss} style={styles.circlePress} hitSlop={4}>
+                <Ionicons name="chevron-back" size={24} color="#fff" />
+              </Pressable>
+            </Glass>
 
-            <Pressable onPress={openDetails} hitSlop={8} style={styles.dateWrap}>
-              {dt ? (
-                <>
-                  <View style={styles.dateRow}>
+            <Glass style={styles.datePill}>
+              <Pressable onPress={openDetails} style={styles.datePillPress}>
+                {dt ? (
+                  <>
                     <Text style={styles.dateText}>{dt.date}</Text>
-                    <Ionicons name="chevron-forward" size={15} color="rgba(255,255,255,0.85)" />
-                  </View>
-                  <Text style={styles.timeText}>{dt.time}</Text>
-                </>
-              ) : null}
-            </Pressable>
+                    <Text style={styles.timeText}>{dt.time}</Text>
+                  </>
+                ) : (
+                  <Text style={styles.dateText}>Photo</Text>
+                )}
+              </Pressable>
+            </Glass>
 
-            <View style={styles.topRight} pointerEvents="box-none">
-              <Pressable onPress={onToggleFavorite} hitSlop={10} style={styles.iconBtn}>
-                <Ionicons name={favorite ? 'heart' : 'heart-outline'} size={24} color={favorite ? '#fb5e7e' : '#fff'} />
-              </Pressable>
-              <Pressable onPress={openDetails} hitSlop={10} style={styles.iconBtn}>
-                <Ionicons name="ellipsis-vertical" size={22} color="#fff" />
-              </Pressable>
-            </View>
+            <View style={styles.circle} />
           </View>
 
           {toast ? (
@@ -396,24 +445,39 @@ export default function PhotoViewer() {
             </Animated.View>
           ) : null}
 
-          {/* Bottom bar */}
-          <View style={styles.bottomBar} pointerEvents="box-none">
-            {isTrash ? (
-              <>
-                <BarButton icon="refresh" label="Restore" onPress={onRestore} />
-                <BarButton icon="download-outline" label="Download" onPress={onDownload} />
-                <BarButton icon="trash-outline" label="Delete" tint="#fb5e7e" onPress={onDeleteForever} />
-              </>
-            ) : (
-              <>
-                <BarButton icon="share-outline" label="Share" onPress={onShare} />
-                <BarButton icon="add-circle-outline" label="Add to" onPress={onAddTo} />
-                <BarButton icon="download-outline" label="Download" onPress={onDownload} />
-                <BarButton icon="trash-outline" label="Bin" onPress={onTrash} />
-              </>
-            )}
+          {/* Bottom: filmstrip + glass action bar */}
+          <View style={[styles.bottom, { paddingBottom: insets.bottom + 14 }]} pointerEvents="box-none">
+            {showStrip ? <FilmStrip items={items} index={index} onSelect={jumpTo} /> : null}
+
+            <View style={styles.actionRow} pointerEvents="box-none">
+              {isTrash ? (
+                <>
+                  <GlassButton icon="refresh" onPress={onRestore} />
+                  <Glass style={styles.capsule}>
+                    <CapsuleBtn icon="download-outline" onPress={onDownload} />
+                    <CapsuleBtn icon="information-circle-outline" onPress={openDetails} />
+                  </Glass>
+                  <GlassButton icon="trash-outline" tint="#fb5e7e" onPress={onDeleteForever} />
+                </>
+              ) : (
+                <>
+                  <GlassButton icon="share-outline" onPress={onShare} />
+                  <Glass style={styles.capsule}>
+                    <CapsuleBtn
+                      icon={favorite ? 'heart' : 'heart-outline'}
+                      tint={favorite ? '#fb5e7e' : '#fff'}
+                      onPress={onToggleFavorite}
+                    />
+                    <CapsuleBtn icon="add" onPress={onAddTo} />
+                    <CapsuleBtn icon="download-outline" onPress={onDownload} />
+                    <CapsuleBtn icon="information-circle-outline" onPress={openDetails} />
+                  </Glass>
+                  <GlassButton icon="trash-outline" onPress={onTrash} />
+                </>
+              )}
+            </View>
           </View>
-        </SafeAreaView>
+        </View>
       </Animated.View>
 
       {busy ? (
@@ -425,21 +489,36 @@ export default function PhotoViewer() {
   );
 }
 
-function BarButton({
+function GlassButton({
   icon,
-  label,
   tint = '#fff',
   onPress,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
-  label: string;
   tint?: string;
   onPress: () => void;
 }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.barBtn, { opacity: pressed ? 0.55 : 1 }]} hitSlop={6}>
-      <Ionicons name={icon} size={24} color={tint} />
-      <Text style={[styles.barLabel, { color: tint }]}>{label}</Text>
+    <Glass style={styles.circle}>
+      <Pressable onPress={onPress} style={styles.circlePress} hitSlop={4}>
+        <Ionicons name={icon} size={22} color={tint} />
+      </Pressable>
+    </Glass>
+  );
+}
+
+function CapsuleBtn({
+  icon,
+  tint = '#fff',
+  onPress,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  tint?: string;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable onPress={onPress} style={styles.capsuleBtn} hitSlop={2}>
+      <Ionicons name={icon} size={23} color={tint} />
     </Pressable>
   );
 }
@@ -450,23 +529,29 @@ const styles = StyleSheet.create({
   backdrop: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#000' },
   page: { alignItems: 'center', justifyContent: 'center' },
   chrome: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
-  chromeInner: { justifyContent: 'space-between' },
+  chromeInner: { flex: 1, justifyContent: 'space-between' },
   topScrim: { position: 'absolute', top: 0, left: 0, right: 0, height: 150 },
-  bottomScrim: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 170 },
-  topBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 6, paddingTop: 4 },
-  iconBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  dateWrap: { flex: 1, alignItems: 'center' },
-  dateRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  dateText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  bottomScrim: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 220 },
+  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12 },
+  circle: { width: 44, height: 44, borderRadius: 22, overflow: 'hidden' },
+  circlePress: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
+  datePill: { borderRadius: 20, overflow: 'hidden' },
+  datePillPress: { paddingHorizontal: 20, paddingVertical: 6, alignItems: 'center', minWidth: 150 },
+  dateText: { color: '#fff', fontSize: 15, fontWeight: '600' },
   timeText: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 1 },
-  topRight: { flexDirection: 'row', alignItems: 'center' },
-  bottomBar: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-end', paddingHorizontal: 8, paddingBottom: 6 },
-  barBtn: { alignItems: 'center', justifyContent: 'center', gap: 5, minWidth: 60, paddingVertical: 6 },
-  barLabel: { fontSize: 12, fontWeight: '500' },
+  bottom: { gap: 12, paddingHorizontal: 12 },
+  stripContent: { paddingHorizontal: 12, gap: STRIP_GAP, alignItems: 'center' },
+  thumb: { width: STRIP_THUMB, height: 54, borderRadius: 7, overflow: 'hidden', opacity: 0.55 },
+  thumbActive: { opacity: 1, borderWidth: 2, borderColor: '#fff' },
+  thumbImg: { flex: 1, backgroundColor: 'rgba(255,255,255,0.1)' },
+  thumbVideo: { position: 'absolute', right: 2, bottom: 2, width: 12, height: 12, borderRadius: 6, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' },
+  actionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
+  capsule: { flexDirection: 'row', alignItems: 'center', borderRadius: 26, overflow: 'hidden' },
+  capsuleBtn: { paddingHorizontal: 15, paddingVertical: 13 },
   toast: {
     position: 'absolute',
     alignSelf: 'center',
-    bottom: 96,
+    top: '50%',
     backgroundColor: 'rgba(0,0,0,0.8)',
     paddingHorizontal: 16,
     paddingVertical: 10,

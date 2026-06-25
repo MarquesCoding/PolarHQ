@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
 import { router } from 'expo-router';
 import { type ReactNode } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Glass } from '@/components/ui/glass';
 import { Tappable } from '@/components/ui/tappable';
 import { useColors } from '@/components/ui';
 import { authClient } from '@/lib/auth';
@@ -15,21 +15,14 @@ export const TOP_BAR_H = 50;
 /** Top inset every scroll view should use so content clears the floating bar. */
 export const useTopInset = () => useSafeAreaInsets().top + TOP_BAR_H;
 
-const useGlass = Platform.OS === 'ios' && isLiquidGlassAvailable();
-
 /** A circular control: real iOS 26 Liquid Glass where available, else a solid fill. `tint` colours it. */
 function GlassCircle({ size, tint, children }: { size: number; tint?: string; children: ReactNode }) {
   const c = useColors();
-  const base = { width: size, height: size, borderRadius: size / 2 };
-
-  if (useGlass) {
-    return (
-      <GlassView glassEffectStyle="regular" tintColor={tint} isInteractive style={[styles.circle, base]}>
-        {children}
-      </GlassView>
-    );
-  }
-  return <View style={[styles.circle, base, { backgroundColor: tint ?? c.backgroundElement }]}>{children}</View>;
+  return (
+    <Glass style={[styles.circle, { width: size, height: size, borderRadius: size / 2 }]} tint={tint} fallback={c.backgroundElement}>
+      {children}
+    </Glass>
+  );
 }
 
 /** A circular top-bar action button (e.g. add / new folder), matching the Photos `+`. */
