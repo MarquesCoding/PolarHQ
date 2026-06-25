@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
@@ -144,7 +145,7 @@ export function PhotoGrid({ assets, view, grouped, onRefresh, refreshing, ListHe
   }
 
   return (
-    <FlatList
+    <FlashList
       data={rows}
       keyExtractor={(r) => r.key}
       contentContainerStyle={{ paddingHorizontal: EDGE, paddingBottom: FLOATING_PAD }}
