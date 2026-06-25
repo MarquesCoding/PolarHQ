@@ -38,10 +38,13 @@ function PhotoTile({ asset, size, view }: { asset: GridAsset; size: number; view
           },
         })
       }
-      style={{ width: size, height: size, backgroundColor: c.backgroundElement }}
+      style={({ pressed }) => [
+        { width: size, height: size, backgroundColor: c.backgroundElement },
+        pressed && { opacity: 0.7 },
+      ]}
     >
       {uri ? (
-        <Image source={{ uri }} style={{ width: size, height: size }} contentFit="cover" transition={120} />
+        <Image source={{ uri }} style={{ width: size, height: size }} contentFit="cover" transition={200} />
       ) : (
         <View style={styles.placeholder}>
           {isLoading ? (
