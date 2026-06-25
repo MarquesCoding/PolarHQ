@@ -17,6 +17,7 @@ import Animated, { clamp, useAnimatedStyle, useSharedValue, withTiming } from 'r
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PhotoGrid, type Row } from '@/components/photo-grid';
+import { Glass } from '@/components/ui/glass';
 import { Tappable } from '@/components/ui/tappable';
 import { useColors } from '@/components/ui';
 import { useBackupStatus } from '@/hooks/use-backup-status';
@@ -148,11 +149,15 @@ export default function Photos() {
           ) : (
             <View style={{ flex: 1 }} />
           )}
-          <Tappable onPress={onAdd} disabled={uploading} style={[styles.iconBtn, { backgroundColor: c.backgroundElement }]}>
-            {uploading ? <ActivityIndicator size="small" color={c.primary} /> : <Ionicons name="add" size={24} color={c.primary} />}
+          <Tappable onPress={onAdd} disabled={uploading}>
+            <Glass style={styles.iconBtn} fallback={c.backgroundElement}>
+              {uploading ? <ActivityIndicator size="small" color={c.primary} /> : <Ionicons name="add" size={24} color={c.primary} />}
+            </Glass>
           </Tappable>
-          <Tappable onPress={() => router.push('/account')} haptic="selection" style={[styles.avatar, { backgroundColor: c.primary }]}>
-            <Text style={styles.avatarText}>{initial}</Text>
+          <Tappable onPress={() => router.push('/account')} haptic="selection">
+            <Glass style={styles.avatar} tint={c.primary}>
+              <Text style={styles.avatarText}>{initial}</Text>
+            </Glass>
           </Tappable>
         </View>
       </Animated.View>
@@ -166,8 +171,8 @@ const styles = StyleSheet.create({
   topBarInner: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16 },
   backupPill: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, paddingLeft: 10, paddingRight: 14, height: 36, borderRadius: 18, alignSelf: 'center' },
   backupText: { fontSize: 14, fontWeight: '600' },
-  iconBtn: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  avatar: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+  iconBtn: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  avatar: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   avatarText: { color: '#fff', fontSize: 15, fontWeight: '700' },
   badgeWrap: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
   badge: { paddingHorizontal: 14, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center', borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden' },
