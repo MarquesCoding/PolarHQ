@@ -7,6 +7,7 @@ import { configureApiAuth } from '@workspace/core/apiClient';
 import { configureSecureStore } from '@workspace/core/secureStore';
 
 import { authClient } from '@/lib/auth';
+import '@/lib/background-sync';
 import { expoSecureStoreBackend } from '@/lib/secureStore';
 
 let booted = false;
