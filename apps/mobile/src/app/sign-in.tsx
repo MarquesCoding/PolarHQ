@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Pressable, Text } from 'react-native';
 
 import { AuthLayout } from '@/components/auth-layout';
+import { unlockKeys } from '@workspace/core/e2e';
+
 import { Button, Field, useColors } from '@/components/ui';
 import { authClient } from '@/lib/auth';
 import { clearServerUrl } from '@/lib/config';
@@ -22,11 +24,15 @@ export default function SignIn() {
     setBusy(true);
     setError(null);
     const { error: err } = await authClient.signIn.email({ email: email.trim(), password });
-    setBusy(false);
     if (err) {
+      setBusy(false);
       setError(err.message ?? 'Sign in failed');
       return;
     }
+    // The account password is also the E2E password — unlock the keypair now (no separate prompt)
+    // so encrypted content decrypts on entry. Best-effort: don't trap the user if it can't enroll.
+    await unlockKeys(password).catch(() => false);
+    setBusy(false);
     router.replace('/(tabs)');
   };
 

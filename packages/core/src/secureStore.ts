@@ -67,7 +67,7 @@ const getWrapKey = async (): Promise<CryptoKey> => {
 }
 
 /** Encrypt and persist the keypair blob. */
-export const secureStoreSet = async (data: Uint8Array): Promise<void> => {
+const webSecureStoreSet = async (data: Uint8Array): Promise<void> => {
   const key = await getWrapKey()
   const iv = crypto.getRandomValues(new Uint8Array(12))
   const cipher = new Uint8Array(
@@ -80,7 +80,7 @@ export const secureStoreSet = async (data: Uint8Array): Promise<void> => {
 }
 
 /** Decrypt the persisted keypair blob, or null if absent/undecryptable. */
-export const secureStoreGet = async (): Promise<Uint8Array | null> => {
+const webSecureStoreGet = async (): Promise<Uint8Array | null> => {
   const blob = await idbGet<Uint8Array>(BLOB_KEY)
   if (!blob) return null
   try {
@@ -96,8 +96,35 @@ export const secureStoreGet = async (): Promise<Uint8Array | null> => {
 }
 
 /** Wipe the stored blob and the wrapping key (on sign-out / lock). */
-export const secureStoreClear = async (): Promise<void> => {
+const webSecureStoreClear = async (): Promise<void> => {
   await idbDel(BLOB_KEY).catch(() => undefined)
   await idbDel(WRAP_KEY).catch(() => undefined)
   await idbDel(WRAP_KEY_RAW).catch(() => undefined)
 }
+
+/**
+ * Where the unlocked-keypair cache lives. The web/desktop shells use the default IndexedDB-backed
+ * implementation above; a shell with no IndexedDB/WebCrypto (React Native) injects its own backend
+ * (e.g. expo-secure-store) via {@link configureSecureStore} at startup.
+ */
+export interface SecureStoreBackend {
+  get(): Promise<Uint8Array | null>
+  set(data: Uint8Array): Promise<void>
+  clear(): Promise<void>
+}
+
+let backend: SecureStoreBackend | null = null
+
+/** Override the at-rest keypair cache (call once at startup before any unlock). */
+export const configureSecureStore = (impl: SecureStoreBackend): void => {
+  backend = impl
+}
+
+export const secureStoreSet = (data: Uint8Array): Promise<void> =>
+  backend ? backend.set(data) : webSecureStoreSet(data)
+
+export const secureStoreGet = (): Promise<Uint8Array | null> =>
+  backend ? backend.get() : webSecureStoreGet()
+
+export const secureStoreClear = (): Promise<void> =>
+  backend ? backend.clear() : webSecureStoreClear()

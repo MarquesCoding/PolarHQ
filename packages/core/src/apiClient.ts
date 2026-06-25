@@ -12,6 +12,18 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Extra auth headers to attach to every request. The browser shells authenticate via cookies
+ * (`credentials: "include"`), so they leave this unset. React Native has no shared cookie jar, so
+ * the mobile shell injects the better-auth session cookie here via {@link configureApiAuth}.
+ */
+let authHeaders: (() => Record<string, string> | undefined) | null = null
+
+/** Provide auth headers attached to every {@link apiFetch} call (RN shell uses this). */
+export const configureApiAuth = (provider: () => Record<string, string> | undefined): void => {
+  authHeaders = provider
+}
+
 /** Call an Orbit API endpoint with cookies, JSON in/out, and typed errors. */
 export const apiFetch = async <T>(path: string, init?: RequestInit): Promise<T> => {
   const response = await fetch(`${coreConfig().apiUrl}${path}`, {
@@ -19,6 +31,7 @@ export const apiFetch = async <T>(path: string, init?: RequestInit): Promise<T> 
     ...init,
     headers: {
       "content-type": "application/json",
+      ...authHeaders?.(),
       ...init?.headers,
     },
   })

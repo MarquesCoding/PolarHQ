@@ -1,10 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { useEffect } from 'react';
+import { e2eReady } from '@workspace/core/e2e';
 
 import { useColors } from '@/components/ui';
 
 export default function TabsLayout() {
   const c = useColors();
+
+  // Restore the cached keypair on launch (libsodium init + keychain read) so encrypted content
+  // decrypts without re-entering the password every session.
+  useEffect(() => {
+    void e2eReady();
+  }, []);
+
   return (
     <Tabs
       screenOptions={{

@@ -8,7 +8,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Colors } from '@/constants/theme';
+import { bootstrapCore } from '@/lib/bootstrap';
 import { queryClient } from '@/lib/query';
+
+bootstrapCore();
 
 export default function RootLayout() {
   const scheme = useColorScheme() === 'light' ? 'light' : 'dark';
