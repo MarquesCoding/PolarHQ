@@ -43,7 +43,8 @@ export default function Account() {
 
   return (
     <View style={[styles.safe, { backgroundColor: c.background }]}>
-      <View style={[styles.head, Platform.OS === 'ios' && styles.headIos]}>
+      {Platform.OS === 'ios' ? <View style={styles.grabberGap} /> : null}
+      <View style={styles.head}>
         <View style={styles.flex} />
         <Pressable onPress={() => router.back()} hitSlop={10}>
           <Text style={[styles.done, { color: c.primary }]}>Done</Text>
@@ -112,8 +113,8 @@ function Row({ label, value }: { label: string; value: string }) {
 const styles = StyleSheet.create({
   safe: { flex: 1 },
   flex: { flex: 1 },
+  grabberGap: { height: 28 },
   head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 4 },
-  headIos: { paddingTop: 30 },
   email: { fontSize: 14, marginTop: 2 },
   done: { fontSize: 16, fontWeight: '600' },
   content: { paddingHorizontal: 20, paddingTop: 4, paddingBottom: 40, gap: 18 },
