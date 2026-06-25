@@ -28,12 +28,14 @@ const item: Variants = {
 
 const Hero = () => (
   <section className="relative isolate overflow-hidden px-6 pt-36 pb-28 text-center sm:pt-40 sm:pb-36">
-    {/* Soft violet aurora backdrop. */}
+    {/* Layered violet backdrop: dotted texture + glows, all fading into the page (no hard edges). */}
     <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-      <div className="absolute inset-0 bg-[radial-gradient(70%_55%_at_50%_-8%,rgba(124,92,252,0.40),transparent_70%)]" />
-      <div className="bg-primary/25 absolute top-24 -left-32 size-[520px] rounded-full blur-[160px]" />
-      <div className="absolute top-48 -right-32 size-[480px] rounded-full bg-indigo-500/20 blur-[150px]" />
-      <div className="to-background absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(75%_60%_at_50%_-6%,rgba(124,92,252,0.45),transparent_72%)]" />
+      <div className="absolute inset-0 [background-image:radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:26px_26px] [mask-image:radial-gradient(80%_70%_at_50%_28%,black,transparent_75%)]" />
+      <div className="bg-primary/30 absolute -top-24 -left-24 size-[560px] rounded-full blur-[170px]" />
+      <div className="absolute -top-10 -right-28 size-[500px] rounded-full bg-indigo-500/20 blur-[160px]" />
+      <div className="bg-fuchsia-500/10 absolute top-40 left-1/3 size-[420px] rounded-full blur-[160px]" />
+      <div className="to-background absolute inset-x-0 bottom-0 h-56 bg-gradient-to-b from-transparent" />
     </div>
 
     {/* Waving bear sticker wedged into the bottom-left corner, tilted — peeking in from the edge. */}
@@ -46,6 +48,18 @@ const Hero = () => (
       initial={{ opacity: 0, y: 60, rotate: 26 }}
       animate={{ opacity: 1, y: 0, rotate: 14 }}
       transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
+    />
+
+    {/* A second, different bear peeking in from the right edge (wide screens only). */}
+    <motion.img
+      src="/stickers/bear-read.png"
+      alt=""
+      width={260}
+      height={260}
+      className="pointer-events-none absolute top-[34%] -right-12 z-10 hidden w-44 -rotate-[12deg] drop-shadow-[0_24px_48px_rgba(124,92,252,0.4)] lg:block lg:w-52"
+      initial={{ opacity: 0, x: 60, rotate: -24 }}
+      animate={{ opacity: 1, x: 0, rotate: -12 }}
+      transition={{ duration: 0.9, delay: 0.7, ease: [0.22, 0.61, 0.36, 1] }}
     />
 
     <motion.div

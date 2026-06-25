@@ -14,17 +14,7 @@ const PostBanner = ({ eyebrow, compact = false, className = "" }: PostBannerProp
   >
     <div className="from-primary/30 to-background absolute inset-0 bg-gradient-to-br via-indigo-500/20" />
     <div className="absolute inset-0 bg-[radial-gradient(60%_85%_at_28%_0%,rgba(124,92,252,0.42),transparent_70%)]" />
-
-    {/* Organising bear peeking in from the bottom-right. */}
-    <img
-      src="/stickers/bear-organise.png"
-      alt=""
-      width={140}
-      height={140}
-      className={`pointer-events-none absolute -bottom-3 right-3 -rotate-12 drop-shadow-[0_14px_28px_rgba(0,0,0,0.4)] ${
-        compact ? "w-16" : "w-20 sm:w-28"
-      }`}
-    />
+    <div className="absolute inset-0 [background-image:radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(80%_80%_at_50%_30%,black,transparent)]" />
 
     <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
       <span
