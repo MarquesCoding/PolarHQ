@@ -30,7 +30,7 @@ export default function SignIn() {
       return;
     }
     // The account password is also the E2E password — unlock the keypair now (no separate prompt)
-    // so encrypted content decrypts on entry. Best-effort: don't trap the user if it can't enroll.
+    // so encrypted content decrypts on entry. Best-effort: the UnlockGate re-prompts if this misses.
     await unlockKeys(password).catch(() => false);
     setBusy(false);
     router.replace('/(tabs)');
