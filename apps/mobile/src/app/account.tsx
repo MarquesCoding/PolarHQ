@@ -44,9 +44,7 @@ export default function Account() {
   return (
     <View style={[styles.safe, { backgroundColor: c.background }]}>
       <View style={styles.head}>
-        <Text style={[styles.email, { color: c.textSecondary }]} numberOfLines={1}>
-          {email}
-        </Text>
+        <View style={styles.flex} />
         <Pressable onPress={() => router.back()} hitSlop={10}>
           <Text style={[styles.done, { color: c.primary }]}>Done</Text>
         </Pressable>
@@ -58,6 +56,9 @@ export default function Account() {
             <Text style={styles.avatarText}>{initial}</Text>
           </View>
           <Text style={[styles.greeting, { color: c.text }]}>Hi, {firstName}!</Text>
+          <Text style={[styles.email, { color: c.textSecondary }]} numberOfLines={1}>
+            {email}
+          </Text>
         </View>
 
         <Card>
@@ -110,11 +111,12 @@ function Row({ label, value }: { label: string; value: string }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 6, paddingBottom: 10 },
-  email: { fontSize: 14, flex: 1 },
+  flex: { flex: 1 },
+  head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 4 },
+  email: { fontSize: 14, marginTop: 2 },
   done: { fontSize: 16, fontWeight: '600' },
-  content: { paddingHorizontal: 20, paddingBottom: 40, gap: 18 },
-  hero: { alignItems: 'center', gap: 12, paddingVertical: 8 },
+  content: { paddingHorizontal: 20, paddingTop: 4, paddingBottom: 40, gap: 18 },
+  hero: { alignItems: 'center', gap: 8, paddingVertical: 4 },
   avatar: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center' },
   avatarText: { color: '#fff', fontSize: 30, fontWeight: '700' },
   greeting: { fontSize: 22, fontWeight: '700' },
