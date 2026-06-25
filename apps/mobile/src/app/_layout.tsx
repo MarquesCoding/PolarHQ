@@ -38,7 +38,7 @@ export default function RootLayout() {
               options={{
                 presentation: 'formSheet',
                 sheetGrabberVisible: true,
-                sheetAllowedDetents: [0.65, 1],
+                sheetAllowedDetents: [1],
                 sheetCornerRadius: 24,
                 contentStyle: { backgroundColor: 'transparent' },
               }}
