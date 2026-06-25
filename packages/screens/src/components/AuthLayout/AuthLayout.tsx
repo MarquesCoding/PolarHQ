@@ -35,18 +35,6 @@ const AuthLayout = ({ tagline, children }: AuthLayoutProps) => {
           <div className="absolute inset-0 [background-image:radial-gradient(circle,rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:26px_26px] [mask-image:radial-gradient(80%_70%_at_50%_40%,black,transparent)]" />
         </div>
 
-        {/* Welcoming bear — sits on the bottom edge of the brand panel. */}
-        <motion.img
-          src="/stickers/bear-wave.png"
-          alt=""
-          width={360}
-          height={360}
-          className="pointer-events-none absolute -right-6 bottom-0 z-0 w-60 rotate-6 drop-shadow-[0_24px_48px_rgba(0,0,0,0.35)] xl:w-72"
-          initial={{ opacity: 0, y: 40, rotate: 14 }}
-          animate={{ opacity: 1, y: 0, rotate: 6 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
-        />
-
         <div className="relative z-10 flex items-center gap-3">
           <img src={logo} alt="" className="size-9" draggable={false} />
           <span className="text-lg font-bold">{appName}</span>
