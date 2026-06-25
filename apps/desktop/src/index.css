@@ -1,5 +1,7 @@
 :root {
-  --font-sans: "Geist Variable", system-ui, -apple-system, sans-serif;
+  /* Friendly, rounded brand voice — SF Pro Rounded ships on macOS via `ui-rounded`, so it's the
+   * native cute-but-clean face with zero web-font loading. Falls back to Geist elsewhere. */
+  --font-sans: ui-rounded, "SF Pro Rounded", "Geist Variable", system-ui, -apple-system, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, monospace;
 }
 
@@ -241,4 +243,98 @@
 }
 [data-slot="tooltip-content"] {
   box-shadow: none;
+}
+
+/* ============================================================================
+ *  Design language — the bits that make it feel *designed*, not default shadcn.
+ *  Rounded brand type, filled (not outlined) fields, soft tactile controls,
+ *  a brand-tinted selection model, and tighter rhythm.
+ * ========================================================================== */
+
+/* Type: rounded face wants a touch of negative tracking; headings go heavier + tighter so titles
+ * read confident and friendly rather than flat. */
+body {
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3,
+[data-slot="dialog-title"],
+[data-slot="topbar-title"],
+[data-slot="card-title"] {
+  letter-spacing: -0.02em;
+  font-weight: 650;
+}
+
+/* Brand-tinted text selection — a small, cohesive signature. */
+::selection {
+  background-color: color-mix(in oklab, var(--primary) 26%, transparent);
+}
+
+/* Fields are FILLED, not outlined — softer and friendlier than shadcn's bordered inputs. They lift to
+ * a card surface + brand ring on focus. */
+[data-slot="input"],
+[data-slot="select-trigger"],
+[data-slot="command-input-wrapper"] {
+  background-color: var(--muted);
+  border-color: transparent;
+}
+[data-slot="input"]:focus-visible,
+[data-slot="select-trigger"]:focus-visible {
+  background-color: var(--card);
+}
+
+/* Primary button: solid brand indigo, flat, with a soft tactile hover/press (no gloss). */
+.btn-primary {
+  transition: filter 0.12s ease, transform 0.06s ease;
+}
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+/* Ghost / secondary controls get a softer, rounder hover so the whole control set feels of-a-piece. */
+[data-slot="button"]:where(.hover\:bg-accent, [data-variant="ghost"]):hover {
+  background-color: color-mix(in oklab, var(--primary) 8%, transparent);
+}
+
+/* Navigation: tighter rows, and an active item that's a clean brand-tinted pill with a small accent
+ * bar — a custom touch instead of the default highlighted row. */
+[data-slot="sidebar-menu"] {
+  gap: 0.125rem;
+}
+[data-slot="sidebar-menu-button"] {
+  border-radius: var(--radius);
+}
+.depth-active {
+  position: relative;
+}
+.depth-active::before {
+  content: "";
+  position: absolute;
+  inset-block: 22%;
+  inset-inline-start: -1px;
+  width: 2.5px;
+  border-radius: 9999px;
+  background-color: var(--primary);
+}
+
+/* Menus/popovers: tighter padding + consistent radius so they don't feel like loose shadcn lists. */
+[data-slot="dropdown-menu-content"],
+[data-slot="context-menu-content"],
+[data-slot="select-content"] {
+  padding: 0.25rem;
+  border-radius: var(--radius);
+}
+[data-slot="dropdown-menu-item"],
+[data-slot="context-menu-item"] {
+  border-radius: calc(var(--radius) - 2px);
+}
+
+/* Brand-tinted slim scrollbars instead of gray ones. */
+.scrollbar-slim {
+  scrollbar-color: color-mix(in oklab, var(--primary) 28%, transparent) transparent;
+}
+
+/* Soften the floating sidebar a hair rounder so it reads friendly, and tighten its inner padding. */
+.tauri [data-slot="sidebar-inner"] {
+  border-radius: 1.1rem;
 }
