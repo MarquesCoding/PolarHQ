@@ -53,6 +53,24 @@ export type BackupResult = 'done' | 'locked' | 'denied' | 'running' | 'nothing';
 
 let running = false;
 
+// Tiny pub/sub so any screen (the Settings card and the Photos header pill) can show live progress.
+type Listener = (p: BackupProgress | null) => void;
+const listeners = new Set<Listener>();
+let currentProgress: BackupProgress | null = null;
+
+export const subscribeBackup = (fn: Listener): (() => void) => {
+  listeners.add(fn);
+  fn(currentProgress);
+  return () => {
+    listeners.delete(fn);
+  };
+};
+
+const emit = (p: BackupProgress | null) => {
+  currentProgress = p;
+  for (const fn of listeners) fn(p);
+};
+
 /** Upload any not-yet-backed-up photos. Safe to call repeatedly; no-ops if already running. */
 export const runBackup = async (onProgress?: (p: BackupProgress) => void): Promise<BackupResult> => {
   if (running) return 'running';
@@ -62,6 +80,10 @@ export const runBackup = async (onProgress?: (p: BackupProgress) => void): Promi
   if (!permission.granted) return 'denied';
 
   running = true;
+  const report = (p: BackupProgress) => {
+    onProgress?.(p);
+    emit(p.running ? p : null);
+  };
   try {
     const uploaded = await loadUploaded();
 
@@ -81,12 +103,12 @@ export const runBackup = async (onProgress?: (p: BackupProgress) => void): Promi
     const pending = all.filter((a) => !uploaded.has(a.id));
     const total = pending.length;
     if (total === 0) {
-      onProgress?.({ done: 0, total: 0, running: false });
+      report({ done: 0, total: 0, running: false });
       return 'nothing';
     }
 
     let done = 0;
-    onProgress?.({ done, total, running: true });
+    report({ done, total, running: true });
     for (const asset of pending) {
       try {
         const info = await MediaLibrary.getAssetInfoAsync(asset);
@@ -103,10 +125,10 @@ export const runBackup = async (onProgress?: (p: BackupProgress) => void): Promi
         /* skip this asset, continue with the rest */
       }
       done += 1;
-      onProgress?.({ done, total, running: true });
+      report({ done, total, running: true });
     }
     await saveUploaded(uploaded);
-    onProgress?.({ done, total, running: false });
+    report({ done, total, running: false });
     return 'done';
   } finally {
     running = false;
