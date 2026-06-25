@@ -3,18 +3,29 @@
  * server URL on the connect screen; we persist it in the device keychain (expo-secure-store) and
  * feed it into @workspace/core's config so every shared data call targets the right host.
  */
+import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import Constants from 'expo-constants';
 import { configureCore } from '@workspace/core/config';
 
 const SERVER_URL_KEY = 'polarhq.serverUrl';
 
+/**
+ * The Android emulator can't reach the host via localhost (that resolves to the emulator itself);
+ * 10.0.2.2 is its alias for the host loopback. Rewrite local addresses so a dev server entered as
+ * "localhost:3001" works on Android too. (localhost is never a valid real-device target anyway.)
+ */
+const forEmulator = (url: string): string =>
+  Platform.OS === 'android'
+    ? url.replace(/\/\/(localhost|127\.0\.0\.1)(?=[:/]|$)/i, '//10.0.2.2')
+    : url;
+
 /** Coerce loose input ("my.server", "http://…/") into a clean origin. */
 export const normalizeServerUrl = (raw: string): string => {
   const trimmed = raw.trim();
   if (!trimmed) return '';
   const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-  return withScheme.replace(/\/+$/, '');
+  return forEmulator(withScheme.replace(/\/+$/, ''));
 };
 
 const applyConfig = (apiUrl: string): void => {
