@@ -12,13 +12,12 @@ const PostBanner = ({ eyebrow, compact = false, className = "" }: PostBannerProp
       compact ? "aspect-[16/9]" : "aspect-[16/8]"
     } ${className}`}
   >
-    <div className="from-primary/30 to-background absolute inset-0 bg-gradient-to-br via-indigo-500/20" />
-    <div className="absolute inset-0 bg-[radial-gradient(60%_85%_at_28%_0%,rgba(124,92,252,0.42),transparent_70%)]" />
-    <div className="absolute inset-0 [background-image:radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(80%_80%_at_50%_30%,black,transparent)]" />
+    <div className="from-primary to-indigo-600 absolute inset-0 bg-gradient-to-br via-violet-500" />
+    <div className="absolute inset-0 [background-image:radial-gradient(circle,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:22px_22px]" />
 
     <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
       <span
-        className={`font-display text-foreground font-bold tracking-tight ${
+        className={`font-display font-bold tracking-tight text-white ${
           compact ? "text-2xl sm:text-3xl" : "text-5xl sm:text-6xl"
         }`}
       >
@@ -26,7 +25,7 @@ const PostBanner = ({ eyebrow, compact = false, className = "" }: PostBannerProp
       </span>
       {eyebrow ? (
         <span
-          className={`text-primary mt-3 font-bold tracking-[0.35em] uppercase ${
+          className={`mt-3 font-bold tracking-[0.35em] text-white/70 uppercase ${
             compact ? "text-[9px]" : "text-[11px]"
           }`}
         >

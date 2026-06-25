@@ -24,12 +24,9 @@ const ContentHeroBackdrop = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
-          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[560px] overflow-hidden [mask-image:linear-gradient(to_bottom,black,black_45%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,black,black_45%,transparent)]"
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] overflow-hidden"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(65%_75%_at_50%_-10%,rgba(124,92,252,0.38),transparent_72%)]" />
-          <div className="absolute inset-0 [background-image:radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:26px_26px] [mask-image:radial-gradient(70%_80%_at_50%_10%,black,transparent_75%)]" />
-          <div className="bg-primary/25 absolute -top-24 -left-32 size-[560px] rounded-full blur-[160px]" />
-          <div className="absolute -top-10 -right-32 size-[480px] rounded-full bg-indigo-500/18 blur-[160px]" />
+          <div className="from-primary/10 absolute inset-0 bg-gradient-to-b to-transparent" />
         </motion.div>
       ) : null}
     </AnimatePresence>

@@ -59,15 +59,14 @@ const Showcase = () => (
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1], delay: (index % 2) * 0.08 }}
-          className="border-border/60 bg-card/40 group relative overflow-hidden rounded-3xl border p-7 backdrop-blur transition-colors hover:border-primary/40"
+          className="border-border/60 bg-card/40 group relative overflow-hidden rounded-3xl border p-7 transition-colors hover:border-primary/40"
         >
-          <div className="bg-primary/10 absolute -top-12 -right-12 size-44 rounded-full blur-3xl" />
           <motion.img
             src={item.sticker}
             alt=""
             width={96}
             height={96}
-            className="relative size-20 drop-shadow-[0_12px_24px_rgba(124,92,252,0.35)]"
+            className="relative size-20 drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)]"
             whileHover={{ scale: 1.08, rotate: -4 }}
             transition={{ type: "spring", stiffness: 300, damping: 18 }}
           />
