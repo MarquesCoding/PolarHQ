@@ -158,7 +158,7 @@ export function DriveContent({
     });
 
   const body = isLoading ? (
-    <View style={[styles.center, { paddingTop: topInset }]}>
+    <View style={[styles.loading, { paddingTop: topInset + 40 }]}>
       <ActivityIndicator color={c.primary} />
     </View>
   ) : isError ? (
@@ -202,6 +202,7 @@ export function DriveContent({
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
+  loading: { alignItems: 'center' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 },
   emptyText: { fontSize: 14 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 18, paddingVertical: 11 },
