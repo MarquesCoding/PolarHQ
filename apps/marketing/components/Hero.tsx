@@ -27,7 +27,7 @@ const item: Variants = {
 }
 
 const Hero = () => (
-  <section className="relative isolate overflow-hidden px-6 pt-36 pb-28 text-center sm:pt-40 sm:pb-36">
+  <section className="relative isolate overflow-hidden px-6 pt-36 pb-24 text-center sm:pt-40 sm:pb-28">
     {/* Layered violet backdrop: dotted texture + glows, all fading into the page (no hard edges). */}
     <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
       <div className="absolute inset-0 bg-[radial-gradient(75%_60%_at_50%_-6%,rgba(124,92,252,0.45),transparent_72%)]" />
@@ -38,27 +38,26 @@ const Hero = () => (
       <div className="to-background absolute inset-x-0 bottom-0 h-56 bg-gradient-to-b from-transparent" />
     </div>
 
-    {/* Waving bear sticker wedged into the bottom-left corner, tilted — peeking in from the edge. */}
+    {/* Two bears sitting on the bottom edge (fully visible, grounded), framing the content. */}
     <motion.img
       src="/stickers/bear-wave.png"
       alt=""
       width={340}
       height={340}
-      className="pointer-events-none absolute -bottom-10 -left-10 z-10 w-44 rotate-[14deg] drop-shadow-[0_24px_48px_rgba(124,92,252,0.45)] sm:-bottom-12 sm:-left-12 sm:w-72 lg:w-80"
-      initial={{ opacity: 0, y: 60, rotate: 26 }}
-      animate={{ opacity: 1, y: 0, rotate: 14 }}
+      className="pointer-events-none absolute bottom-0 left-2 -z-0 w-36 rotate-6 drop-shadow-[0_24px_48px_rgba(124,92,252,0.45)] sm:left-8 sm:w-52 lg:w-60"
+      initial={{ opacity: 0, y: 50, rotate: 16 }}
+      animate={{ opacity: 1, y: 0, rotate: 6 }}
       transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
     />
 
-    {/* A second, different bear peeking in from the right edge (wide screens only). */}
     <motion.img
       src="/stickers/bear-read.png"
       alt=""
-      width={260}
-      height={260}
-      className="pointer-events-none absolute top-[34%] -right-12 z-10 hidden w-44 -rotate-[12deg] drop-shadow-[0_24px_48px_rgba(124,92,252,0.4)] lg:block lg:w-52"
-      initial={{ opacity: 0, x: 60, rotate: -24 }}
-      animate={{ opacity: 1, x: 0, rotate: -12 }}
+      width={300}
+      height={300}
+      className="pointer-events-none absolute right-2 bottom-0 -z-0 hidden w-44 -rotate-6 drop-shadow-[0_24px_48px_rgba(124,92,252,0.4)] sm:right-6 lg:block lg:w-52"
+      initial={{ opacity: 0, y: 50, rotate: -16 }}
+      animate={{ opacity: 1, y: 0, rotate: -6 }}
       transition={{ duration: 0.9, delay: 0.7, ease: [0.22, 0.61, 0.36, 1] }}
     />
 
