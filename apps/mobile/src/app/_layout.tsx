@@ -33,8 +33,11 @@ export default function RootLayout() {
             <Stack.Screen name="connect" />
             <Stack.Screen name="sign-in" />
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="account" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="search" options={{ animation: 'fade' }} />
             <Stack.Screen name="folder/[id]" />
             <Stack.Screen name="album/[id]" />
+            <Stack.Screen name="collection/[view]" />
             <Stack.Screen name="photo/[id]" options={{ animation: 'fade' }} />
           </Stack>
         </QueryClientProvider>

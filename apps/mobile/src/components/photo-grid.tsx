@@ -104,6 +104,8 @@ const buildRows = (assets: GridAsset[]): Row[] => {
   return rows;
 };
 
+const FLOATING_PAD = 110;
+
 interface PhotoGridProps {
   assets: GridAsset[];
   /** Identifies the list in the query cache so the viewer can swipe through it. */
@@ -113,9 +115,10 @@ interface PhotoGridProps {
   onRefresh?: () => void;
   refreshing?: boolean;
   ListHeaderComponent?: ReactElement | null;
+  ListEmptyComponent?: ReactElement | null;
 }
 
-export function PhotoGrid({ assets, view, grouped, onRefresh, refreshing, ListHeaderComponent }: PhotoGridProps) {
+export function PhotoGrid({ assets, view, grouped, onRefresh, refreshing, ListHeaderComponent, ListEmptyComponent }: PhotoGridProps) {
   const c = useColors();
   const { width } = useWindowDimensions();
   const tile = (width - EDGE * 2 - GAP * (COLUMNS - 1)) / COLUMNS;
@@ -127,13 +130,14 @@ export function PhotoGrid({ assets, view, grouped, onRefresh, refreshing, ListHe
         data={assets}
         keyExtractor={(a) => a.id}
         numColumns={COLUMNS}
-        contentContainerStyle={{ padding: EDGE }}
+        contentContainerStyle={{ padding: EDGE, paddingBottom: FLOATING_PAD }}
         columnWrapperStyle={{ gap: GAP }}
         ItemSeparatorComponent={() => <View style={{ height: GAP }} />}
         renderItem={({ item }) => <PhotoTile asset={item} size={tile} view={view} />}
         onRefresh={onRefresh}
         refreshing={refreshing}
         ListHeaderComponent={ListHeaderComponent}
+        ListEmptyComponent={ListEmptyComponent}
         showsVerticalScrollIndicator={false}
       />
     );
@@ -143,7 +147,7 @@ export function PhotoGrid({ assets, view, grouped, onRefresh, refreshing, ListHe
     <FlatList
       data={rows}
       keyExtractor={(r) => r.key}
-      contentContainerStyle={{ paddingHorizontal: EDGE, paddingBottom: 12 }}
+      contentContainerStyle={{ paddingHorizontal: EDGE, paddingBottom: FLOATING_PAD }}
       renderItem={({ item }) =>
         'header' in item ? (
           <Text style={[styles.section, { color: c.text }]}>{item.header}</Text>
@@ -158,6 +162,7 @@ export function PhotoGrid({ assets, view, grouped, onRefresh, refreshing, ListHe
       onRefresh={onRefresh}
       refreshing={refreshing}
       ListHeaderComponent={ListHeaderComponent}
+      ListEmptyComponent={ListEmptyComponent}
       showsVerticalScrollIndicator={false}
     />
   );
