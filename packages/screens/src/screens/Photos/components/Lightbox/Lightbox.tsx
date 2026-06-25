@@ -140,6 +140,15 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
   const activeThumbRef = useRef<HTMLButtonElement | null>(null)
   const stripRef = useRef<HTMLDivElement | null>(null)
 
+  // Lock the page behind the fullscreen viewer so the content underneath can't scroll.
+  useEffect(() => {
+    const previous = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.body.style.overflow = previous
+    }
+  }, [])
+
   useEffect(() => {
     if (!showStrip) return
     const thumb = activeThumbRef.current

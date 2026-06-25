@@ -1,3 +1,44 @@
+/* Updater splash: an indeterminate striped progress bar in the brand colour — a primary-filled
+ * segment with moving diagonal stripes that slides back and forth across the track. */
+@keyframes updater-stripes {
+  from {
+    background-position: 0.8rem 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@keyframes updater-slide {
+  0% {
+    left: -45%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+.updater-progress-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 45%;
+  border-radius: 9999px;
+  background-color: var(--primary);
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.22) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.22) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 0.8rem 0.8rem;
+  animation:
+    updater-stripes 1.1s linear infinite,
+    updater-slide 2.6s ease-in-out infinite;
+}
+
 :root {
   /* Friendly, rounded brand voice — SF Pro Rounded ships on macOS via `ui-rounded`, so it's the
    * native cute-but-clean face with zero web-font loading. Falls back to Geist elsewhere. */
@@ -148,8 +189,8 @@
 }
 .depth-active {
   background-image: none;
-  /* Soft brand-tinted active fill instead of an embossed raised pill. */
-  background-color: color-mix(in oklab, var(--primary) 14%, var(--sidebar));
+  /* Clearly-visible flat active fill (no bevel) so the shared-layoutId slide reads as it moves. */
+  background-color: color-mix(in oklab, var(--primary) 16%, var(--sidebar-accent));
   border: 1px solid transparent;
   box-shadow: none;
 }

@@ -45,3 +45,8 @@ export const syncStopWatch = (path: string): Promise<void> => invoke("sync_stop_
  *  encrypt + upload. Returns an `ArrayBuffer` — bytes ride the binary IPC channel, not JSON. */
 export const syncReadFile = (path: string): Promise<ArrayBuffer> =>
   invoke<ArrayBuffer>("sync_read_file", { path })
+
+/** Switch the launch updater to a small, traffic-light-free window (Discord-style), or back to the
+ *  full app window. */
+export const updaterWindowMode = (compact: boolean): Promise<void> =>
+  invoke("updater_window_mode", { compact })
