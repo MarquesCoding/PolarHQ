@@ -14,6 +14,7 @@ import {
   saveUploadSession,
   type UploadSession,
 } from "./uploadSession"
+import { sendPushToUser } from "../notifications/push"
 import { nodesWithKeys } from "../docs/keys"
 import { ingestUpload, purgeAssets, restoreAssets, trashAssets } from "../photos/service"
 import {
@@ -74,6 +75,15 @@ driveRoutes.use("*", async (c, next) => {
 /** Broadcast a Drive change to the user's other sessions/devices for live sync. */
 const notify = (userId: string) =>
   publishUserEvent(userId, { type: "drive.node.changed", scope: `user:${userId}`, payload: {} })
+
+/** Wake a user's other devices to sync newly-added content. Fire-and-forget; never blocks. */
+const pushSync = (userId: string) =>
+  void sendPushToUser(userId, {
+    type: "drive.node.changed",
+    title: "PolarHQ",
+    body: "New items are ready to sync",
+    data: { type: "drive.node.changed" },
+  })
 
 const driveBase = `${config.api.url}/api/v1/drive/nodes`
 const photosBase = `${config.api.url}/api/v1/photos/assets`
@@ -219,6 +229,7 @@ driveRoutes.post("/nodes/folder", async (c) => {
     parsed.data.encryptedName ?? null,
   )
   await notify(c.get("userId"))
+  pushSync(c.get("userId"))
   return c.json({ node: serializeNode(node) }, 201)
 })
 
@@ -255,6 +266,7 @@ driveRoutes.post("/nodes/upload", async (c) => {
       encryptedName,
     })
     await notify(userId)
+    pushSync(userId)
     return c.json({ node: serializeNode(node) }, 201)
   }
 
@@ -271,6 +283,7 @@ driveRoutes.post("/nodes/upload", async (c) => {
       storageKey: result.asset.storageKey,
     })
     await notify(userId)
+    pushSync(userId)
     return c.json({ node: serializeNode(node), registeredInPhotos: true }, 201)
   }
 
@@ -291,6 +304,7 @@ driveRoutes.post("/nodes/upload", async (c) => {
       storageKey: result.asset.storageKey,
     })
     await notify(userId)
+    pushSync(userId)
     return c.json({ node: serializeNode(node), registeredInPhotos: true }, 201)
   }
 
@@ -381,6 +395,7 @@ driveRoutes.post("/nodes/upload/:sessionId/complete", async (c) => {
   })
   await deleteUploadSession(sessionId)
   await notify(userId)
+  pushSync(userId)
   return c.json({ node: serializeNode(node) }, 201)
 })
 

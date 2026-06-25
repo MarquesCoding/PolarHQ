@@ -1,4 +1,6 @@
 import { auth } from "@workspace/auth"
+import { db, schema } from "@workspace/db"
+import { and, eq } from "drizzle-orm"
 import { Hono } from "hono"
 import { getSessionUser } from "../context"
 
@@ -98,5 +100,46 @@ accountRoutes.post("/devices/revoke", async (c) => {
   if (!target) return c.json({ error: "notFound" }, 404)
 
   await auth.api.revokeSession({ headers, body: { token: target.token } })
+  return c.json({ ok: true })
+})
+
+accountRoutes.post("/push-token", async (c) => {
+  const body = (await c.req.json().catch(() => null)) as
+    | { token?: string; platform?: string; deviceId?: string }
+    | null
+  if (!body?.token || (body.platform !== "ios" && body.platform !== "android")) {
+    return c.json({ error: "invalidInput" }, 400)
+  }
+
+  const userId = c.get("userId")
+  await db
+    .insert(schema.pushTokens)
+    .values({
+      userId,
+      token: body.token,
+      platform: body.platform,
+      deviceId: body.deviceId ?? null,
+    })
+    .onConflictDoUpdate({
+      target: schema.pushTokens.token,
+      set: {
+        userId,
+        platform: body.platform,
+        deviceId: body.deviceId ?? null,
+        updatedAt: new Date(),
+      },
+    })
+  return c.json({ ok: true })
+})
+
+accountRoutes.delete("/push-token/:token", async (c) => {
+  await db
+    .delete(schema.pushTokens)
+    .where(
+      and(
+        eq(schema.pushTokens.token, c.req.param("token")),
+        eq(schema.pushTokens.userId, c.get("userId")),
+      ),
+    )
   return c.json({ ok: true })
 })
