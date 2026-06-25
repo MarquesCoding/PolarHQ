@@ -46,6 +46,13 @@
           "photosPermission": "Allow PolarHQ to upload photos from your library."
         }
       ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow PolarHQ to back up photos from your library.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
       "expo-video"
     ],
     "experiments": {

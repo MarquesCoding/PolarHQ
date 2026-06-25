@@ -6,6 +6,7 @@ import Constants from 'expo-constants';
 import { coreConfig } from '@workspace/core/config';
 import { lockKeys } from '@workspace/core/e2e';
 
+import { BackupCard } from '@/components/backup-card';
 import { Button, Card, useColors } from '@/components/ui';
 import { authClient } from '@/lib/auth';
 import { clearServerUrl } from '@/lib/config';
@@ -58,6 +59,8 @@ export default function Settings() {
             value={`v${Constants.expoConfig?.version ?? '0.5.0'} · mobile`}
           />
         </Card>
+
+        <BackupCard />
 
         <View style={styles.actions}>
           <Button title="Sign out" variant="secondary" onPress={onSignOut} loading={busy} />
