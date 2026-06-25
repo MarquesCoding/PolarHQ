@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Constants from 'expo-constants';
 import { coreConfig } from '@workspace/core/config';
+import { lockKeys } from '@workspace/core/e2e';
 
 import { Button, Card, useColors } from '@/components/ui';
 import { authClient } from '@/lib/auth';
@@ -28,6 +29,7 @@ export default function Settings() {
 
   const onSignOut = async () => {
     setBusy(true);
+    lockKeys();
     await authClient.signOut();
     setBusy(false);
     router.replace('/');
