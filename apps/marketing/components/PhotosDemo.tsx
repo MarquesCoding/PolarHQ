@@ -8,7 +8,6 @@ import StorageMeter from "@workspace/ui/components/storage-meter"
 import SuiteShell from "@workspace/ui/components/suite-shell"
 import SuiteSidebar, { type SuiteNavItem } from "@workspace/ui/components/suite-sidebar"
 import SuiteTitleBar from "@workspace/ui/components/suite-title-bar"
-import { Icon } from "@workspace/ui/components/icon"
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
 import { cn } from "@workspace/ui/lib/utils"
 
@@ -156,24 +155,31 @@ const PhotosDemo = () => {
           collapsed={collapsed}
           items={NAV}
           header={
-            <div className={cn("flex items-center gap-2 rounded-lg p-1.5", collapsed && "justify-center")}>
-              <span className="bg-foreground text-background flex size-8 shrink-0 items-center justify-center rounded-lg">
-                <Icon name="images-3" className="size-5" />
-              </span>
+            <div className={cn("flex items-center gap-2 p-1", collapsed && "justify-center")}>
+              <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1">
+                <img src="/logo.png" alt="" className="size-7 shrink-0 rounded-md" />
+                {!collapsed ? (
+                  <span className="flex min-w-0 flex-col text-left leading-tight">
+                    <span className="truncate text-sm font-semibold">Photos</span>
+                    <span className="text-muted-foreground truncate text-[11px]">PolarHQ</span>
+                  </span>
+                ) : null}
+              </div>
               {!collapsed ? (
-                <span className="flex min-w-0 flex-col text-left leading-tight">
-                  <span className="truncate text-sm font-semibold">PolarHQ</span>
-                  <span className="text-muted-foreground truncate text-xs">Photos</span>
-                </span>
+                <img
+                  src="https://api.dicebear.com/10.x/notionists-neutral/svg?seed=polarhq"
+                  alt=""
+                  className="bg-sidebar-accent size-7 shrink-0 rounded-full"
+                />
               ) : null}
             </div>
           }
-          footer={<StorageMeter collapsed={collapsed} percent={42} label="4.2 GB of 10 GB" footer="v0.1.0 · build alpha" />}
+          footer={<StorageMeter collapsed={collapsed} percent={42} label="4.2 GB of 10 GB" footer="v0.5.0 · build alpha" />}
         />
       }
       titleBar={
         <SuiteTitleBar
-          searchPlaceholder="Search your photos"
+          searchPlaceholder="Search"
           collapsed={collapsed}
           onToggleSidebar={() => setUserCollapsed((value) => !value)}
           extra={
