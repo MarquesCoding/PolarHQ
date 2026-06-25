@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { type ReactElement, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { PromptModal } from '@/components/prompt-modal';
@@ -90,7 +90,7 @@ function Row({
 
 type Prompt = { mode: 'new' } | { mode: 'rename'; node: DriveNode };
 
-export function DriveList({ parentId }: { parentId: string | null }) {
+export function DriveList({ parentId, header }: { parentId: string | null; header?: ReactElement }) {
   const c = useColors();
   const queryClient = useQueryClient();
   const [prompt, setPrompt] = useState<Prompt | null>(null);
@@ -148,8 +148,9 @@ export function DriveList({ parentId }: { parentId: string | null }) {
       data={children}
       keyExtractor={(n) => n.id}
       renderItem={({ item }) => <Row node={item} onRename={(n) => setPrompt({ mode: 'rename', node: n })} onDelete={onDelete} />}
-      contentContainerStyle={{ paddingVertical: 6, paddingBottom: 96 }}
+      contentContainerStyle={{ paddingVertical: 6, paddingBottom: 120 }}
       ItemSeparatorComponent={() => <View style={[styles.sep, { backgroundColor: c.border }]} />}
+      ListHeaderComponent={header}
       onRefresh={refetch}
       refreshing={isRefetching}
     />
