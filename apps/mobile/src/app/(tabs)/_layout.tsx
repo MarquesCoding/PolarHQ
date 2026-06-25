@@ -31,6 +31,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="drive"
+        options={{
+          title: 'Drive',
+          tabBarIcon: ({ color, size }) => <Ionicons name="folder" color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
