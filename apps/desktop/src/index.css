@@ -23,9 +23,7 @@
   border-radius: 1.25rem;
   border: 1px solid var(--sidebar-border);
   overflow: hidden;
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.18),
-    0 8px 24px -12px rgb(0 0 0 / 0.45);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
 }
 /* One uniform window canvas (the darkest token); the page content has no separate background, so the
  * sidebar, top-bar pills, and timeline are the only surfaces — each a lighter bg-sidebar chip with a
@@ -58,9 +56,7 @@
   background-color: var(--sidebar);
   border: 1px solid var(--sidebar-border);
   border-radius: 9999px;
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.18),
-    0 8px 24px -12px rgb(0 0 0 / 0.45);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
 }
 .tauri [data-slot="flat-topbar"] [data-slot="sidebar-trigger"] {
   height: 2.25rem;
@@ -122,12 +118,127 @@
   border: 1px solid var(--sidebar-border);
   border-radius: 9999px;
   background-color: var(--sidebar);
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.18),
-    0 8px 24px -12px rgb(0 0 0 / 0.45);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
   opacity: 0;
   transition: opacity 0.18s ease;
 }
 .tauri [data-slot="timeline-rail"]:hover {
   opacity: 1;
+}
+
+/* ============================================================================
+ *  PolarHQ desktop redesign — flat, tight, consistent, brand-led.
+ *  Desktop-scoped (this file is only imported by apps/desktop), so the web app
+ *  is untouched while we iterate here. Re-themes the shared shadcn tokens to the
+ *  indigo/periwinkle brand and flattens the beveled "depth" utilities so nothing
+ *  reads embossed or glossy — surfaces separate by hairline borders + subtle
+ *  tints, not shadows.
+ * ========================================================================== */
+
+:root {
+  /* One consistent, slightly tighter radius family (sm 6 · md 8 · lg 10 · xl 14). */
+  --radius: 0.625rem;
+
+  --background: #ececf1; /* cool light canvas (the window behind the floating panels) */
+  --foreground: #1b1b22;
+  --card: #ffffff;
+  --card-foreground: #1b1b22;
+  --popover: #ffffff;
+  --popover-foreground: #1b1b22;
+  --primary: #6366f1; /* brand indigo / periwinkle */
+  --primary-foreground: #ffffff;
+  --secondary: #f1f1f6;
+  --secondary-foreground: #1b1b22;
+  --muted: #f1f1f6;
+  --muted-foreground: #71717f;
+  --accent: #ededf3;
+  --accent-foreground: #1b1b22;
+  --destructive: #e5484d;
+  --border: #e6e6ee;
+  --input: #e0e0ea;
+  --ring: #6366f1;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1b1b22;
+  --sidebar-primary: #6366f1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f1f6;
+  --sidebar-accent-foreground: #1b1b22;
+  --sidebar-border: #e6e6ee;
+  --sidebar-ring: #6366f1;
+}
+
+.dark {
+  --background: #0e0e13;
+  --foreground: #ececf1;
+  --card: #17171e;
+  --card-foreground: #ececf1;
+  --popover: #17171e;
+  --popover-foreground: #ececf1;
+  --primary: #7c7cf8;
+  --primary-foreground: #ffffff;
+  --secondary: #23232c;
+  --secondary-foreground: #ececf1;
+  --muted: #23232c;
+  --muted-foreground: #9b9ba8;
+  --accent: #262630;
+  --accent-foreground: #ececf1;
+  --destructive: #f2555a;
+  --border: #272730;
+  --input: #2e2e39;
+  --ring: #7c7cf8;
+
+  --sidebar: #17171e;
+  --sidebar-foreground: #ececf1;
+  --sidebar-primary: #7c7cf8;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #23232c;
+  --sidebar-accent-foreground: #ececf1;
+  --sidebar-border: #272730;
+  --sidebar-ring: #7c7cf8;
+}
+
+/* Flatten the beveled "depth" utilities → flat fills + hairline borders.
+ * (Unlayered rules here win over the @utility definitions in globals.css.) */
+.btn-primary {
+  background-image: none;
+  box-shadow: none;
+}
+.depth-active {
+  background-image: none;
+  /* Soft brand-tinted active fill instead of an embossed raised pill. */
+  background-color: color-mix(in oklab, var(--primary) 14%, var(--sidebar));
+  border: 1px solid transparent;
+  box-shadow: none;
+}
+.depth-divider {
+  box-shadow: none;
+  background-color: var(--border);
+}
+.panel {
+  background-image: none;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+}
+
+/* Buttons: flat (no shadow); the radius is already token-driven + consistent. */
+[data-slot="button"] {
+  box-shadow: none;
+}
+
+/* Cleaner, flatter overlays — hairline border + one soft lift shadow, no rings. */
+[data-slot="dialog-content"],
+[data-slot="sheet-content"] {
+  border: 1px solid var(--border);
+  box-shadow: 0 16px 40px -16px rgb(0 0 0 / 0.22);
+}
+[data-slot="dropdown-menu-content"],
+[data-slot="context-menu-content"],
+[data-slot="select-content"],
+[data-slot="dropdown-menu-sub-content"] {
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.18);
+}
+[data-slot="tooltip-content"] {
+  box-shadow: none;
 }
