@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { runOnJS, SlideInLeft, SlideInRight, useSharedValue } from 'react-native-reanimated';
+import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { DriveContent } from '@/components/drive-list';
 import { FloatingTopBar, TopBarButton, useTopInset } from '@/components/floating-top-bar';
@@ -21,21 +21,29 @@ export default function Drive() {
   const c = useColors();
   const queryClient = useQueryClient();
   const topInset = useTopInset();
+  const { width } = useWindowDimensions();
   const [stack, setStack] = useState<Crumb[]>([{ id: null, title: '' }]);
-  const [dir, setDir] = useState<'forward' | 'back'>('forward');
   const [newFolder, setNewFolder] = useState(false);
 
   const current = stack[stack.length - 1];
   const canPop = stack.length > 1;
   const startX = useSharedValue(0);
+  const tx = useSharedValue(0);
+  const contentStyle = useAnimatedStyle(() => ({ transform: [{ translateX: tx.value }] }));
+
+  const slideFrom = (offset: number) => {
+    tx.value = offset;
+    tx.value = withTiming(0, { duration: 280, easing: Easing.out(Easing.cubic) });
+  };
 
   const push = (node: DriveNode) => {
-    setDir('forward');
     setStack((s) => [...s, { id: node.id, title: node.name }]);
+    slideFrom(width);
   };
   const pop = () => {
-    setDir('back');
-    setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
+    if (!canPop) return;
+    setStack((s) => s.slice(0, -1));
+    slideFrom(-width);
   };
 
   const onCreate = async (value: string) => {
@@ -59,20 +67,13 @@ export default function Drive() {
   return (
     <View style={[styles.root, { backgroundColor: c.background }]}>
       <GestureDetector gesture={backSwipe}>
-        <View style={StyleSheet.absoluteFill}>
-          <Animated.View
-            key={current.id ?? 'root'}
-            entering={(dir === 'forward' ? SlideInRight : SlideInLeft).duration(260)}
-            style={StyleSheet.absoluteFill}
-          >
-            <DriveContent parentId={current.id} topInset={topInset} onOpenFolder={push} />
-          </Animated.View>
-        </View>
+        <Animated.View style={[StyleSheet.absoluteFill, contentStyle]}>
+          <DriveContent key={current.id ?? 'root'} parentId={current.id} topInset={topInset} onOpenFolder={push} />
+        </Animated.View>
       </GestureDetector>
 
       {canPop ? (
         <FloatingTopBar
-          showAvatar={false}
           left={
             <Tappable onPress={pop} haptic="selection" style={styles.back}>
               <Ionicons name="chevron-back" size={24} color={c.primary} />
