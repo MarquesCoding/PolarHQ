@@ -1,4 +1,21 @@
-import { invoke } from "@tauri-apps/api/core"
+import { convertFileSrc, invoke } from "@tauri-apps/api/core"
+
+/**
+ * Write decrypted media bytes to a temp file and return an asset-protocol URL the webview can load.
+ * Used so video plays through a real file decoded by macOS's native codecs (HEVC/.mov) — WKWebView
+ * can't decode those from a blob: URL. Bytes go over the raw IPC body so large videos stay fast.
+ */
+export const nativeMediaUrl = async (bytes: Uint8Array, mimeType: string): Promise<string> => {
+  const ext = mimeType.includes("quicktime")
+    ? "mov"
+    : mimeType.includes("webm")
+      ? "webm"
+      : mimeType.includes("mp4")
+        ? "mp4"
+        : "mp4"
+  const path = await invoke<string>("write_temp_media", bytes, { headers: { "x-media-ext": ext } })
+  return convertFileSrc(path)
+}
 
 /**
  * Typed bridge to the Rust command surface (`src-tauri/src/commands.rs`), reached over Tauri's IPC.

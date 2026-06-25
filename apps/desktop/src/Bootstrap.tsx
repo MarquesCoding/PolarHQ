@@ -4,6 +4,7 @@ import { configureCore } from "@workspace/core/config"
 import { configureHost } from "@workspace/core/host"
 import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
 import { loadLastServerUrl, loadServerUrl, saveServerUrl } from "@lib/server"
+import { nativeMediaUrl } from "@lib/native"
 import Updater from "./Updater"
 import Spinner from "@components/Spinner/Spinner"
 
@@ -53,7 +54,11 @@ export const Bootstrap = () => {
       const [stored, last] = await Promise.all([loadServerUrl(), loadLastServerUrl()])
       connect(stored ?? last ?? "http://localhost:3001")
       if (inTauri) {
-        configureHost({ isDesktop: true, openExternal: (url) => void openUrl(url) })
+        configureHost({
+          isDesktop: true,
+          openExternal: (url) => void openUrl(url),
+          nativeMediaUrl,
+        })
       }
       const win = window as Window & { __polarServer?: ServerBridge }
       win.__polarServer = {
