@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
+import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
 import { router } from 'expo-router';
 import { type ReactNode } from 'react';
-import { Platform, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Tappable } from '@/components/ui/tappable';
@@ -15,21 +15,18 @@ export const TOP_BAR_H = 50;
 /** Top inset every scroll view should use so content clears the floating bar. */
 export const useTopInset = () => useSafeAreaInsets().top + TOP_BAR_H;
 
-const isIOS = Platform.OS === 'ios';
+const useGlass = Platform.OS === 'ios' && isLiquidGlassAvailable();
 
-/** A circular control: frosted Liquid-Glass on iOS, a solid fill on Android. `tint` colours it. */
+/** A circular control: real iOS 26 Liquid Glass where available, else a solid fill. `tint` colours it. */
 function GlassCircle({ size, tint, children }: { size: number; tint?: string; children: ReactNode }) {
   const c = useColors();
-  const scheme = useColorScheme() === 'light' ? 'light' : 'dark';
   const base = { width: size, height: size, borderRadius: size / 2 };
 
-  if (isIOS) {
+  if (useGlass) {
     return (
-      <View style={[styles.circle, base, styles.glassBorder, { borderColor: c.border }]}>
-        <BlurView intensity={70} tint={scheme} style={StyleSheet.absoluteFill} />
-        {tint ? <View style={[StyleSheet.absoluteFill, { backgroundColor: tint }]} /> : null}
+      <GlassView glassEffectStyle="regular" tintColor={tint} isInteractive style={[styles.circle, base]}>
         {children}
-      </View>
+      </GlassView>
     );
   }
   return <View style={[styles.circle, base, { backgroundColor: tint ?? c.backgroundElement }]}>{children}</View>;
@@ -73,7 +70,7 @@ export function FloatingTopBar({
         {children}
         {showAvatar ? (
           <Tappable onPress={() => router.push('/account')} haptic="selection">
-            <GlassCircle size={34} tint={isIOS ? `${c.primary}A6` : c.primary}>
+            <GlassCircle size={34} tint={c.primary}>
               <Text style={styles.avatarText}>{initial}</Text>
             </GlassCircle>
           </Tappable>
@@ -88,6 +85,5 @@ const styles = StyleSheet.create({
   inner: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16 },
   flex: { flex: 1 },
   circle: { alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
-  glassBorder: { borderWidth: StyleSheet.hairlineWidth },
   avatarText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 });
