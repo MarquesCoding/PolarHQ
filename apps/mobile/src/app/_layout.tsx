@@ -13,6 +13,9 @@ import { queryClient } from '@/lib/query';
 
 bootstrapCore();
 
+/** Push screens (Drive folders, albums) slide in from the right with a back-swipe gesture. */
+const SLIDE = { animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true } as const;
+
 export default function RootLayout() {
   const scheme = useColorScheme() === 'light' ? 'light' : 'dark';
   const background = Colors[scheme].background;
@@ -37,10 +40,12 @@ export default function RootLayout() {
               name="account"
               options={{ presentation: 'transparentModal', animation: 'none', contentStyle: { backgroundColor: 'transparent' } }}
             />
-            <Stack.Screen name="folder/[id]" />
-            <Stack.Screen name="album/[id]" />
-            <Stack.Screen name="collection/[view]" />
-            <Stack.Screen name="photo/[id]" options={{ presentation: 'transparentModal', animation: 'fade' }} />
+            <Stack.Screen name="album/[id]" options={SLIDE} />
+            <Stack.Screen name="collection/[view]" options={SLIDE} />
+            <Stack.Screen
+              name="photo/[id]"
+              options={{ presentation: 'transparentModal', animation: 'slide_from_right' }}
+            />
             <Stack.Screen
               name="photo-info"
               options={{ presentation: 'transparentModal', animation: 'none', contentStyle: { backgroundColor: 'transparent' } }}

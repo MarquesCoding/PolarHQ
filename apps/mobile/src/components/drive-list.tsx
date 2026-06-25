@@ -6,20 +6,11 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { FloatingTopBar, TopBarButton, useTopInset } from '@/components/floating-top-bar';
 import { PromptModal } from '@/components/prompt-modal';
-import { Tappable } from '@/components/ui/tappable';
 import { useColors } from '@/components/ui';
 import { showActionSheet } from '@/lib/action-menu';
 import { fetchDriveThumbnailUri } from '@/lib/photos';
-import {
-  createDriveFolder,
-  decryptNodeName,
-  fetchNodes,
-  renameDriveNode,
-  trashDriveNode,
-  type DriveNode,
-} from '@/lib/drive';
+import { decryptNodeName, fetchNodes, renameDriveNode, trashDriveNode, type DriveNode } from '@/lib/drive';
 
 const iconFor = (node: DriveNode): keyof typeof Ionicons.glyphMap => {
   if (node.kind === 'folder') return 'folder';
@@ -47,10 +38,12 @@ const formatSize = (bytes: number | null): string => {
 
 function Row({
   node,
+  onOpenFolder,
   onRename,
   onDelete,
 }: {
   node: DriveNode;
+  onOpenFolder: (n: DriveNode) => void;
   onRename: (n: DriveNode) => void;
   onDelete: (n: DriveNode) => void;
 }) {
@@ -69,7 +62,7 @@ function Row({
 
   const onPress = () => {
     if (isFolder) {
-      router.push({ pathname: '/folder/[id]', params: { id: node.id, title: node.name } });
+      onOpenFolder(node);
     } else if (node.photoAssetId) {
       router.push({
         pathname: '/photo/[id]',
@@ -94,7 +87,7 @@ function Row({
       <View style={[styles.iconWrap, { backgroundColor: c.backgroundElement }]}>
         {thumbUri ? (
           <>
-            <Image source={{ uri: thumbUri }} style={styles.thumb} contentFit="cover" transition={140} />
+            <Image source={{ uri: thumbUri }} style={styles.thumb} contentFit="cover" transition={140} recyclingKey={node.id} />
             {isVideo ? (
               <View style={styles.playBadge}>
                 <Ionicons name="play" size={9} color="#fff" />
@@ -109,23 +102,26 @@ function Row({
         <Text style={[styles.name, { color: c.text }]} numberOfLines={1}>
           {node.name}
         </Text>
-        {!isFolder ? (
-          <Text style={[styles.meta, { color: c.textSecondary }]}>{formatSize(node.sizeBytes)}</Text>
-        ) : null}
+        {!isFolder ? <Text style={[styles.meta, { color: c.textSecondary }]}>{formatSize(node.sizeBytes)}</Text> : null}
       </View>
       {isFolder ? <Ionicons name="chevron-forward" size={18} color={c.textSecondary} /> : null}
     </Pressable>
   );
 }
 
-type Prompt = { mode: 'new' } | { mode: 'rename'; node: DriveNode };
-
-export function DriveList({ parentId, title }: { parentId: string | null; title?: string }) {
+/** The list contents of one Drive folder — no top bar (the Drive screen owns the persistent bar). */
+export function DriveContent({
+  parentId,
+  topInset,
+  onOpenFolder,
+}: {
+  parentId: string | null;
+  topInset: number;
+  onOpenFolder: (node: DriveNode) => void;
+}) {
   const c = useColors();
   const queryClient = useQueryClient();
-  const topInset = useTopInset();
-  const [prompt, setPrompt] = useState<Prompt | null>(null);
-  const openNewFolder = () => setPrompt({ mode: 'new' });
+  const [renameNode, setRenameNode] = useState<DriveNode | null>(null);
 
   const { data, isLoading, isError, refetch, isRefetching } = useQuery({
     queryKey: ['nodes', parentId ?? 'root'],
@@ -148,10 +144,9 @@ export function DriveList({ parentId, title }: { parentId: string | null; title?
     ]);
   };
 
-  const onSubmitPrompt = async (value: string) => {
-    if (prompt?.mode === 'new') await createDriveFolder(parentId, value).catch(() => undefined);
-    else if (prompt?.mode === 'rename') await renameDriveNode(prompt.node.id, value).catch(() => undefined);
-    setPrompt(null);
+  const onSubmitRename = async (value: string) => {
+    if (renameNode) await renameDriveNode(renameNode.id, value).catch(() => undefined);
+    setRenameNode(null);
     invalidate();
   };
 
@@ -179,7 +174,9 @@ export function DriveList({ parentId, title }: { parentId: string | null; title?
     <FlatList
       data={children}
       keyExtractor={(n) => n.id}
-      renderItem={({ item }) => <Row node={item} onRename={(n) => setPrompt({ mode: 'rename', node: n })} onDelete={onDelete} />}
+      renderItem={({ item }) => (
+        <Row node={item} onOpenFolder={onOpenFolder} onRename={(n) => setRenameNode(n)} onDelete={onDelete} />
+      )}
       contentContainerStyle={{ paddingTop: topInset, paddingBottom: 120 }}
       ItemSeparatorComponent={() => <View style={[styles.sep, { backgroundColor: c.border }]} />}
       onRefresh={refetch}
@@ -190,35 +187,14 @@ export function DriveList({ parentId, title }: { parentId: string | null; title?
   return (
     <View style={styles.fill}>
       {body}
-
-      {title ? (
-        <FloatingTopBar
-          showAvatar={false}
-          left={
-            <Tappable onPress={() => router.back()} haptic="selection" style={styles.back}>
-              <Ionicons name="chevron-back" size={24} color={c.primary} />
-              <Text style={[styles.folderTitle, { color: c.text }]} numberOfLines={1}>
-                {title}
-              </Text>
-            </Tappable>
-          }
-        >
-          <TopBarButton icon="add" onPress={openNewFolder} />
-        </FloatingTopBar>
-      ) : (
-        <FloatingTopBar>
-          <TopBarButton icon="add" onPress={openNewFolder} />
-        </FloatingTopBar>
-      )}
-
       <PromptModal
-        visible={prompt !== null}
-        title={prompt?.mode === 'rename' ? 'Rename' : 'New folder'}
-        placeholder={prompt?.mode === 'rename' ? 'New name' : 'Folder name'}
-        initialValue={prompt?.mode === 'rename' ? prompt.node.name : ''}
-        confirmLabel={prompt?.mode === 'rename' ? 'Rename' : 'Create'}
-        onSubmit={onSubmitPrompt}
-        onCancel={() => setPrompt(null)}
+        visible={renameNode !== null}
+        title="Rename"
+        placeholder="New name"
+        initialValue={renameNode?.name ?? ''}
+        confirmLabel="Rename"
+        onSubmit={onSubmitRename}
+        onCancel={() => setRenameNode(null)}
       />
     </View>
   );
@@ -246,6 +222,4 @@ const styles = StyleSheet.create({
   name: { fontSize: 15, fontWeight: '500' },
   meta: { fontSize: 12 },
   sep: { height: StyleSheet.hairlineWidth, marginLeft: 72 },
-  back: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 2 },
-  folderTitle: { fontSize: 19, fontWeight: '700', flexShrink: 1 },
 });
