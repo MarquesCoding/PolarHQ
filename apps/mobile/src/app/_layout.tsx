@@ -35,13 +35,7 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen
               name="account"
-              options={{
-                presentation: 'formSheet',
-                sheetGrabberVisible: true,
-                sheetAllowedDetents: [1],
-                sheetCornerRadius: 24,
-                contentStyle: { backgroundColor: 'transparent' },
-              }}
+              options={{ presentation: 'transparentModal', animation: 'none', contentStyle: { backgroundColor: 'transparent' } }}
             />
             <Stack.Screen name="folder/[id]" />
             <Stack.Screen name="album/[id]" />
@@ -49,13 +43,7 @@ export default function RootLayout() {
             <Stack.Screen name="photo/[id]" options={{ presentation: 'transparentModal', animation: 'fade' }} />
             <Stack.Screen
               name="photo-info"
-              options={{
-                presentation: 'formSheet',
-                sheetGrabberVisible: true,
-                sheetAllowedDetents: [0.5, 0.9],
-                sheetCornerRadius: 24,
-                contentStyle: { backgroundColor: 'transparent' },
-              }}
+              options={{ presentation: 'transparentModal', animation: 'none', contentStyle: { backgroundColor: 'transparent' } }}
             />
           </Stack>
         </QueryClientProvider>

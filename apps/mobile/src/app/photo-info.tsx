@@ -1,10 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
+import BottomSheet, {
+  BottomSheetBackdrop,
+  type BottomSheetBackdropProps,
+  BottomSheetScrollView,
+} from '@gorhom/bottom-sheet';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useRef } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { formatBytes } from '@workspace/core/format';
 
 import { Card, useColors } from '@/components/ui';
 
+const SNAP_POINTS = ['50%', '88%'];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function formatDateTime(iso?: string): { date: string; time: string } | null {
@@ -25,6 +33,8 @@ function iconForType(type?: string, mime?: string): keyof typeof Ionicons.glyphM
 
 export default function PhotoInfo() {
   const c = useColors();
+  const insets = useSafeAreaInsets();
+  const sheetRef = useRef<BottomSheet>(null);
   const p = useLocalSearchParams<{
     name?: string;
     takenAt?: string;
@@ -42,14 +52,32 @@ export default function PhotoInfo() {
   const mp = w && h ? (w * h) / 1_000_000 : null;
   const size = p.sizeBytes ? Number(p.sizeBytes) : null;
 
-  return (
-    <View style={[styles.root, { backgroundColor: c.background }]}>
-      <Pressable onPress={() => router.back()} hitSlop={12} style={styles.done}>
-        <Text style={[styles.doneText, { color: c.primary }]}>Done</Text>
-      </Pressable>
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.5} />
+    ),
+    [],
+  );
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={[styles.title, { color: c.text }]}>Details</Text>
+  return (
+    <BottomSheet
+      ref={sheetRef}
+      index={0}
+      snapPoints={SNAP_POINTS}
+      topInset={insets.top}
+      enablePanDownToClose
+      onClose={() => router.back()}
+      handleIndicatorStyle={{ backgroundColor: c.border }}
+      backgroundStyle={{ backgroundColor: c.background }}
+      backdropComponent={renderBackdrop}
+    >
+      <BottomSheetScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.head}>
+          <Text style={[styles.title, { color: c.text }]}>Details</Text>
+          <Pressable onPress={() => sheetRef.current?.close()} hitSlop={12}>
+            <Text style={[styles.doneText, { color: c.primary }]}>Done</Text>
+          </Pressable>
+        </View>
 
         <Card>
           <View style={styles.fileRow}>
@@ -79,8 +107,8 @@ export default function PhotoInfo() {
             <Text style={[styles.e2eText, { color: c.textSecondary }]}>End-to-end encrypted</Text>
           </View>
         ) : null}
-      </ScrollView>
-    </View>
+      </BottomSheetScrollView>
+    </BottomSheet>
   );
 }
 
@@ -98,12 +126,11 @@ function Row({ icon, label, value }: { icon: keyof typeof Ionicons.glyphMap; lab
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
   flex: { flex: 1 },
-  done: { position: 'absolute', top: Platform.select({ ios: 18, default: 14 }), right: 20, zIndex: 10, padding: 4 },
+  content: { paddingHorizontal: 20, paddingTop: 2, paddingBottom: 30, gap: 16 },
+  head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 },
+  title: { fontSize: 20, fontWeight: '700' },
   doneText: { fontSize: 16, fontWeight: '600' },
-  title: { fontSize: 20, fontWeight: '700', marginBottom: 2 },
-  content: { paddingHorizontal: 20, paddingTop: Platform.select({ ios: 64, default: 52 }), paddingBottom: 30, gap: 16 },
   fileRow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   iconWrap: { width: 44, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   fileName: { fontSize: 15, fontWeight: '600' },
