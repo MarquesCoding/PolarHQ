@@ -21,6 +21,10 @@ export interface SuiteNavItem {
 
 interface SuiteSidebarProps {
   header?: ReactNode
+  /** Search affordance rendered directly below the header (the desktop app keeps search in the rail). */
+  search?: ReactNode
+  /** Small uppercase section label shown above the nav (e.g. "Library"). */
+  navLabel?: string
   items: SuiteNavItem[]
   /** Override the rendering of a specific nav item (e.g. an expandable albums tree). */
   renderItem?: (item: SuiteNavItem, defaultLink: ReactElement) => ReactNode
@@ -32,9 +36,11 @@ interface SuiteSidebarProps {
   linkAs?: ElementType
 }
 
-/** Shared suite sidebar: workspace header slot, nav, extra sections, and a footer slot. */
+/** Shared suite sidebar (flush, full-height) mirroring the desktop FlatSidebar. */
 const SuiteSidebar = ({
   header,
+  search,
+  navLabel,
   items,
   renderItem,
   children,
@@ -51,13 +57,20 @@ const SuiteSidebar = ({
   return (
     <aside
       className={cn(
-        "panel flex shrink-0 flex-col gap-3 rounded-xl p-2 transition-[width] duration-200",
-        collapsed ? "w-14" : "w-56",
+        "bg-sidebar border-border/60 flex shrink-0 flex-col gap-3 border-r p-2.5 transition-[width] duration-200",
+        collapsed ? "w-16" : "w-60",
       )}
     >
       {header}
 
-      <nav className="flex flex-col gap-1">
+      {search ? <div className="px-0.5">{search}</div> : null}
+
+      <nav className="flex flex-col gap-0.5">
+        {navLabel && !collapsed ? (
+          <p className="text-muted-foreground/70 px-2.5 pt-1 pb-1.5 text-[11px] font-semibold tracking-wide uppercase">
+            {navLabel}
+          </p>
+        ) : null}
         {items.map((item) => {
           const defaultLink = (
             <LinkAs
@@ -66,11 +79,11 @@ const SuiteSidebar = ({
                 "flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm transition",
                 item.active
                   ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                  : "hover:bg-sidebar-accent/60",
+                  : "text-foreground/80 hover:bg-sidebar-accent/60",
                 collapsed && "justify-center px-0",
               )}
             >
-              <Icon name={item.icon} className="size-4 shrink-0" />
+              <Icon name={item.icon} className="size-[18px] shrink-0" />
               {!collapsed ? <span className="truncate">{item.label}</span> : null}
             </LinkAs>
           )

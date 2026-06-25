@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import Image from "next/image"
 import { animate, motion, useMotionValue, useMotionValueEvent, useTransform } from "motion/react"
+import { Icon } from "@workspace/ui/components/icon"
 import SizeControl from "@workspace/ui/components/size-control"
 import StorageMeter from "@workspace/ui/components/storage-meter"
 import SuiteShell from "@workspace/ui/components/suite-shell"
@@ -26,11 +27,16 @@ const PHOTOS = ASPECTS.map((aspect, i) => ({ src: `/demo/${i + 1}.jpg`, aspect }
 const TILES = [...PHOTOS, ...PHOTOS, ...PHOTOS, ...PHOTOS].map((photo, i) => ({ ...photo, key: i }))
 
 const NAV: SuiteNavItem[] = [
-  { key: "photos", label: "Photos", icon: "images-3", href: "#", active: true },
+  { key: "photos", label: "All photos", icon: "images-3", href: "#", active: true },
   { key: "albums", label: "Albums", icon: "album-3", href: "#" },
   { key: "map", label: "Map", icon: "map-pin", href: "#" },
   { key: "favourites", label: "Favourites", icon: "favourites", href: "#" },
   { key: "trash", label: "Trash", icon: "trash", href: "#" },
+]
+
+const ALBUMS = [
+  { key: "travel", label: "Travel", count: 128 },
+  { key: "family", label: "Family", count: 64 },
 ]
 
 type Tile = (typeof TILES)[number]
@@ -154,15 +160,35 @@ const PhotosDemo = () => {
         <SuiteSidebar
           collapsed={collapsed}
           items={NAV}
+          navLabel="Library"
           header={
-            <div className={cn("flex items-center gap-2 p-1", collapsed && "justify-center")}>
+            <div className={cn("flex items-center gap-2 px-0.5", collapsed && "justify-center")}>
               <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg p-1">
                 <img src="/logo.png" alt="" className="size-7 shrink-0 rounded-md" />
                 {!collapsed ? (
-                  <span className="flex min-w-0 flex-col text-left leading-tight">
-                    <span className="truncate text-sm font-semibold">Photos</span>
-                    <span className="text-muted-foreground truncate text-[11px]">PolarHQ</span>
-                  </span>
+                  <>
+                    <span className="flex min-w-0 flex-col text-left leading-tight">
+                      <span className="flex items-center gap-1.5">
+                        <span className="truncate text-sm font-semibold">Photos</span>
+                        <span className="bg-primary/15 text-primary rounded px-1 py-px text-[9px] font-bold tracking-wide uppercase">
+                          Beta
+                        </span>
+                      </span>
+                      <span className="text-muted-foreground truncate text-[11px]">PolarHQ</span>
+                    </span>
+                    <svg
+                      viewBox="0 0 16 16"
+                      aria-hidden
+                      className="text-muted-foreground/60 ms-auto size-4 shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M5.5 6.5 8 4l2.5 2.5M5.5 9.5 8 12l2.5-2.5" />
+                    </svg>
+                  </>
                 ) : null}
               </div>
               {!collapsed ? (
@@ -174,12 +200,73 @@ const PhotosDemo = () => {
               ) : null}
             </div>
           }
-          footer={<StorageMeter collapsed={collapsed} percent={42} label="4.2 GB of 10 GB" footer="v0.5.0 · build alpha" />}
+          search={
+            collapsed ? null : (
+              <div className="bg-muted text-muted-foreground flex h-9 items-center gap-2 rounded-xl px-2.5 text-sm">
+                <Icon name="search" className="size-4 shrink-0" />
+                <span className="flex-1 truncate">Search</span>
+                <span className="bg-card text-muted-foreground/70 rounded px-1.5 py-0.5 text-[10px] font-medium">
+                  ⌘K
+                </span>
+              </div>
+            )
+          }
+          renderItem={(item) => {
+            if (item.key !== "albums") return undefined
+            return (
+              <div className="flex flex-col gap-0.5">
+                <a
+                  href="#"
+                  className="text-foreground/80 hover:bg-sidebar-accent/60 flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm transition"
+                >
+                  <Icon name="album-3" className="size-[18px] shrink-0" />
+                  {!collapsed ? (
+                    <>
+                      <span className="flex-1 truncate">Albums</span>
+                      <svg
+                        viewBox="0 0 16 16"
+                        aria-hidden
+                        className="text-muted-foreground/60 size-3.5 shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="m4 6 4 4 4-4" />
+                      </svg>
+                    </>
+                  ) : null}
+                </a>
+                {!collapsed
+                  ? ALBUMS.map((album) => (
+                      <a
+                        key={album.key}
+                        href="#"
+                        className="text-muted-foreground hover:bg-sidebar-accent/60 ms-7 flex items-center gap-3 rounded-lg px-2.5 py-1.5 text-sm transition"
+                      >
+                        <span className="flex-1 truncate">{album.label}</span>
+                        <span className="text-muted-foreground/60 text-xs tabular-nums">
+                          {album.count}
+                        </span>
+                      </a>
+                    ))
+                  : null}
+              </div>
+            )
+          }}
+          footer={
+            <StorageMeter
+              collapsed={collapsed}
+              percent={18}
+              label="185 MB / 1.0 GB"
+              footer="v0.5.0-alpha · build desktop"
+            />
+          }
         />
       }
       titleBar={
         <SuiteTitleBar
-          searchPlaceholder="Search"
           collapsed={collapsed}
           onToggleSidebar={() => setUserCollapsed((value) => !value)}
           extra={
@@ -214,7 +301,7 @@ const PhotosDemo = () => {
         />
       }
     >
-      <div className="p-3">
+      <div className="p-2">
         <div ref={gridRef} className="relative w-full" style={{ height }}>
           {cells.map((cell) => (
             <div

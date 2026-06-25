@@ -2,6 +2,9 @@ import type { ReactNode } from "react"
 
 interface StorageMeterProps {
   percent: number
+  /** Heading shown on the left of the usage row (e.g. "Storage"). */
+  title?: string
+  /** Usage figure shown on the right of the heading (e.g. "185 MB / 1.0 GB"). */
   label?: string
   footer?: ReactNode
   collapsed?: boolean
@@ -11,7 +14,7 @@ const RADIUS = 13
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 
 /** Shared storage-usage footer (presentational; the consumer computes usage/labels). */
-const StorageMeter = ({ percent, label, footer, collapsed }: StorageMeterProps) => {
+const StorageMeter = ({ percent, title = "Storage", label, footer, collapsed }: StorageMeterProps) => {
   if (collapsed) {
     return (
       <div className="mt-auto flex justify-center pb-1">
@@ -46,17 +49,20 @@ const StorageMeter = ({ percent, label, footer, collapsed }: StorageMeterProps) 
   }
 
   return (
-    <div className="mt-auto flex flex-col gap-1.5 px-1.5 pb-1">
+    <div className="mt-auto flex flex-col gap-2 px-2.5 pt-1 pb-1.5">
       {label ? (
         <>
+          <div className="flex items-baseline justify-between text-xs">
+            <span className="text-muted-foreground">{title}</span>
+            <span className="text-foreground/80 tabular-nums">{label}</span>
+          </div>
           <div className="bg-sidebar-accent h-1.5 w-full overflow-hidden rounded-full">
             <div className="bg-primary h-full rounded-full" style={{ width: `${percent}%` }} />
           </div>
-          <p className="text-muted-foreground text-center text-xs">{label}</p>
         </>
       ) : null}
       {footer ? (
-        <div className="text-muted-foreground/60 pt-0.5 text-center font-mono text-[10px] tracking-tight">
+        <div className="text-muted-foreground/50 pt-0.5 font-mono text-[10px] tracking-tight">
           {footer}
         </div>
       ) : null}
