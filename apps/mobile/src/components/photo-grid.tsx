@@ -25,7 +25,17 @@ const GAP = 3;
 const COLUMNS = 3;
 const EDGE = 3;
 
-function PhotoTile({ asset, size, view }: { asset: GridAsset; size: number; view: string }) {
+interface TileProps {
+  asset: GridAsset;
+  size: number;
+  view: string;
+  selectionMode?: boolean;
+  selected?: boolean;
+  onPress?: (asset: GridAsset) => void;
+  onLongPress?: (asset: GridAsset) => void;
+}
+
+function PhotoTile({ asset, size, view, selectionMode, selected, onPress, onLongPress }: TileProps) {
   const c = useColors();
   const { data: uri, isLoading } = useQuery({
     queryKey: ['thumb', asset.id],
@@ -36,41 +46,56 @@ function PhotoTile({ asset, size, view }: { asset: GridAsset; size: number; view
 
   const durationLabel = asset.type === 'video' && asset.durationMs ? formatDuration(asset.durationMs) : null;
 
+  const handlePress = () => {
+    if (onPress) {
+      onPress(asset);
+      return;
+    }
+    router.push({
+      pathname: '/photo/[id]',
+      params: {
+        id: asset.id,
+        encrypted: asset.encrypted ? '1' : '0',
+        mime: asset.mimeType,
+        fav: asset.isFavorite ? '1' : '0',
+        type: asset.type,
+        view,
+      },
+    });
+  };
+
   return (
     <Pressable
-      onPress={() =>
-        router.push({
-          pathname: '/photo/[id]',
-          params: {
-            id: asset.id,
-            encrypted: asset.encrypted ? '1' : '0',
-            mime: asset.mimeType,
-            fav: asset.isFavorite ? '1' : '0',
-            type: asset.type,
-            view,
-          },
-        })
-      }
+      onPress={handlePress}
+      onLongPress={() => onLongPress?.(asset)}
+      delayLongPress={220}
       style={({ pressed }) => [
         { width: size, height: size, backgroundColor: c.backgroundElement },
-        pressed && { opacity: 0.7 },
+        pressed && !selectionMode && { opacity: 0.7 },
       ]}
     >
-      {uri ? (
-        <Image source={{ uri }} style={{ width: size, height: size }} contentFit="cover" transition={200} />
-      ) : (
-        <View style={styles.placeholder}>
-          {isLoading ? (
-            <ActivityIndicator size="small" color={c.textSecondary} />
-          ) : (
-            <Ionicons name="lock-closed" size={16} color={c.textSecondary} />
-          )}
-        </View>
-      )}
-      {asset.type === 'video' ? (
-        <View style={styles.videoBadge} pointerEvents="none">
-          <Ionicons name="play" size={11} color="#fff" />
-          {durationLabel ? <Text style={styles.duration}>{durationLabel}</Text> : null}
+      <View style={[styles.tileInner, selected && styles.tileSelected]}>
+        {uri ? (
+          <Image source={{ uri }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={200} recyclingKey={asset.id} />
+        ) : (
+          <View style={styles.placeholder}>
+            {isLoading ? (
+              <ActivityIndicator size="small" color={c.textSecondary} />
+            ) : (
+              <Ionicons name="lock-closed" size={16} color={c.textSecondary} />
+            )}
+          </View>
+        )}
+        {asset.type === 'video' ? (
+          <View style={styles.videoBadge} pointerEvents="none">
+            <Ionicons name="play" size={11} color="#fff" />
+            {durationLabel ? <Text style={styles.duration}>{durationLabel}</Text> : null}
+          </View>
+        ) : null}
+      </View>
+      {selectionMode ? (
+        <View style={[styles.check, selected ? { backgroundColor: c.primary, borderColor: c.primary } : styles.checkEmpty]} pointerEvents="none">
+          {selected ? <Ionicons name="checkmark" size={14} color="#fff" /> : null}
         </View>
       ) : null}
     </Pressable>
@@ -134,6 +159,10 @@ interface PhotoGridProps {
   onScroll?: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
   onViewableItemsChanged?: (info: { viewableItems: ViewToken<Row>[] }) => void;
   viewabilityConfig?: ViewabilityConfig;
+  selectionMode?: boolean;
+  selectedIds?: Set<string>;
+  onTilePress?: (asset: GridAsset) => void;
+  onTileLongPress?: (asset: GridAsset) => void;
 }
 
 export function PhotoGrid({
@@ -148,11 +177,22 @@ export function PhotoGrid({
   onScroll,
   onViewableItemsChanged,
   viewabilityConfig,
+  selectionMode,
+  selectedIds,
+  onTilePress,
+  onTileLongPress,
 }: PhotoGridProps) {
   const c = useColors();
   const { width } = useWindowDimensions();
   const tile = (width - EDGE * 2 - GAP * (COLUMNS - 1)) / COLUMNS;
   const rows = useMemo(() => (grouped ? buildRows(assets) : []), [grouped, assets]);
+
+  const tileProps = (a: GridAsset) => ({
+    selectionMode,
+    selected: selectedIds?.has(a.id),
+    onPress: onTilePress,
+    onLongPress: onTileLongPress,
+  });
 
   if (!grouped) {
     return (
@@ -163,7 +203,7 @@ export function PhotoGrid({
         contentContainerStyle={{ padding: EDGE, paddingBottom: FLOATING_PAD }}
         columnWrapperStyle={{ gap: GAP }}
         ItemSeparatorComponent={() => <View style={{ height: GAP }} />}
-        renderItem={({ item }) => <PhotoTile asset={item} size={tile} view={view} />}
+        renderItem={({ item }) => <PhotoTile asset={item} size={tile} view={view} {...tileProps(item)} />}
         onRefresh={onRefresh}
         refreshing={refreshing}
         ListHeaderComponent={ListHeaderComponent}
@@ -184,7 +224,7 @@ export function PhotoGrid({
         ) : (
           <View style={{ flexDirection: 'row', gap: GAP, marginBottom: GAP }}>
             {item.items.map((a) => (
-              <PhotoTile key={a.id} asset={a} size={tile} view={view} />
+              <PhotoTile key={a.id} asset={a} size={tile} view={view} {...tileProps(a)} />
             ))}
           </View>
         )
@@ -203,6 +243,20 @@ export function PhotoGrid({
 }
 
 const styles = StyleSheet.create({
+  tileInner: { width: '100%', height: '100%' },
+  tileSelected: { transform: [{ scale: 0.86 }], borderRadius: 6, overflow: 'hidden' },
+  check: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+  },
+  checkEmpty: { backgroundColor: 'rgba(0,0,0,0.25)', borderColor: 'rgba(255,255,255,0.9)' },
   placeholder: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   section: { fontSize: 15, fontWeight: '700', paddingTop: 16, paddingBottom: 8, paddingHorizontal: 4 },
   videoBadge: {
