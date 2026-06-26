@@ -21,19 +21,18 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  clamp,
   FadeIn,
   FadeOut,
-  runOnJS,
+  type SharedValue,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
+  withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Glass } from '@/components/ui/glass';
+import { ZoomableImage } from '@/components/zoomable-image';
 import { showActionSheet, type MenuAction } from '@/lib/action-menu';
 import {
   addToAlbum,
@@ -50,7 +49,6 @@ import {
   type GridAsset,
 } from '@/lib/photos';
 import { queryClient } from '@/lib/query';
-import { motion } from '@/theme/tokens';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 function formatDateTime(iso?: string): { date: string; time: string } | null {
@@ -80,7 +78,21 @@ interface Item {
   sizeBytes?: number;
 }
 
-function ImagePage({ item, width, height }: { item: Item; width: number; height: number }) {
+function ImagePage({
+  item,
+  width,
+  height,
+  backdrop,
+  onDismiss,
+  onZoomChange,
+}: {
+  item: Item;
+  width: number;
+  height: number;
+  backdrop: SharedValue<number>;
+  onDismiss: () => void;
+  onZoomChange: (zoomed: boolean) => void;
+}) {
   const { data: uri } = useQuery({
     queryKey: ['original', item.id],
     queryFn: () => fetchOriginalUri(item.id, item.encrypted, item.mime),
@@ -88,14 +100,22 @@ function ImagePage({ item, width, height }: { item: Item; width: number; height:
   });
   const thumb = queryClient.getQueryData<string | null>(['thumb', item.id]);
   const source = uri ?? thumb ?? undefined;
-  return (
-    <View style={[styles.page, { width, height }]}>
-      {source ? (
-        <Image source={{ uri: source }} style={{ width, height }} contentFit="contain" transition={140} recyclingKey={item.id} />
-      ) : (
+  if (!source) {
+    return (
+      <View style={[styles.page, { width, height }]}>
         <ActivityIndicator color="#fff" />
-      )}
-    </View>
+      </View>
+    );
+  }
+  return (
+    <ZoomableImage
+      uri={source}
+      width={width}
+      height={height}
+      backdrop={backdrop}
+      onDismiss={onDismiss}
+      onZoomChange={onZoomChange}
+    />
   );
 }
 
@@ -214,14 +234,18 @@ export default function PhotoViewer() {
   const dt = formatDateTime(current.takenAt);
   const showStrip = items.length > 1;
 
-  const translateY = useSharedValue(0);
-  const dragScale = useSharedValue(1);
-  const pinchScale = useSharedValue(1);
   const bg = useSharedValue(1);
+  const chrome = useSharedValue(1);
+  const [zoomed, setZoomed] = useState(false);
 
   const dismiss = () => {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     router.back();
+  };
+
+  const onZoomChange = (z: boolean) => {
+    setZoomed(z);
+    chrome.value = withTiming(z ? 0 : 1, { duration: 160 });
   };
 
   const flashToast = (msg: string) => {
@@ -235,40 +259,8 @@ export default function PhotoViewer() {
     listRef.current?.scrollToIndex({ index: i, animated: true });
   };
 
-  const pan = Gesture.Pan()
-    .activeOffsetY(16)
-    .failOffsetX([-16, 16])
-    .onUpdate((e) => {
-      translateY.value = e.translationY;
-      const p = clamp(Math.abs(e.translationY) / 500, 0, 1);
-      dragScale.value = 1 - p * 0.18;
-      bg.value = 1 - clamp(Math.abs(e.translationY) / 360, 0, 0.9);
-    })
-    .onEnd((e) => {
-      if (e.translationY > 130 || e.velocityY > 900) {
-        runOnJS(dismiss)();
-      } else {
-        translateY.value = withSpring(0, motion.spring);
-        dragScale.value = withSpring(1, motion.spring);
-        bg.value = withSpring(1, motion.spring);
-      }
-    });
-
-  const pinch = Gesture.Pinch()
-    .onUpdate((e) => {
-      pinchScale.value = clamp(e.scale, 1, 4);
-    })
-    .onEnd(() => {
-      pinchScale.value = withSpring(1, motion.springSoft);
-    });
-
-  const gesture = Gesture.Simultaneous(pan, pinch);
-
-  const containerStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }, { scale: dragScale.value * pinchScale.value }],
-  }));
   const bgStyle = useAnimatedStyle(() => ({ opacity: bg.value }));
-  const chromeStyle = useAnimatedStyle(() => ({ opacity: bg.value }));
+  const chromeStyle = useAnimatedStyle(() => ({ opacity: bg.value * chrome.value }));
 
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const next = Math.round(e.nativeEvent.contentOffset.x / width);
@@ -338,11 +330,19 @@ export default function PhotoViewer() {
     showActionSheet(actions, 'Add to album');
   };
 
-  const onTrash = async () => {
+  const doTrash = async () => {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     await trashAssets([current.id]).catch(() => undefined);
     queryClient.invalidateQueries({ queryKey: ['assets'] });
     router.back();
+  };
+
+  const onTrash = () => {
+    const label = current.type === 'video' ? 'Move video to Trash' : 'Move photo to Trash';
+    showActionSheet(
+      [{ label, destructive: true, onPress: () => void doTrash() }],
+      'It will move to Trash and you can restore it within 30 days.',
+    );
   };
 
   const onRestore = async () => {
@@ -389,14 +389,14 @@ export default function PhotoViewer() {
   return (
     <View style={styles.root}>
       <Animated.View style={[styles.backdrop, bgStyle]} />
-      <GestureDetector gesture={gesture}>
-        <Animated.View style={[styles.fill, containerStyle]}>
+      <View style={styles.fill}>
           <FlatList
             ref={listRef}
             data={items}
             keyExtractor={(i) => i.id}
             horizontal
             pagingEnabled
+            scrollEnabled={!zoomed}
             showsHorizontalScrollIndicator={false}
             initialScrollIndex={startIndex}
             getItemLayout={(_, i) => ({ length: width, offset: width * i, index: i })}
@@ -405,14 +405,20 @@ export default function PhotoViewer() {
               item.type === 'video' ? (
                 <VideoPage item={item} width={width} height={height} />
               ) : (
-                <ImagePage item={item} width={width} height={height} />
+                <ImagePage
+                  item={item}
+                  width={width}
+                  height={height}
+                  backdrop={bg}
+                  onDismiss={dismiss}
+                  onZoomChange={onZoomChange}
+                />
               )
             }
             windowSize={3}
             maxToRenderPerBatch={3}
           />
-        </Animated.View>
-      </GestureDetector>
+        </View>
 
       <Animated.View style={[styles.chrome, chromeStyle]} pointerEvents="box-none">
         <LinearGradient colors={['rgba(0,0,0,0.5)', 'transparent']} style={styles.topScrim} pointerEvents="none" />
