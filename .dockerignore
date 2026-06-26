@@ -18,3 +18,10 @@ AGENTS.md
 docs
 Screen.png
 image.png
+
+# Media / large dev artifacts — never bake these into images (Dockerfiles do `COPY . .`)
+*.mov
+*.mp4
+*.webm
+*.avi
+*.mkv
