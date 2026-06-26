@@ -1,0 +1,107 @@
+name: mobile-build
+
+# Builds apps/mobile natively — no Expo EAS / cloud. `expo prebuild` generates the native projects
+# locally (the android/ios dirs are gitignored), then Gradle builds the Android APK and Xcode
+# compiles the iOS app. Watches apps/mobile and the workspace packages it depends on.
+#
+# Notes:
+#  - Android produces a DEBUG apk (auto debug-keystore, installable for testing). A release/signed
+#    apk needs an upload keystore wired into a signingConfig + secrets.
+#  - iOS compiles for the SIMULATOR with signing disabled — it proves the app builds. A distributable
+#    device .ipa needs Apple certs/profiles in CI (e.g. fastlane match), not set up here.
+#  - The iOS job needs Xcode 26 (the app uses iOS-26 glass APIs via expo-glass-effect); it selects the
+#    latest Xcode on the runner. If the runner image doesn't have Xcode 26 yet, that job will fail to
+#    compile the glass code until a macOS-26 runner is available.
+
+on:
+  push:
+    branches: [main]
+    paths: &paths
+      - "apps/mobile/**"
+      - "packages/core/**"
+      - "packages/i18n/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/mobile-build.yml"
+  pull_request:
+    paths: *paths
+  workflow_dispatch:
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter mobile typecheck
+
+  android:
+    needs: typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+      - run: pnpm install --frozen-lockfile
+
+      - name: Prebuild Android native project
+        working-directory: apps/mobile
+        run: pnpm exec expo prebuild --platform android --no-install
+
+      - name: Gradle assembleDebug
+        working-directory: apps/mobile/android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: polarhq-android-debug
+          path: apps/mobile/android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+  ios:
+    needs: typecheck
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - run: pnpm install --frozen-lockfile
+
+      - name: Prebuild iOS native project
+        working-directory: apps/mobile
+        run: pnpm exec expo prebuild --platform ios --no-install
+
+      - name: CocoaPods install
+        working-directory: apps/mobile/ios
+        run: pod install
+
+      - name: Build (iOS Simulator, no code signing)
+        working-directory: apps/mobile/ios
+        run: |
+          xcodebuild \
+            -workspace PolarHQ.xcworkspace \
+            -scheme PolarHQ \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build
