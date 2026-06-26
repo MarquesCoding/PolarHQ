@@ -1,17 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { PromptModal } from '@/components/prompt-modal';
 import { useColors } from '@/components/ui';
-import { showActionSheet } from '@/lib/action-menu';
 import { downloadAndShareDriveFile } from '@/lib/drive-files';
 import { fetchDriveThumbnailUri } from '@/lib/photos';
-import { decryptNodeName, fetchNodes, renameDriveNode, trashDriveNode, type DriveNode } from '@/lib/drive';
+import { decryptNodeName, fetchNodes, type DriveNode } from '@/lib/drive';
 
 const iconFor = (node: DriveNode): keyof typeof Ionicons.glyphMap => {
   if (node.kind === 'folder') return 'folder';
@@ -40,13 +37,17 @@ const formatSize = (bytes: number | null): string => {
 function Row({
   node,
   onOpenFolder,
-  onRename,
-  onDelete,
+  selectionMode,
+  selected,
+  onToggle,
+  onEnterSelect,
 }: {
   node: DriveNode;
   onOpenFolder: (n: DriveNode) => void;
-  onRename: (n: DriveNode) => void;
-  onDelete: (n: DriveNode) => void;
+  selectionMode?: boolean;
+  selected?: boolean;
+  onToggle: (n: DriveNode) => void;
+  onEnterSelect: (n: DriveNode) => void;
 }) {
   const c = useColors();
   const isFolder = node.kind === 'folder';
@@ -62,7 +63,9 @@ function Row({
   });
 
   const onPress = () => {
-    if (isFolder) {
+    if (selectionMode) {
+      onToggle(node);
+    } else if (isFolder) {
       onOpenFolder(node);
     } else if (node.photoAssetId) {
       router.push({
@@ -75,18 +78,19 @@ function Row({
   };
 
   const onLongPress = () => {
-    void Haptics.selectionAsync();
-    showActionSheet(
-      [
-        { label: 'Rename', onPress: () => onRename(node) },
-        { label: 'Delete', destructive: true, onPress: () => onDelete(node) },
-      ],
-      node.name,
-    );
+    if (selectionMode) onToggle(node);
+    else onEnterSelect(node);
   };
 
   return (
-    <Pressable onPress={onPress} onLongPress={onLongPress} style={styles.row}>
+    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={220} style={styles.row}>
+      {selectionMode ? (
+        <View
+          style={[styles.check, selected ? { backgroundColor: c.primary, borderColor: c.primary } : { borderColor: c.border }]}
+        >
+          {selected ? <Ionicons name="checkmark" size={14} color="#fff" /> : null}
+        </View>
+      ) : null}
       <View style={[styles.iconWrap, { backgroundColor: c.backgroundElement }]}>
         {thumbUri ? (
           <>
@@ -117,41 +121,25 @@ export function DriveContent({
   parentId,
   topInset,
   onOpenFolder,
+  selectionMode,
+  selectedIds,
+  onToggle,
+  onEnterSelect,
 }: {
   parentId: string | null;
   topInset: number;
   onOpenFolder: (node: DriveNode) => void;
+  selectionMode?: boolean;
+  selectedIds?: Set<string>;
+  onToggle: (node: DriveNode) => void;
+  onEnterSelect: (node: DriveNode) => void;
 }) {
   const c = useColors();
-  const queryClient = useQueryClient();
-  const [renameNode, setRenameNode] = useState<DriveNode | null>(null);
 
   const { data, isLoading, isError, refetch, isRefetching } = useQuery({
     queryKey: ['nodes', parentId ?? 'root'],
     queryFn: () => fetchNodes(parentId),
   });
-
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['nodes', parentId ?? 'root'] });
-
-  const onDelete = (node: DriveNode) => {
-    Alert.alert('Move to trash?', `“${node.name}” will be moved to the trash.`, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          await trashDriveNode(node.id).catch(() => undefined);
-          invalidate();
-        },
-      },
-    ]);
-  };
-
-  const onSubmitRename = async (value: string) => {
-    if (renameNode) await renameDriveNode(renameNode.id, value).catch(() => undefined);
-    setRenameNode(null);
-    invalidate();
-  };
 
   const children = (data?.children ?? [])
     .map(decryptNodeName)
@@ -160,46 +148,48 @@ export function DriveContent({
       return a.name.localeCompare(b.name);
     });
 
-  const body = isLoading ? (
-    <View style={[styles.loading, { paddingTop: topInset + 40 }]}>
-      <ActivityIndicator color={c.primary} />
-    </View>
-  ) : isError ? (
-    <View style={[styles.center, { paddingTop: topInset }]}>
-      <Text style={{ color: c.textSecondary }}>Couldn’t load this folder.</Text>
-    </View>
-  ) : children.length === 0 ? (
-    <View style={[styles.center, { paddingTop: topInset }]}>
-      <Ionicons name="folder-open-outline" size={40} color={c.textSecondary} />
-      <Text style={[styles.emptyText, { color: c.textSecondary }]}>This folder is empty</Text>
-    </View>
-  ) : (
+  if (isLoading) {
+    return (
+      <View style={[styles.loading, { paddingTop: topInset + 40 }]}>
+        <ActivityIndicator color={c.primary} />
+      </View>
+    );
+  }
+  if (isError) {
+    return (
+      <View style={[styles.center, { paddingTop: topInset }]}>
+        <Text style={{ color: c.textSecondary }}>Couldn’t load this folder.</Text>
+      </View>
+    );
+  }
+  if (children.length === 0) {
+    return (
+      <View style={[styles.center, { paddingTop: topInset }]}>
+        <Ionicons name="folder-open-outline" size={40} color={c.textSecondary} />
+        <Text style={[styles.emptyText, { color: c.textSecondary }]}>This folder is empty</Text>
+      </View>
+    );
+  }
+
+  return (
     <FlatList
       data={children}
       keyExtractor={(n) => n.id}
       renderItem={({ item }) => (
-        <Row node={item} onOpenFolder={onOpenFolder} onRename={(n) => setRenameNode(n)} onDelete={onDelete} />
+        <Row
+          node={item}
+          onOpenFolder={onOpenFolder}
+          selectionMode={selectionMode}
+          selected={selectedIds?.has(item.id)}
+          onToggle={onToggle}
+          onEnterSelect={onEnterSelect}
+        />
       )}
       contentContainerStyle={{ paddingTop: topInset, paddingBottom: 120 }}
       ItemSeparatorComponent={() => <View style={[styles.sep, { backgroundColor: c.border }]} />}
       onRefresh={refetch}
       refreshing={isRefetching}
     />
-  );
-
-  return (
-    <View style={styles.fill}>
-      {body}
-      <PromptModal
-        visible={renameNode !== null}
-        title="Rename"
-        placeholder="New name"
-        initialValue={renameNode?.name ?? ''}
-        confirmLabel="Rename"
-        onSubmit={onSubmitRename}
-        onCancel={() => setRenameNode(null)}
-      />
-    </View>
   );
 }
 
@@ -209,6 +199,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 },
   emptyText: { fontSize: 14 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 18, paddingVertical: 11 },
+  check: { width: 22, height: 22, borderRadius: 11, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   iconWrap: { width: 40, height: 40, borderRadius: 11, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   thumb: { width: 40, height: 40 },
   playBadge: {
