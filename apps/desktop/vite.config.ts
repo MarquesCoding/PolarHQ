@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
@@ -6,6 +7,14 @@ import tsconfigPaths from "vite-tsconfig-paths"
 import { phosphorNucleo } from "./phosphorNucleo"
 
 const host = process.env.TAURI_DEV_HOST
+
+/** Bundle version is the one source of truth Tauri compiles into the binary — inject it so the
+ *  sidebar footer always matches the actual build, never the (independently-bumped) top changelog
+ *  entry, which is what left a stale version showing after a release. */
+const tauriConf = JSON.parse(
+  readFileSync(fileURLToPath(new URL("./src-tauri/tauri.conf.json", import.meta.url)), "utf8"),
+) as { version?: string }
+const appVersion = process.env.VITE_APP_VERSION ?? tauriConf.version ?? "0.0.0"
 
 /** Reuse the web shell's static assets (onboarding images, locales) instead of duplicating them —
  *  both shells render the same `@workspace/screens`, which references `/onboarding/*` and `/locales/*`. */
@@ -28,6 +37,9 @@ export default defineConfig({
     watch: { ignored: ["**/src-tauri/**"] },
   },
   envPrefix: ["VITE_", "TAURI_ENV_*"],
+  define: {
+    "import.meta.env.VITE_APP_VERSION": JSON.stringify(appVersion),
+  },
   build: {
     // Match the web shell's default target. Tauri's boilerplate safari13/chrome105 is too old to
     // downlevel the CLIP/onnx worker's modern syntax; the webviews we target (recent WKWebView /

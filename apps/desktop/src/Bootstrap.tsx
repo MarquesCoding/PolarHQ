@@ -2,6 +2,8 @@ import { Suspense, lazy, useEffect, useState } from "react"
 import { openUrl } from "@tauri-apps/plugin-opener"
 import { configureCore } from "@workspace/core/config"
 import { configureHost } from "@workspace/core/host"
+import { configureSecureStore } from "@workspace/core/secureStore"
+import { tauriSecureStoreBackend } from "@lib/secureStore"
 import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
 import { loadLastServerUrl, loadServerUrl, saveServerUrl } from "@lib/server"
 import { nativeMediaUrl } from "@lib/native"
@@ -54,6 +56,7 @@ export const Bootstrap = () => {
       const [stored, last] = await Promise.all([loadServerUrl(), loadLastServerUrl()])
       connect(stored ?? last ?? "http://localhost:3001")
       if (inTauri) {
+        configureSecureStore(tauriSecureStoreBackend)
         configureHost({
           isDesktop: true,
           openExternal: (url) => void openUrl(url),
