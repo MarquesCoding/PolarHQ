@@ -207,10 +207,18 @@ const FlatSidebar = ({
           <div className="bg-sidebar-accent/40 focus-within:border-ring/40 flex items-center gap-2 rounded-lg border border-transparent px-2.5 py-1.5">
             <MagnifyingGlass className="text-muted-foreground size-4 shrink-0" />
             <input
+              type="search"
+              name="sidebar-search"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+              data-1p-ignore
+              data-lpignore="true"
               value={query}
               onChange={(event) => dispatch(setSearchQuery(event.target.value))}
               placeholder={searchPlaceholder}
-              className="placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-sm outline-none"
+              className="placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-sm outline-none [&::-webkit-search-cancel-button]:appearance-none"
             />
             <span className="text-muted-foreground/70 hidden items-center gap-0.5 sm:flex">
               <kbd className="bg-sidebar text-muted-foreground/80 rounded px-1 text-[10px]">⌘</kbd>
