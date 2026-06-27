@@ -104,6 +104,17 @@ export const fetchUpdateCheck = (): Promise<UpdateInfo> =>
 export const fetchAdminUsers = (): Promise<AdminUser[]> =>
   apiFetch<{ users: AdminUser[] }>("/api/v1/admin/users").then((r) => r.users)
 
+export const createAdminUser = (input: {
+  email: string
+  password: string
+  name: string
+  role?: "user" | "admin"
+}): Promise<{ user: AdminUser }> =>
+  apiFetch<{ user: AdminUser }>("/api/v1/admin/users", {
+    method: "POST",
+    body: JSON.stringify(input),
+  })
+
 export const fetchAdminUser = (id: string): Promise<AdminUserDetail> =>
   apiFetch<{ user: AdminUserDetail }>(`/api/v1/admin/users/${id}`).then((r) => r.user)
 
@@ -195,6 +206,22 @@ export const createAdminRole = (
     method: "POST",
     body: JSON.stringify({ name, description, permissions }),
   })
+
+export interface AdminRoleDetail extends AdminRole {
+  permissions: string[]
+}
+
+export const fetchAdminRole = (id: string): Promise<AdminRoleDetail> =>
+  apiFetch<{ role: AdminRoleDetail }>(`/api/v1/admin/roles/${id}`).then((r) => r.role)
+
+export const updateAdminRole = (
+  id: string,
+  patch: { name?: string; description?: string; permissions?: string[] },
+): Promise<unknown> =>
+  apiFetch(`/api/v1/admin/roles/${id}`, { method: "PATCH", body: JSON.stringify(patch) })
+
+export const deleteAdminRole = (id: string): Promise<unknown> =>
+  apiFetch(`/api/v1/admin/roles/${id}`, { method: "DELETE" })
 
 export const assignRole = (userId: string, roleId: string): Promise<unknown> =>
   apiFetch("/api/v1/admin/role-assignments", {

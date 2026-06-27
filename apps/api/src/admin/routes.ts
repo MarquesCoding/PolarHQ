@@ -35,6 +35,32 @@ adminRoutes.get("/users", guard("admin.users.manage"), async (c) => {
   return c.json({ users: await adminService.listUsers() })
 })
 
+adminRoutes.post("/users", guard("admin.users.manage"), async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({
+      email: z.string().email(),
+      password: z.string().min(8),
+      name: z.string().min(1),
+      role: z.enum(["user", "admin"]).optional(),
+    }),
+  )
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
+  try {
+    const user = await adminService.createUser(parsed.data)
+    await adminService.recordAudit({
+      actorId: c.get("userId"),
+      action: "user.create",
+      targetType: "user",
+      targetId: user.id,
+    })
+    return c.json({ user }, 201)
+  } catch (error) {
+    const message = error instanceof adminService.AdminError ? error.message : "admin.createUserFailed"
+    return c.json({ error: message }, 400)
+  }
+})
+
 adminRoutes.get("/settings", guard("admin.registration.manage"), async (c) => {
   return c.json({ settings: await adminService.getSettings() })
 })
@@ -202,6 +228,57 @@ adminRoutes.post("/roles", guard("admin.roles.manage"), async (c) => {
   )
   if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
   return c.json({ role: await adminService.createRole(parsed.data) }, 201)
+})
+
+adminRoutes.get("/roles/:id", guard("admin.roles.manage"), async (c) => {
+  const role = await adminService.getRoleDetail(c.req.param("id"))
+  if (!role) return c.json({ error: "notFound" }, 404)
+  return c.json({ role })
+})
+
+adminRoutes.patch("/roles/:id", guard("admin.roles.manage"), async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({
+      name: z.string().min(1).optional(),
+      description: z.string().optional(),
+      permissions: z.array(z.string()).optional(),
+    }),
+  )
+  if (!parsed.success) return c.json({ error: "invalidInput" }, 400)
+  try {
+    const role = await adminService.updateRole(c.req.param("id"), parsed.data)
+    await adminService.recordAudit({
+      actorId: c.get("userId"),
+      action: "role.update",
+      targetType: "role",
+      targetId: c.req.param("id"),
+    })
+    return c.json({ role })
+  } catch (error) {
+    if (error instanceof adminService.AdminError) {
+      return c.json({ error: error.message }, error.message === "notFound" ? 404 : 400)
+    }
+    throw error
+  }
+})
+
+adminRoutes.delete("/roles/:id", guard("admin.roles.manage"), async (c) => {
+  try {
+    await adminService.deleteRole(c.req.param("id"))
+    await adminService.recordAudit({
+      actorId: c.get("userId"),
+      action: "role.delete",
+      targetType: "role",
+      targetId: c.req.param("id"),
+    })
+    return c.json({ ok: true })
+  } catch (error) {
+    if (error instanceof adminService.AdminError) {
+      return c.json({ error: error.message }, error.message === "notFound" ? 404 : 400)
+    }
+    throw error
+  }
 })
 
 adminRoutes.post("/role-assignments", guard("admin.roles.manage"), async (c) => {

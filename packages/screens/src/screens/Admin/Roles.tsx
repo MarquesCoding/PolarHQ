@@ -1,10 +1,13 @@
-import { useMemo, useState } from "react"
+import { type ReactElement, useEffect, useMemo, useState } from "react"
 import {
   type AdminPermission,
   type AdminRole,
   createAdminRole,
+  deleteAdminRole,
   fetchAdminPermissions,
+  fetchAdminRole,
   fetchAdminRoles,
+  updateAdminRole,
 } from "@workspace/core/admin"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@workspace/ui/components/badge"
@@ -46,12 +49,23 @@ const groupPermissions = (permissions: AdminPermission[]): PermissionGroup[] => 
     .sort((a, b) => a.app.localeCompare(b.app))
 }
 
-const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
+interface RoleDialogProps {
+  /** The role being edited, or null/undefined for create mode. */
+  role?: AdminRole | null
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onSaved: () => void
+  /** Create mode renders its own trigger button; edit mode is opened by the parent. */
+  trigger?: ReactElement
+}
+
+const RoleDialog = ({ role, open, onOpenChange, onSaved, trigger }: RoleDialogProps) => {
   const { t } = useTranslation("admin")
-  const [open, setOpen] = useState(false)
+  const isEdit = Boolean(role)
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   const { data: permissions } = useQuery({
     queryKey: ["admin", "permissions"],
@@ -59,6 +73,27 @@ const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
     enabled: open,
   })
   const groups = useMemo(() => groupPermissions(permissions ?? []), [permissions])
+
+  const { data: detail } = useQuery({
+    queryKey: ["admin", "roles", role?.id],
+    queryFn: () => fetchAdminRole(role!.id),
+    enabled: open && isEdit,
+  })
+
+  // Prefill from the role being edited (or reset to blank for create) whenever the dialog opens.
+  useEffect(() => {
+    if (!open) return
+    setConfirmingDelete(false)
+    if (isEdit && detail) {
+      setName(detail.name)
+      setDescription(detail.description ?? "")
+      setSelected(new Set(detail.permissions))
+    } else if (!isEdit) {
+      setName("")
+      setDescription("")
+      setSelected(new Set())
+    }
+  }, [open, isEdit, detail])
 
   const toggle = (key: string, on: boolean) =>
     setSelected((prev) => {
@@ -78,25 +113,42 @@ const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
       return next
     })
 
-  const create = useMutation({
-    mutationFn: () => createAdminRole(name.trim(), description.trim(), [...selected]),
+  const save = useMutation({
+    mutationFn: () =>
+      isEdit
+        ? updateAdminRole(role!.id, {
+            name: name.trim(),
+            description: description.trim(),
+            permissions: [...selected],
+          })
+        : createAdminRole(name.trim(), description.trim(), [...selected]),
     onSuccess: () => {
-      toast.success(t("createRoleDialog.created"))
-      setName("")
-      setDescription("")
-      setSelected(new Set())
-      setOpen(false)
-      onCreated()
+      toast.success(isEdit ? t("createRoleDialog.updated") : t("createRoleDialog.created"))
+      onOpenChange(false)
+      onSaved()
     },
-    onError: () => toast.error(t("createRoleDialog.createError")),
+    onError: () =>
+      toast.error(isEdit ? t("createRoleDialog.updateError") : t("createRoleDialog.createError")),
+  })
+
+  const remove = useMutation({
+    mutationFn: () => deleteAdminRole(role!.id),
+    onSuccess: () => {
+      toast.success(t("createRoleDialog.deleted"))
+      onOpenChange(false)
+      onSaved()
+    },
+    onError: () => toast.error(t("createRoleDialog.deleteError")),
   })
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button>{t("createRoleDialog.newRole")}</Button>} />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {trigger ? <DialogTrigger render={trigger} /> : null}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("createRoleDialog.newRole")}</DialogTitle>
+          <DialogTitle>
+            {isEdit ? t("createRoleDialog.editRole") : t("createRoleDialog.newRole")}
+          </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
@@ -158,9 +210,35 @@ const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
           </div>
         </div>
         <DialogFooter>
+          {isEdit ? (
+            confirmingDelete ? (
+              <div className="mr-auto flex items-center gap-2">
+                <span className="text-muted-foreground text-xs">
+                  {t("createRoleDialog.deleteConfirm")}
+                </span>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  disabled={remove.isPending}
+                  onClick={() => remove.mutate()}
+                >
+                  {t("createRoleDialog.delete")}
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:text-destructive mr-auto"
+                onClick={() => setConfirmingDelete(true)}
+              >
+                {t("createRoleDialog.delete")}
+              </Button>
+            )
+          ) : null}
           <DialogClose render={<Button variant="ghost">{t("createRoleDialog.cancel")}</Button>} />
-          <Button disabled={!name.trim() || create.isPending} onClick={() => create.mutate()}>
-            {t("createRoleDialog.createRole")}
+          <Button disabled={!name.trim() || save.isPending} onClick={() => save.mutate()}>
+            {isEdit ? t("createRoleDialog.saveChanges") : t("createRoleDialog.createRole")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -171,11 +249,13 @@ const CreateRoleDialog = ({ onCreated }: { onCreated: () => void }) => {
 const Roles = () => {
   const { t } = useTranslation("admin")
   const queryClient = useQueryClient()
+  const [createOpen, setCreateOpen] = useState(false)
+  const [editing, setEditing] = useState<AdminRole | null>(null)
   const { data: roles, isLoading } = useQuery({
     queryKey: ["admin", "roles"],
     queryFn: fetchAdminRoles,
   })
-  const onCreated = () => {
+  const onSaved = () => {
     void queryClient.invalidateQueries({ queryKey: ["admin", "roles"] })
     void queryClient.invalidateQueries({ queryKey: ["admin", "overview"] })
   }
@@ -191,6 +271,11 @@ const Roles = () => {
           <span className="text-muted-foreground truncate text-xs">{role.description}</span>
         ) : null}
       </div>
+      {!role.isSystem ? (
+        <Button variant="ghost" size="sm" onClick={() => setEditing(role)}>
+          {t("roles.edit")}
+        </Button>
+      ) : null}
     </div>
   )
 
@@ -198,7 +283,14 @@ const Roles = () => {
     <AdminPage
       title={t("roles.title")}
       description={t("roles.description")}
-      action={<CreateRoleDialog onCreated={onCreated} />}
+      action={
+        <RoleDialog
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          onSaved={onSaved}
+          trigger={<Button>{t("createRoleDialog.newRole")}</Button>}
+        />
+      }
     >
       {isLoading ? (
         <PageSpinner />
@@ -207,6 +299,12 @@ const Roles = () => {
           {(roles ?? []).map(roleRow)}
         </div>
       )}
+      <RoleDialog
+        role={editing}
+        open={editing !== null}
+        onOpenChange={(open) => !open && setEditing(null)}
+        onSaved={onSaved}
+      />
     </AdminPage>
   )
 }

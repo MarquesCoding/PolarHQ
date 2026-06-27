@@ -1,5 +1,5 @@
 import { db, schema } from "@workspace/db"
-import { getPermissionCatalog, resolveLimit } from "@workspace/auth"
+import { auth, getPermissionCatalog, resolveLimit } from "@workspace/auth"
 import { encryptSecret } from "@workspace/config"
 import { enqueueBackupRun } from "@workspace/jobs"
 import { and, count, desc, eq, isNull, sql } from "drizzle-orm"
@@ -51,6 +51,74 @@ export const createRole = async (input: CreateRoleInput) => {
     )
   }
   return role
+}
+
+/** One role with its allow-listed permission keys, for the role editor. */
+export const getRoleDetail = async (roleId: string) => {
+  const rows = await db.select().from(schema.roles).where(eq(schema.roles.id, roleId)).limit(1)
+  const role = rows[0]
+  if (!role) return null
+  const perms = await db
+    .select({ permission: schema.rolePermissions.permission })
+    .from(schema.rolePermissions)
+    .where(
+      and(eq(schema.rolePermissions.roleId, roleId), eq(schema.rolePermissions.effect, "allow")),
+    )
+  return { ...role, permissions: perms.map((row) => row.permission) }
+}
+
+export class AdminError extends Error {}
+
+export interface UpdateRoleInput {
+  name?: string
+  description?: string
+  permissions?: string[]
+}
+
+/** Edit a custom role's name/description and replace its permission set. System roles are immutable
+ *  (they're re-seeded on boot), so editing one is refused. */
+export const updateRole = async (roleId: string, input: UpdateRoleInput) => {
+  const existing = (
+    await db.select().from(schema.roles).where(eq(schema.roles.id, roleId)).limit(1)
+  )[0]
+  if (!existing) throw new AdminError("notFound")
+  if (existing.isSystem) throw new AdminError("admin.cannotEditSystemRole")
+
+  if (input.name !== undefined || input.description !== undefined) {
+    await db
+      .update(schema.roles)
+      .set({
+        ...(input.name !== undefined ? { name: input.name } : {}),
+        ...(input.description !== undefined ? { description: input.description } : {}),
+      })
+      .where(eq(schema.roles.id, roleId))
+  }
+  if (input.permissions !== undefined) {
+    await db.delete(schema.rolePermissions).where(eq(schema.rolePermissions.roleId, roleId))
+    if (input.permissions.length > 0) {
+      await db.insert(schema.rolePermissions).values(
+        input.permissions.map((permission) => ({
+          roleId,
+          permission,
+          effect: "allow" as const,
+          scopeType: "global" as const,
+        })),
+      )
+    }
+  }
+  return getRoleDetail(roleId)
+}
+
+/** Delete a custom role and all its assignments. System roles can't be deleted. */
+export const deleteRole = async (roleId: string) => {
+  const existing = (
+    await db.select().from(schema.roles).where(eq(schema.roles.id, roleId)).limit(1)
+  )[0]
+  if (!existing) throw new AdminError("notFound")
+  if (existing.isSystem) throw new AdminError("admin.cannotDeleteSystemRole")
+  await db.delete(schema.subjectRoles).where(eq(schema.subjectRoles.roleId, roleId))
+  await db.delete(schema.rolePermissions).where(eq(schema.rolePermissions.roleId, roleId))
+  await db.delete(schema.roles).where(eq(schema.roles.id, roleId))
 }
 
 export interface AssignRoleInput {
@@ -275,6 +343,35 @@ export const setUserBanned = async (userId: string, banned: boolean, reason?: st
     .update(schema.user)
     .set({ banned, banReason: banned ? (reason ?? null) : null, updatedAt: new Date() })
     .where(eq(schema.user.id, userId))
+}
+
+export interface CreateUserInput {
+  email: string
+  password: string
+  name: string
+  role?: "user" | "admin"
+}
+
+/**
+ * Admin-side account creation (for invite-only instances). Reuses better-auth's signUp so the
+ * password is hashed the same way as self-registration, then marks the email verified (no SMTP) and
+ * sets the coarse role. Bypasses the public registration gate because it's an internal call.
+ */
+export const createUser = async (input: CreateUserInput) => {
+  let userId: string
+  try {
+    const signUp = await auth.api.signUpEmail({
+      body: { email: input.email, password: input.password, name: input.name },
+    })
+    userId = signUp.user.id
+  } catch {
+    throw new AdminError("admin.createUserFailed")
+  }
+  await db
+    .update(schema.user)
+    .set({ emailVerified: true, role: input.role ?? "user", updatedAt: new Date() })
+    .where(eq(schema.user.id, userId))
+  return { id: userId, email: input.email, name: input.name, role: input.role ?? "user" }
 }
 
 /** Set a user's coarse better-auth role string (e.g. "admin", "user"). */
