@@ -71,6 +71,13 @@
       "when": 1782431192072,
       "tag": "0009_nice_red_skull",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1782593243299,
+      "tag": "0010_soft_switch",
+      "breakpoints": true
     }
   ]
 }

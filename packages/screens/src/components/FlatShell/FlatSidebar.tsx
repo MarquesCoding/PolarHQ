@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useState } from "react"
 import { usePathname, useNavigation } from "@workspace/screens/platform"
 import logo from "./logo.png"
 import { fetchApps } from "@workspace/core/apps"
+import { fetchSetupStatus } from "@workspace/core/setup"
 import { authClient } from "@workspace/core/authClient"
 import { lockKeys } from "@workspace/core/e2e"
 import { fetchStorageStats } from "@workspace/core/drive"
@@ -71,6 +72,8 @@ const FlatSidebar = ({
 
   const { data: apps } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
   const isAdmin = (apps ?? []).some((app) => app.id === "admin" && app.available)
+  const { data: setupStatus } = useQuery({ queryKey: ["setup-status"], queryFn: fetchSetupStatus })
+  const readOnly = (setupStatus?.demoMode ?? false) && !isAdmin
   const { data: usage } = useQuery({ queryKey: ["drive", "storage"], queryFn: fetchStorageStats })
   const [devicesOpen, setDevicesOpen] = useState(false)
   const [storageOpen, setStorageOpen] = useState(false)
@@ -185,9 +188,11 @@ const FlatSidebar = ({
             <DropdownMenuItem onClick={() => router.push("/account")}>
               {t("flatSidebar.account")}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setDevicesOpen(true)}>
-              {t("flatSidebar.devices")}
-            </DropdownMenuItem>
+            {!readOnly ? (
+              <DropdownMenuItem onClick={() => setDevicesOpen(true)}>
+                {t("flatSidebar.devices")}
+              </DropdownMenuItem>
+            ) : null}
             {isAdmin ? (
               <DropdownMenuItem onClick={() => router.push("/admin")}>
                 <ShieldCheck className="size-4" />

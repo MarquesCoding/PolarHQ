@@ -71,6 +71,7 @@ adminRoutes.patch("/settings", guard("admin.registration.manage"), async (c) => 
     z.object({
       registrationMode: z.enum(["invite_only", "open", "closed"]).optional(),
       allowedEmailDomains: z.array(z.string()).nullable().optional(),
+      demoMode: z.boolean().optional(),
       instanceName: z.string().nullable().optional(),
       logoUrl: z.string().nullable().optional(),
       accentColor: z.string().nullable().optional(),

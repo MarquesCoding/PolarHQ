@@ -175,6 +175,8 @@
   "settings": {
     "allowedDomains": "Allowed email domains",
     "configure": "Configure",
+    "demoMode": "Demo mode (read-only)",
+    "demoModeHint": "When on, only admins can upload, edit, or delete. Everyone else can view but not change anything.",
     "description": "Registration and instance-wide policy.",
     "domainsHint": "Comma-separated. Leave blank to allow any domain.",
     "domainsPlaceholder": "example.com, team.org",

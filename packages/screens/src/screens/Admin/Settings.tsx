@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { Switch } from "@workspace/ui/components/switch"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
@@ -38,6 +39,16 @@ const Settings = () => {
     setMode(settings.registrationMode)
     setDomains((settings.allowedEmailDomains ?? []).join(", "))
   }, [settings])
+
+  const demo = useMutation({
+    mutationFn: (demoMode: boolean) => updateAdminSettings({ demoMode }),
+    onSuccess: () => {
+      toast.success(t("settings.saved"))
+      void queryClient.invalidateQueries({ queryKey: ["admin", "settings"] })
+      void queryClient.invalidateQueries({ queryKey: ["setup-status"] })
+    },
+    onError: () => toast.error(t("settings.saveError")),
+  })
 
   const save = useMutation({
     mutationFn: () => {
@@ -96,6 +107,18 @@ const Settings = () => {
                 {t("settings.saveChanges")}
               </Button>
             </div>
+          </div>
+
+          <div className="panel flex items-center justify-between gap-3 rounded-xl p-5">
+            <div className="flex min-w-0 flex-col">
+              <span className="text-sm font-medium">{t("settings.demoMode")}</span>
+              <span className="text-muted-foreground text-xs">{t("settings.demoModeHint")}</span>
+            </div>
+            <Switch
+              checked={settings?.demoMode ?? false}
+              disabled={demo.isPending}
+              onCheckedChange={(checked) => demo.mutate(checked)}
+            />
           </div>
 
           <div className="panel flex items-center justify-between gap-3 rounded-xl p-5">

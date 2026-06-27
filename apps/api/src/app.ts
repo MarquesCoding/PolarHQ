@@ -31,6 +31,7 @@ import { renderShareNotFound, renderSharePage } from "./drive/sharePage"
 import { getInstanceSettings } from "./instance"
 import { registerPhotosModule } from "./photos/module"
 import { photosRoutes } from "./photos/routes"
+import { demoReadOnly } from "./demo"
 import { appRouter } from "./router"
 import { setupRoutes } from "./setup/routes"
 
@@ -118,6 +119,13 @@ app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw))
 app.route("/api/v1/account", accountRoutes)
 app.route("/api/v1/admin", adminRoutes)
 app.route("/api/v1/apps", appsRoutes)
+
+// Demo/read-only gate: blocks content mutations for non-admins when demo mode is on. Must precede
+// the content routes. Docs keeps the E2E key endpoints open so viewers can still unlock encryption.
+app.use("/api/v1/photos/*", demoReadOnly())
+app.use("/api/v1/drive/*", demoReadOnly())
+app.use("/api/v1/docs/*", demoReadOnly(["/keys"]))
+
 app.route("/api/v1/photos", photosRoutes)
 app.route("/api/v1/drive", driveRoutes)
 app.route("/api/v1/docs", docsRoutes)
