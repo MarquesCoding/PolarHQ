@@ -1,7 +1,8 @@
-import { Suspense, lazy } from "react"
-import { Navigate, Route, Routes, useParams } from "react-router"
+import { type ReactNode, Suspense, lazy } from "react"
+import { Navigate, Route, Routes, useLocation, useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 import { type StorageKind, fetchSavedSearches } from "@workspace/core/drive"
+import { fetchSetupStatus } from "@workspace/core/setup"
 import { t } from "@workspace/i18n/config"
 import {
   AdminLayout,
@@ -111,8 +112,23 @@ const DocsIdRedirect = () => {
   return <Navigate to={`/document/${id}`} replace />
 }
 
+/**
+ * On a fresh instance (no admin yet) every route funnels to the first-run wizard, so a new server
+ * lands on /setup instead of a dead-end /sign-in form. Fails open: if the status can't be fetched we
+ * render the app normally rather than trapping the user.
+ */
+const SetupGate = ({ children }: { children: ReactNode }) => {
+  const location = useLocation()
+  const { data } = useQuery({ queryKey: ["setup-status"], queryFn: fetchSetupStatus })
+  if (data && !data.setupCompleted && location.pathname !== "/setup") {
+    return <Navigate to="/setup" replace />
+  }
+  return children
+}
+
 export const AppRoutes = () => (
-  <Routes>
+  <SetupGate>
+    <Routes>
     <Route path="/" element={<Navigate to="/photos" replace />} />
     <Route path="/sign-in" element={<SignIn />} />
     <Route path="/setup" element={<Setup />} />
@@ -167,5 +183,6 @@ export const AppRoutes = () => (
     <Route path="/sheet/:id" element={<SheetEditorRoute />} />
     <Route path="/document/:id" element={<DocEditorRoute />} />
     <Route path="/whiteboard/:id" element={<WhiteboardEditorRoute />} />
-  </Routes>
+    </Routes>
+  </SetupGate>
 )
