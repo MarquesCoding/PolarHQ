@@ -88,28 +88,55 @@ const fetchPexels = async () => {
   }
 }
 
+/** A broad topic spread so 10k photos look like a real, varied library (not one subject). */
+const UNSPLASH_TOPICS = [
+  "nature", "landscape", "mountains", "ocean", "forest", "city", "architecture", "street",
+  "travel", "food", "coffee", "animals", "dogs", "cats", "wildlife", "flowers", "people",
+  "portrait", "wedding", "party", "beach", "sunset", "winter", "autumn", "desert", "sky",
+  "cars", "interior", "technology", "sports", "music", "art", "night", "rain", "garden",
+]
+
 const fetchUnsplash = async () => {
   const key = process.env.UNSPLASH_ACCESS_KEY
   if (!key) throw new Error("set UNSPLASH_ACCESS_KEY (https://unsplash.com/developers)")
-  console.warn("NOTE: Unsplash = photos only, demo API ~50 req/hr. Use their dataset for bulk.")
-  let page = 1
+  const width = Number(process.env.UNSPLASH_WIDTH ?? 4000) // high-res; ~2-5 MB each
+  const seen = new Set<string>()
+  let topicIdx = 0
+  const page: Record<string, number> = {}
+
   while (dirBytes() < TARGET_BYTES) {
-    const res = await fetch(
-      `https://api.unsplash.com/photos?per_page=30&page=${page}&client_id=${key}`,
-    )
+    const topic = UNSPLASH_TOPICS[topicIdx % UNSPLASH_TOPICS.length]!
+    page[topic] = (page[topic] ?? 0) + 1
+    const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(topic)}&per_page=30&page=${page[topic]}&content_filter=high&client_id=${key}`
+    const res = await fetch(url)
+    if (res.status === 403) {
+      console.warn("  rate-limited by Unsplash (hourly cap) — stopping. Re-run later to continue.")
+      break
+    }
     if (!res.ok) throw new Error(`unsplash ${res.status}: ${await res.text()}`)
-    const photos = (await res.json()) as { id: string; urls: { full: string; raw: string } }[]
-    if (photos.length === 0) break
-    for (const photo of photos) {
+    const data = (await res.json()) as {
+      results?: { id: string; urls: { raw: string } }[]
+    }
+    const results = data.results ?? []
+    if (results.length === 0) {
+      topicIdx++ // exhausted this topic — move on
+      if (topicIdx >= UNSPLASH_TOPICS.length * 50) break
+      continue
+    }
+    for (const photo of results) {
       if (dirBytes() >= TARGET_BYTES) break
+      if (seen.has(photo.id)) continue
+      seen.add(photo.id)
       try {
-        await download(`${photo.urls.raw}&w=4000&q=85&fm=jpg`, `unsplash-${photo.id}.jpg`)
+        await download(`${photo.urls.raw}&w=${width}&q=80&fm=jpg`, `unsplash-${photo.id}.jpg`)
       } catch (error) {
         console.warn(`  skip: ${(error as Error).message}`)
       }
     }
-    console.log(`  page ${page} → ${fmtGb(dirBytes())} / ${fmtGb(TARGET_BYTES)}`)
-    page++
+    console.log(
+      `  ${topic} p${page[topic]} · ${seen.size} photos · ${fmtGb(dirBytes())} / ${fmtGb(TARGET_BYTES)}`,
+    )
+    topicIdx++ // round-robin topics for variety
   }
 }
 
