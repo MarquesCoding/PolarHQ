@@ -1,0 +1,154 @@
+# PolarHQ — public demo stack (demo.polarhq.app).
+#
+# Same services as docker-compose.yml, but tuned for a public, TLS-terminated
+# deployment driven by CI:
+#   • Secrets/URLs come from a sibling `.env` file (NOT committed) instead of being
+#     baked in — see docker/demo.env.example.
+#   • Caddy serves ${DOMAIN} directly on 80/443 with automatic Let's Encrypt certs.
+#   • Files live on a local-disk volume (STORAGE_DRIVER=fs).
+#
+# The CI deploy (.github/workflows/deploy.yml) copies this file + pulls the latest
+# ghcr images, then runs `docker compose -f docker-compose.demo.yml up -d`.
+name: polarhq
+
+x-app-env: &app-env
+  NODE_ENV: production
+  APP_NAME: ${APP_NAME:-PolarHQ}
+  AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
+  API_URL: ${PUBLIC_URL:?set PUBLIC_URL in .env}
+  WEB_URL: ${PUBLIC_URL:?set PUBLIC_URL in .env}
+  DATABASE_URL: postgres://orbit:${POSTGRES_PASSWORD:-orbit}@postgres:5432/orbit
+  REDIS_URL: redis://redis:6379
+  STORAGE_DRIVER: fs
+  STORAGE_FS_ROOT: /data/storage
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: orbit
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-orbit}
+      POSTGRES_DB: orbit
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orbit -d orbit"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    image: ghcr.io/marquescoding/polarhq-app:latest
+    command: ["pnpm", "--filter", "@workspace/db", "db:migrate"]
+    environment: *app-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    image: ghcr.io/marquescoding/polarhq-app:latest
+    environment: *app-env
+    expose:
+      - "3001"
+    volumes:
+      - storage-data:/data/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  media:
+    image: ghcr.io/marquescoding/polarhq-app:latest
+    command: ["pnpm", "--filter", "@workspace/media", "start"]
+    environment: *app-env
+    volumes:
+      - storage-data:/data/storage
+    depends_on:
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  backup:
+    image: ghcr.io/marquescoding/polarhq-app:latest
+    command: ["pnpm", "--filter", "@workspace/backup", "start"]
+    environment: *app-env
+    volumes:
+      - storage-data:/data/storage
+    depends_on:
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  web:
+    image: ghcr.io/marquescoding/polarhq-web:latest
+    environment:
+      NODE_ENV: production
+      # vite preview's host allowlist derives from this — keeps the public domain out of the image.
+      PUBLIC_URL: ${PUBLIC_URL:?set PUBLIC_URL in .env}
+    expose:
+      - "3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # Public front door: automatic HTTPS for ${DOMAIN} via Let's Encrypt. Needs 80+443
+  # reachable from the internet and DNS for ${DOMAIN} pointed at this host.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env}
+    configs:
+      - source: caddyfile
+        target: /etc/caddy/Caddyfile
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - web
+      - api
+
+configs:
+  caddyfile:
+    content: |
+      ${DOMAIN:?set DOMAIN in .env} {
+      	@api path /api/* /ws /ws/* /health /_sodium.js /s/*
+      	handle @api {
+      		reverse_proxy api:3001
+      	}
+      	handle {
+      		reverse_proxy web:3000
+      	}
+      }
+
+volumes:
+  postgres-data:
+  redis-data:
+  storage-data:
+  caddy-data:
+  caddy-config:
