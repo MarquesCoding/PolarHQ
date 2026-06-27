@@ -157,9 +157,19 @@ const fmtBytes = (n: number): string => {
 
 const main = async () => {
   if (!existsSync(MEDIA_DIR)) throw new Error(`MEDIA_DIR not found: ${MEDIA_DIR}`)
-  const files = walk(MEDIA_DIR)
+  let files = walk(MEDIA_DIR)
   if (files.length === 0) throw new Error(`no supported media under ${MEDIA_DIR}`)
   const totalBytes = files.reduce((sum, f) => sum + statSync(f).size, 0)
+
+  // Disk-safe cap: only seed up to MAX_SEED_GB of source bytes (the encrypted copy is ~the same size
+  // on the server), so a too-large media folder can't overfill the VPS.
+  const maxBytes = process.env.MAX_SEED_GB ? Number(process.env.MAX_SEED_GB) * 1024 ** 3 : Infinity
+  if (Number.isFinite(maxBytes) && totalBytes > maxBytes) {
+    let acc = 0
+    files = files.filter((f) => (acc += statSync(f).size) <= maxBytes)
+    console.log(`Capping to ${fmtBytes(maxBytes)} → ${files.length} files (of total ${fmtBytes(totalBytes)}).`)
+  }
+
   const planned = plan(files)
   const bursts = planned.filter((p, idx) => idx > 0 && p.takenAtMs - planned[idx - 1]!.takenAtMs < 3000)
   const withGps = planned.filter((p) => p.gps).length
