@@ -36,14 +36,24 @@ const dirBytes = (): number => {
 
 const fmtGb = (n: number) => `${(n / 1024 ** 3).toFixed(2)} GB`
 
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+/** Download with backoff on 429 (Flickr's CDN rate-limits sustained pulls) so photos aren't dropped. */
 const download = async (url: string, name: string, headers?: Record<string, string>) => {
   const dest = join(OUT_DIR, name)
   if (existsSync(dest)) return statSync(dest).size
-  const res = await fetch(url, { headers })
-  if (!res.ok) throw new Error(`download ${res.status}`)
-  const buf = Buffer.from(await res.arrayBuffer())
-  writeFileSync(dest, buf)
-  return buf.length
+  for (let attempt = 0; ; attempt++) {
+    const res = await fetch(url, { headers })
+    if (res.status === 429 || res.status === 503) {
+      if (attempt >= 6) throw new Error(`download ${res.status} (gave up)`)
+      await wait(2000 * (attempt + 1)) // 2s,4s,…,12s
+      continue
+    }
+    if (!res.ok) throw new Error(`download ${res.status}`)
+    const buf = Buffer.from(await res.arrayBuffer())
+    writeFileSync(dest, buf)
+    return buf.length
+  }
 }
 
 /** Broad topic spread so the library looks varied (not one subject), shared by Pexels + Unsplash. */
@@ -282,6 +292,7 @@ const fetchFlickr = async () => {
             JSON.stringify({ lat: Number(p.latitude), lng: Number(p.longitude) }),
           )
         }
+        await wait(Number(process.env.DOWNLOAD_DELAY_MS ?? 250)) // be gentle on Flickr's CDN
       } catch (error) {
         console.warn(`  skip ${p.id}: ${(error as Error).message}`)
       }
