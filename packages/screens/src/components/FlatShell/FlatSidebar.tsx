@@ -9,7 +9,7 @@ import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setSearchQuery } from "@workspace/screens/store/uiSlice"
-import { CaretUpDown, MagnifyingGlass, SignOut } from "@phosphor-icons/react"
+import { CaretUpDown, MagnifyingGlass, ShieldCheck, SignOut } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
@@ -70,6 +70,7 @@ const FlatSidebar = ({
   const { data: session } = authClient.useSession()
 
   const { data: apps } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
+  const isAdmin = (apps ?? []).some((app) => app.id === "admin" && app.available)
   const { data: usage } = useQuery({ queryKey: ["drive", "storage"], queryFn: fetchStorageStats })
   const [devicesOpen, setDevicesOpen] = useState(false)
   const [storageOpen, setStorageOpen] = useState(false)
@@ -187,9 +188,12 @@ const FlatSidebar = ({
             <DropdownMenuItem onClick={() => setDevicesOpen(true)}>
               {t("flatSidebar.devices")}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push("/admin")}>
-              {t("flatSidebar.settings")}
-            </DropdownMenuItem>
+            {isAdmin ? (
+              <DropdownMenuItem onClick={() => router.push("/admin")}>
+                <ShieldCheck className="size-4" />
+                {t("apps.admin")}
+              </DropdownMenuItem>
+            ) : null}
             <DropdownMenuItem onClick={replayOnboarding}>
               {t("flatSidebar.replayIntro")}
             </DropdownMenuItem>
