@@ -8,7 +8,7 @@ commits; you may polish the wording in the Release PR before merging.
 Format: each release is `## [version] - date — Title`, an optional `<!-- tags: a, b -->` line,
 then Markdown notes.
 
-## [0.5.0-alpha] - 2026-06-20 — PolarHQ Desktop + a shared-everything rebuild
+## [0.5.0] - 2026-06-20 — PolarHQ Desktop + a shared-everything rebuild
 <!-- tags: Release, Desktop, Architecture -->
 
 The headline: **PolarHQ Desktop** — a native app for macOS, Windows, and Linux that runs the *exact same code* as the web app. Underneath it is a ground-up re-architecture that lets one codebase power web, desktop, and (soon) mobile, plus a big round of Photos and Drive polish.

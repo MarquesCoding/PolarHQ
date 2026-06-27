@@ -3,7 +3,7 @@ import type { Release } from "./types"
 
 export const RELEASES: Release[] = [
   {
-    "version": "0.5.0-alpha",
+    "version": "0.5.0",
     "date": "2026-06-20",
     "title": "PolarHQ Desktop + a shared-everything rebuild",
     "tags": [
