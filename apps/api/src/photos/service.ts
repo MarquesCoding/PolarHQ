@@ -421,16 +421,19 @@ export const listAssets = async (
         isNull(schema.assets.stackId),
     )
   }
+  // The timeline is organized by capture date (the EXIF "taken" time), falling back to the upload
+  // time when a photo has no date — so imported/old photos slot into their real place in history.
+  const sortAt = sql`coalesce(${schema.assets.takenAt}, ${schema.assets.createdAt})`
   if (options.cursor) {
     const [createdAtPart, idPart] = options.cursor.split("|")
     const cursorDate = new Date(createdAtPart ?? options.cursor)
     conditions.push(
       idPart
         ? (or(
-            lt(schema.assets.createdAt, cursorDate),
-            and(eq(schema.assets.createdAt, cursorDate), lt(schema.assets.id, idPart)),
-          ) ?? lt(schema.assets.createdAt, cursorDate))
-        : lt(schema.assets.createdAt, cursorDate),
+            sql`${sortAt} < ${cursorDate}`,
+            and(sql`${sortAt} = ${cursorDate}`, lt(schema.assets.id, idPart)),
+          ) ?? sql`${sortAt} < ${cursorDate}`)
+        : sql`${sortAt} < ${cursorDate}`,
     )
   }
 
@@ -449,13 +452,14 @@ export const listAssets = async (
     .select()
     .from(schema.assets)
     .where(and(...conditions))
-    .orderBy(desc(schema.assets.createdAt), desc(schema.assets.id))
+    .orderBy(sql`${sortAt} desc`, desc(schema.assets.id))
     .limit(limit + 1)
 
   const hasMore = rows.length > limit
   const page = hasMore ? rows.slice(0, limit) : rows
   const last = page[page.length - 1]
-  const nextCursor = hasMore && last ? `${last.createdAt.toISOString()}|${last.id}` : null
+  const nextCursor =
+    hasMore && last ? `${(last.takenAt ?? last.createdAt).toISOString()}|${last.id}` : null
   return { assets: page, nextCursor }
 }
 
