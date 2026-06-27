@@ -1395,6 +1395,9 @@ importers:
       '@workspace/core':
         specifier: workspace:*
         version: link:../../packages/core
+      exifr:
+        specifier: ^7.1.3
+        version: 7.1.3
       sharp:
         specifier: ^0.34.2
         version: 0.34.5

@@ -230,10 +230,71 @@ const fetchWikimedia = async () => {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
+/**
+ * Flickr — the one source that exposes REAL metadata: originals retain embedded EXIF (camera, lens,
+ * date), and the search `geo` extra gives real GPS (written to a `<file>.json` sidecar, since Flickr
+ * strips GPS from the file). Defaults to the Utata group, filtered to CC/open licenses, sorted by
+ * interestingness for quality. Needs FLICKR_API_KEY.
+ */
+const fetchFlickr = async () => {
+  const key = process.env.FLICKR_API_KEY
+  if (!key) throw new Error("set FLICKR_API_KEY (https://www.flickr.com/services/apps/create/)")
+  const group = process.env.FLICKR_GROUP_ID ?? "81474450@N00" // Utata
+  const license = process.env.FLICKR_LICENSE ?? "1,2,3,4,5,6,7,9,10,15,16" // CC/open only
+  const call = async (method: string, p: Record<string, string>) =>
+    (await fetch(
+      `https://api.flickr.com/services/rest/?${new URLSearchParams({ api_key: key, method, format: "json", nojsoncallback: "1", ...p })}`,
+    )).json() as Promise<{
+      photos?: {
+        photo?: { id: string; url_o?: string; latitude?: string; longitude?: string }[]
+      }
+    }>
+  const seen = new Set<string>()
+  let page = 0
+  while (dirBytes() < TARGET_BYTES) {
+    page++
+    const r = await call("flickr.photos.search", {
+      group_id: group,
+      license,
+      sort: "interestingness-desc",
+      content_type: "1",
+      media: "photos",
+      per_page: "100",
+      page: String(page),
+      extras: "url_o,date_taken,geo,owner_name",
+    })
+    const photos = r.photos?.photo ?? []
+    if (photos.length === 0) {
+      console.log("  reached end of results.")
+      break
+    }
+    for (const p of photos) {
+      if (dirBytes() >= TARGET_BYTES) break
+      if (seen.has(p.id) || !p.url_o) continue
+      seen.add(p.id)
+      const name = `flickr-${p.id}.jpg`
+      try {
+        await download(p.url_o, name)
+        // Real GPS via a sidecar (Flickr strips it from the file, but the API has it).
+        if (p.latitude && p.longitude && Number(p.latitude) !== 0) {
+          writeFileSync(
+            join(OUT_DIR, `${name}.json`),
+            JSON.stringify({ lat: Number(p.latitude), lng: Number(p.longitude) }),
+          )
+        }
+      } catch (error) {
+        console.warn(`  skip ${p.id}: ${(error as Error).message}`)
+      }
+    }
+    console.log(`  page ${page} · ${seen.size} photos · ${fmtGb(dirBytes())} / ${fmtGb(TARGET_BYTES)}`)
+  }
+}
+
 const main = async () => {
   console.log(`Fetching ~${fmtGb(TARGET_BYTES)} via ${PROVIDER} into ${OUT_DIR} (have ${fmtGb(dirBytes())})`)
   if (PROVIDER === "pexels") await fetchPexels()
   else if (PROVIDER === "unsplash") await fetchUnsplash()
+  else if (PROVIDER === "flickr") await fetchFlickr()
   else if (PROVIDER === "wikimedia") await fetchWikimedia()
   else throw new Error(`unknown PROVIDER: ${PROVIDER}`)
   console.log(`Done — ${fmtGb(dirBytes())} in ${OUT_DIR}`)

@@ -15,7 +15,15 @@
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
-import { SUPPORTED_EXTS, connect, ensureKeys, isVideoPath, signIn, uploadOne } from "./lib"
+import {
+  type ExifInput,
+  SUPPORTED_EXTS,
+  connect,
+  ensureKeys,
+  isVideoPath,
+  signIn,
+  uploadOne,
+} from "./lib"
 
 const API_URL = process.env.API_URL ?? "http://localhost:3001"
 const EMAIL = process.env.EMAIL ?? ""
@@ -24,6 +32,9 @@ const MEDIA_DIR = process.env.MEDIA_DIR ?? "./media"
 const MONTHS = Number(process.env.MONTHS ?? 24)
 const CONCURRENCY = Number(process.env.CONCURRENCY ?? 4)
 const DRY_RUN = process.env.DRY_RUN === "1"
+// Off by default: only real metadata (file EXIF + GPS sidecar) is sent. SYNTH=1 fabricates plausible
+// camera/GPS for sources that strip EXIF (Pexels/etc.) — don't use it when you want authentic data.
+const SYNTH = process.env.SYNTH === "1"
 const NOW = Number(process.env.NOW_MS ?? Date.now())
 
 /** A few real city centers so GPS clusters read as "trips" on the map. */
@@ -47,6 +58,40 @@ const jitter = (around: number, lat: number, lng: number) => ({
   lng: lng + (rand() - 0.5) * around,
 })
 
+/** Plausible cameras + lenses so synthesized EXIF reads like a real mixed library. */
+const CAMERAS = [
+  { make: "Apple", model: "iPhone 15 Pro", lens: "iPhone 15 Pro back triple camera 6.765mm f/1.78", fStops: [1.78, 2.8], focals: [6.765, 9, 15.66], software: "17.4.1" },
+  { make: "Apple", model: "iPhone 14 Pro", lens: "iPhone 14 Pro back triple camera 6.86mm f/1.78", fStops: [1.78, 2.8], focals: [6.86, 9, 18], software: "16.5" },
+  { make: "SONY", model: "ILCE-7M4", lens: "FE 24-70mm F2.8 GM II", fStops: [2.8, 4, 5.6, 8], focals: [24, 35, 50, 70], software: "1.05" },
+  { make: "Canon", model: "Canon EOS R6", lens: "RF50mm F1.8 STM", fStops: [1.8, 2.8, 4], focals: [35, 50, 85], software: "1.8.0" },
+  { make: "NIKON CORPORATION", model: "NIKON Z 6", lens: "NIKKOR Z 24-70mm f/4 S", fStops: [4, 5.6, 8], focals: [24, 35, 50, 70], software: "Ver.3.40" },
+  { make: "FUJIFILM", model: "X-T5", lens: "XF16-55mmF2.8 R LM WR", fStops: [2.8, 4, 5.6], focals: [16, 23, 35, 55], software: "1.01" },
+  { make: "Google", model: "Pixel 8 Pro", lens: "Pixel 8 Pro back camera 6.9mm f/1.68", fStops: [1.68, 2.2], focals: [6.9, 12, 19], software: "HDR+ 1.0" },
+]
+
+const synthExif = (cam: (typeof CAMERAS)[number]): ExifInput => ({
+  make: cam.make,
+  model: cam.model,
+  lens: cam.lens,
+  iso: pick([50, 64, 100, 100, 125, 200, 200, 400, 800, 1600]),
+  fNumber: pick(cam.fStops),
+  exposureTime: 1 / pick([60, 100, 125, 200, 250, 320, 500, 800, 1000, 1600, 2000]),
+  focalLength: pick(cam.focals),
+  software: cam.software,
+})
+
+/** Real GPS written next to a file by the Flickr provider (`<file>.json`), or null. */
+const readGpsSidecar = (path: string): { lat: number; lng: number } | null => {
+  try {
+    const side = `${path}.json`
+    if (!existsSync(side)) return null
+    const { lat, lng } = JSON.parse(readFileSync(side, "utf8"))
+    return typeof lat === "number" && typeof lng === "number" ? { lat, lng } : null
+  } catch {
+    return null
+  }
+}
+
 const walk = (dir: string): string[] => {
   const out: string[] = []
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -61,9 +106,11 @@ interface Planned {
   path: string
   takenAtMs: number
   gps?: { lat: number; lng: number }
+  exif?: ExifInput
 }
 
-/** Spread files across MONTHS, clustering ~1-in-6 into bursts and ~40% into GPS "trips". */
+/** Spread files across MONTHS, clustering ~1-in-6 into bursts and ~40% into GPS "trips", each run
+ *  shot on one (synthesized) camera. Real EXIF on a file overrides all of this at upload time. */
 const plan = (files: string[]): Planned[] => {
   const spanMs = MONTHS * 30 * 24 * 60 * 60 * 1000
   const start = NOW - spanMs
@@ -72,20 +119,25 @@ const plan = (files: string[]): Planned[] => {
   let i = 0
   let place: { lat: number; lng: number; name: string } | null = null
   let placeLeft = 0
+  let cam = CAMERAS[0]!
   while (i < files.length) {
-    // Occasionally start/stop a GPS "trip" (a run of consecutive photos in one place).
+    // Occasionally start/stop a GPS "trip" (a run of consecutive photos in one place + one camera).
     if (placeLeft <= 0) {
       place = rand() < 0.4 ? pick(PLACES) : null
+      cam = pick(CAMERAS)
       placeLeft = 5 + Math.floor(rand() * 25)
     }
     const base = start + step * i + rand() * step
     // ~1-in-6 anchor frames become a 3-7 shot burst, all within ~6 seconds.
     const burst = rand() < 0.16 ? 3 + Math.floor(rand() * 5) : 1
     for (let b = 0; b < burst && i < files.length; b++, i++) {
+      const realGps = readGpsSidecar(files[i]!)
       result.push({
         path: files[i]!,
         takenAtMs: Math.round(base + b * (600 + rand() * 900)),
-        gps: place ? jitter(0.08, place.lat, place.lng) : undefined,
+        // Real GPS (Flickr sidecar) always wins; synthesized "trip" GPS only when SYNTH is on.
+        gps: realGps ?? (SYNTH && place ? jitter(0.08, place.lat, place.lng) : undefined),
+        exif: SYNTH ? synthExif(cam) : undefined,
       })
       placeLeft--
     }
