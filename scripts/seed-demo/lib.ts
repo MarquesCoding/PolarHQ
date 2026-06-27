@@ -67,7 +67,8 @@ export const connect = (apiUrl: string): void => {
 export const signIn = async (email: string, password: string): Promise<void> => {
   const res = await fetch(`${coreConfig().apiUrl}/api/auth/sign-in/email`, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    // better-auth rejects auth requests with no trusted Origin; the demo serves API + web on one origin.
+    headers: { "content-type": "application/json", origin: coreConfig().apiUrl },
     body: JSON.stringify({ email, password }),
   })
   if (!res.ok) throw new Error(`sign-in failed (${res.status}): ${await res.text()}`)
