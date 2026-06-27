@@ -168,8 +168,9 @@ services:
 
   web:
     image: ghcr.io/marquescoding/polarhq-web:latest
-    environment:
-      NODE_ENV: production
+    # Shares the app env so WEB_URL reaches vite preview's host allowlist — set WEB_URL to your
+    # domain above and the web server answers for it without editing any baked-in config.
+    environment: *app-env
     expose:
       - "3000"
     depends_on:
