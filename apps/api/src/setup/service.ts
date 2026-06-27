@@ -11,6 +11,7 @@ export type RegistrationMode = "invite_only" | "open" | "closed"
 export interface SetupStatus {
   setupCompleted: boolean
   registrationMode: RegistrationMode
+  demoMode: boolean
 }
 
 export const getSetupStatus = async (): Promise<SetupStatus> => {
@@ -18,6 +19,7 @@ export const getSetupStatus = async (): Promise<SetupStatus> => {
   return {
     setupCompleted: settings.setupCompleted,
     registrationMode: settings.registrationMode,
+    demoMode: settings.demoMode,
   }
 }
 

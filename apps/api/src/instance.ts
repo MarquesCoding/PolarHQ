@@ -28,6 +28,7 @@ export interface InstanceSettingsPatch {
   registrationMode?: InstanceSettings["registrationMode"]
   allowedEmailDomains?: string[] | null
   setupCompleted?: boolean
+  demoMode?: boolean
   instanceName?: string | null
   logoUrl?: string | null
   accentColor?: string | null

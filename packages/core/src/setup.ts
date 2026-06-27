@@ -5,6 +5,8 @@ export type RegistrationMode = "invite_only" | "open" | "closed"
 export interface SetupStatus {
   setupCompleted: boolean
   registrationMode: RegistrationMode
+  /** Read-only/demo mode — non-admins can't mutate content. */
+  demoMode: boolean
 }
 
 export const fetchSetupStatus = (): Promise<SetupStatus> =>

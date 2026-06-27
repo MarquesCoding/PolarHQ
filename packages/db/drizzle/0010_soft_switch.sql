@@ -1,0 +1,1 @@
+ALTER TABLE "core"."instance_settings" ADD COLUMN "demo_mode" boolean DEFAULT false NOT NULL;

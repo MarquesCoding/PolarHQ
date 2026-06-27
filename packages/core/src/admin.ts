@@ -67,6 +67,7 @@ export interface AdminAuditEntry {
 export interface AdminSettings {
   registrationMode: "invite_only" | "open" | "closed"
   allowedEmailDomains: string[] | null
+  demoMode: boolean
   instanceName: string | null
   logoUrl: string | null
   accentColor: string | null

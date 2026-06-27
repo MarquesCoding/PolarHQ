@@ -259,6 +259,7 @@ export const getSettings = async () => getInstanceSettings()
 export const updateSettings = async (patch: {
   registrationMode?: "invite_only" | "open" | "closed"
   allowedEmailDomains?: string[] | null
+  demoMode?: boolean
   instanceName?: string | null
   logoUrl?: string | null
   accentColor?: string | null
