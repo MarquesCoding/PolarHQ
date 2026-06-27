@@ -1,0 +1,51 @@
+name: deploy
+
+# Manual-only deploy to the demo VPS (demo.polarhq.app). Does NOT run on push — you trigger it
+# from the Actions tab (or `gh workflow run deploy.yml`) when you want the box to take the latest
+# images. It copies the current demo compose file up, pulls the newest ghcr images, and recreates
+# the running containers. Secrets/.env live on the VPS and are never touched here.
+#
+# Required repo secrets:
+#   VPS_HOST         — server IP or demo.polarhq.app
+#   VPS_USER         — SSH user (root)
+#   SSH_PRIVATE_KEY  — the polarhq_deploy private key (matching the pubkey in the server's authorized_keys)
+#
+# Prereq (one-time, already done): Docker + compose installed on the VPS, /opt/polarhq/.env present.
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-demo
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy compose file to the VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: docker/docker-compose.demo.yml
+          target: /opt/polarhq
+          strip_components: 1
+
+      - name: Pull latest images and recreate containers
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd /opt/polarhq
+            docker compose -f docker-compose.demo.yml pull
+            docker compose -f docker-compose.demo.yml up -d --remove-orphans
+            docker image prune -f
+            echo "--- status ---"
+            docker compose -f docker-compose.demo.yml ps
