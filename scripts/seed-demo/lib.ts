@@ -23,6 +23,7 @@ import {
   unlockKeys,
 } from "@workspace/core/e2e"
 import { configureSecureStore } from "@workspace/core/secureStore"
+import exifr from "exifr"
 import sharp from "sharp"
 
 const MIME_BY_EXT: Record<string, string> = {
@@ -167,12 +168,63 @@ const analyzeVideo = async (path: string): Promise<Analyzed> => {
   return { thumbnail, width, height, durationMs }
 }
 
+/** Camera/EXIF the details panel renders (matches the web upload's encrypted-exif shape). */
+export interface ExifInput {
+  make?: string
+  model?: string
+  lens?: string
+  iso?: number
+  fNumber?: number
+  exposureTime?: number
+  focalLength?: number
+  software?: string
+}
+
 export interface UploadInput {
   path: string
-  /** Capture time in ms — drives the timeline + burst grouping. */
+  /** Fallback capture time in ms (synthesized timeline) — used only if the file has no real EXIF date. */
   takenAtMs: number
-  /** Optional GPS so the map populates. */
+  /** Fallback GPS — used only if the file has no real GPS. */
   gps?: { lat: number; lng: number }
+  /** Fallback camera/EXIF — used only if the file has none of its own. */
+  exif?: ExifInput
+}
+
+/** Read real EXIF (date, GPS, camera) from a file; empty object if none/unparseable. */
+const readExif = async (path: string): Promise<{
+  takenAtMs?: number
+  gps?: { lat: number; lng: number }
+  exif?: ExifInput
+}> => {
+  try {
+    const d = (await exifr.parse(path, { tiff: true, exif: true, gps: true })) as
+      | Record<string, unknown>
+      | undefined
+    if (!d) return {}
+    const num = (v: unknown) => (typeof v === "number" ? v : undefined)
+    const str = (v: unknown) => (typeof v === "string" ? v : undefined)
+    const taken = d.DateTimeOriginal ?? d.CreateDate
+    const takenAtMs =
+      taken instanceof Date && !Number.isNaN(taken.getTime()) ? taken.getTime() : undefined
+    const gps =
+      num(d.latitude) !== undefined && num(d.longitude) !== undefined
+        ? { lat: d.latitude as number, lng: d.longitude as number }
+        : undefined
+    const exif: ExifInput = {
+      make: str(d.Make),
+      model: str(d.Model),
+      lens: str(d.LensModel),
+      iso: num(d.ISO),
+      fNumber: num(d.FNumber),
+      exposureTime: num(d.ExposureTime),
+      focalLength: num(d.FocalLength),
+      software: str(d.Software),
+    }
+    const hasExif = Object.values(exif).some((v) => v !== undefined)
+    return { takenAtMs, gps, exif: hasExif ? exif : undefined }
+  } catch {
+    return {}
+  }
 }
 
 /** Encrypt one media file end-to-end and upload it to the photos API as the signed-in user. */
@@ -183,10 +235,17 @@ export const uploadOne = async (input: UploadInput): Promise<string> => {
     ? await analyzeVideo(input.path)
     : await analyzeImage(original)
 
+  // Prefer the file's real metadata; fall back to the synthesized values for sources that strip EXIF.
+  const real = isVideoPath(input.path) ? {} : await readExif(input.path)
+  const takenAtMs = real.takenAtMs ?? input.takenAtMs
+  const gps = real.gps ?? input.gps
+  const exif = real.exif ?? input.exif
+
   const key = createContentKey()
   const encName = encryptName(basename(input.path))
   const placeholder = encName ? encryptedPlaceholder() : basename(input.path)
   const sealed = secretboxSeal(new Uint8Array(original), key)
+  const enc = (value: unknown) => encryptWithMetaKey(new TextEncoder().encode(JSON.stringify(value)))
 
   const form = new FormData()
   form.set("file", new File([asPart(sealed)], placeholder, { type: "application/octet-stream" }))
@@ -196,12 +255,14 @@ export const uploadOne = async (input: UploadInput): Promise<string> => {
   if (analyzed.height) form.set("height", String(analyzed.height))
   if (analyzed.durationMs) form.set("durationMs", String(analyzed.durationMs))
   if (encName) form.set("encryptedName", encName)
-  form.set("mtime", String(input.takenAtMs))
-  if (input.gps) {
-    const loc = encryptWithMetaKey(
-      new TextEncoder().encode(JSON.stringify({ lat: input.gps.lat, lng: input.gps.lng })),
-    )
+  form.set("mtime", String(takenAtMs))
+  if (gps) {
+    const loc = enc({ lat: gps.lat, lng: gps.lng })
     if (loc) form.set("encryptedLocation", loc)
+  }
+  if (exif) {
+    const encExif = enc(exif)
+    if (encExif) form.set("encryptedExif", encExif)
   }
 
   const res = await authed("/api/v1/photos/assets", { method: "POST", body: form })
