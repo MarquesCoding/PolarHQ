@@ -3,6 +3,29 @@ import { db, schema } from "@workspace/db"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { bearer } from "better-auth/plugins"
+import { and, eq } from "drizzle-orm"
+
+/** Give every new account the built-in "User" role so the app switcher and per-app access work
+ *  (permissions are default-deny; without a role a user can't open any app). The first admin also
+ *  gets Owner from setup — having both is harmless. */
+const assignDefaultRole = async (userId: string): Promise<void> => {
+  try {
+    const role = (
+      await db
+        .select()
+        .from(schema.roles)
+        .where(and(eq(schema.roles.name, "User"), eq(schema.roles.isSystem, true)))
+        .limit(1)
+    )[0]
+    if (!role) return
+    await db
+      .insert(schema.subjectRoles)
+      .values({ subjectType: "user", subjectId: userId, roleId: role.id, scopeType: "global" })
+      .onConflictDoNothing()
+  } catch (error) {
+    console.error("[auth] failed to assign default role:", error)
+  }
+}
 
 /**
  * The unified identity service for the whole suite. Email/password is enabled
@@ -42,6 +65,15 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          await assignDefaultRole(user.id)
+        },
+      },
+    },
   },
   plugins: [bearer()],
 })
