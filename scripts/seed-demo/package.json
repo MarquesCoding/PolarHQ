@@ -1,0 +1,20 @@
+{
+  "name": "@workspace/seed-demo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "smoke": "tsx smoke.ts",
+    "fetch": "tsx fetch-media.ts",
+    "seed": "tsx seed.ts"
+  },
+  "dependencies": {
+    "@workspace/core": "workspace:*",
+    "sharp": "^0.34.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.41",
+    "tsx": "^4.22.4",
+    "typescript": "^5.7.3"
+  }
+}

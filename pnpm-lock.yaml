@@ -1390,6 +1390,25 @@ importers:
         specifier: ^5
         version: 5.9.3
 
+  scripts/seed-demo:
+    dependencies:
+      '@workspace/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      sharp:
+        specifier: ^0.34.2
+        version: 0.34.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.19.41
+        version: 20.19.41
+      tsx:
+        specifier: ^4.22.4
+        version: 4.22.4
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
   services/backup:
     dependencies:
       '@workspace/config':
@@ -12327,7 +12346,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 24.13.0
+      '@types/node': 20.19.41
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -14022,11 +14041,11 @@ snapshots:
 
   '@types/readdir-glob@1.1.5':
     dependencies:
-      '@types/node': 24.13.0
+      '@types/node': 20.19.41
 
   '@types/set-cookie-parser@2.4.10':
     dependencies:
-      '@types/node': 24.13.0
+      '@types/node': 20.19.41
 
   '@types/stats.js@0.17.4': {}
 
@@ -14882,7 +14901,7 @@ snapshots:
 
   chrome-launcher@0.15.2:
     dependencies:
-      '@types/node': 24.13.0
+      '@types/node': 20.19.41
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -14891,7 +14910,7 @@ snapshots:
 
   chromium-edge-launcher@0.3.0:
     dependencies:
-      '@types/node': 24.13.0
+      '@types/node': 20.19.41
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -16993,7 +17012,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 24.13.0
+      '@types/node': 20.19.41
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -17010,7 +17029,7 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 24.13.0
+      '@types/node': 20.19.41
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -18588,7 +18607,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.1
-      '@types/node': 24.13.0
+      '@types/node': 20.19.41
       long: 5.3.2
 
   protocol-buffers-schema@3.6.1: {}
