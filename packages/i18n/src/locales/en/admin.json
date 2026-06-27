@@ -75,10 +75,31 @@
     "createError": "Could not create the role",
     "createRole": "Create role",
     "created": "Role created",
+    "delete": "Delete role",
+    "deleteConfirm": "Delete this role? Anyone assigned it loses the access it granted.",
+    "deleteError": "Could not delete the role",
+    "deleted": "Role deleted",
     "description": "Description",
+    "editRole": "Edit role",
     "name": "Name",
     "newRole": "New role",
-    "permissions": "Permissions"
+    "permissions": "Permissions",
+    "saveChanges": "Save changes",
+    "updateError": "Could not update the role",
+    "updated": "Role updated"
+  },
+  "createUserDialog": {
+    "cancel": "Cancel",
+    "create": "Create user",
+    "createError": "Could not create the user",
+    "created": "User created",
+    "email": "Email",
+    "makeAdmin": "Make this user an admin",
+    "name": "Name",
+    "newUser": "New user",
+    "password": "Password",
+    "passwordHint": "At least 8 characters.",
+    "title": "Create user"
   },
   "groupDetailSheet": {
     "add": "Add",
@@ -144,7 +165,10 @@
     "users": "Users"
   },
   "roles": {
+    "delete": "Delete",
     "description": "Permission sets you can assign to users and groups.",
+    "edit": "Edit",
+    "roleActions": "Role actions",
     "system": "System",
     "title": "Roles"
   },

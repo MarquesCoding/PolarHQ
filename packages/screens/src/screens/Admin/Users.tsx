@@ -1,6 +1,7 @@
 import { useState } from "react"
 import {
   type AdminUser,
+  createAdminUser,
   fetchAdminUsers,
   setUserBanned,
   setUserRole,
@@ -10,6 +11,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
+import { Checkbox } from "@workspace/ui/components/checkbox"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@workspace/ui/components/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,11 +28,98 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
+import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
 import { DotsThreeVertical } from "@phosphor-icons/react"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
+
+const CreateUserDialog = ({ onCreated }: { onCreated: () => void }) => {
+  const { t } = useTranslation("admin")
+  const [open, setOpen] = useState(false)
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [makeAdmin, setMakeAdmin] = useState(false)
+
+  const create = useMutation({
+    mutationFn: () =>
+      createAdminUser({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+        role: makeAdmin ? "admin" : "user",
+      }),
+    onSuccess: () => {
+      toast.success(t("createUserDialog.created"))
+      setName("")
+      setEmail("")
+      setPassword("")
+      setMakeAdmin(false)
+      setOpen(false)
+      onCreated()
+    },
+    onError: () => toast.error(t("createUserDialog.createError")),
+  })
+
+  const valid = name.trim() && /.+@.+\..+/.test(email.trim()) && password.length >= 8
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={<Button>{t("createUserDialog.newUser")}</Button>} />
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("createUserDialog.title")}</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="new-user-name">{t("createUserDialog.name")}</Label>
+            <Input
+              id="new-user-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="new-user-email">{t("createUserDialog.email")}</Label>
+            <Input
+              id="new-user-email"
+              type="email"
+              autoComplete="off"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="new-user-password">{t("createUserDialog.password")}</Label>
+            <Input
+              id="new-user-password"
+              type="password"
+              autoComplete="new-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+            <span className="text-muted-foreground text-xs">
+              {t("createUserDialog.passwordHint")}
+            </span>
+          </div>
+          <Label className="flex items-center gap-2 text-sm font-normal">
+            <Checkbox checked={makeAdmin} onCheckedChange={(on) => setMakeAdmin(on === true)} />
+            {t("createUserDialog.makeAdmin")}
+          </Label>
+        </div>
+        <DialogFooter>
+          <DialogClose render={<Button variant="ghost">{t("createUserDialog.cancel")}</Button>} />
+          <Button disabled={!valid || create.isPending} onClick={() => create.mutate()}>
+            {t("createUserDialog.create")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
 
 const initials = (name: string): string =>
   name
@@ -121,7 +219,11 @@ const Users = () => {
   )
 
   return (
-    <AdminPage title={t("users.title")} description={t("users.description")}>
+    <AdminPage
+      title={t("users.title")}
+      description={t("users.description")}
+      action={<CreateUserDialog onCreated={refresh} />}
+    >
       {isLoading ? (
         <PageSpinner />
       ) : (
