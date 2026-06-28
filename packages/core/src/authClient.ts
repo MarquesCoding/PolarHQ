@@ -1,4 +1,5 @@
 import { coreConfig } from "./config"
+import { getAuthToken, setAuthToken } from "./authToken"
 import { createAuthClient } from "better-auth/react"
 
 /**
@@ -9,12 +10,29 @@ import { createAuthClient } from "better-auth/react"
  */
 const PLACEHOLDER_ORIGIN = "http://polar.invalid"
 
-const dynamicFetch = (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
+const dynamicFetch = async (
+  input: string | URL | Request,
+  init?: RequestInit,
+): Promise<Response> => {
   const apiUrl = coreConfig().apiUrl
+  const token = getAuthToken()
+  let response: Response
   if (input instanceof Request) {
-    return fetch(new Request(input.url.replace(PLACEHOLDER_ORIGIN, apiUrl), input))
+    const request = new Request(input.url.replace(PLACEHOLDER_ORIGIN, apiUrl), input)
+    if (token && !request.headers.has("authorization")) {
+      request.headers.set("authorization", `Bearer ${token}`)
+    }
+    response = await fetch(request)
+  } else {
+    const headers = new Headers(init?.headers)
+    if (token && !headers.has("authorization")) headers.set("authorization", `Bearer ${token}`)
+    response = await fetch(String(input).replace(PLACEHOLDER_ORIGIN, apiUrl), { ...init, headers })
   }
-  return fetch(String(input).replace(PLACEHOLDER_ORIGIN, apiUrl), init)
+  // Capture the bearer token better-auth issues so cross-origin shells (desktop) can authenticate
+  // without the SameSite cookie. Harmless on the web (which keeps using its same-origin cookie).
+  const issued = response.headers.get("set-auth-token")
+  if (issued) setAuthToken(issued)
+  return response
 }
 
 /** better-auth client bound to the Orbit API. Provides signIn/signUp/useSession. */

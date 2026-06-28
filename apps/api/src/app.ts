@@ -61,7 +61,9 @@ app.use(
       return null
     },
     credentials: true,
-    exposeHeaders: ["Content-Disposition"],
+    // Expose the bearer token better-auth issues so cross-origin shells (the Tauri desktop, which
+    // can't use the SameSite cookie) can read it and authenticate with Authorization: Bearer.
+    exposeHeaders: ["Content-Disposition", "set-auth-token"],
   }),
 )
 
