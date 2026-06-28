@@ -50,6 +50,7 @@ import { AnimatePresence, motion } from "motion/react"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 import type { ViewerController, ViewerItem } from "./viewer"
+import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
 
 interface LightboxProps {
   /** The data layer the viewer renders against (Photos or Drive supplies one). */
@@ -270,21 +271,28 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
       return
     }
     let active = true
-    let url: string | null = null
+    // Reset so the previous photo doesn't linger; the thumbnail shows while the original decrypts.
+    setDecryptedSrc(null)
+    // The cache owns the object URL (revoked on LRU eviction), so we don't revoke it here — that's
+    // what made revisits re-download + re-decrypt the full original every time.
     void controller.fetchOriginal(item).then((result) => {
-      if (!active) {
-        if (result) URL.revokeObjectURL(result)
-        return
-      }
-      url = result
-      setDecryptedSrc(result)
+      if (active) setDecryptedSrc(result)
     })
     return () => {
       active = false
-      if (url) URL.revokeObjectURL(url)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item.id, item.encrypted, item.mimeType, tooLargeToPreview])
+
+  // Prefetch the neighbouring originals (into the same cache) so next/prev is instant.
+  useEffect(() => {
+    for (const neighbour of [items[index + 1], items[index - 1]]) {
+      if (neighbour?.encrypted && neighbour.kind === "image") {
+        void controller.fetchOriginal(neighbour).catch(() => undefined)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, items])
 
   const canEdit = !!controller.editing && item.kind === "image"
   const editing = isEditing && canEdit
@@ -306,7 +314,7 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
   })
 
   const source = item.encrypted
-    ? (decryptedSrc ?? undefined)
+    ? (decryptedSrc ?? decryptedThumbnails.get(item.id) ?? undefined)
     : (item.previewUrl ?? item.thumbnailUrl ?? undefined)
 
   const canPlayMotion = !!item.motion && !!controller.fetchMotion
