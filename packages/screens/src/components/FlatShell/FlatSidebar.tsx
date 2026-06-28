@@ -4,6 +4,7 @@ import logo from "./logo.png"
 import { fetchApps } from "@workspace/core/apps"
 import { fetchSetupStatus } from "@workspace/core/setup"
 import { authClient } from "@workspace/core/authClient"
+import { setAuthToken } from "@workspace/core/authToken"
 import { lockKeys } from "@workspace/core/e2e"
 import { fetchStorageStats } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
@@ -81,6 +82,7 @@ const FlatSidebar = ({
   const signOut = async () => {
     lockKeys()
     await authClient.signOut()
+    setAuthToken(null)
     router.replace("/sign-in")
   }
 

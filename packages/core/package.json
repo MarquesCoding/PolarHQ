@@ -7,6 +7,7 @@
     "./config": "./src/config.ts",
     "./crypto": "./src/crypto.ts",
     "./apiClient": "./src/apiClient.ts",
+    "./authToken": "./src/authToken.ts",
     "./account": "./src/account.ts",
     "./apps": "./src/apps.ts",
     "./download": "./src/download.ts",

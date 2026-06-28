@@ -1,4 +1,5 @@
 import { coreConfig } from "./config"
+import { getAuthToken } from "./authToken"
 
 export class ApiError extends Error {
   readonly status: number
@@ -26,11 +27,15 @@ export const configureApiAuth = (provider: () => Record<string, string> | undefi
 
 /** Call an Orbit API endpoint with cookies, JSON in/out, and typed errors. */
 export const apiFetch = async <T>(path: string, init?: RequestInit): Promise<T> => {
+  const token = getAuthToken()
   const response = await fetch(`${coreConfig().apiUrl}${path}`, {
     credentials: "include",
     ...init,
     headers: {
       "content-type": "application/json",
+      // Bearer auth for cross-origin shells (desktop) that can't use the SameSite cookie. Unset on
+      // the web (same-origin cookie) and overridable by a shell's own headers (RN injects a cookie).
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...authHeaders?.(),
       ...init?.headers,
     },
