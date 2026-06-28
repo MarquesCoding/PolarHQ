@@ -11,12 +11,12 @@ import {
 } from "@workspace/core/photos"
 import {
   fetchDecryptedMotionVideo,
-  fetchDecryptedPhotoOriginal,
   fetchDecryptedPhotoThumbnail,
   uploadEncryptedMedia,
 } from "@workspace/core/photosE2e"
 import { useUploadManager } from "@workspace/screens/uploadManager"
 import { decryptedThumbnails } from "@pages/Photos/components/PhotoTile/PhotoTile"
+import { fetchCachedOriginal } from "./originalCache"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
 import { useQueryClient } from "@tanstack/react-query"
 import type { ViewerController, ViewerItem } from "./viewer"
@@ -48,7 +48,7 @@ export const usePhotosViewer = (assets: GridAsset[]): ViewerController => {
     const invalidate = () => void queryClient.invalidateQueries({ queryKey: ["photos"] })
     return {
       items,
-      fetchOriginal: (item) => fetchDecryptedPhotoOriginal(item.id, item.mimeType),
+      fetchOriginal: (item) => fetchCachedOriginal(item.id, item.mimeType),
       fetchThumbnail: async (item) => {
         if (!item.encrypted) return item.thumbnailUrl ?? null
         const cached = decryptedThumbnails.get(item.id)
