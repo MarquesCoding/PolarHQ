@@ -48,9 +48,16 @@ interface PhotoWorkspaceProps {
   assets: GridAsset[]
   onReachEnd?: () => void
   onInvalidate?: () => void
+  /** Sub-collections (albums, favourites, trash…) render grid-only — no Grid/Canvas/Infinity switcher. */
+  showModes?: boolean
 }
 
-const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProps) => {
+const PhotoWorkspace = ({
+  assets,
+  onReachEnd,
+  onInvalidate,
+  showModes = true,
+}: PhotoWorkspaceProps) => {
   const selection = useSelection()
   const { open: sidebarOpen, setOpen } = useSidebar()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -78,7 +85,13 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const [gap, setGap] = usePersistentNumber("photos.gap", 12)
   const [square, setSquare] = usePersistentNumber("photos.square", 0)
   const [modeNum, setModeNum] = usePersistentNumber("photos.mode", 0)
-  const mode: Mode = modeNum === 1 ? "canvas" : modeNum === 2 ? "infinity" : "grid"
+  const mode: Mode = !showModes
+    ? "grid"
+    : modeNum === 1
+      ? "canvas"
+      : modeNum === 2
+        ? "infinity"
+        : "grid"
   const setMode = (next: Mode) => setModeNum(next === "canvas" ? 1 : next === "infinity" ? 2 : 0)
   const [canvasPositions, setCanvasPositions] = useState<Map<string, Rect>>(loadCanvasPositions)
   const [hoveredDay, setHoveredDay] = useState<string | null>(null)
@@ -501,6 +514,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
 
       <BottomChrome
         focusedAsset={focusedAsset ?? null}
+        showModes={showModes}
         mode={mode}
         onMode={setMode}
         rowHeight={rowHeight}

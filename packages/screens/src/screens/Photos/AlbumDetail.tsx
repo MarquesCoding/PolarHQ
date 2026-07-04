@@ -14,7 +14,7 @@ import { useArmedConfirm } from "@workspace/screens/useArmedConfirm"
 import { useSelectionHotkeys } from "@workspace/screens/useSelectionHotkeys"
 import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
-import PhotoGrid from "@pages/Photos/components/PhotoGrid/PhotoGrid"
+import PhotoWorkspace from "@pages/Photos/workspace/PhotoWorkspace"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import { Icon } from "@workspace/screens/icons"
 import { ArrowLeft, MinusCircle } from "@phosphor-icons/react"
@@ -127,7 +127,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
           {t("albumDetailInner.emptyAlbum")}
         </p>
       ) : (
-        <PhotoGrid assets={assets} />
+        <PhotoWorkspace assets={assets} showModes={false} onInvalidate={invalidate} />
       )}
 
       <SelectionBar
