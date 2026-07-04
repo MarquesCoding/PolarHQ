@@ -145,6 +145,7 @@ const AssetEntity = ({
         height: rect.h,
         opacity: fadingOut ? 0 : dimmed ? 0.5 : 1,
         zIndex: z,
+        contain: "layout paint",
         transition: animate
           ? `transform 0.45s ${CSS_EASE}, width 0.45s ${CSS_EASE}, height 0.45s ${CSS_EASE}, opacity 0.4s ${CSS_EASE}`
           : `opacity 0.4s ${CSS_EASE}`,
