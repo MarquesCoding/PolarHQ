@@ -53,7 +53,7 @@ interface PhotoTileProps {
   selectionActive: boolean
   animateIn?: boolean
   delay?: number
-  onOpen: () => void
+  onOpen: (rect: DOMRect | null) => void
   onToggle: (shiftKey: boolean) => void
   onPreviewStart?: () => void
   onPreviewEnd?: () => void
@@ -140,7 +140,7 @@ const PhotoTile = ({
   }, [])
   const activate = (shiftKey: boolean) => {
     if (selectionActive || shiftKey) onToggle(shiftKey)
-    else onOpen()
+    else onOpen(imgRef.current?.getBoundingClientRect() ?? null)
   }
 
   const cancelHold = () => {
@@ -214,7 +214,6 @@ const PhotoTile = ({
       {thumbSrc ? (
         <motion.img
           ref={imgRef}
-          layoutId={`photo-${asset.id}`}
           src={thumbSrc}
           alt={displayName}
           loading="lazy"
