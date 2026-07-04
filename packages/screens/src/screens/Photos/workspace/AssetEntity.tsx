@@ -30,6 +30,7 @@ interface AssetEntityProps {
   dimmed: boolean
   focused: boolean
   fadingOut: boolean
+  zoom: number
   animate: boolean
   z: number
   onOpen: () => void
@@ -51,6 +52,7 @@ const AssetEntity = ({
   dimmed,
   focused,
   fadingOut,
+  zoom,
   animate,
   z,
   onOpen,
@@ -176,6 +178,7 @@ const AssetEntity = ({
             loaded.add(asset.id)
             setLoaded(true)
           }}
+          style={focused && zoom !== 1 ? { transform: `scale(${zoom})` } : undefined}
           className={cn(
             "h-full w-full transition-opacity duration-500",
             focused ? "object-contain" : "object-cover",

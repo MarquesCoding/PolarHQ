@@ -40,8 +40,16 @@ interface PhotoWorkspaceProps {
 
 const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProps) => {
   const selection = useSelection()
-  const { setOpen } = useSidebar()
+  const { open: sidebarOpen, setOpen } = useSidebar()
   const containerRef = useRef<HTMLDivElement>(null)
+  const sidebarWasOpen = useRef(true)
+  const [zoom, setZoom] = useState(1)
+  const zoomRef = useRef(1)
+  const setZoomClamped = (value: number) => {
+    const next = Math.min(Math.max(value, 1), 6)
+    zoomRef.current = next
+    setZoom(next)
+  }
   const reachEnd = useRef(onReachEnd)
   reachEnd.current = onReachEnd
 
@@ -199,6 +207,8 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     const asset = sorted.find((item) => item.id === id)
     const element = containerRef.current
     if (!asset || !element) return
+    sidebarWasOpen.current = sidebarOpen
+    setZoomClamped(1)
     const vp: Focus["vp"] = {
       top: -element.getBoundingClientRect().top,
       height: getScrollParent(element)?.clientHeight ?? window.innerHeight,
@@ -216,6 +226,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     const prevId = focus.id
     setFading({ id: prevId, rect: focus.rect })
     window.setTimeout(() => setFading((current) => (current?.id === prevId ? null : current)), 340)
+    setZoomClamped(1)
     setFocus({ id, rect: focusRectFor(asset, focus.vp), vp: focus.vp })
   }
 
@@ -226,6 +237,8 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     window.setTimeout(() => setClosingId((current) => (current === id ? null : current)), 480)
     setFading(null)
     setFocus(null)
+    setZoomClamped(1)
+    setOpen(sidebarWasOpen.current)
   }
 
   useEffect(() => {
@@ -265,18 +278,32 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
 
   useEffect(() => {
     if (!focus) return
-    const onZoom = (event: Event) => {
-      const wheel = event as WheelEvent
+    let base = zoomRef.current
+    const onStart = () => {
+      base = zoomRef.current
+    }
+    const onChange = (event: Event) => {
       const scale = (event as unknown as { scale?: number }).scale
-      const zoomingIn = (wheel.ctrlKey && wheel.deltaY < 0) || (scale !== undefined && scale > 1.02)
-      if (zoomingIn) setOpen(false)
+      if (scale === undefined) return
+      const next = base * scale
+      setZoomClamped(next)
+      if (next > 1.02) setOpen(false)
     }
-    window.addEventListener("wheel", onZoom, { passive: true })
-    window.addEventListener("gesturechange", onZoom)
+    const onWheel = (event: WheelEvent) => {
+      if (!event.ctrlKey) return
+      const next = zoomRef.current * (1 - event.deltaY * 0.01)
+      setZoomClamped(next)
+      if (next > 1.02) setOpen(false)
+    }
+    window.addEventListener("gesturestart", onStart)
+    window.addEventListener("gesturechange", onChange)
+    window.addEventListener("wheel", onWheel, { passive: true })
     return () => {
-      window.removeEventListener("wheel", onZoom)
-      window.removeEventListener("gesturechange", onZoom)
+      window.removeEventListener("gesturestart", onStart)
+      window.removeEventListener("gesturechange", onChange)
+      window.removeEventListener("wheel", onWheel)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focus, setOpen])
 
   useEffect(() => {
@@ -349,6 +376,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
             dimmed={focus !== null && !isFocused && !isFading}
             focused={isFocused || isFading}
             fadingOut={isFading}
+            zoom={isFocused ? zoom : 1}
             animate={isFading ? false : isFocused ? fading === null : true}
             z={isFocused ? 50 : isFading ? 51 : isClosing ? 50 : 1}
             onOpen={() => openAsset(asset.id)}
