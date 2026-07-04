@@ -6,8 +6,15 @@ import { Circle } from "@phosphor-icons/react"
 import { Icon } from "@workspace/screens/icons"
 import { cn } from "@workspace/ui/lib/utils"
 import AssetEntity from "./AssetEntity"
+import FocusView from "./FocusView"
 import { layoutGrid } from "./layout/grid"
-import type { GridAsset } from "./types"
+import type { GridAsset, Rect } from "./types"
+
+interface Focus {
+  id: string
+  rect: Rect
+  vp: { top: number; height: number; width: number }
+}
 
 const BUFFER = 900
 const QUANTUM = 300
@@ -27,9 +34,10 @@ const getScrollParent = (element: HTMLElement | null): HTMLElement | null => {
 interface PhotoWorkspaceProps {
   assets: GridAsset[]
   onReachEnd?: () => void
+  onInvalidate?: () => void
 }
 
-const PhotoWorkspace = ({ assets, onReachEnd }: PhotoWorkspaceProps) => {
+const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProps) => {
   const selection = useSelection()
   const containerRef = useRef<HTMLDivElement>(null)
   const reachEnd = useRef(onReachEnd)
@@ -150,6 +158,79 @@ const PhotoWorkspace = ({ assets, onReachEnd }: PhotoWorkspaceProps) => {
     else selection.toggle(id, ordered)
   }
 
+  const [focus, setFocus] = useState<Focus | null>(null)
+
+  const focusRectFor = (asset: GridAsset, vp: Focus["vp"]): Rect => {
+    const padX = 40
+    const padY = 40
+    const chrome = 104
+    const availW = vp.width - padX * 2
+    const availH = vp.height - padY * 2 - chrome
+    const aspect = asset.width && asset.height ? asset.width / asset.height : 1.5
+    let w = availW
+    let h = w / aspect
+    if (h > availH) {
+      h = availH
+      w = h * aspect
+    }
+    const cy = vp.top + vp.height / 2
+    return { x: vp.width / 2 - w / 2, y: cy - h / 2, w, h }
+  }
+
+  const openAsset = (id: string) => {
+    const asset = sorted.find((item) => item.id === id)
+    const element = containerRef.current
+    if (!asset || !element) return
+    const vp: Focus["vp"] = {
+      top: -element.getBoundingClientRect().top,
+      height: getScrollParent(element)?.clientHeight ?? window.innerHeight,
+      width,
+    }
+    setFocus({ id, rect: focusRectFor(asset, vp), vp })
+  }
+
+  const page = (delta: number) => {
+    setFocus((current) => {
+      if (!current) return current
+      const id = ordered[ordered.indexOf(current.id) + delta]
+      if (!id) return current
+      const asset = sorted.find((item) => item.id === id)
+      if (!asset) return current
+      return { id, rect: focusRectFor(asset, current.vp), vp: current.vp }
+    })
+  }
+
+  useEffect(() => {
+    if (!focus) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setFocus(null)
+      else if (event.key === "ArrowRight") page(1)
+      else if (event.key === "ArrowLeft") page(-1)
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus, ordered])
+
+  const focusedAsset = focus ? sorted.find((item) => item.id === focus.id) : undefined
+
+  const renderList = useMemo(() => {
+    if (!focus) return visible
+    if (visible.some((entry) => entry.asset.id === focus.id)) return visible
+    const entry = entries.find((item) => item.asset.id === focus.id)
+    return entry ? [...visible, entry] : visible
+  }, [visible, entries, focus])
+
+  useEffect(() => {
+    const scroller = getScrollParent(containerRef.current)
+    if (!scroller || !focus) return
+    const previous = scroller.style.overflow
+    scroller.style.overflow = "hidden"
+    return () => {
+      scroller.style.overflow = previous
+    }
+  }, [focus])
+
   return (
     <div
       ref={containerRef}
@@ -191,21 +272,37 @@ const PhotoWorkspace = ({ assets, onReachEnd }: PhotoWorkspaceProps) => {
         )
       })}
 
-      {visible.map(({ asset, rect }) => (
-        <AssetEntity
-          key={asset.id}
-          asset={asset}
-          rect={rect}
-          selected={selection.isSelected(asset.id)}
-          selectionActive={selection.count > 0}
-          dimmed={false}
-          focused={false}
-          animate={false}
-          z={1}
-          onOpen={() => undefined}
-          onToggle={(shiftKey) => onToggle(asset.id, shiftKey)}
+      {renderList.map(({ asset, rect: gridRect }) => {
+        const isFocused = focus?.id === asset.id
+        return (
+          <AssetEntity
+            key={asset.id}
+            asset={asset}
+            rect={isFocused && focus ? focus.rect : gridRect}
+            selected={selection.isSelected(asset.id)}
+            selectionActive={selection.count > 0}
+            dimmed={focus !== null && !isFocused}
+            focused={isFocused}
+            animate
+            z={isFocused ? 50 : 1}
+            onOpen={() => openAsset(asset.id)}
+            onToggle={(shiftKey) => onToggle(asset.id, shiftKey)}
+          />
+        )
+      })}
+
+      {focus && focusedAsset ? (
+        <FocusView
+          asset={focusedAsset}
+          vp={focus.vp}
+          hasPrev={ordered.indexOf(focus.id) > 0}
+          hasNext={ordered.indexOf(focus.id) < ordered.length - 1}
+          onClose={() => setFocus(null)}
+          onPrev={() => page(-1)}
+          onNext={() => page(1)}
+          onInvalidate={onInvalidate}
         />
-      ))}
+      ) : null}
 
       {marquee ? (
         <div

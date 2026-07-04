@@ -154,6 +154,7 @@ const LibraryInner = () => {
       ) : (
         <PhotoWorkspace
           assets={visible}
+          onInvalidate={invalidate}
           onReachEnd={
             search
               ? undefined
