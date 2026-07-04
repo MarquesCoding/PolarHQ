@@ -143,13 +143,12 @@ const AssetEntity = ({
         transform: `translate3d(${rect.x}px, ${rect.y}px, 0)`,
         width: rect.w,
         height: rect.h,
-        opacity: fadingOut ? 0 : dimmed ? 0.72 : 1,
+        opacity: fadingOut ? 0 : dimmed ? 0.5 : 1,
         zIndex: z,
-        filter: dimmed ? "blur(6px) saturate(0.9)" : undefined,
         transition: animate
           ? `transform 0.45s ${CSS_EASE}, width 0.45s ${CSS_EASE}, height 0.45s ${CSS_EASE}, opacity 0.4s ${CSS_EASE}`
           : `opacity 0.4s ${CSS_EASE}`,
-        willChange: dimmed || focused ? "transform, filter" : undefined,
+        willChange: dimmed || focused ? "transform" : undefined,
       }}
       onPointerDown={(event) => {
         if (focused && zoom > 1) {
