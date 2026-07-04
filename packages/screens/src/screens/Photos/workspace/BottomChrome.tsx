@@ -29,6 +29,7 @@ const MORPH = { layout: { duration: 0.35, ease: [0.32, 0.72, 0, 1] as const } }
 
 interface BottomChromeProps {
   focusedAsset: GridAsset | null
+  showModes?: boolean
   mode: Mode
   onMode: (mode: Mode) => void
   rowHeight: number
@@ -50,6 +51,7 @@ interface BottomChromeProps {
  */
 const BottomChrome = ({
   focusedAsset,
+  showModes = true,
   mode,
   onMode,
   rowHeight,
@@ -105,6 +107,7 @@ const BottomChrome = ({
         ) : null}
       </AnimatePresence>
 
+      {focused || showModes ? (
       <motion.div layout transition={MORPH} className={PILL}>
         <AnimatePresence mode="popLayout" initial={false}>
           {focused ? (
@@ -206,6 +209,7 @@ const BottomChrome = ({
           )}
         </AnimatePresence>
       </motion.div>
+      ) : null}
     </div>
   )
 }
