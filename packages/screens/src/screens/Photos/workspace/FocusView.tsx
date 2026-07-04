@@ -144,68 +144,6 @@ const FocusView = ({
         </div>
       ) : null}
 
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={CHROME_FADE}
-        onClick={stop}
-        onPointerDown={stop}
-        className="absolute z-[60] flex items-center gap-0.5 rounded-full border bg-background/55 p-1 shadow-xl backdrop-blur-2xl"
-        style={{ top: vp.top + vp.height - 60, right: (info ? panelWidth : 0) + 20 }}
-      >
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label={t("lightbox.favourite")}
-          onClick={favourite}
-          className="rounded-full"
-        >
-          <Heart
-            weight={asset.isFavorite ? "fill" : "regular"}
-            className={cn("size-[18px]", asset.isFavorite && "text-red-500")}
-          />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label={t("lightbox.download")}
-          onClick={download}
-          className="rounded-full"
-        >
-          <DownloadSimple className="size-[18px]" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label={t("lightbox.info")}
-          onClick={onToggleInfo}
-          className={cn("rounded-full", info && "bg-muted")}
-        >
-          <Info className="size-[18px]" />
-        </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={t("lightbox.more")}
-                className="rounded-full"
-              >
-                <DotsThree className="size-5" />
-              </Button>
-            }
-          />
-          <DropdownMenuContent align="end" side="top">
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive" onClick={trash}>
-              <Trash />
-              {t("lightbox.moveToTrash")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </motion.div>
-
       <AnimatePresence>
         {info ? (
           <motion.div
