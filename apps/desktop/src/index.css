@@ -115,18 +115,6 @@
   padding-left: 5rem;
 }
 
-/* Photos immersive: while a photo is focused the content spans the whole window behind the floating
- * sidebar, so the sidebar goes translucent + soft to let the (blurred) grid read through it. */
-[data-slot="sidebar-inner"] {
-  transition:
-    opacity 0.45s ease,
-    filter 0.45s ease;
-}
-.photos-immersive [data-slot="sidebar-inner"] {
-  opacity: 0.32;
-  filter: blur(7px);
-}
-
 /* On desktop the app name (icon + "All photos" etc.) in the top bar is redundant — the sidebar
  * already shows it — so hide it for a cleaner Finder-like bar. */
 .tauri [data-slot="topbar-title"] {

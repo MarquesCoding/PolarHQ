@@ -1,6 +1,7 @@
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { useSelection } from "@workspace/screens/selection"
 import { usePersistentNumber } from "@workspace/screens/persistentSetting"
+import { useSidebar } from "@workspace/ui/components/sidebar"
 import { Button } from "@workspace/ui/components/button"
 import { Circle } from "@phosphor-icons/react"
 import { Icon } from "@workspace/screens/icons"
@@ -39,12 +40,12 @@ interface PhotoWorkspaceProps {
 
 const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProps) => {
   const selection = useSelection()
+  const { setOpen } = useSidebar()
   const containerRef = useRef<HTMLDivElement>(null)
   const reachEnd = useRef(onReachEnd)
   reachEnd.current = onReachEnd
 
   const [width, setWidth] = useState(0)
-  const [sidebarInset, setSidebarInset] = useState(0)
   const [range, setRange] = useState({ start: 0, end: 0 })
   const [rowHeight] = usePersistentNumber("photos.rowHeight", 180)
   const [gap] = usePersistentNumber("photos.gap", 12)
@@ -54,8 +55,8 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const sorted = useMemo(() => [...assets].sort((a, b) => dateOf(b) - dateOf(a)), [assets])
   const ordered = useMemo(() => sorted.map((asset) => asset.id), [sorted])
   const layout = useMemo(
-    () => layoutGrid(sorted, width, { rowHeight, gap, square: square === 1 }, sidebarInset),
-    [sorted, width, rowHeight, gap, square, sidebarInset],
+    () => layoutGrid(sorted, width, { rowHeight, gap, square: square === 1 }),
+    [sorted, width, rowHeight, gap, square],
   )
   const entries = useMemo(
     () =>
@@ -76,20 +77,6 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     })
     observer.observe(element)
     return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    const sidebar = document.querySelector('[data-slot="sidebar-container"]')
-    if (!sidebar) return
-    const update = () => setSidebarInset(Math.max(0, sidebar.getBoundingClientRect().right))
-    update()
-    const observer = new ResizeObserver(update)
-    observer.observe(sidebar)
-    window.addEventListener("resize", update)
-    return () => {
-      observer.disconnect()
-      window.removeEventListener("resize", update)
-    }
   }, [])
 
   useEffect(() => {
@@ -277,9 +264,29 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   }, [focus])
 
   useEffect(() => {
-    document.documentElement.classList.toggle("photos-immersive", focus !== null)
-    return () => document.documentElement.classList.remove("photos-immersive")
-  }, [focus])
+    if (!focus) return
+    const onZoom = (event: Event) => {
+      const wheel = event as WheelEvent
+      const scale = (event as unknown as { scale?: number }).scale
+      const zoomingIn = (wheel.ctrlKey && wheel.deltaY < 0) || (scale !== undefined && scale > 1.02)
+      if (zoomingIn) setOpen(false)
+    }
+    window.addEventListener("wheel", onZoom, { passive: true })
+    window.addEventListener("gesturechange", onZoom)
+    return () => {
+      window.removeEventListener("wheel", onZoom)
+      window.removeEventListener("gesturechange", onZoom)
+    }
+  }, [focus, setOpen])
+
+  useEffect(() => {
+    if (!focus || Math.abs(focus.vp.width - width) < 1) return
+    const asset = sorted.find((item) => item.id === focus.id)
+    if (!asset) return
+    const vp = { ...focus.vp, width }
+    setFocus((current) => (current ? { ...current, rect: focusRectFor(asset, vp), vp } : current))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [width, focus])
 
   return (
     <div
