@@ -8,6 +8,7 @@ import { Icon } from "@workspace/screens/icons"
 import { cn } from "@workspace/ui/lib/utils"
 import AssetEntity from "./AssetEntity"
 import BottomChrome from "./BottomChrome"
+import GlassPhotoGrid from "./webgl/GlassPhotoGrid"
 import FocusView from "./FocusView"
 import { layoutCanvas } from "./layout/canvas"
 import { layoutGrid } from "./layout/grid"
@@ -369,6 +370,29 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     setFocus((current) => (current ? { ...current, rect, vp } : current))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, sidebarInset, info])
+
+  if (mode === "infinity") {
+    return (
+      <>
+        <GlassPhotoGrid assets={sorted} />
+        <BottomChrome
+          focusedAsset={null}
+          mode={mode}
+          onMode={setMode}
+          rowHeight={rowHeight}
+          onRowHeight={setRowHeight}
+          gap={gap}
+          onGap={setGap}
+          square={square === 1}
+          onSquare={(value) => setSquare(value ? 1 : 0)}
+          info={info}
+          onToggleInfo={() => setInfo((value) => !value)}
+          onClose={close}
+          onInvalidate={onInvalidate}
+        />
+      </>
+    )
+  }
 
   return (
     <div
