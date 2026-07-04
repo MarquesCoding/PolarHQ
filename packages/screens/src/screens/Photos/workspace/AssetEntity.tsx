@@ -29,6 +29,7 @@ interface AssetEntityProps {
   selectionActive: boolean
   dimmed: boolean
   focused: boolean
+  fadingOut: boolean
   animate: boolean
   z: number
   onOpen: () => void
@@ -49,6 +50,7 @@ const AssetEntity = ({
   selectionActive,
   dimmed,
   focused,
+  fadingOut,
   animate,
   z,
   onOpen,
@@ -119,6 +121,7 @@ const AssetEntity = ({
 
   const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
   const dragged = useRef(false)
+  const downAt = useRef<{ x: number; y: number } | null>(null)
 
   return (
     <motion.div
@@ -126,17 +129,30 @@ const AssetEntity = ({
       tabIndex={0}
       aria-label={name}
       initial={false}
-      animate={{ x: rect.x, y: rect.y, width: rect.w, height: rect.h, opacity: dimmed ? 0.55 : 1 }}
+      animate={{
+        x: rect.x,
+        y: rect.y,
+        width: rect.w,
+        height: rect.h,
+        opacity: fadingOut ? 0 : dimmed ? 0.72 : 1,
+        filter: dimmed ? "blur(7px) saturate(0.9)" : "blur(0px) saturate(1)",
+      }}
       transition={{
         default: animate ? { duration: 0.45, ease: EASE } : { duration: 0 },
-        opacity: { duration: focused ? 0.2 : 0.35, ease: EASE },
+        opacity: { duration: fadingOut ? 0.3 : 0.4, ease: EASE },
+        filter: { duration: 0.4, ease: EASE },
       }}
-      style={{ position: "absolute", left: 0, top: 0, zIndex: z, filter: dimmed ? "blur(16px) saturate(0.6)" : undefined }}
-      onPointerDown={() => {
+      style={{ position: "absolute", left: 0, top: 0, zIndex: z }}
+      onPointerDown={(event) => {
+        downAt.current = { x: event.clientX, y: event.clientY }
         dragged.current = false
       }}
-      onPointerMove={() => {
-        dragged.current = true
+      onPointerMove={(event) => {
+        if (
+          downAt.current &&
+          Math.hypot(event.clientX - downAt.current.x, event.clientY - downAt.current.y) > 6
+        )
+          dragged.current = true
       }}
       onPointerEnter={hover}
       onPointerLeave={() => setPlaying(false)}
@@ -186,7 +202,7 @@ const AssetEntity = ({
         />
       ) : null}
 
-      {selected ? (
+      {selected && !focused ? (
         <span className="ring-primary pointer-events-none absolute inset-0 z-10 rounded-[inherit] ring-2 ring-inset" />
       ) : null}
 
@@ -218,7 +234,7 @@ const AssetEntity = ({
         </span>
       ) : null}
 
-      {asset.isFavorite ? (
+      {asset.isFavorite && !focused ? (
         <Heart weight="fill" className="absolute bottom-1.5 left-1.5 size-4 text-white drop-shadow" />
       ) : null}
     </motion.div>

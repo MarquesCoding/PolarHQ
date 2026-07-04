@@ -159,6 +159,17 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   }
 
   const [focus, setFocus] = useState<Focus | null>(null)
+  const [fading, setFading] = useState<{ id: string; rect: Rect } | null>(null)
+  const [closingId, setClosingId] = useState<string | null>(null)
+
+  const PUSH = 1.16
+  const scaleAround = (rect: Rect, cx: number, cy: number): Rect => ({
+    x: cx + (rect.x - cx) * PUSH,
+    y: cy + (rect.y - cy) * PUSH,
+    w: rect.w * PUSH,
+    h: rect.h * PUSH,
+  })
+  const focusCenter = focus ? { x: focus.vp.width / 2, y: focus.vp.top + focus.vp.height / 2 } : null
 
   const focusRectFor = (asset: GridAsset, vp: Focus["vp"]): Rect => {
     const padX = 40
@@ -190,20 +201,30 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   }
 
   const page = (delta: number) => {
-    setFocus((current) => {
-      if (!current) return current
-      const id = ordered[ordered.indexOf(current.id) + delta]
-      if (!id) return current
-      const asset = sorted.find((item) => item.id === id)
-      if (!asset) return current
-      return { id, rect: focusRectFor(asset, current.vp), vp: current.vp }
-    })
+    if (!focus) return
+    const id = ordered[ordered.indexOf(focus.id) + delta]
+    if (!id) return
+    const asset = sorted.find((item) => item.id === id)
+    if (!asset) return
+    const prevId = focus.id
+    setFading({ id: prevId, rect: focus.rect })
+    window.setTimeout(() => setFading((current) => (current?.id === prevId ? null : current)), 340)
+    setFocus({ id, rect: focusRectFor(asset, focus.vp), vp: focus.vp })
+  }
+
+  const close = () => {
+    if (!focus) return
+    const id = focus.id
+    setClosingId(id)
+    window.setTimeout(() => setClosingId((current) => (current === id ? null : current)), 480)
+    setFading(null)
+    setFocus(null)
   }
 
   useEffect(() => {
     if (!focus) return
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setFocus(null)
+      if (event.key === "Escape") close()
       else if (event.key === "ArrowRight") page(1)
       else if (event.key === "ArrowLeft") page(-1)
     }
@@ -215,11 +236,15 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const focusedAsset = focus ? sorted.find((item) => item.id === focus.id) : undefined
 
   const renderList = useMemo(() => {
-    if (!focus) return visible
-    if (visible.some((entry) => entry.asset.id === focus.id)) return visible
-    const entry = entries.find((item) => item.asset.id === focus.id)
-    return entry ? [...visible, entry] : visible
-  }, [visible, entries, focus])
+    const pinned = [focus?.id, fading?.id, closingId].filter((id): id is string => Boolean(id))
+    if (pinned.length === 0) return visible
+    const present = new Set(visible.map((entry) => entry.asset.id))
+    const extra = pinned
+      .filter((id) => !present.has(id))
+      .map((id) => entries.find((entry) => entry.asset.id === id))
+      .filter((entry): entry is (typeof entries)[number] => Boolean(entry))
+    return extra.length ? [...visible, ...extra] : visible
+  }, [visible, entries, focus, fading, closingId])
 
   useEffect(() => {
     const scroller = getScrollParent(containerRef.current)
@@ -241,7 +266,9 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
       onPointerUp={onMarqueeUp}
       onPointerCancel={onMarqueeUp}
     >
-      {layout.markers.map((marker) => {
+      {focus || closingId
+        ? null
+        : layout.markers.map((marker) => {
         const allSelected = marker.assetIds.every((id) => selection.isSelected(id))
         return (
           <div key={marker.key} className="absolute z-10" style={{ top: marker.y, left: marker.x }}>
@@ -274,17 +301,24 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
 
       {renderList.map(({ asset, rect: gridRect }) => {
         const isFocused = focus?.id === asset.id
+        const isFading = fading?.id === asset.id
+        const isClosing = !focus && closingId === asset.id
+        let rect = gridRect
+        if (isFocused && focus) rect = focus.rect
+        else if (isFading && fading) rect = fading.rect
+        else if (focus && focusCenter) rect = scaleAround(gridRect, focusCenter.x, focusCenter.y)
         return (
           <AssetEntity
             key={asset.id}
             asset={asset}
-            rect={isFocused && focus ? focus.rect : gridRect}
+            rect={rect}
             selected={selection.isSelected(asset.id)}
             selectionActive={selection.count > 0}
-            dimmed={focus !== null && !isFocused}
-            focused={isFocused}
-            animate
-            z={isFocused ? 50 : 1}
+            dimmed={focus !== null && !isFocused && !isFading}
+            focused={isFocused || isFading}
+            fadingOut={isFading}
+            animate={isFading ? false : isFocused ? fading === null : true}
+            z={isFocused ? 50 : isFading ? 51 : isClosing ? 50 : 1}
             onOpen={() => openAsset(asset.id)}
             onToggle={(shiftKey) => onToggle(asset.id, shiftKey)}
           />
@@ -297,7 +331,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
           vp={focus.vp}
           hasPrev={ordered.indexOf(focus.id) > 0}
           hasNext={ordered.indexOf(focus.id) < ordered.length - 1}
-          onClose={() => setFocus(null)}
+          onClose={close}
           onPrev={() => page(-1)}
           onNext={() => page(1)}
           onInvalidate={onInvalidate}
