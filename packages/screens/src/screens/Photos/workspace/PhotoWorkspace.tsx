@@ -64,9 +64,9 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const [sidebarWidth, setSidebarWidth] = useState(260)
   const sidebarInset = sidebarOpen ? sidebarWidth : 0
   const [range, setRange] = useState({ start: 0, end: 0 })
-  const [rowHeight] = usePersistentNumber("photos.rowHeight", 180)
-  const [gap] = usePersistentNumber("photos.gap", 12)
-  const [square] = usePersistentNumber("photos.square", 0)
+  const [rowHeight, setRowHeight] = usePersistentNumber("photos.rowHeight", 180)
+  const [gap, setGap] = usePersistentNumber("photos.gap", 12)
+  const [square, setSquare] = usePersistentNumber("photos.square", 0)
   const [modeNum, setModeNum] = usePersistentNumber("photos.mode", 0)
   const mode: Mode = modeNum === 1 ? "canvas" : modeNum === 2 ? "infinity" : "grid"
   const setMode = (next: Mode) => setModeNum(next === "canvas" ? 1 : next === "infinity" ? 2 : 0)
@@ -473,7 +473,18 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
         />
       ) : null}
 
-      {focus ? null : <PhotoChrome mode={mode} onMode={setMode} />}
+      {focus ? null : (
+        <PhotoChrome
+          mode={mode}
+          onMode={setMode}
+          rowHeight={rowHeight}
+          onRowHeight={setRowHeight}
+          gap={gap}
+          onGap={setGap}
+          square={square === 1}
+          onSquare={(value) => setSquare(value ? 1 : 0)}
+        />
+      )}
     </div>
   )
 }
