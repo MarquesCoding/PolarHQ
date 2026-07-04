@@ -30,6 +30,7 @@ interface FocusViewProps {
   vp: { top: number; height: number; width: number }
   zoom: number
   info: boolean
+  panelWidth: number
   hasPrev: boolean
   hasNext: boolean
   onClose: () => void
@@ -38,8 +39,6 @@ interface FocusViewProps {
   onToggleInfo: () => void
   onInvalidate?: () => void
 }
-
-const DETAILS_WIDTH = 360
 
 const CHROME_FADE = { duration: 0.25, ease: [0.32, 0.72, 0, 1] as const }
 
@@ -53,6 +52,7 @@ const FocusView = ({
   vp,
   zoom,
   info,
+  panelWidth,
   hasPrev,
   hasNext,
   onClose,
@@ -216,12 +216,12 @@ const FocusView = ({
             transition={CHROME_FADE}
             onClick={stop}
             onPointerDown={stop}
-            className="bg-background/95 absolute z-[60] overflow-y-auto border-l shadow-2xl backdrop-blur-xl"
+            className="bg-sidebar absolute z-[60] overflow-y-auto rounded-2xl border shadow-xl"
             style={{
-              top: vp.top,
-              left: vp.width - DETAILS_WIDTH,
-              width: DETAILS_WIDTH,
-              height: vp.height,
+              top: vp.top + 8,
+              left: vp.width - panelWidth + 8,
+              width: Math.max(240, panelWidth - 16),
+              height: vp.height - 16,
             }}
           >
             <InfoPanel assetId={asset.id} isFavorite={asset.isFavorite} onFavorite={favourite} />

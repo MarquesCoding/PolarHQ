@@ -8,8 +8,10 @@ import { Icon } from "@workspace/screens/icons"
 import { cn } from "@workspace/ui/lib/utils"
 import AssetEntity from "./AssetEntity"
 import FocusView from "./FocusView"
+import PhotoChrome from "./PhotoChrome"
+import { layoutCanvas } from "./layout/canvas"
 import { layoutGrid } from "./layout/grid"
-import type { GridAsset, Rect } from "./types"
+import type { GridAsset, Mode, Rect } from "./types"
 
 interface Focus {
   id: string
@@ -65,14 +67,23 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const [rowHeight] = usePersistentNumber("photos.rowHeight", 180)
   const [gap] = usePersistentNumber("photos.gap", 12)
   const [square] = usePersistentNumber("photos.square", 0)
+  const [modeNum, setModeNum] = usePersistentNumber("photos.mode", 0)
+  const mode: Mode = modeNum === 1 ? "canvas" : modeNum === 2 ? "infinity" : "grid"
+  const setMode = (next: Mode) => setModeNum(next === "canvas" ? 1 : next === "infinity" ? 2 : 0)
+  const canvasPositions = useMemo(() => new Map<string, Rect>(), [])
   const [hoveredDay, setHoveredDay] = useState<string | null>(null)
 
   const sorted = useMemo(() => [...assets].sort((a, b) => dateOf(b) - dateOf(a)), [assets])
   const ordered = useMemo(() => sorted.map((asset) => asset.id), [sorted])
-  const layout = useMemo(
-    () => layoutGrid(sorted, width, { rowHeight, gap, square: square === 1 }, sidebarInset),
-    [sorted, width, rowHeight, gap, square, sidebarInset],
-  )
+  const layout = useMemo(() => {
+    if (mode === "canvas") return layoutCanvas(sorted, width, sidebarInset, canvasPositions)
+    return layoutGrid(
+      sorted,
+      width,
+      { rowHeight, gap, square: square === 1 || mode === "infinity" },
+      sidebarInset,
+    )
+  }, [mode, sorted, width, rowHeight, gap, square, sidebarInset, canvasPositions])
   const entries = useMemo(
     () =>
       sorted
@@ -207,7 +218,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   }
   const focusCenter = focus ? { x: focus.rect.x + focus.rect.w / 2, y: focus.rect.y + focus.rect.h / 2 } : null
 
-  const DETAILS_WIDTH = 360
+  const DETAILS_WIDTH = sidebarWidth
   const focusRectFor = (asset: GridAsset, vp: Focus["vp"], rightInset = 0, leftInset = 0): Rect => {
     const padX = 40
     const padY = 40
@@ -438,6 +449,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
           vp={focus.vp}
           zoom={zoom}
           info={info}
+          panelWidth={sidebarWidth}
           hasPrev={ordered.indexOf(focus.id) > 0}
           hasNext={ordered.indexOf(focus.id) < ordered.length - 1}
           onClose={close}
@@ -459,6 +471,8 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
           }}
         />
       ) : null}
+
+      {focus ? null : <PhotoChrome mode={mode} onMode={setMode} />}
     </div>
   )
 }
