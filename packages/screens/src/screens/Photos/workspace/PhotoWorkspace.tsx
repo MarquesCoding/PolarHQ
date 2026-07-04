@@ -21,8 +21,18 @@ interface Focus {
 
 const BUFFER = 900
 const QUANTUM = 300
+const CANVAS_KEY = "photos.canvasPositions"
 
 const dateOf = (asset: GridAsset): number => new Date(asset.takenAt ?? asset.createdAt).getTime()
+
+const loadCanvasPositions = (): Map<string, Rect> => {
+  try {
+    const raw = localStorage.getItem(CANVAS_KEY)
+    return raw ? new Map(Object.entries(JSON.parse(raw) as Record<string, Rect>)) : new Map()
+  } catch {
+    return new Map()
+  }
+}
 
 const getScrollParent = (element: HTMLElement | null): HTMLElement | null => {
   let node = element?.parentElement ?? null
@@ -70,7 +80,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const [modeNum, setModeNum] = usePersistentNumber("photos.mode", 0)
   const mode: Mode = modeNum === 1 ? "canvas" : modeNum === 2 ? "infinity" : "grid"
   const setMode = (next: Mode) => setModeNum(next === "canvas" ? 1 : next === "infinity" ? 2 : 0)
-  const canvasPositions = useMemo(() => new Map<string, Rect>(), [])
+  const [canvasPositions, setCanvasPositions] = useState<Map<string, Rect>>(loadCanvasPositions)
   const [hoveredDay, setHoveredDay] = useState<string | null>(null)
 
   const sorted = useMemo(() => [...assets].sort((a, b) => dateOf(b) - dateOf(a)), [assets])
@@ -84,6 +94,18 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
       sidebarInset,
     )
   }, [mode, sorted, width, rowHeight, gap, square, sidebarInset, canvasPositions])
+  useEffect(() => {
+    localStorage.setItem(CANVAS_KEY, JSON.stringify(Object.fromEntries(canvasPositions)))
+  }, [canvasPositions])
+  const onCanvasDrag = (id: string, dx: number, dy: number) => {
+    const current = layout.rects.get(id)
+    if (!current) return
+    setCanvasPositions((prev) => {
+      const next = new Map(prev)
+      next.set(id, { ...current, x: current.x + dx, y: current.y + dy })
+      return next
+    })
+  }
   const entries = useMemo(
     () =>
       sorted
@@ -439,9 +461,11 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
             panY={isFocused ? pan.y : 0}
             animate={isFading || isSettling ? false : isFocused ? fading === null : true}
             z={isFocused ? 50 : isFading ? 51 : isClosing ? 50 : 1}
+            draggable={mode === "canvas" && !focus}
             onOpen={() => openAsset(asset.id)}
             onToggle={(shiftKey) => onToggle(asset.id, shiftKey)}
             onPan={onPan}
+            onDragCommit={(dx, dy) => onCanvasDrag(asset.id, dx, dy)}
           />
         )
       })}

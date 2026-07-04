@@ -35,9 +35,11 @@ interface AssetEntityProps {
   panY: number
   animate: boolean
   z: number
+  draggable: boolean
   onOpen: () => void
   onToggle: (shiftKey: boolean) => void
   onPan: (dx: number, dy: number) => void
+  onDragCommit: (dx: number, dy: number) => void
 }
 
 const EASE = [0.32, 0.72, 0, 1] as const
@@ -60,9 +62,11 @@ const AssetEntity = ({
   panY,
   animate,
   z,
+  draggable,
   onOpen,
   onToggle,
   onPan,
+  onDragCommit,
 }: AssetEntityProps) => {
   const [thumb, setThumb] = useState<string | null>(() =>
     asset.encrypted ? (thumbnailCache.get(asset.id) ?? null) : asset.thumbnailUrl,
@@ -136,6 +140,9 @@ const AssetEntity = ({
   const dragged = useRef(false)
   const downAt = useRef<{ x: number; y: number } | null>(null)
   const panLast = useRef<{ x: number; y: number } | null>(null)
+  const dragStart = useRef<{ x: number; y: number } | null>(null)
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+  const dragging = dragStart.current !== null
 
   return (
     <motion.div
@@ -144,14 +151,14 @@ const AssetEntity = ({
       aria-label={name}
       initial={false}
       animate={{
-        x: rect.x,
-        y: rect.y,
+        x: rect.x + dragOffset.x,
+        y: rect.y + dragOffset.y,
         width: rect.w,
         height: rect.h,
         opacity: fadingOut ? 0 : dimmed ? 0.5 : 1,
       }}
       transition={{
-        default: animate ? { duration: 0.45, ease: EASE } : { duration: 0 },
+        default: dragging ? { duration: 0 } : animate ? { duration: 0.45, ease: EASE } : { duration: 0 },
         opacity: { duration: fadingOut ? 0.3 : 0.4, ease: EASE },
       }}
       style={{
@@ -170,11 +177,22 @@ const AssetEntity = ({
         }
         downAt.current = { x: event.clientX, y: event.clientY }
         dragged.current = false
+        if (draggable) {
+          dragStart.current = { x: event.clientX, y: event.clientY }
+          event.currentTarget.setPointerCapture(event.pointerId)
+        }
       }}
       onPointerMove={(event) => {
         if (panLast.current) {
           onPan(event.clientX - panLast.current.x, event.clientY - panLast.current.y)
           panLast.current = { x: event.clientX, y: event.clientY }
+          return
+        }
+        if (dragStart.current) {
+          const dx = event.clientX - dragStart.current.x
+          const dy = event.clientY - dragStart.current.y
+          if (Math.hypot(dx, dy) > 6) dragged.current = true
+          setDragOffset({ x: dx, y: dy })
           return
         }
         if (
@@ -185,6 +203,11 @@ const AssetEntity = ({
       }}
       onPointerUp={() => {
         panLast.current = null
+        if (dragStart.current) {
+          if (dragged.current) onDragCommit(dragOffset.x, dragOffset.y)
+          dragStart.current = null
+          setDragOffset({ x: 0, y: 0 })
+        }
       }}
       onPointerEnter={hover}
       onPointerLeave={() => setPlaying(false)}
@@ -195,7 +218,8 @@ const AssetEntity = ({
       }}
       className={cn(
         "group absolute outline-none",
-        !focused && "cursor-pointer",
+        !focused && !draggable && "cursor-pointer",
+        draggable && (dragging ? "cursor-grabbing" : "cursor-grab"),
         focused && zoom > 1 && "cursor-grab active:cursor-grabbing",
       )}
     >
@@ -303,5 +327,6 @@ export default memo(
     a.panX === b.panX &&
     a.panY === b.panY &&
     a.animate === b.animate &&
-    a.z === b.z,
+    a.z === b.z &&
+    a.draggable === b.draggable,
 )
