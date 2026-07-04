@@ -34,6 +34,8 @@ const toViewerItem = (asset: GridAsset): ViewerItem => ({
   videoUrl: asset.encrypted ? null : (asset.videoUrl ?? null),
   motion: asset.motion,
   isFavorite: asset.isFavorite,
+  width: asset.width,
+  height: asset.height,
 })
 
 /** A {@link ViewerController} over a list of Photos {@link GridAsset}s — wires the Lightbox to the

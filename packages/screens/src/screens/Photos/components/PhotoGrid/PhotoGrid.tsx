@@ -16,6 +16,7 @@ import TimelineScrubber, {
 import { Circle } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
+import { createPortal } from "react-dom"
 import { AnimatePresence, motion } from "motion/react"
 
 const DEFAULT_GAP = 12
@@ -244,6 +245,8 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
   const [width, setWidth] = useState(0)
   const [range, setRange] = useState({ start: 0, end: 0 })
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [originRect, setOriginRect] = useState<DOMRect | null>(null)
+  const [stageOriginY, setStageOriginY] = useState(0)
   const [stackMembers, setStackMembers] = useState<GridAsset[] | null>(null)
   const [stackIndex, setStackIndex] = useState<number | null>(null)
   const [preview, setPreview] = useState<GridAsset | null>(null)
@@ -330,7 +333,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     if (shiftKey) selection.rangeTo(id, ordered)
     else selection.toggle(id, ordered)
   }
-  const onOpen = (id: string) => {
+  const onOpen = (id: string, rect: DOMRect | null) => {
     if (draggedRef.current) return
     const asset = sortedGridAssets.find((item) => item.id === id)
     if (asset?.stackId && asset.stackCount > 1) {
@@ -341,7 +344,21 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
       return
     }
     const position = sortedGridAssets.findIndex((item) => item.id === id)
-    if (position >= 0) setOpenIndex(position)
+    if (position >= 0) {
+      // Scale the grid around what the user's actually looking at: the scroll viewport's centre,
+      // expressed in the (tall, possibly-scrolled) content's own coordinate space — so it zooms
+      // symmetrically from the middle rather than sliding.
+      const element = containerRef.current
+      if (element) {
+        const top = element.getBoundingClientRect().top
+        const scroller = getScrollParent(element)?.getBoundingClientRect()
+        const viewTop = scroller?.top ?? 0
+        const viewH = scroller?.height ?? window.innerHeight
+        setStageOriginY(viewTop + viewH / 2 - top)
+      }
+      setOriginRect(rect)
+      setOpenIndex(position)
+    }
   }
 
   const pointFromEvent = (event: ReactPointerEvent): { x: number; y: number } => {
@@ -473,7 +490,16 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
     <div
       ref={containerRef}
       className="relative min-h-full w-full"
-      style={{ height: layout.totalHeight }}
+      style={{
+        height: layout.totalHeight,
+        // The grid "dollies in and out of focus" behind an opened photo — scale + blur + desaturate
+        // around the viewport centre. The photo itself is portaled above this and stays sharp.
+        transformOrigin: `50% ${stageOriginY}px`,
+        transform: openIndex !== null ? "scale(1.08)" : "scale(1)",
+        filter: openIndex !== null ? "blur(20px) saturate(0.5)" : "blur(0px) saturate(1)",
+        transition:
+          "transform 0.42s cubic-bezier(0.32,0.72,0,1), filter 0.42s cubic-bezier(0.32,0.72,0,1)",
+      }}
       onPointerDown={onMarqueeDown}
       onPointerMove={onMarqueeMove}
       onPointerUp={onMarqueeUp}
@@ -554,7 +580,7 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
                 selectionActive={selectionActive}
                 animateIn={fresh}
                 delay={delay}
-                onOpen={() => onOpen(cell.asset.id)}
+                onOpen={(rect) => onOpen(cell.asset.id, rect)}
                 onToggle={(shiftKey) => onToggle(cell.asset.id, shiftKey)}
                 onPreviewStart={() => setPreview(cell.asset)}
                 onPreviewEnd={() => setPreview(null)}
@@ -564,17 +590,21 @@ const PhotoGrid = ({ assets, onReachEnd }: PhotoGridProps) => {
         }),
       )}
 
-      <AnimatePresence>
-        {openIndex !== null ? (
-          <Lightbox
-            key="lightbox"
-            controller={viewerController}
-            index={openIndex}
-            onIndexChange={setOpenIndex}
-            onClose={() => setOpenIndex(null)}
-          />
-        ) : null}
-      </AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
+          {openIndex !== null ? (
+            <Lightbox
+              key="lightbox"
+              controller={viewerController}
+              index={openIndex}
+              originRect={originRect}
+              onIndexChange={setOpenIndex}
+              onClose={() => setOpenIndex(null)}
+            />
+          ) : null}
+        </AnimatePresence>,
+        document.body,
+      )}
 
       <AnimatePresence>
         {stackMembers && stackIndex !== null ? (

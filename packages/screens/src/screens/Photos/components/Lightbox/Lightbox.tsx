@@ -1,4 +1,4 @@
-import { type ReactElement, useEffect, useRef, useState } from "react"
+import { type ReactElement, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { usePersistentNumber } from "@workspace/screens/persistentSetting"
 import { useZoomPan } from "@workspace/screens/useZoomPan"
 import {
@@ -46,7 +46,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 import { cn } from "@workspace/ui/lib/utils"
-import { AnimatePresence, motion } from "motion/react"
+import { AnimatePresence, motion, useAnimationControls, usePresence } from "motion/react"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 import type { ViewerController, ViewerItem } from "./viewer"
@@ -58,6 +58,8 @@ interface LightboxProps {
   index: number
   onIndexChange: (index: number) => void
   onClose: () => void
+  /** The clicked tile's screen rect, so the photo can zoom out of (and back into) its grid cell. */
+  originRect?: DOMRect | null
   /** Show a thumbnail strip of every item along the bottom — used for stack/burst viewing. */
   filmstrip?: boolean
 }
@@ -120,9 +122,60 @@ const FilmstripThumb = ({
  *  OOMing the tab — we offer a streaming download instead (true streaming playback is a later phase). */
 const PLAYABLE_ENCRYPTED_MAX = 1.5 * 1024 * 1024 * 1024
 
-const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: LightboxProps) => {
+const Lightbox = ({
+  controller,
+  index,
+  onIndexChange,
+  onClose,
+  originRect,
+  filmstrip,
+}: LightboxProps) => {
   const { t } = useTranslation("photos")
   const { items } = controller
+
+  // Hero FLIP: zoom the photo out of its grid tile on open, and back into it on close. The photo
+  // renders in a portal above the (blurred, scaled) grid, so it stays sharp throughout. We compute
+  // where object-contain *will* place the photo from the stage size + the known aspect ratio, so it
+  // works even though the encrypted image hasn't decrypted/loaded yet at open time.
+  const stageRef = useRef<HTMLDivElement>(null)
+  const flipControls = useAnimationControls()
+  const flipFrom = useRef<{ x: number; y: number; scale: number } | null>(null)
+  const flipEase = { duration: 0.42, ease: [0.32, 0.72, 0, 1] as const }
+  const didOpenRef = useRef(false)
+  const [isPresent, safeToRemove] = usePresence()
+
+  useLayoutEffect(() => {
+    if (didOpenRef.current) return // only animate on the initial open, not on next/prev navigation
+    const stage = stageRef.current
+    const opened = items[index]
+    if (!stage || !originRect) return
+    const box = stage.getBoundingClientRect()
+    if (box.width === 0 || box.height === 0) return
+    didOpenRef.current = true
+    const aspect =
+      opened?.width && opened?.height ? opened.width / opened.height : box.width / box.height
+    let dispW = box.width
+    if (dispW / aspect > box.height) dispW = box.height * aspect
+    flipFrom.current = {
+      x: originRect.left + originRect.width / 2 - (box.left + box.width / 2),
+      y: originRect.top + originRect.height / 2 - (box.top + box.height / 2),
+      scale: originRect.width / dispW,
+    }
+    flipControls.set(flipFrom.current)
+    void flipControls.start({ x: 0, y: 0, scale: 1, transition: flipEase })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [originRect])
+
+  useEffect(() => {
+    if (isPresent) return
+    const from = flipFrom.current
+    if (!from) {
+      safeToRemove()
+      return
+    }
+    void flipControls.start({ ...from, transition: flipEase }).then(() => safeToRemove())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPresent])
   const [infoPref, setInfoPref] = usePersistentNumber("photos.lightboxDetails", 0)
   const info = infoPref === 1
   const toggleInfo = () => setInfoPref(info ? 0 : 1)
@@ -357,20 +410,14 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
   }
 
   return (
-    <motion.div
-      // Frost the grid behind (blur + desaturate) instead of a dark modal, so the selected photo
-      // reads as lifted off a soft, out-of-focus backdrop — matching the reference "hero" feel.
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/30 p-4 backdrop-blur-2xl backdrop-saturate-[.55] sm:p-10"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+    <div
+      // Transparent — the actual blur/scale/desaturate happens on the grid itself (behind this, in
+      // PhotoGrid), so this just holds the sharp, floating photo and its chrome. Click to close.
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-10"
       onPointerDown={(event) => event.stopPropagation()}
       onClick={editing ? undefined : onClose}
     >
-      <motion.div
-        // Transparent, no panel chrome — the image floats on the frosted backdrop. Its own shared-
-        // element (layoutId) zoom from the grid tile is the only prominent motion.
+      <div
         className="relative flex h-full max-h-[92vh] w-full max-w-[1600px] overflow-visible"
         onClick={(event) => event.stopPropagation()}
       >
@@ -576,17 +623,19 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
             <EditStage controller={editor} />
           ) : source ? (
             <motion.div
+              ref={stageRef}
               className="flex h-full w-full items-center justify-center"
               animate={{ scale: zoom.scale, x: zoom.offset.x, y: zoom.offset.y }}
               transition={{ duration: 0.1, ease: "easeOut" }}
             >
               <motion.img
-                layoutId={`photo-${item.id}`}
+                animate={flipControls}
                 src={source}
                 alt={item.name}
                 draggable={false}
                 className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
                 style={{
+                  transformOrigin: "center",
                   backgroundImage:
                     !item.encrypted && item.thumbnailUrl
                       ? `url(${item.thumbnailUrl})`
@@ -595,7 +644,6 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
                 }}
-                transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
               />
             </motion.div>
           ) : (
@@ -710,7 +758,7 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
           </motion.aside>
         ) : null}
       </AnimatePresence>
-      </motion.div>
+      </div>
 
       {shareConfig ? (
         <ShareDialog
@@ -744,7 +792,7 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </motion.div>
+    </div>
   )
 }
 
