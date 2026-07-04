@@ -150,8 +150,8 @@ const FocusView = ({
         transition={CHROME_FADE}
         onClick={stop}
         onPointerDown={stop}
-        className="absolute z-[60] flex -translate-x-1/2 items-center gap-0.5 rounded-full border bg-background/55 p-1 shadow-xl backdrop-blur-2xl"
-        style={{ top: vp.top + vp.height - 60, left: vp.width / 2 }}
+        className="absolute z-[60] flex items-center gap-0.5 rounded-full border bg-background/55 p-1 shadow-xl backdrop-blur-2xl"
+        style={{ top: vp.top + vp.height - 60, right: (info ? panelWidth : 0) + 20 }}
       >
         <Button
           variant="ghost"

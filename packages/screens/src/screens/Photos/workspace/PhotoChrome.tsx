@@ -13,7 +13,7 @@ const MODES: { id: Mode; label: string }[] = [
 const PhotoChrome = ({ mode, onMode }: { mode: Mode; onMode: (mode: Mode) => void }) => {
   const { t } = useTranslation("photos")
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-5 z-30 flex justify-center">
+    <div className="pointer-events-none fixed right-5 bottom-5 z-30 flex justify-end">
       <div className="bg-background/70 pointer-events-auto flex items-center rounded-full border p-1 shadow-lg backdrop-blur-xl">
         {MODES.map((item) => (
           <button
