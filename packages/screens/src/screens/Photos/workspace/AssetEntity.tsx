@@ -8,7 +8,6 @@ import {
 } from "@workspace/core/photosE2e"
 import { Heart, Record, Stack } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
-import { motion } from "motion/react"
 import { fetchCachedOriginal } from "@pages/Photos/components/Lightbox/originalCache"
 import type { GridAsset, Rect } from "./types"
 
@@ -40,7 +39,7 @@ interface AssetEntityProps {
   onPan: (dx: number, dy: number) => void
 }
 
-const EASE = [0.32, 0.72, 0, 1] as const
+const CSS_EASE = "cubic-bezier(0.32, 0.72, 0, 1)"
 
 /**
  * The one and only representation of an asset — the same element in grid, canvas, infinity and the
@@ -138,28 +137,23 @@ const AssetEntity = ({
   const panLast = useRef<{ x: number; y: number } | null>(null)
 
   return (
-    <motion.div
+    <div
       role="button"
       tabIndex={0}
       aria-label={name}
-      initial={false}
-      animate={{
-        x: rect.x,
-        y: rect.y,
-        width: rect.w,
-        height: rect.h,
-        opacity: fadingOut ? 0 : dimmed ? 0.5 : 1,
-      }}
-      transition={{
-        default: animate ? { duration: 0.45, ease: EASE } : { duration: 0 },
-        opacity: { duration: fadingOut ? 0.3 : 0.4, ease: EASE },
-      }}
       style={{
         position: "absolute",
         left: 0,
         top: 0,
+        transform: `translate3d(${rect.x}px, ${rect.y}px, 0)`,
+        width: rect.w,
+        height: rect.h,
+        opacity: fadingOut ? 0 : dimmed ? 0.5 : 1,
         zIndex: z,
         contain: "layout paint",
+        transition: animate
+          ? `transform 0.45s ${CSS_EASE}, width 0.45s ${CSS_EASE}, height 0.45s ${CSS_EASE}, opacity 0.4s ${CSS_EASE}`
+          : `opacity 0.4s ${CSS_EASE}`,
         willChange: dimmed || focused ? "transform" : undefined,
       }}
       onPointerDown={(event) => {
@@ -282,7 +276,7 @@ const AssetEntity = ({
         <Heart weight="fill" className="absolute bottom-1.5 left-1.5 size-4 text-white drop-shadow" />
       ) : null}
       </div>
-    </motion.div>
+    </div>
   )
 }
 
