@@ -358,31 +358,22 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6"
+      // Frost the grid behind (blur + desaturate) instead of a dark modal, so the selected photo
+      // reads as lifted off a soft, out-of-focus backdrop — matching the reference "hero" feel.
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/30 p-4 backdrop-blur-2xl backdrop-saturate-[.55] sm:p-10"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.18 }}
+      transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
       onPointerDown={(event) => event.stopPropagation()}
+      onClick={editing ? undefined : onClose}
     >
       <motion.div
-        className="bg-background border-border/50 relative flex h-full max-h-[88vh] w-full max-w-[1600px] overflow-hidden rounded-2xl border shadow-2xl"
-        initial={{ scale: 0.97 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.97 }}
-        transition={{ duration: 0.18, ease: "easeOut" }}
+        // Transparent, no panel chrome — the image floats on the frosted backdrop. Its own shared-
+        // element (layoutId) zoom from the grid tile is the only prominent motion.
+        className="relative flex h-full max-h-[92vh] w-full max-w-[1600px] overflow-visible"
+        onClick={(event) => event.stopPropagation()}
       >
-      {source ? (
-        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-          <img
-            key={item.id}
-            src={source}
-            alt=""
-            className="absolute inset-0 h-full w-full scale-125 object-cover opacity-40 blur-3xl"
-          />
-          <div className="bg-background/50 absolute inset-0" />
-        </div>
-      ) : null}
       <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="relative flex items-center justify-between gap-2 p-3">
           <Button
