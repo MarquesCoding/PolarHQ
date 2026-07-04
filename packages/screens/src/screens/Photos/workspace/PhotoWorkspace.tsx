@@ -382,7 +382,9 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     >
       {focus || closingId
         ? null
-        : layout.markers.map((marker) => {
+        : layout.markers
+            .filter((marker) => marker.y >= range.start - 80 && marker.y <= range.end + 80)
+            .map((marker) => {
         const allSelected = marker.assetIds.every((id) => selection.isSelected(id))
         return (
           <div key={marker.key} className="absolute z-10" style={{ top: marker.y, left: marker.x }}>
