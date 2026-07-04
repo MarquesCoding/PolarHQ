@@ -16,23 +16,30 @@ import {
   DotsThree,
   DownloadSimple,
   Heart,
+  Info,
   Trash,
 } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
-import { motion } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
+import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
 import type { GridAsset } from "./types"
 
 interface FocusViewProps {
   asset: GridAsset
   vp: { top: number; height: number; width: number }
+  zoom: number
+  info: boolean
   hasPrev: boolean
   hasNext: boolean
   onClose: () => void
   onPrev: () => void
   onNext: () => void
+  onToggleInfo: () => void
   onInvalidate?: () => void
 }
+
+const DETAILS_WIDTH = 360
 
 const CHROME_FADE = { duration: 0.25, ease: [0.32, 0.72, 0, 1] as const }
 
@@ -44,16 +51,20 @@ const CHROME_FADE = { duration: 0.25, ease: [0.32, 0.72, 0, 1] as const }
 const FocusView = ({
   asset,
   vp,
+  zoom,
+  info,
   hasPrev,
   hasNext,
   onClose,
   onPrev,
   onNext,
+  onToggleInfo,
   onInvalidate,
 }: FocusViewProps) => {
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
   const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
+  const zoomed = zoom > 1.02
 
   const favourite = () => {
     void favoriteAssets([asset.id], !asset.isFavorite).then(() => onInvalidate?.())
@@ -80,10 +91,21 @@ const FocusView = ({
         transition={CHROME_FADE}
         onClick={stop}
         onPointerDown={stop}
-        className="text-foreground/80 absolute z-[60] -translate-x-1/2 truncate rounded-full border bg-background/60 px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md"
+        className="text-foreground/80 absolute z-[60] -translate-x-1/2 overflow-hidden rounded-full border bg-background/60 px-3 py-1 text-center text-xs font-medium shadow-sm backdrop-blur-md"
         style={{ top: vp.top + 16, left: vp.width / 2, maxWidth: "40%" }}
       >
-        {name}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={zoomed ? "zoom" : "name"}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.16, ease: [0.32, 0.72, 0, 1] }}
+            className="block truncate tabular-nums"
+          >
+            {zoomed ? `${Math.round(zoom * 100)}%` : name}
+          </motion.span>
+        </AnimatePresence>
       </motion.div>
 
       {hasPrev ? (
@@ -152,6 +174,15 @@ const FocusView = ({
         >
           <DownloadSimple className="size-[18px]" />
         </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={t("lightbox.info")}
+          onClick={onToggleInfo}
+          className={cn("rounded-full", info && "bg-muted")}
+        >
+          <Info className="size-[18px]" />
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
@@ -174,6 +205,29 @@ const FocusView = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </motion.div>
+
+      <AnimatePresence>
+        {info ? (
+          <motion.div
+            key="details"
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 24 }}
+            transition={CHROME_FADE}
+            onClick={stop}
+            onPointerDown={stop}
+            className="bg-background/95 absolute z-[60] overflow-y-auto border-l shadow-2xl backdrop-blur-xl"
+            style={{
+              top: vp.top,
+              left: vp.width - DETAILS_WIDTH,
+              width: DETAILS_WIDTH,
+              height: vp.height,
+            }}
+          >
+            <InfoPanel assetId={asset.id} isFavorite={asset.isFavorite} onFavorite={favourite} />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </>
   )
 }
