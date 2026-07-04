@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next"
 import { useAppSelector } from "@workspace/screens/store/hooks"
 import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
-import PhotoGrid from "@pages/Photos/components/PhotoGrid/PhotoGrid"
+import PhotoWorkspace from "@pages/Photos/workspace/PhotoWorkspace"
 
 export interface CollectionViewProps {
   title: string
@@ -90,8 +90,10 @@ const CollectionInner = ({
           (emptyState ?? <p className="text-muted-foreground text-sm">{emptyText}</p>)
         )
       ) : (
-        <PhotoGrid
+        <PhotoWorkspace
           assets={visible}
+          showModes={false}
+          onInvalidate={invalidate}
           onReachEnd={
             search
               ? undefined
