@@ -4,7 +4,8 @@ import type { GridAsset, GridOptions, Layout, Rect } from "../types"
 
 const HEADER_HEIGHT = 30
 const HEADER_GAP = 6
-const INSET = 12
+const INSET = 20
+const LABEL_MIN_GAP = 150
 
 const dateOf = (asset: GridAsset): Date => new Date(asset.takenAt ?? asset.createdAt)
 const dayKey = (asset: GridAsset): string => dateOf(asset).toISOString().slice(0, 10)
@@ -104,9 +105,13 @@ export const layoutGrid = (
       const gaps = (row.length - 1) * gap
       const height = stretch ? (inner - gaps) / aspectSum : rowHeight
       let x = left
+      let lastLabelX = -Infinity
       for (const item of row) {
         const cellWidth = height * item.aspect
-        if (item.dayStart) addMarker(item, x, labelY)
+        if (item.dayStart && x - lastLabelX >= LABEL_MIN_GAP) {
+          addMarker(item, x, labelY)
+          lastLabelX = x
+        }
         rects.set(item.asset.id, { x, y: rowY, w: cellWidth, h: height })
         x += cellWidth + gap
       }

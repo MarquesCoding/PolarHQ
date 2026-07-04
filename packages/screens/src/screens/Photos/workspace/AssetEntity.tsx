@@ -144,14 +144,20 @@ const AssetEntity = ({
         width: rect.w,
         height: rect.h,
         opacity: fadingOut ? 0 : dimmed ? 0.72 : 1,
-        filter: dimmed ? "blur(7px) saturate(0.9)" : "blur(0px) saturate(1)",
       }}
       transition={{
         default: animate ? { duration: 0.45, ease: EASE } : { duration: 0 },
         opacity: { duration: fadingOut ? 0.3 : 0.4, ease: EASE },
-        filter: { duration: 0.4, ease: EASE },
       }}
-      style={{ position: "absolute", left: 0, top: 0, zIndex: z }}
+      style={{
+        position: "absolute",
+        left: 0,
+        top: 0,
+        zIndex: z,
+        filter: dimmed ? "blur(6px) saturate(0.9)" : undefined,
+        transition: "filter 0.4s ease",
+        willChange: dimmed || focused ? "transform, filter" : undefined,
+      }}
       onPointerDown={(event) => {
         if (focused && zoom > 1) {
           panLast.current = { x: event.clientX, y: event.clientY }
