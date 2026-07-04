@@ -31,10 +31,13 @@ interface AssetEntityProps {
   focused: boolean
   fadingOut: boolean
   zoom: number
+  panX: number
+  panY: number
   animate: boolean
   z: number
   onOpen: () => void
   onToggle: (shiftKey: boolean) => void
+  onPan: (dx: number, dy: number) => void
 }
 
 const EASE = [0.32, 0.72, 0, 1] as const
@@ -53,10 +56,13 @@ const AssetEntity = ({
   focused,
   fadingOut,
   zoom,
+  panX,
+  panY,
   animate,
   z,
   onOpen,
   onToggle,
+  onPan,
 }: AssetEntityProps) => {
   const [thumb, setThumb] = useState<string | null>(() =>
     asset.encrypted ? (thumbnailCache.get(asset.id) ?? null) : asset.thumbnailUrl,
@@ -124,6 +130,7 @@ const AssetEntity = ({
   const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
   const dragged = useRef(false)
   const downAt = useRef<{ x: number; y: number } | null>(null)
+  const panLast = useRef<{ x: number; y: number } | null>(null)
 
   return (
     <motion.div
@@ -136,40 +143,63 @@ const AssetEntity = ({
         y: rect.y,
         width: rect.w,
         height: rect.h,
-        scale: focused ? zoom : 1,
         opacity: fadingOut ? 0 : dimmed ? 0.72 : 1,
         filter: dimmed ? "blur(7px) saturate(0.9)" : "blur(0px) saturate(1)",
       }}
       transition={{
         default: animate ? { duration: 0.45, ease: EASE } : { duration: 0 },
-        scale: { duration: 0.12, ease: "linear" },
         opacity: { duration: fadingOut ? 0.3 : 0.4, ease: EASE },
         filter: { duration: 0.4, ease: EASE },
       }}
       style={{ position: "absolute", left: 0, top: 0, zIndex: z }}
       onPointerDown={(event) => {
+        if (focused && zoom > 1) {
+          panLast.current = { x: event.clientX, y: event.clientY }
+          event.currentTarget.setPointerCapture(event.pointerId)
+          return
+        }
         downAt.current = { x: event.clientX, y: event.clientY }
         dragged.current = false
       }}
       onPointerMove={(event) => {
+        if (panLast.current) {
+          onPan(event.clientX - panLast.current.x, event.clientY - panLast.current.y)
+          panLast.current = { x: event.clientX, y: event.clientY }
+          return
+        }
         if (
           downAt.current &&
           Math.hypot(event.clientX - downAt.current.x, event.clientY - downAt.current.y) > 6
         )
           dragged.current = true
       }}
+      onPointerUp={() => {
+        panLast.current = null
+      }}
       onPointerEnter={hover}
       onPointerLeave={() => setPlaying(false)}
       onClick={(event) => {
-        if (dragged.current) return
+        if (dragged.current || focused) return
         if (selectionActive || event.shiftKey) onToggle(event.shiftKey)
         else onOpen()
       }}
       className={cn(
-        "bg-muted group absolute overflow-hidden rounded-lg outline-none",
+        "group absolute outline-none",
         !focused && "cursor-pointer",
+        focused && zoom > 1 && "cursor-grab active:cursor-grabbing",
       )}
     >
+      <div
+        className={cn(
+          "bg-muted relative h-full w-full overflow-hidden",
+          focused ? "rounded-2xl" : "rounded-lg",
+        )}
+        style={{
+          transform: focused ? `translate(${panX}px, ${panY}px) scale(${zoom})` : undefined,
+          transformOrigin: "center",
+          transition: "transform 0.1s ease-out",
+        }}
+      >
       {displaySrc ? (
         <img
           src={displaySrc}
@@ -241,6 +271,7 @@ const AssetEntity = ({
       {asset.isFavorite && !focused ? (
         <Heart weight="fill" className="absolute bottom-1.5 left-1.5 size-4 text-white drop-shadow" />
       ) : null}
+      </div>
     </motion.div>
   )
 }
