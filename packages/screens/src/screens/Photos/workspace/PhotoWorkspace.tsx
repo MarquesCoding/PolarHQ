@@ -43,6 +43,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const { open: sidebarOpen, setOpen } = useSidebar()
   const containerRef = useRef<HTMLDivElement>(null)
   const sidebarWasOpen = useRef(true)
+  const collapsedByZoom = useRef(false)
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const zoomRef = useRef(1)
@@ -58,7 +59,8 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   reachEnd.current = onReachEnd
 
   const [width, setWidth] = useState(0)
-  const [sidebarInset, setSidebarInset] = useState(0)
+  const [sidebarWidth, setSidebarWidth] = useState(260)
+  const sidebarInset = sidebarOpen ? sidebarWidth : 0
   const [range, setRange] = useState({ start: 0, end: 0 })
   const [rowHeight] = usePersistentNumber("photos.rowHeight", 180)
   const [gap] = usePersistentNumber("photos.gap", 12)
@@ -93,18 +95,10 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   }, [])
 
   useEffect(() => {
+    if (!sidebarOpen) return
     const sidebar = document.querySelector('[data-slot="sidebar-container"]')
-    if (!sidebar) return
-    const update = () => setSidebarInset(Math.max(0, sidebar.getBoundingClientRect().right))
-    update()
-    const observer = new ResizeObserver(update)
-    observer.observe(sidebar)
-    window.addEventListener("resize", update)
-    return () => {
-      observer.disconnect()
-      window.removeEventListener("resize", update)
-    }
-  }, [])
+    if (sidebar) setSidebarWidth(Math.max(0, sidebar.getBoundingClientRect().right))
+  }, [sidebarOpen, width])
 
   useEffect(() => {
     let frame = 0
@@ -229,6 +223,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     const element = containerRef.current
     if (!asset || !element) return
     sidebarWasOpen.current = sidebarOpen
+    collapsedByZoom.current = false
     setZoomClamped(1)
     const vp: Focus["vp"] = {
       top: -element.getBoundingClientRect().top,
@@ -259,6 +254,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     setFading(null)
     setFocus(null)
     setZoomClamped(1)
+    collapsedByZoom.current = false
     setOpen(sidebarWasOpen.current)
   }
 
@@ -303,7 +299,12 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     const onStart = () => {
       base = zoomRef.current
     }
-    const syncSidebar = (next: number) => setOpen(next > 1.02 ? false : sidebarWasOpen.current)
+    const syncSidebar = (next: number) => {
+      const collapse = next > 1.02
+      if (collapse === collapsedByZoom.current) return
+      collapsedByZoom.current = collapse
+      setOpen(collapse ? false : sidebarWasOpen.current)
+    }
     const onChange = (event: Event) => {
       const scale = (event as unknown as { scale?: number }).scale
       if (scale === undefined) return
