@@ -147,8 +147,8 @@ const AssetEntity = ({
         zIndex: z,
         filter: dimmed ? "blur(6px) saturate(0.9)" : undefined,
         transition: animate
-          ? `transform 0.45s ${CSS_EASE}, width 0.45s ${CSS_EASE}, height 0.45s ${CSS_EASE}, opacity 0.4s ${CSS_EASE}, filter 0.35s ease`
-          : `opacity 0.4s ${CSS_EASE}, filter 0.35s ease`,
+          ? `transform 0.45s ${CSS_EASE}, width 0.45s ${CSS_EASE}, height 0.45s ${CSS_EASE}, opacity 0.4s ${CSS_EASE}`
+          : `opacity 0.4s ${CSS_EASE}`,
         willChange: dimmed || focused ? "transform, filter" : undefined,
       }}
       onPointerDown={(event) => {
