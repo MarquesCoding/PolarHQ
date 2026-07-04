@@ -104,6 +104,7 @@
     "@workspace/eslint-config": "workspace:^",
     "@workspace/typescript-config": "workspace:*",
     "eslint": "^9",
+    "react-scan": "^0.5.7",
     "typescript": "^5",
     "vite": "^8.0.16",
     "vite-tsconfig-paths": "^6.1.1"
