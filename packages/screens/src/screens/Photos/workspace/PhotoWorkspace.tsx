@@ -372,26 +372,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   }, [width, sidebarInset, info])
 
   if (mode === "infinity") {
-    return (
-      <>
-        <GlassPhotoGrid assets={sorted} />
-        <BottomChrome
-          focusedAsset={null}
-          mode={mode}
-          onMode={setMode}
-          rowHeight={rowHeight}
-          onRowHeight={setRowHeight}
-          gap={gap}
-          onGap={setGap}
-          square={square === 1}
-          onSquare={(value) => setSquare(value ? 1 : 0)}
-          info={info}
-          onToggleInfo={() => setInfo((value) => !value)}
-          onClose={close}
-          onInvalidate={onInvalidate}
-        />
-      </>
-    )
+    return <GlassPhotoGrid assets={sorted} mode={mode} onMode={setMode} />
   }
 
   return (
