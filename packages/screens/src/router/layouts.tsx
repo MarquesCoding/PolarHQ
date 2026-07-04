@@ -20,7 +20,6 @@ export const PhotosLayout = () => {
         </FlatSidebar>
       }
       topBar={<PhotosTopBar />}
-      floatingSidebar
     >
       <Outlet />
     </FlatShell>
