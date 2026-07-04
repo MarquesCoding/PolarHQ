@@ -6,6 +6,8 @@ import "@fontsource-variable/geist-mono"
 import "./index.css"
 import { Bootstrap } from "./Bootstrap"
 
-if (import.meta.env.DEV) scan({ enabled: true })
+// Opt-in only (localStorage.setItem("scan","1")) — leaving react-scan on instruments every render
+// and paints overlays each frame, which itself makes the app feel laggy.
+if (import.meta.env.DEV && localStorage.getItem("scan") === "1") scan({ enabled: true })
 
 createRoot(document.getElementById("root")!).render(<Bootstrap />)
