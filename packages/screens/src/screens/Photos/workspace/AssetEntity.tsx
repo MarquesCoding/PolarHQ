@@ -1,4 +1,4 @@
-import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react"
+import { type PointerEvent as ReactPointerEvent, memo, useEffect, useRef, useState } from "react"
 import { decryptName } from "@workspace/core/e2e"
 import { Icon } from "@workspace/screens/icons"
 import {
@@ -197,7 +197,7 @@ const AssetEntity = ({
         style={{
           transform: focused ? `translate(${panX}px, ${panY}px) scale(${zoom})` : undefined,
           transformOrigin: "center",
-          transition: "transform 0.1s ease-out",
+          willChange: focused ? "transform" : undefined,
         }}
       >
       {displaySrc ? (
@@ -276,4 +276,22 @@ const AssetEntity = ({
   )
 }
 
-export default AssetEntity
+export default memo(
+  AssetEntity,
+  (a, b) =>
+    a.asset === b.asset &&
+    a.rect.x === b.rect.x &&
+    a.rect.y === b.rect.y &&
+    a.rect.w === b.rect.w &&
+    a.rect.h === b.rect.h &&
+    a.selected === b.selected &&
+    a.selectionActive === b.selectionActive &&
+    a.dimmed === b.dimmed &&
+    a.focused === b.focused &&
+    a.fadingOut === b.fadingOut &&
+    a.zoom === b.zoom &&
+    a.panX === b.panX &&
+    a.panY === b.panY &&
+    a.animate === b.animate &&
+    a.z === b.z,
+)
