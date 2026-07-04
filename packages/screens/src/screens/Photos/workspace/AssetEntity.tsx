@@ -9,6 +9,7 @@ import {
 import { Heart, Record, Stack } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
+import { fetchCachedOriginal } from "@pages/Photos/components/Lightbox/originalCache"
 import type { GridAsset, Rect } from "./types"
 
 const loaded = new Set<string>()
@@ -69,6 +70,23 @@ const AssetEntity = ({
       active = false
     }
   }, [asset.id, asset.encrypted, asset.thumbnailUrl])
+
+  const [original, setOriginal] = useState<string | null>(null)
+  useEffect(() => {
+    if (!focused || asset.type !== "image") return
+    if (!asset.encrypted) {
+      setOriginal(asset.previewUrl ?? null)
+      return
+    }
+    let active = true
+    void fetchCachedOriginal(asset.id, asset.mimeType).then((url) => {
+      if (active && url) setOriginal(url)
+    })
+    return () => {
+      active = false
+    }
+  }, [focused, asset.id, asset.encrypted, asset.mimeType, asset.type, asset.previewUrl])
+  const displaySrc = focused ? (original ?? thumb) : thumb
 
   const [motionUrl, setMotionUrl] = useState<string | null>(() => motionCache.get(asset.id) ?? null)
   const [playing, setPlaying] = useState(false)
@@ -132,9 +150,9 @@ const AssetEntity = ({
         !focused && "cursor-pointer",
       )}
     >
-      {thumb ? (
+      {displaySrc ? (
         <img
-          src={thumb}
+          src={displaySrc}
           alt={name}
           loading="lazy"
           draggable={false}
@@ -143,8 +161,9 @@ const AssetEntity = ({
             setLoaded(true)
           }}
           className={cn(
-            "h-full w-full object-cover transition-opacity duration-500",
-            isLoaded ? "opacity-100" : "opacity-0",
+            "h-full w-full transition-opacity duration-500",
+            focused ? "object-contain" : "object-cover",
+            isLoaded || focused ? "opacity-100" : "opacity-0",
           )}
         />
       ) : asset.type === "audio" ? (
