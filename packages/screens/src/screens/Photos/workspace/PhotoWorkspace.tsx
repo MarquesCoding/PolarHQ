@@ -44,16 +44,21 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const containerRef = useRef<HTMLDivElement>(null)
   const sidebarWasOpen = useRef(true)
   const [zoom, setZoom] = useState(1)
+  const [pan, setPan] = useState({ x: 0, y: 0 })
   const zoomRef = useRef(1)
   const setZoomClamped = (value: number) => {
     const next = Math.min(Math.max(value, 1), 6)
     zoomRef.current = next
     setZoom(next)
+    if (next === 1) setPan({ x: 0, y: 0 })
   }
+  const onPan = (dx: number, dy: number) =>
+    setPan((current) => ({ x: current.x + dx, y: current.y + dy }))
   const reachEnd = useRef(onReachEnd)
   reachEnd.current = onReachEnd
 
   const [width, setWidth] = useState(0)
+  const [sidebarInset, setSidebarInset] = useState(0)
   const [range, setRange] = useState({ start: 0, end: 0 })
   const [rowHeight] = usePersistentNumber("photos.rowHeight", 180)
   const [gap] = usePersistentNumber("photos.gap", 12)
@@ -63,8 +68,8 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const sorted = useMemo(() => [...assets].sort((a, b) => dateOf(b) - dateOf(a)), [assets])
   const ordered = useMemo(() => sorted.map((asset) => asset.id), [sorted])
   const layout = useMemo(
-    () => layoutGrid(sorted, width, { rowHeight, gap, square: square === 1 }),
-    [sorted, width, rowHeight, gap, square],
+    () => layoutGrid(sorted, width, { rowHeight, gap, square: square === 1 }, sidebarInset),
+    [sorted, width, rowHeight, gap, square, sidebarInset],
   )
   const entries = useMemo(
     () =>
@@ -85,6 +90,20 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     })
     observer.observe(element)
     return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const sidebar = document.querySelector('[data-slot="sidebar-container"]')
+    if (!sidebar) return
+    const update = () => setSidebarInset(Math.max(0, sidebar.getBoundingClientRect().right))
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(sidebar)
+    window.addEventListener("resize", update)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("resize", update)
+    }
   }, [])
 
   useEffect(() => {
@@ -186,11 +205,12 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   }
   const focusCenter = focus ? { x: focus.rect.x + focus.rect.w / 2, y: focus.rect.y + focus.rect.h / 2 } : null
 
-  const focusRectFor = (asset: GridAsset, vp: Focus["vp"]): Rect => {
+  const DETAILS_WIDTH = 360
+  const focusRectFor = (asset: GridAsset, vp: Focus["vp"], rightInset = 0, leftInset = 0): Rect => {
     const padX = 40
     const padY = 40
     const chrome = 104
-    const availW = vp.width - padX * 2
+    const availW = vp.width - leftInset - rightInset - padX * 2
     const availH = vp.height - padY * 2 - chrome
     const aspect = asset.width && asset.height ? asset.width / asset.height : 1.5
     let w = availW
@@ -199,8 +219,9 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
       h = availH
       w = h * aspect
     }
+    const cx = leftInset + (vp.width - leftInset - rightInset) / 2
     const cy = vp.top + vp.height / 2
-    return { x: vp.width / 2 - w / 2, y: cy - h / 2, w, h }
+    return { x: cx - w / 2, y: cy - h / 2, w, h }
   }
 
   const openAsset = (id: string) => {
@@ -214,7 +235,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
       height: getScrollParent(element)?.clientHeight ?? window.innerHeight,
       width,
     }
-    setFocus({ id, rect: focusRectFor(asset, vp), vp })
+    setFocus({ id, rect: focusRectFor(asset, vp, 0, sidebarInset), vp })
   }
 
   const page = (delta: number) => {
@@ -227,7 +248,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     setFading({ id: prevId, rect: focus.rect })
     window.setTimeout(() => setFading((current) => (current?.id === prevId ? null : current)), 340)
     setZoomClamped(1)
-    setFocus({ id, rect: focusRectFor(asset, focus.vp), vp: focus.vp })
+    setFocus({ id, rect: focusRectFor(asset, focus.vp, 0, sidebarInset), vp: focus.vp })
   }
 
   const close = () => {
@@ -308,13 +329,14 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   }, [focus, setOpen])
 
   useEffect(() => {
-    if (!focus || Math.abs(focus.vp.width - width) < 1) return
+    if (!focus) return
     const asset = sorted.find((item) => item.id === focus.id)
     if (!asset) return
     const vp = { ...focus.vp, width }
-    setFocus((current) => (current ? { ...current, rect: focusRectFor(asset, vp), vp } : current))
+    const rect = focusRectFor(asset, vp, 0, sidebarInset)
+    setFocus((current) => (current ? { ...current, rect, vp } : current))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width, focus])
+  }, [width, sidebarInset])
 
   return (
     <div
@@ -378,10 +400,13 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
             focused={isFocused || isFading}
             fadingOut={isFading}
             zoom={isFocused ? zoom : 1}
+            panX={isFocused ? pan.x : 0}
+            panY={isFocused ? pan.y : 0}
             animate={isFading ? false : isFocused ? fading === null : true}
             z={isFocused ? 50 : isFading ? 51 : isClosing ? 50 : 1}
             onOpen={() => openAsset(asset.id)}
             onToggle={(shiftKey) => onToggle(asset.id, shiftKey)}
+            onPan={onPan}
           />
         )
       })}
