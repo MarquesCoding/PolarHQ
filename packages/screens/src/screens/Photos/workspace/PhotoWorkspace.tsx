@@ -282,18 +282,19 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     const onStart = () => {
       base = zoomRef.current
     }
+    const syncSidebar = (next: number) => setOpen(next > 1.02 ? false : sidebarWasOpen.current)
     const onChange = (event: Event) => {
       const scale = (event as unknown as { scale?: number }).scale
       if (scale === undefined) return
       const next = base * scale
       setZoomClamped(next)
-      if (next > 1.02) setOpen(false)
+      syncSidebar(next)
     }
     const onWheel = (event: WheelEvent) => {
       if (!event.ctrlKey) return
       const next = zoomRef.current * (1 - event.deltaY * 0.01)
       setZoomClamped(next)
-      if (next > 1.02) setOpen(false)
+      syncSidebar(next)
     }
     window.addEventListener("gesturestart", onStart)
     window.addEventListener("gesturechange", onChange)
