@@ -7,8 +7,8 @@ import { Circle } from "@phosphor-icons/react"
 import { Icon } from "@workspace/screens/icons"
 import { cn } from "@workspace/ui/lib/utils"
 import AssetEntity from "./AssetEntity"
+import BottomChrome from "./BottomChrome"
 import FocusView from "./FocusView"
-import PhotoChrome from "./PhotoChrome"
 import { layoutCanvas } from "./layout/canvas"
 import { layoutGrid } from "./layout/grid"
 import type { GridAsset, Mode, Rect } from "./types"
@@ -473,18 +473,21 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
         />
       ) : null}
 
-      {focus ? null : (
-        <PhotoChrome
-          mode={mode}
-          onMode={setMode}
-          rowHeight={rowHeight}
-          onRowHeight={setRowHeight}
-          gap={gap}
-          onGap={setGap}
-          square={square === 1}
-          onSquare={(value) => setSquare(value ? 1 : 0)}
-        />
-      )}
+      <BottomChrome
+        focusedAsset={focusedAsset ?? null}
+        mode={mode}
+        onMode={setMode}
+        rowHeight={rowHeight}
+        onRowHeight={setRowHeight}
+        gap={gap}
+        onGap={setGap}
+        square={square === 1}
+        onSquare={(value) => setSquare(value ? 1 : 0)}
+        info={info}
+        onToggleInfo={() => setInfo((value) => !value)}
+        onClose={close}
+        onInvalidate={onInvalidate}
+      />
     </div>
   )
 }

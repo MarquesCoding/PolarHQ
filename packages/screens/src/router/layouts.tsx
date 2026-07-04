@@ -8,7 +8,6 @@ import DocsToolbar from "@pages/Docs/components/DocsToolbar/DocsToolbar"
 import DriveNav from "@pages/Drive/components/DriveNav/DriveNav"
 import DriveToolbar from "@pages/Drive/components/DriveToolbar/DriveToolbar"
 import PhotosNav from "@pages/Photos/components/PhotosNav/PhotosNav"
-import PhotosTopBar from "@pages/Photos/components/PhotosTopBar/PhotosTopBar"
 
 export const PhotosLayout = () => {
   const { t } = useTranslation("photos")
@@ -19,7 +18,7 @@ export const PhotosLayout = () => {
           <PhotosNav />
         </FlatSidebar>
       }
-      topBar={<PhotosTopBar />}
+      topBar={null}
       floatingSidebar
     >
       <Outlet />

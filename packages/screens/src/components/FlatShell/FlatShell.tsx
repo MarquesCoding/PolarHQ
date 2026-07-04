@@ -90,7 +90,8 @@ const FlatShell = ({ sidebar, topBar, floatingSidebar, children }: FlatShellProp
       <div className="absolute inset-x-0 top-0 z-30">{topBar}</div>
       <main
         data-slot="flat-main"
-        className={`scrollbar-slim min-h-0 flex-1 overflow-y-auto overscroll-none ${floatingSidebar ? "pt-2.5" : "pt-14"}`}
+        data-floating={floatingSidebar || undefined}
+        className={`scrollbar-slim min-h-0 flex-1 overflow-y-auto overscroll-none ${floatingSidebar ? "pt-3" : "pt-14"}`}
       >
         {children}
       </main>

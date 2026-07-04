@@ -4,7 +4,7 @@ import type { GridAsset, GridOptions, Layout, Rect } from "../types"
 
 const HEADER_HEIGHT = 30
 const HEADER_GAP = 6
-const INSET = 6
+const INSET = 12
 
 const dateOf = (asset: GridAsset): Date => new Date(asset.takenAt ?? asset.createdAt)
 const dayKey = (asset: GridAsset): string => dateOf(asset).toISOString().slice(0, 10)

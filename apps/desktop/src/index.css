@@ -126,6 +126,10 @@
 .tauri [data-slot="flat-main"] {
   padding-top: 3.75rem;
 }
+/* Photos (floating sidebar) has no top bar — content sits right under the traffic-light row. */
+.tauri [data-slot="flat-main"][data-floating] {
+  padding-top: 0.75rem;
+}
 
 /* Frosted top, Finder-style. Two layers so there's no visible blur edge:
  *  1. The element is a seamless `--background` gradient (opaque at the very top → transparent) — a pure
