@@ -60,7 +60,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
 
   const [width, setWidth] = useState(0)
   const [sidebarWidth, setSidebarWidth] = useState(260)
-  const sidebarInset = sidebarOpen ? sidebarWidth : 0
+  const sidebarInset = sidebarOpen ? sidebarWidth + 20 : 0
   const [range, setRange] = useState({ start: 0, end: 0 })
   const [rowHeight] = usePersistentNumber("photos.rowHeight", 180)
   const [gap] = usePersistentNumber("photos.gap", 12)
@@ -96,10 +96,14 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
 
   useEffect(() => {
     if (!sidebarOpen) return
-    const sidebar =
-      document.querySelector('[data-slot="sidebar-inner"]') ??
-      document.querySelector('[data-slot="sidebar-container"]')
-    if (sidebar) setSidebarWidth(Math.max(0, sidebar.getBoundingClientRect().right))
+    const els = document.querySelectorAll(
+      '[data-slot="sidebar"], [data-slot="sidebar-container"], [data-slot="sidebar-inner"]',
+    )
+    let right = 0
+    els.forEach((el) => {
+      right = Math.max(right, el.getBoundingClientRect().right)
+    })
+    if (right > 0) setSidebarWidth(right)
   }, [sidebarOpen, width])
 
   useEffect(() => {
@@ -185,6 +189,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
 
   const [focus, setFocus] = useState<Focus | null>(null)
   const [fading, setFading] = useState<{ id: string; rect: Rect } | null>(null)
+  const [settling, setSettling] = useState<string | null>(null)
   const [closingId, setClosingId] = useState<string | null>(null)
 
   // Each non-focused photo is its own entity: push it AWAY from the opened photo, strongest for the
@@ -243,7 +248,11 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     if (!asset) return
     const prevId = focus.id
     setFading({ id: prevId, rect: focus.rect })
-    window.setTimeout(() => setFading((current) => (current?.id === prevId ? null : current)), 340)
+    window.setTimeout(() => {
+      setFading((current) => (current?.id === prevId ? null : current))
+      setSettling(prevId)
+      window.setTimeout(() => setSettling((current) => (current === prevId ? null : current)), 60)
+    }, 340)
     setZoomClamped(1)
     setFocus({ id, rect: focusRectFor(asset, focus.vp, 0, sidebarInset), vp: focus.vp })
   }
@@ -275,7 +284,9 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const focusedAsset = focus ? sorted.find((item) => item.id === focus.id) : undefined
 
   const renderList = useMemo(() => {
-    const pinned = [focus?.id, fading?.id, closingId].filter((id): id is string => Boolean(id))
+    const pinned = [focus?.id, fading?.id, settling, closingId].filter((id): id is string =>
+      Boolean(id),
+    )
     if (pinned.length === 0) return visible
     const present = new Set(visible.map((entry) => entry.asset.id))
     const extra = pinned
@@ -283,7 +294,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
       .map((id) => entries.find((entry) => entry.asset.id === id))
       .filter((entry): entry is (typeof entries)[number] => Boolean(entry))
     return extra.length ? [...visible, ...extra] : visible
-  }, [visible, entries, focus, fading, closingId])
+  }, [visible, entries, focus, fading, settling, closingId])
 
   useEffect(() => {
     const scroller = getScrollParent(containerRef.current)
@@ -387,6 +398,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
       {renderList.map(({ asset, rect: gridRect }) => {
         const isFocused = focus?.id === asset.id
         const isFading = fading?.id === asset.id
+        const isSettling = settling === asset.id
         const isClosing = !focus && closingId === asset.id
         let rect = gridRect
         if (isFocused && focus) rect = focus.rect
@@ -405,7 +417,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
             zoom={isFocused ? zoom : 1}
             panX={isFocused ? pan.x : 0}
             panY={isFocused ? pan.y : 0}
-            animate={isFading ? false : isFocused ? fading === null : true}
+            animate={isFading || isSettling ? false : isFocused ? fading === null : true}
             z={isFocused ? 50 : isFading ? 51 : isClosing ? 50 : 1}
             onOpen={() => openAsset(asset.id)}
             onToggle={(shiftKey) => onToggle(asset.id, shiftKey)}
