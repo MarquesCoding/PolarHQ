@@ -23,7 +23,7 @@ import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AddToAlbumDialog from "@pages/Photos/components/AddToAlbumDialog/AddToAlbumDialog"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
-import PhotoGrid from "@pages/Photos/components/PhotoGrid/PhotoGrid"
+import PhotoWorkspace from "@pages/Photos/workspace/PhotoWorkspace"
 import TagDialog from "@pages/Photos/components/TagDialog/TagDialog"
 import { Icon } from "@workspace/screens/icons"
 import { Image, Stack, StackMinus } from "@phosphor-icons/react"
@@ -152,7 +152,7 @@ const LibraryInner = () => {
           </p>
         </div>
       ) : (
-        <PhotoGrid
+        <PhotoWorkspace
           assets={visible}
           onReachEnd={
             search

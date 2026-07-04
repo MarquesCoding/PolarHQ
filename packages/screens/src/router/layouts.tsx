@@ -15,7 +15,7 @@ export const PhotosLayout = () => {
   return (
     <FlatShell
       sidebar={
-        <FlatSidebar productName={t("shell.product")} beta searchPlaceholder={t("shell.search")}>
+        <FlatSidebar productName={t("shell.product")} beta searchPlaceholder={t("shell.search")} immersive>
           <PhotosNav />
         </FlatSidebar>
       }

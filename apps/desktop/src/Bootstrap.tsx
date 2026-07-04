@@ -51,6 +51,24 @@ type Phase = "updating" | "configuring" | "ready"
 export const Bootstrap = () => {
   const [phase, setPhase] = useState<Phase>(inTauri ? "updating" : "configuring")
 
+  // WebKit delivers trackpad pinch as `gesture*` events (and ctrl+wheel), which zoom the whole page —
+  // scaling the app and shoving the floating sidebar off-screen. Suppress native page-zoom app-wide;
+  // the lightbox still zooms the image via its own stage handler.
+  useEffect(() => {
+    if (!inTauri) return
+    const prevent = (event: Event) => event.preventDefault()
+    const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey) event.preventDefault()
+    }
+    const gestures = ["gesturestart", "gesturechange", "gestureend"]
+    for (const type of gestures) document.addEventListener(type, prevent, { passive: false })
+    document.addEventListener("wheel", onWheel, { passive: false })
+    return () => {
+      for (const type of gestures) document.removeEventListener(type, prevent)
+      document.removeEventListener("wheel", onWheel)
+    }
+  }, [])
+
   useEffect(() => {
     if (phase !== "configuring") return
     let active = true

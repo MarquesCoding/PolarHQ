@@ -422,154 +422,158 @@ const Lightbox = ({
         onClick={(event) => event.stopPropagation()}
       >
       <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
-        <div className="relative flex items-center justify-between gap-2 p-3">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={editing ? t("photoEditor.closeEditor") : t("lightbox.close")}
-            onClick={editing ? requestExitEditing : onClose}
-            className="rounded-full"
-          >
-            {editing ? <ArrowLeft className="size-5" /> : <X className="size-5" />}
-          </Button>
-          <span className="pointer-events-none absolute top-1/2 left-1/2 max-w-[40vw] -translate-x-1/2 -translate-y-1/2 truncate text-sm font-medium">
-            {item.name}
-          </span>
-
-        {!editing ? (
-        <div className="flex items-center gap-2">
-        {item.kind === "image" && source ? (
-          <div className="flex items-center gap-0.5">
+        {editing ? (
+          <div className="relative z-20 flex items-center gap-2 p-3">
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={t("lightbox.zoomOut")}
-              onClick={zoom.zoomOut}
+              aria-label={t("photoEditor.closeEditor")}
+              onClick={requestExitEditing}
               className="rounded-full"
             >
-              <MagnifyingGlassMinus className="size-4" />
+              <ArrowLeft className="size-5" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("lightbox.zoomIn")}
-              onClick={zoom.zoomIn}
-              className="rounded-full"
-            >
-              <MagnifyingGlassPlus className="size-4" />
-            </Button>
+            <span className="truncate text-sm font-medium">{item.name}</span>
           </div>
-        ) : null}
-        <div className="flex items-center gap-0.5">
-          {canPlayMotion && item.kind === "image" && motionSrc ? (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("lightbox.playMotion")}
-              onClick={() => setPlayMotion((value) => !value)}
-              className={cn("rounded-full", playMotion && "bg-muted")}
-            >
-              <Aperture className="size-5" />
-            </Button>
-          ) : null}
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
+        ) : (
+          <>
+            {/* Floating filename, top-centre (no top bar). */}
+            <span className="text-foreground/80 pointer-events-none absolute top-4 left-1/2 z-20 max-w-[40vw] -translate-x-1/2 truncate rounded-full border bg-background/50 px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md">
+              {item.name}
+            </span>
+            {/* Floating action pill, bottom-centre (frosted). */}
+            <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-0.5 rounded-full border bg-background/55 p-1 shadow-xl backdrop-blur-2xl">
+              {controller.toggleFavorite ? (
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={t("lightbox.more")}
+                  aria-label={t("lightbox.favourite")}
+                  onClick={toggleFavourite}
                   className="rounded-full"
                 >
-                  <DotsThree className="size-5" />
+                  <Heart
+                    weight={item.isFavorite ? "fill" : "regular"}
+                    className={cn("size-[18px]", item.isFavorite && "text-red-500")}
+                  />
                 </Button>
-              }
-            />
-            <DropdownMenuContent align="end">
-              {controller.toggleFavorite ? (
-                <DropdownMenuItem onClick={toggleFavourite}>
-                  <Heart weight={item.isFavorite ? "fill" : "regular"} />
-                  {t("lightbox.favourite")}
-                </DropdownMenuItem>
               ) : null}
-              {item.kind === "image" ? (
+              {item.kind === "image" && source ? (
                 <>
-                  {canEdit ? (
-                    <DropdownMenuItem
-                      onClick={() => {
-                        if (item.encrypted && !decryptedSrc) {
-                          toast(t("lightbox.decrypting"))
-                          return
-                        }
-                        setEditing(true)
-                      }}
-                    >
-                      <Sliders />
-                      {t("lightbox.edit")}
-                    </DropdownMenuItem>
-                  ) : null}
-                  <DropdownMenuItem onClick={copyImage}>
-                    <Copy />
-                    {t("lightbox.copy")}
-                  </DropdownMenuItem>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={t("lightbox.zoomOut")}
+                    onClick={zoom.zoomOut}
+                    className="rounded-full"
+                  >
+                    <MagnifyingGlassMinus className="size-[18px]" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={t("lightbox.zoomIn")}
+                    onClick={zoom.zoomIn}
+                    className="rounded-full"
+                  >
+                    <MagnifyingGlassPlus className="size-[18px]" />
+                  </Button>
                 </>
               ) : null}
-              {shareConfig ? (
-                <DropdownMenuItem onClick={() => setShareOpen(true)}>
-                  <ArrowSquareOut />
-                  {t("lightbox.share")}
-                </DropdownMenuItem>
+              {canPlayMotion && item.kind === "image" && motionSrc ? (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={t("lightbox.playMotion")}
+                  onClick={() => setPlayMotion((value) => !value)}
+                  className={cn("rounded-full", playMotion && "bg-muted")}
+                >
+                  <Aperture className="size-5" />
+                </Button>
               ) : null}
-              {controller.download ? (
-                <DropdownMenuItem onClick={download}>
-                  <DownloadSimple />
-                  {t("lightbox.download")}
-                </DropdownMenuItem>
-              ) : null}
-              {controller.trash ? (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem variant="destructive" onClick={moveToTrash}>
-                    <Trash />
-                    {t("lightbox.moveToTrash")}
-                  </DropdownMenuItem>
-                </>
-              ) : null}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {items.length > 1 ? (
-            <Tip label={t("lightbox.filmstrip")}>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={t("lightbox.filmstrip")}
-                onClick={toggleStrip}
-                className="rounded-full"
-              >
-                <Slideshow weight={showStrip ? "fill" : "regular"} className="size-5" />
-              </Button>
-            </Tip>
-          ) : null}
-          {controller.renderInfo ? (
-            <>
-              <span className="bg-border mx-0.5 h-5 w-px" />
-              <Tip label={t("lightbox.info")}>
+              {controller.renderInfo ? (
                 <Button
                   variant="ghost"
                   size="icon-sm"
                   aria-label={t("lightbox.info")}
                   onClick={toggleInfo}
-                  className="rounded-full"
+                  className={cn("rounded-full", infoOpen && "bg-muted")}
                 >
-                  <SidebarSimple weight={infoOpen ? "fill" : "regular"} className="size-5" />
+                  <SidebarSimple weight={infoOpen ? "fill" : "regular"} className="size-[18px]" />
                 </Button>
-              </Tip>
-            </>
-          ) : null}
-        </div>
-        </div>
-        ) : null}
-      </div>
+              ) : null}
+              {items.length > 1 ? (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={t("lightbox.filmstrip")}
+                  onClick={toggleStrip}
+                  className={cn("rounded-full", showStrip && "bg-muted")}
+                >
+                  <Slideshow weight={showStrip ? "fill" : "regular"} className="size-[18px]" />
+                </Button>
+              ) : null}
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label={t("lightbox.more")}
+                      className="rounded-full"
+                    >
+                      <DotsThree className="size-5" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end" side="top">
+                  {item.kind === "image" ? (
+                    <>
+                      {canEdit ? (
+                        <DropdownMenuItem
+                          onClick={() => {
+                            if (item.encrypted && !decryptedSrc) {
+                              toast(t("lightbox.decrypting"))
+                              return
+                            }
+                            setEditing(true)
+                          }}
+                        >
+                          <Sliders />
+                          {t("lightbox.edit")}
+                        </DropdownMenuItem>
+                      ) : null}
+                      <DropdownMenuItem onClick={copyImage}>
+                        <Copy />
+                        {t("lightbox.copy")}
+                      </DropdownMenuItem>
+                    </>
+                  ) : null}
+                  {shareConfig ? (
+                    <DropdownMenuItem onClick={() => setShareOpen(true)}>
+                      <ArrowSquareOut />
+                      {t("lightbox.share")}
+                    </DropdownMenuItem>
+                  ) : null}
+                  {controller.download ? (
+                    <DropdownMenuItem onClick={download}>
+                      <DownloadSimple />
+                      {t("lightbox.download")}
+                    </DropdownMenuItem>
+                  ) : null}
+                  {controller.trash ? (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem variant="destructive" onClick={moveToTrash}>
+                        <Trash />
+                        {t("lightbox.moveToTrash")}
+                      </DropdownMenuItem>
+                    </>
+                  ) : null}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </>
+        )}
 
         <PhotoContextMenu actions={menuActions}>
         <div

@@ -11,13 +11,13 @@ import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setSearchQuery } from "@workspace/screens/store/uiSlice"
-import { CaretUpDown, MagnifyingGlass, ShieldCheck, SignOut } from "@phosphor-icons/react"
+import { CaretUpDown, MagnifyingGlass, ShieldCheck, SidebarSimple, SignOut } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
-import { Sidebar } from "@workspace/ui/components/sidebar"
+import { Sidebar, useSidebar } from "@workspace/ui/components/sidebar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,6 +48,11 @@ interface FlatSidebarProps {
   searchPlaceholder: string
   /** Whether the search field dispatches into the shared `ui.searchQuery` (default true). */
   searchable?: boolean
+  /**
+   * Immersive chrome (Photos): the app-switcher + account move to the *bottom*, and the top becomes a
+   * floating traffic-light + collapse zone. Default keeps the classic top-anchored header.
+   */
+  immersive?: boolean
   /** The nav content — built with the shared `NavRow`/`SectionLabel` primitives. */
   children: ReactNode
 }
@@ -62,9 +67,11 @@ const FlatSidebar = ({
   beta,
   searchPlaceholder,
   searchable = true,
+  immersive = false,
   children,
 }: FlatSidebarProps) => {
   const { t } = useTranslation("common")
+  const { toggleSidebar } = useSidebar()
   const pathname = usePathname()
   const router = useNavigation()
   const dispatch = useAppDispatch()
@@ -102,9 +109,8 @@ const FlatSidebar = ({
     return () => cancelAnimationFrame(frame)
   }, [usage])
 
-  return (
-    <Sidebar collapsible="offcanvas">
-      <div className="flex h-14 shrink-0 items-center gap-2 px-3">
+  const chromeHeader = (
+    <div className="flex h-14 shrink-0 items-center gap-2 px-3">
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
@@ -211,7 +217,29 @@ const FlatSidebar = ({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+    </div>
+  )
+
+  return (
+    <Sidebar collapsible="offcanvas">
+      {immersive ? (
+        // Floating top-left cluster: a frosted pill that frames the native macOS traffic lights (which
+        // render on top of it), and a matching frosted collapse button to its right. Positioned over
+        // the titlebar strip. Offsets are tuned to the native light placement.
+        <div className="absolute left-2 top-1.5 z-50 flex items-center gap-3">
+          <span className="bg-sidebar-accent pointer-events-none relative top-1.5 left-1 h-[27px] w-[76px] rounded-full border border-white/10 shadow-sm backdrop-blur-md" />
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            aria-label={t("flatSidebar.toggleSidebar", { defaultValue: "Toggle sidebar" })}
+            className="bg-sidebar-accent hover:bg-sidebar-accent/70 relative top-1.5 text-muted-foreground hover:text-foreground flex size-[27px] items-center justify-center rounded-lg border border-white/10 shadow-sm backdrop-blur-md transition"
+          >
+            <SidebarSimple className="size-4" />
+          </button>
+        </div>
+      ) : (
+        chromeHeader
+      )}
 
       {searchable ? (
         <div className="px-3 pt-3 pb-2">
@@ -251,6 +279,9 @@ const FlatSidebar = ({
       </motion.nav>
 
       <div className="flex flex-col gap-2 p-3 pt-2">
+        {immersive ? (
+          <div className="border-sidebar-border/60 -mx-1 border-t pt-1">{chromeHeader}</div>
+        ) : null}
         <Button
           variant="ghost"
           onClick={() => setStorageOpen(true)}
