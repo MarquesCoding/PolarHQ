@@ -62,7 +62,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
 
   const [width, setWidth] = useState(0)
   const [sidebarWidth, setSidebarWidth] = useState(260)
-  const sidebarInset = sidebarOpen ? sidebarWidth + 20 : 0
+  const sidebarInset = sidebarOpen ? sidebarWidth : 0
   const [range, setRange] = useState({ start: 0, end: 0 })
   const [rowHeight] = usePersistentNumber("photos.rowHeight", 180)
   const [gap] = usePersistentNumber("photos.gap", 12)
@@ -106,16 +106,17 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   }, [])
 
   useEffect(() => {
-    if (!sidebarOpen) return
-    const els = document.querySelectorAll(
-      '[data-slot="sidebar"], [data-slot="sidebar-container"], [data-slot="sidebar-inner"]',
-    )
-    let right = 0
-    els.forEach((el) => {
-      right = Math.max(right, el.getBoundingClientRect().right)
-    })
-    if (right > 0) setSidebarWidth(right)
-  }, [sidebarOpen, width])
+    const el = document.querySelector('[data-slot="sidebar-inner"]')
+    if (!el) return
+    const update = () => {
+      const right = el.getBoundingClientRect().right
+      if (right > 40) setSidebarWidth(right)
+    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     let frame = 0
