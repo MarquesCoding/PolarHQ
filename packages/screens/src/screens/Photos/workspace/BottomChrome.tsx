@@ -11,6 +11,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 import { DotsThree, DownloadSimple, Heart, Info, Trash } from "@phosphor-icons/react"
 import { AnimatePresence, motion } from "motion/react"
+import { type CSSProperties } from "react"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import SizeControl from "@pages/Photos/components/SizeControl/SizeControl"
@@ -22,8 +23,14 @@ const MODES: { id: Mode; label: string }[] = [
   { id: "infinity", label: "Infinity" },
 ]
 
-const PILL =
-  "bg-background/70 pointer-events-auto flex items-center rounded-full border p-1 shadow-lg backdrop-blur-xl"
+const PILL = "pointer-events-auto flex items-center rounded-full p-1"
+const GLASS: CSSProperties = {
+  background: "color-mix(in oklab, var(--background) 42%, transparent)",
+  backdropFilter: "blur(6px) saturate(1.8) brightness(1.06) url(#photos-liquid-glass)",
+  WebkitBackdropFilter: "blur(6px) saturate(1.8) brightness(1.06)",
+  boxShadow:
+    "inset 0 1px 1px 0 rgb(255 255 255 / 0.5), inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 -10px 14px -10px rgb(255 255 255 / 0.18), 0 12px 32px -8px rgb(0 0 0 / 0.42)",
+}
 const FADE = { duration: 0.16, ease: [0.32, 0.72, 0, 1] as const }
 const MORPH = { layout: { duration: 0.35, ease: [0.32, 0.72, 0, 1] as const } }
 
@@ -84,6 +91,19 @@ const BottomChrome = ({
 
   return (
     <div className="pointer-events-none fixed right-5 bottom-5 z-[70] flex items-center gap-2">
+      <svg aria-hidden width="0" height="0" className="absolute">
+        <filter id="photos-liquid-glass" x="-25%" y="-25%" width="150%" height="150%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.01 0.012" numOctaves="2" seed="7" result="noise" />
+          <feGaussianBlur in="noise" stdDeviation="1.4" result="blurred" />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="blurred"
+            scale="20"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
       <AnimatePresence>
         {!focused && mode === "grid" ? (
           <motion.div
@@ -92,6 +112,7 @@ const BottomChrome = ({
             exit={{ opacity: 0, scale: 0.9 }}
             transition={FADE}
             className={PILL}
+            style={GLASS}
           >
             <SizeControl
               value={rowHeight}
@@ -105,7 +126,7 @@ const BottomChrome = ({
         ) : null}
       </AnimatePresence>
 
-      <motion.div layout transition={MORPH} className={PILL}>
+      <motion.div layout transition={MORPH} className={PILL} style={GLASS}>
         <AnimatePresence mode="popLayout" initial={false}>
           {focused ? (
             <motion.div
