@@ -191,6 +191,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
   const [fading, setFading] = useState<{ id: string; rect: Rect } | null>(null)
   const [settling, setSettling] = useState<string | null>(null)
   const [closingId, setClosingId] = useState<string | null>(null)
+  const [info, setInfo] = useState(false)
 
   // Each non-focused photo is its own entity: push it AWAY from the opened photo, strongest for the
   // nearest neighbours and fading off with distance — so they part to make room, rather than the whole
@@ -237,7 +238,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
       height: getScrollParent(element)?.clientHeight ?? window.innerHeight,
       width,
     }
-    setFocus({ id, rect: focusRectFor(asset, vp, 0, sidebarInset), vp })
+    setFocus({ id, rect: focusRectFor(asset, vp, info ? DETAILS_WIDTH : 0, sidebarInset), vp })
   }
 
   const page = (delta: number) => {
@@ -254,7 +255,11 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
       window.setTimeout(() => setSettling((current) => (current === prevId ? null : current)), 60)
     }, 340)
     setZoomClamped(1)
-    setFocus({ id, rect: focusRectFor(asset, focus.vp, 0, sidebarInset), vp: focus.vp })
+    setFocus({
+      id,
+      rect: focusRectFor(asset, focus.vp, info ? DETAILS_WIDTH : 0, sidebarInset),
+      vp: focus.vp,
+    })
   }
 
   const close = () => {
@@ -265,6 +270,7 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     setFading(null)
     setFocus(null)
     setZoomClamped(1)
+    setInfo(false)
     collapsedByZoom.current = false
     setOpen(sidebarWasOpen.current)
   }
@@ -347,10 +353,10 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
     const asset = sorted.find((item) => item.id === focus.id)
     if (!asset) return
     const vp = { ...focus.vp, width }
-    const rect = focusRectFor(asset, vp, 0, sidebarInset)
+    const rect = focusRectFor(asset, vp, info ? DETAILS_WIDTH : 0, sidebarInset)
     setFocus((current) => (current ? { ...current, rect, vp } : current))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width, sidebarInset])
+  }, [width, sidebarInset, info])
 
   return (
     <div
@@ -430,11 +436,14 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
         <FocusView
           asset={focusedAsset}
           vp={focus.vp}
+          zoom={zoom}
+          info={info}
           hasPrev={ordered.indexOf(focus.id) > 0}
           hasNext={ordered.indexOf(focus.id) < ordered.length - 1}
           onClose={close}
           onPrev={() => page(-1)}
           onNext={() => page(1)}
+          onToggleInfo={() => setInfo((value) => !value)}
           onInvalidate={onInvalidate}
         />
       ) : null}
