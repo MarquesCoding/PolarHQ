@@ -26,6 +26,8 @@ interface FlatShellProps {
   sidebar: ReactNode
   /** The configured `FlatTopBar`. */
   topBar: ReactNode
+  /** Float the sidebar OVER a full-window content area (Photos), so content runs behind it. */
+  floatingSidebar?: boolean
   children: ReactNode
 }
 
@@ -35,7 +37,7 @@ interface FlatShellProps {
  * Handles auth redirect, the encryption-unlock prompt, the upload manager, and iframe-embedded
  * mode (sidebar hidden). Every app shares this; apps differ only in the sidebar/top-bar content.
  */
-const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
+const FlatShell = ({ sidebar, topBar, floatingSidebar, children }: FlatShellProps) => {
   const router = useNavigation()
   const { data: session, isPending } = authClient.useSession()
   const [embedded, setEmbedded] = useState(false)
@@ -106,10 +108,19 @@ const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
 
   return (
     <>
-      <SidebarProvider className="bg-background h-svh overflow-hidden select-none">
+      <SidebarProvider className="bg-background relative h-svh overflow-hidden select-none">
         <CloseSidebarOnNavigate />
-        {sidebar}
-        <div className="flex min-w-0 flex-1 flex-col">{content}</div>
+        {floatingSidebar ? (
+          <>
+            <div className="absolute inset-0 z-0 flex min-w-0 flex-col">{content}</div>
+            <div className="relative z-30">{sidebar}</div>
+          </>
+        ) : (
+          <>
+            {sidebar}
+            <div className="flex min-w-0 flex-1 flex-col">{content}</div>
+          </>
+        )}
       </SidebarProvider>
       <OnboardingCard />
       <UnlockDialog
