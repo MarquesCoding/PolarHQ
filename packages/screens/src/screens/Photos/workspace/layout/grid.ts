@@ -38,13 +38,19 @@ interface Flow {
  * Emits a flat `Map<id, Rect>` in world space plus the day markers and total bounds — the grid mode's
  * contribution to the shared coordinate system every entity animates within.
  */
-export const layoutGrid = (assets: GridAsset[], width: number, options: GridOptions): Layout => {
+export const layoutGrid = (
+  assets: GridAsset[],
+  width: number,
+  options: GridOptions,
+  leftInset = 0,
+): Layout => {
   const rects = new Map<string, Rect>()
   const markers: Layout["markers"] = []
   if (width <= 0 || assets.length === 0) return { rects, markers, width, height: 0 }
 
   const { rowHeight, gap, square } = options
-  const inner = Math.max(width - INSET * 2, 1)
+  const left = leftInset + INSET
+  const inner = Math.max(width - leftInset - INSET * 2, 1)
 
   const dayIds = new Map<string, string[]>()
   for (const asset of assets) {
@@ -81,7 +87,7 @@ export const layoutGrid = (assets: GridAsset[], width: number, options: GridOpti
       const labelY = y
       if (slice.some((item) => item.dayStart)) y += HEADER_HEIGHT + HEADER_GAP
       slice.forEach((item, column) => {
-        const x = INSET + column * (tile + gap)
+        const x = left + column * (tile + gap)
         if (item.dayStart) addMarker(item, x, labelY)
         rects.set(item.asset.id, { x, y, w: tile, h: tile })
       })
@@ -97,7 +103,7 @@ export const layoutGrid = (assets: GridAsset[], width: number, options: GridOpti
       const rowY = y
       const gaps = (row.length - 1) * gap
       const height = stretch ? (inner - gaps) / aspectSum : rowHeight
-      let x = INSET
+      let x = left
       for (const item of row) {
         const cellWidth = height * item.aspect
         if (item.dayStart) addMarker(item, x, labelY)
