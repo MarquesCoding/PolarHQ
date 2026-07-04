@@ -136,11 +136,13 @@ const AssetEntity = ({
         y: rect.y,
         width: rect.w,
         height: rect.h,
+        scale: focused ? zoom : 1,
         opacity: fadingOut ? 0 : dimmed ? 0.72 : 1,
         filter: dimmed ? "blur(7px) saturate(0.9)" : "blur(0px) saturate(1)",
       }}
       transition={{
         default: animate ? { duration: 0.45, ease: EASE } : { duration: 0 },
+        scale: { duration: 0.12, ease: "linear" },
         opacity: { duration: fadingOut ? 0.3 : 0.4, ease: EASE },
         filter: { duration: 0.4, ease: EASE },
       }}
@@ -178,7 +180,6 @@ const AssetEntity = ({
             loaded.add(asset.id)
             setLoaded(true)
           }}
-          style={focused && zoom !== 1 ? { transform: `scale(${zoom})` } : undefined}
           className={cn(
             "h-full w-full transition-opacity duration-500",
             focused ? "object-contain" : "object-cover",
