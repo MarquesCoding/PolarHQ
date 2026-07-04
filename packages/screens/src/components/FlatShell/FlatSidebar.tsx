@@ -226,13 +226,13 @@ const FlatSidebar = ({
         // Floating top-left cluster: a frosted pill that frames the native macOS traffic lights (which
         // render on top of it), and a matching frosted collapse button to its right. Positioned over
         // the titlebar strip. Offsets are tuned to the native light placement.
-        <div className="absolute left-2 top-1.5 z-50 flex items-center gap-3">
-          <span className="bg-sidebar-accent pointer-events-none relative top-1.5 left-1 h-[27px] w-[76px] rounded-full border border-white/10 shadow-sm backdrop-blur-md" />
+        <div className="fixed left-3 top-2.5 z-[60] flex items-center gap-2.5">
+          <span className="bg-sidebar-accent pointer-events-none h-[26px] w-[74px] rounded-full border border-white/10 shadow-sm backdrop-blur-md" />
           <button
             type="button"
             onClick={toggleSidebar}
             aria-label={t("flatSidebar.toggleSidebar", { defaultValue: "Toggle sidebar" })}
-            className="bg-sidebar-accent hover:bg-sidebar-accent/70 relative top-1.5 text-muted-foreground hover:text-foreground flex size-[27px] items-center justify-center rounded-lg border border-white/10 shadow-sm backdrop-blur-md transition"
+            className="bg-sidebar-accent hover:bg-sidebar-accent/70 text-muted-foreground hover:text-foreground flex size-[26px] items-center justify-center rounded-lg border border-white/10 shadow-sm backdrop-blur-md transition"
           >
             <SidebarSimple className="size-4" />
           </button>
