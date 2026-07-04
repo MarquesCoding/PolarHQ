@@ -96,7 +96,9 @@ const PhotoWorkspace = ({ assets, onReachEnd, onInvalidate }: PhotoWorkspaceProp
 
   useEffect(() => {
     if (!sidebarOpen) return
-    const sidebar = document.querySelector('[data-slot="sidebar-container"]')
+    const sidebar =
+      document.querySelector('[data-slot="sidebar-inner"]') ??
+      document.querySelector('[data-slot="sidebar-container"]')
     if (sidebar) setSidebarWidth(Math.max(0, sidebar.getBoundingClientRect().right))
   }, [sidebarOpen, width])
 
