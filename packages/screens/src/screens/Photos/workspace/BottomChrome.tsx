@@ -128,6 +128,7 @@ const BottomChrome = ({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={FADE}
+                style={{ borderRadius: 9999 }}
                 className={cn(PILL, "h-10 gap-2.5 px-3.5")}
               >
                 <MagnifyingGlass className="text-muted-foreground size-4 shrink-0" />
@@ -166,7 +167,12 @@ const BottomChrome = ({
             ) : null}
           </AnimatePresence>
 
-          <motion.div layout transition={MORPH} className={cn(PILL, "h-10")}>
+          <motion.div
+            layout
+            transition={MORPH}
+            style={{ borderRadius: 9999 }}
+            className={cn(PILL, "h-10")}
+          >
             <AnimatePresence mode="popLayout" initial={false}>
               {focused ? (
                 <motion.div
