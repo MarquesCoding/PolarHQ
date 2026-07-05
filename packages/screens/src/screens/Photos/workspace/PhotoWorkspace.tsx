@@ -116,6 +116,8 @@ const PhotoWorkspace = ({
   const [sortNum, setSortNum] = usePersistentNumber("photos.sort", 0)
   const sort: SortKey = SORT_KEYS[sortNum] ?? "date-desc"
   const onSort = (next: SortKey) => setSortNum(Math.max(0, SORT_KEYS.indexOf(next)))
+  const [hideDatesNum, setHideDatesNum] = usePersistentNumber("photos.hideDates", 0)
+  const hideDates = hideDatesNum === 1
   const [canvasPositions, setCanvasPositions] = useState<Map<string, Rect>>(loadCanvasPositions)
   const [hoveredDay, setHoveredDay] = useState<string | null>(null)
 
@@ -130,11 +132,11 @@ const PhotoWorkspace = ({
         rowHeight: mode === "infinity" ? 130 : rowHeight,
         gap: mode === "infinity" ? 10 : gap,
         square: square === 1 && mode !== "infinity",
-        continuous: mode === "infinity",
+        continuous: mode === "infinity" || hideDates,
       },
       sidebarInset,
     )
-  }, [mode, sorted, width, rowHeight, gap, square, sidebarInset, canvasPositions])
+  }, [mode, sorted, width, rowHeight, gap, square, hideDates, sidebarInset, canvasPositions])
   useEffect(() => {
     localStorage.setItem(CANVAS_KEY, JSON.stringify(Object.fromEntries(canvasPositions)))
   }, [canvasPositions])
@@ -586,6 +588,8 @@ const PhotoWorkspace = ({
         onGap={setGap}
         square={square === 1}
         onSquare={(value) => setSquare(value ? 1 : 0)}
+        hideDates={hideDates}
+        onHideDates={(value) => setHideDatesNum(value ? 1 : 0)}
         sort={sort}
         onSort={onSort}
         info={info}
