@@ -131,6 +131,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
       )}
 
       <SelectionBar
+        contentCentered
         downloadItems={downloadItems}
         downloadAllFrames={downloadAllFrames}
         shareAssetId={one?.id}
