@@ -160,7 +160,11 @@ const AssetEntity = ({
         opacity: fadingOut ? 0 : revealing ? [0, 1] : dimmed ? 0.5 : 1,
       }}
       transition={{
-        default: dragging ? { duration: 0 } : animate ? { duration: 0.45, ease: EASE } : { duration: 0 },
+        default: dragging
+          ? { duration: 0 }
+          : animate
+            ? { type: "spring", bounce: 0.38, duration: 0.6 }
+            : { duration: 0 },
         opacity: { duration: fadingOut ? 0.3 : 0.4, ease: EASE },
       }}
       style={{

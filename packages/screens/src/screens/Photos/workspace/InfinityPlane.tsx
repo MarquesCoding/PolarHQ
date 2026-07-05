@@ -159,7 +159,6 @@ const InfinityPlane = ({ assets, mode, onMode }: InfinityPlaneProps) => {
   const onPointerDown = (event: ReactPointerEvent) => {
     drag.current = { x: event.clientX, y: event.clientY }
     moved.current = false
-    event.currentTarget.setPointerCapture(event.pointerId)
   }
   const onPointerMove = (event: ReactPointerEvent) => {
     if (!drag.current) return
@@ -203,20 +202,22 @@ const InfinityPlane = ({ assets, mode, onMode }: InfinityPlaneProps) => {
         ))}
       </div>
 
-      <BottomChrome
-        focusedAsset={null}
-        mode={mode}
-        onMode={onMode}
-        rowHeight={0}
-        onRowHeight={() => {}}
-        gap={0}
-        onGap={() => {}}
-        square={false}
-        onSquare={() => {}}
-        info={false}
-        onToggleInfo={() => {}}
-        onClose={() => {}}
-      />
+      <div onPointerDown={(event) => event.stopPropagation()}>
+        <BottomChrome
+          focusedAsset={null}
+          mode={mode}
+          onMode={onMode}
+          rowHeight={0}
+          onRowHeight={() => {}}
+          gap={0}
+          onGap={() => {}}
+          square={false}
+          onSquare={() => {}}
+          info={false}
+          onToggleInfo={() => {}}
+          onClose={() => {}}
+        />
+      </div>
     </div>
   )
 }
