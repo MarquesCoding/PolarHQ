@@ -227,12 +227,12 @@ const FlatSidebar = ({
         // render on top of it), and a matching frosted collapse button to its right. Positioned over
         // the titlebar strip. Offsets are tuned to the native light placement.
         <div className="fixed left-[9px] top-[13px] z-[60] flex items-center gap-2">
-          <span className="bg-background/40 pointer-events-none h-[26px] w-[68px] rounded-full border border-white/20 shadow-sm backdrop-blur-2xl" />
+          <span className="bg-background/40 pointer-events-none h-[26px] w-[79px] rounded-full shadow-sm backdrop-blur-2xl" />
           <button
             type="button"
             onClick={toggleSidebar}
             aria-label={t("flatSidebar.toggleSidebar", { defaultValue: "Toggle sidebar" })}
-            className="bg-background/40 hover:bg-background/60 text-muted-foreground hover:text-foreground flex size-[26px] items-center justify-center rounded-full border border-white/20 shadow-sm backdrop-blur-2xl transition"
+            className="bg-background/40 hover:bg-background/60 text-muted-foreground hover:text-foreground flex size-[26px] items-center justify-center rounded-full shadow-sm backdrop-blur-2xl transition"
           >
             <SidebarSimple className="size-[18px]" />
           </button>
