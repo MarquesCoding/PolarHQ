@@ -227,7 +227,7 @@ const FlatSidebar = ({
         // render on top of it), and a matching frosted collapse button to its right. Positioned over
         // the titlebar strip. Offsets are tuned to the native light placement.
         <div className="fixed left-[9px] top-[13px] z-[60] flex items-center gap-2">
-          <span className="bg-background/40 pointer-events-none h-[26px] w-[62px] rounded-full border border-white/20 shadow-sm backdrop-blur-2xl" />
+          <span className="bg-background/40 pointer-events-none h-[26px] w-[68px] rounded-full border border-white/20 shadow-sm backdrop-blur-2xl" />
           <button
             type="button"
             onClick={toggleSidebar}
