@@ -79,8 +79,11 @@ const FocusView = ({
 
   return (
     <>
-      <div
-        className="absolute inset-0 z-40"
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={CHROME_FADE}
+        className="bg-background/25 absolute inset-0 z-40 backdrop-blur-xl"
         onClick={onClose}
         onPointerDown={(event) => event.stopPropagation()}
       />
