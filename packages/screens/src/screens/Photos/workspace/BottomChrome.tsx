@@ -121,16 +121,17 @@ const BottomChrome = ({
                 className={cn(PILL, "h-10 gap-2.5 px-3.5")}
               >
                 <MagnifyingGlass className="text-muted-foreground size-4 shrink-0" />
-                <Slider
-                  value={[rowHeight]}
-                  min={110}
-                  max={340}
-                  onValueChange={(value) =>
-                    onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
-                  }
-                  className="w-32"
-                  aria-label={t("photoSize", { defaultValue: "Photo size" })}
-                />
+                <div className="w-32 shrink-0">
+                  <Slider
+                    value={[rowHeight]}
+                    min={110}
+                    max={340}
+                    onValueChange={(value) =>
+                      onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
+                    }
+                    aria-label={t("photoSize", { defaultValue: "Photo size" })}
+                  />
+                </div>
                 <span className="text-muted-foreground w-9 shrink-0 text-right text-xs tabular-nums">
                   ×{(rowHeight / 180).toFixed(1)}
                 </span>
