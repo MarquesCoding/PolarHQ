@@ -142,16 +142,27 @@ const InfinityPlane = ({ assets, mode, onMode }: InfinityPlaneProps) => {
       if (event.ctrlKey) zoomAt(Math.exp(-event.deltaY * 0.01), event.clientX - rect.left, event.clientY - rect.top)
       else setCam((c) => ({ ...c, x: c.x - event.deltaX, y: c.y - event.deltaY }))
     }
-    const onGesture = (event: Event & { scale?: number }) => {
+    let gScale = 1
+    const onGestureStart = (event: Event) => {
+      event.preventDefault()
+      gScale = 1
+    }
+    const onGesture = (event: Event & { scale?: number; clientX?: number; clientY?: number }) => {
       event.preventDefault()
       const rect = el.getBoundingClientRect()
       const scale = event.scale ?? 1
-      zoomAt(scale > 0 ? 1 + (scale - 1) * 0.5 : 1, rect.width / 2, rect.height / 2)
+      const factor = gScale > 0 ? scale / gScale : 1
+      gScale = scale
+      const cx = (event.clientX ?? rect.left + rect.width / 2) - rect.left
+      const cy = (event.clientY ?? rect.top + rect.height / 2) - rect.top
+      zoomAt(factor, cx, cy)
     }
     el.addEventListener("wheel", onWheel, { passive: false })
+    el.addEventListener("gesturestart", onGestureStart as EventListener)
     el.addEventListener("gesturechange", onGesture as EventListener)
     return () => {
       el.removeEventListener("wheel", onWheel)
+      el.removeEventListener("gesturestart", onGestureStart as EventListener)
       el.removeEventListener("gesturechange", onGesture as EventListener)
     }
   }, [])
