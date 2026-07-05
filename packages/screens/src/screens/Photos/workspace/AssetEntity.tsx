@@ -138,6 +138,11 @@ const AssetEntity = ({
     } else video.pause()
   }, [playing, motionUrl])
 
+  useEffect(() => {
+    if (focused && canPlay) hover()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focused, canPlay])
+
   const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
   const dragged = useRef(false)
   const downAt = useRef<{ x: number; y: number } | null>(null)
@@ -216,7 +221,9 @@ const AssetEntity = ({
         }
       }}
       onPointerEnter={hover}
-      onPointerLeave={() => setPlaying(false)}
+      onPointerLeave={() => {
+        if (!focused) setPlaying(false)
+      }}
       onClick={(event) => {
         if (dragged.current || focused) return
         if (selectionActive || event.shiftKey) onToggle(event.shiftKey)
@@ -266,12 +273,14 @@ const AssetEntity = ({
         <video
           ref={videoRef}
           src={motionUrl}
-          muted
-          loop
+          muted={!focused}
+          loop={!focused}
           playsInline
+          controls={focused}
           className={cn(
-            "pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-300",
-            playing ? "opacity-100" : "opacity-0",
+            "absolute inset-0 h-full w-full transition-opacity duration-300",
+            focused ? "object-contain" : "pointer-events-none object-cover",
+            playing || focused ? "opacity-100" : "opacity-0",
           )}
         />
       ) : null}
