@@ -9,6 +9,7 @@ import { cn } from "@workspace/ui/lib/utils"
 import AssetEntity from "./AssetEntity"
 import BottomChrome from "./BottomChrome"
 import FocusView from "./FocusView"
+import InfinityPlane from "./InfinityPlane"
 import { layoutCanvas } from "./layout/canvas"
 import { layoutGrid } from "./layout/grid"
 import type { GridAsset, Mode, Rect } from "./types"
@@ -411,6 +412,10 @@ const PhotoWorkspace = ({
     setFocus((current) => (current ? { ...current, rect, vp } : current))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, sidebarInset, info])
+
+  if (mode === "infinity" && !focus) {
+    return <InfinityPlane assets={sorted} mode={mode} onMode={setMode} />
+  }
 
   return (
     <div
