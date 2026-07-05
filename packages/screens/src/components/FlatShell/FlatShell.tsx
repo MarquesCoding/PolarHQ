@@ -83,10 +83,12 @@ const FlatShell = ({ sidebar, topBar, floatingSidebar, children }: FlatShellProp
       data-slot="flat-content"
       className="bg-background relative flex min-h-0 flex-1 flex-col"
     >
-      <div
-        data-slot="content-frost"
-        className="pointer-events-none absolute inset-x-0 top-0 z-20"
-      />
+      {floatingSidebar ? null : (
+        <div
+          data-slot="content-frost"
+          className="pointer-events-none absolute inset-x-0 top-0 z-20"
+        />
+      )}
       <div className="absolute inset-x-0 top-0 z-30">{topBar}</div>
       <main
         data-slot="flat-main"
