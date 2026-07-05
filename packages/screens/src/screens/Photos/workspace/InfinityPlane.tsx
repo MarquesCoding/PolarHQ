@@ -2,7 +2,7 @@ import { fetchDecryptedPhotoThumbnail } from "@workspace/core/photosE2e"
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { thumbnailCache } from "./AssetEntity"
 import BottomChrome from "./BottomChrome"
-import type { GridAsset, Mode, Rect } from "./types"
+import type { GridAsset, Mode, Rect, SortKey } from "./types"
 
 const WORLD_WIDTH = 2400
 const TILE = 150
@@ -83,6 +83,8 @@ interface InfinityPlaneProps {
   assets: GridAsset[]
   mode: Mode
   onMode: (mode: Mode) => void
+  sort: SortKey
+  onSort: (value: SortKey) => void
 }
 
 /**
@@ -91,7 +93,7 @@ interface InfinityPlaneProps {
  * the cursor. Only the tiles intersecting the camera viewport render (plain divs — no motion), so the
  * whole library stays cheap however far you zoom out. Clicking a tile dives into it in Grid mode.
  */
-const InfinityPlane = ({ assets, mode, onMode }: InfinityPlaneProps) => {
+const InfinityPlane = ({ assets, mode, onMode, sort, onSort }: InfinityPlaneProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ w: 0, h: 0 })
   const [cam, setCam] = useState({ x: 40, y: 40, zoom: 1 })
@@ -224,6 +226,8 @@ const InfinityPlane = ({ assets, mode, onMode }: InfinityPlaneProps) => {
           onGap={() => {}}
           square={false}
           onSquare={() => {}}
+          sort={sort}
+          onSort={onSort}
           info={false}
           onToggleInfo={() => {}}
           onClose={() => {}}

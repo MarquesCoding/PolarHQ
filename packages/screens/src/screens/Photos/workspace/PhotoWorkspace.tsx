@@ -12,7 +12,8 @@ import FocusView from "./FocusView"
 import InfinityPlane from "./InfinityPlane"
 import { layoutCanvas } from "./layout/canvas"
 import { layoutGrid } from "./layout/grid"
-import type { GridAsset, Mode, Rect } from "./types"
+import { decryptName } from "@workspace/core/e2e"
+import type { GridAsset, Mode, Rect, SortKey } from "./types"
 
 interface Focus {
   id: string
@@ -25,6 +26,16 @@ const QUANTUM = 300
 const CANVAS_KEY = "photos.canvasPositions"
 
 const dateOf = (asset: GridAsset): number => new Date(asset.takenAt ?? asset.createdAt).getTime()
+const nameOf = (asset: GridAsset): string =>
+  ((asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename || "").toLowerCase()
+
+const SORT_KEYS: SortKey[] = ["date-desc", "date-asc", "name-asc", "name-desc"]
+const comparators: Record<SortKey, (a: GridAsset, b: GridAsset) => number> = {
+  "date-desc": (a, b) => dateOf(b) - dateOf(a),
+  "date-asc": (a, b) => dateOf(a) - dateOf(b),
+  "name-asc": (a, b) => nameOf(a).localeCompare(nameOf(b)),
+  "name-desc": (a, b) => nameOf(b).localeCompare(nameOf(a)),
+}
 
 const loadCanvasPositions = (): Map<string, Rect> => {
   try {
@@ -94,10 +105,13 @@ const PhotoWorkspace = ({
         ? "infinity"
         : "grid"
   const setMode = (next: Mode) => setModeNum(next === "canvas" ? 1 : next === "infinity" ? 2 : 0)
+  const [sortNum, setSortNum] = usePersistentNumber("photos.sort", 0)
+  const sort: SortKey = SORT_KEYS[sortNum] ?? "date-desc"
+  const onSort = (next: SortKey) => setSortNum(Math.max(0, SORT_KEYS.indexOf(next)))
   const [canvasPositions, setCanvasPositions] = useState<Map<string, Rect>>(loadCanvasPositions)
   const [hoveredDay, setHoveredDay] = useState<string | null>(null)
 
-  const sorted = useMemo(() => [...assets].sort((a, b) => dateOf(b) - dateOf(a)), [assets])
+  const sorted = useMemo(() => [...assets].sort(comparators[sort]), [assets, sort])
   const ordered = useMemo(() => sorted.map((asset) => asset.id), [sorted])
   const layout = useMemo(() => {
     if (mode === "canvas") return layoutCanvas(sorted, width, sidebarInset, canvasPositions)
@@ -414,7 +428,7 @@ const PhotoWorkspace = ({
   }, [width, sidebarInset, info])
 
   if (mode === "infinity" && !focus) {
-    return <InfinityPlane assets={sorted} mode={mode} onMode={setMode} />
+    return <InfinityPlane assets={sorted} mode={mode} onMode={setMode} sort={sort} onSort={onSort} />
   }
 
   return (
@@ -542,6 +556,8 @@ const PhotoWorkspace = ({
         onGap={setGap}
         square={square === 1}
         onSquare={(value) => setSquare(value ? 1 : 0)}
+        sort={sort}
+        onSort={onSort}
         info={info}
         onToggleInfo={() => setInfo((value) => !value)}
         onClose={close}

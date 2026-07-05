@@ -27,6 +27,8 @@ export interface Layout {
 
 export type Mode = "grid" | "canvas" | "infinity"
 
+export type SortKey = "date-desc" | "date-asc" | "name-asc" | "name-desc"
+
 /** Maps world space onto the screen: `screen = (world - {x,y}) * zoom`. Grid uses zoom 1 + vertical y. */
 export interface Camera {
   x: number
