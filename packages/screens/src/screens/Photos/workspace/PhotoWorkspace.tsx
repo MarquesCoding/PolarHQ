@@ -428,20 +428,30 @@ const PhotoWorkspace = ({
 
   const rowHeightRef = useRef(rowHeight)
   rowHeightRef.current = rowHeight
+  const [pinching, setPinching] = useState(false)
+  const pinchTimer = useRef<number | undefined>(undefined)
   useEffect(() => {
     if (focus || mode !== "grid") return
     const cl = (v: number) => Math.round(Math.min(Math.max(v, 110), 340))
+    const markPinching = () => {
+      setPinching(true)
+      window.clearTimeout(pinchTimer.current)
+      pinchTimer.current = window.setTimeout(() => setPinching(false), 900)
+    }
     let base = rowHeightRef.current
     const onStart = () => {
       base = rowHeightRef.current
+      markPinching()
     }
     const onChange = (event: Event) => {
       const scale = (event as unknown as { scale?: number }).scale
       if (scale === undefined) return
+      markPinching()
       setRowHeight(cl(base * scale))
     }
     const onWheel = (event: WheelEvent) => {
       if (!event.ctrlKey) return
+      markPinching()
       setRowHeight(cl(rowHeightRef.current * (1 - event.deltaY * 0.01)))
     }
     window.addEventListener("gesturestart", onStart)
@@ -581,6 +591,7 @@ const PhotoWorkspace = ({
       <BottomChrome
         focusedAsset={focusedAsset ?? null}
         showModes={showModes}
+        pinching={pinching}
         leftInset={sidebarInset}
         mode={mode}
         onMode={setMode}
