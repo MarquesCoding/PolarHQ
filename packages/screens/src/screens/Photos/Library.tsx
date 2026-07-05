@@ -166,6 +166,7 @@ const LibraryInner = () => {
       )}
 
       <SelectionBar
+        contentCentered
         downloadItems={downloadItems}
         downloadAllFrames={downloadAllFrames}
         shareAssetId={one?.id}

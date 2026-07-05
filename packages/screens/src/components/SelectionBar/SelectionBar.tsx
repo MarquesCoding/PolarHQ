@@ -14,6 +14,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 import { Kbd } from "@workspace/ui/components/kbd"
 import { Separator } from "@workspace/ui/components/separator"
+import { useSidebar } from "@workspace/ui/components/sidebar"
 import { AnimatePresence, motion } from "motion/react"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 
@@ -31,6 +32,9 @@ interface SelectionBarProps {
   /** Optional controlled share-dialog state (so a keybind can open it). */
   shareOpen?: boolean
   onShareOpenChange?: (open: boolean) => void
+  /** Center over the content (offset by the open sidebar) rather than the whole window — for the
+   *  floating Photos layout so the bar lines up with the workspace's centered chrome. */
+  contentCentered?: boolean
 }
 
 /** Shared floating selection action bar: count, clear, optional download/share, and app actions. */
@@ -43,8 +47,10 @@ const SelectionBar = ({
   shareEncrypted,
   shareOpen: shareOpenProp,
   onShareOpenChange,
+  contentCentered = false,
 }: SelectionBarProps) => {
   const { t } = useTranslation("common")
+  const { open: sidebarOpen } = useSidebar()
   const selection = useSelection()
   const upload = useUploadManager()
   const [internalShareOpen, setInternalShareOpen] = useState(false)
@@ -87,6 +93,9 @@ const SelectionBar = ({
           <motion.div
             key="selection-bar"
             className="fixed inset-x-0 bottom-4 z-40 flex origin-bottom justify-center px-4"
+            style={
+              contentCentered && sidebarOpen ? { paddingLeft: "var(--sidebar-width)" } : undefined
+            }
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
