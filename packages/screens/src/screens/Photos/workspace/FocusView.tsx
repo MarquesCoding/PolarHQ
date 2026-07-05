@@ -170,12 +170,12 @@ const FocusView = ({
             transition={CHROME_FADE}
             onClick={stop}
             onPointerDown={stop}
-            className="bg-sidebar absolute z-[60] overflow-y-auto rounded-2xl border shadow-xl"
+            className="bg-sidebar absolute z-[60] overflow-hidden rounded-2xl border shadow-xl"
             style={{
-              top: vp.top + 8,
-              left: vp.width - panelWidth + 8,
-              width: Math.max(240, panelWidth - 16),
-              height: vp.height - 16,
+              top: vp.top + 12,
+              left: vp.width - panelWidth + 12,
+              width: Math.max(240, panelWidth - 24),
+              height: vp.height - 24,
             }}
           >
             <InfoPanel assetId={asset.id} isFavorite={asset.isFavorite} onFavorite={favourite} />
