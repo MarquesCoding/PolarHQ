@@ -7,19 +7,20 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 import { Slider } from "@workspace/ui/components/slider"
 import {
   ArrowsDownUp,
+  ArrowsHorizontal,
+  CalendarBlank,
   Check,
   DotsThree,
   DownloadSimple,
   Heart,
   Info,
   MagnifyingGlass,
+  SquaresFour,
   Trash,
 } from "@phosphor-icons/react"
 import { AnimatePresence, motion } from "motion/react"
@@ -42,6 +43,8 @@ const SORTS: { id: SortKey; label: string }[] = [
 
 const PILL =
   "bg-background/70 pointer-events-auto flex items-center rounded-full border p-1 shadow-lg backdrop-blur-xl"
+const SLIDER =
+  "[&_[data-slot=slider-track]]:h-[7px] [&_[data-slot=slider-track]]:rounded-full [&_[data-slot=slider-track]]:bg-white/15 [&_[data-slot=slider-range]]:rounded-full [&_[data-slot=slider-range]]:bg-white/85 [&_[data-slot=slider-thumb]]:opacity-0"
 const FADE = { duration: 0.16, ease: [0.32, 0.72, 0, 1] as const }
 const MORPH = { layout: { duration: 0.35, ease: [0.32, 0.72, 0, 1] as const } }
 
@@ -61,6 +64,8 @@ interface BottomChromeProps {
   onGap: (value: number) => void
   square: boolean
   onSquare: (value: boolean) => void
+  hideDates: boolean
+  onHideDates: (value: boolean) => void
   sort: SortKey
   onSort: (value: SortKey) => void
   info: boolean
@@ -84,6 +89,12 @@ const BottomChrome = ({
   onMode,
   rowHeight,
   onRowHeight,
+  gap,
+  onGap,
+  square,
+  onSquare,
+  hideDates,
+  onHideDates,
   sort,
   onSort,
   info,
@@ -135,28 +146,75 @@ const BottomChrome = ({
                 <AnimatePresence mode="popLayout" initial={false}>
                   {hovered || pinching ? (
                     <motion.div
-                      key="track"
+                      key="controls"
                       layout
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={FADE}
-                      className="w-28 shrink-0"
+                      className="flex items-center gap-2.5"
                     >
-                      <Slider
-                        value={[rowHeight]}
-                        min={110}
-                        max={340}
-                        onValueChange={(value) =>
-                          onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
-                        }
-                        aria-label={t("photoSize", { defaultValue: "Photo size" })}
-                        className={cn(
-                          "[&_[data-slot=slider-track]]:h-[7px] [&_[data-slot=slider-track]]:rounded-full [&_[data-slot=slider-track]]:bg-white/15",
-                          "[&_[data-slot=slider-range]]:rounded-full [&_[data-slot=slider-range]]:bg-white/85",
-                          "[&_[data-slot=slider-thumb]]:opacity-0",
-                        )}
-                      />
+                      <div className="w-28 shrink-0">
+                        <Slider
+                          value={[rowHeight]}
+                          min={110}
+                          max={340}
+                          onValueChange={(value) =>
+                            onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
+                          }
+                          aria-label={t("photoSize", { defaultValue: "Photo size" })}
+                          className={SLIDER}
+                        />
+                      </div>
+                      {hovered ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => onSquare(!square)}
+                            aria-label={t("squareView", { defaultValue: "Square crop" })}
+                            className={cn(
+                              "shrink-0 rounded-full p-1.5 transition",
+                              square
+                                ? "bg-muted text-foreground"
+                                : "text-muted-foreground hover:text-foreground",
+                            )}
+                          >
+                            <SquaresFour
+                              weight={square ? "fill" : "regular"}
+                              className="size-[18px]"
+                            />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => onHideDates(!hideDates)}
+                            aria-label={t("hideDates", { defaultValue: "Hide dates" })}
+                            className={cn(
+                              "shrink-0 rounded-full p-1.5 transition",
+                              hideDates
+                                ? "text-muted-foreground/50 hover:text-muted-foreground"
+                                : "bg-muted text-foreground",
+                            )}
+                          >
+                            <CalendarBlank
+                              weight={hideDates ? "regular" : "fill"}
+                              className="size-[18px]"
+                            />
+                          </button>
+                          <ArrowsHorizontal className="text-muted-foreground size-4 shrink-0" />
+                          <div className="w-16 shrink-0">
+                            <Slider
+                              value={[gap]}
+                              min={0}
+                              max={40}
+                              onValueChange={(value) =>
+                                onGap(Array.isArray(value) ? (value[0] ?? gap) : value)
+                              }
+                              aria-label={t("gap", { defaultValue: "Gap" })}
+                              className={SLIDER}
+                            />
+                          </div>
+                        </>
+                      ) : null}
                     </motion.div>
                   ) : null}
                 </AnimatePresence>
@@ -258,8 +316,6 @@ const BottomChrome = ({
                       }
                     />
                     <DropdownMenuContent align="end" side="top">
-                      <DropdownMenuLabel>{t("sort", { defaultValue: "Sort" })}</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
                       {SORTS.map((option) => (
                         <DropdownMenuItem key={option.id} onClick={() => onSort(option.id)}>
                           {option.label}
