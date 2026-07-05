@@ -120,33 +120,46 @@ const BottomChrome = ({
           onPointerLeave={() => setHovered(false)}
         >
           <AnimatePresence>
-            {!focused && mode === "grid" && (hovered || pinching) ? (
+            {!focused && mode === "grid" ? (
               <motion.div
                 key="slider"
-                initial={{ opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.92 }}
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={FADE}
                 className={cn(PILL, "h-10 gap-2.5 px-3.5")}
               >
                 <MagnifyingGlass className="text-muted-foreground size-4 shrink-0" />
-                <div className="w-28 shrink-0">
-                  <Slider
-                    value={[rowHeight]}
-                    min={110}
-                    max={340}
-                    onValueChange={(value) =>
-                      onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
-                    }
-                    aria-label={t("photoSize", { defaultValue: "Photo size" })}
-                    className={cn(
-                      "[&_[data-slot=slider-track]]:h-[7px] [&_[data-slot=slider-track]]:rounded-full [&_[data-slot=slider-track]]:bg-white/15",
-                      "[&_[data-slot=slider-range]]:rounded-full [&_[data-slot=slider-range]]:bg-white/85",
-                      "[&_[data-slot=slider-thumb]]:opacity-0",
-                    )}
-                  />
-                </div>
-                <span className="text-muted-foreground w-9 shrink-0 text-right text-xs tabular-nums">
+                <AnimatePresence mode="popLayout" initial={false}>
+                  {hovered || pinching ? (
+                    <motion.div
+                      key="track"
+                      layout
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={FADE}
+                      className="w-28 shrink-0"
+                    >
+                      <Slider
+                        value={[rowHeight]}
+                        min={110}
+                        max={340}
+                        onValueChange={(value) =>
+                          onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
+                        }
+                        aria-label={t("photoSize", { defaultValue: "Photo size" })}
+                        className={cn(
+                          "[&_[data-slot=slider-track]]:h-[7px] [&_[data-slot=slider-track]]:rounded-full [&_[data-slot=slider-track]]:bg-white/15",
+                          "[&_[data-slot=slider-range]]:rounded-full [&_[data-slot=slider-range]]:bg-white/85",
+                          "[&_[data-slot=slider-thumb]]:opacity-0",
+                        )}
+                      />
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+                <span className="text-muted-foreground shrink-0 text-right text-xs tabular-nums">
                   ×{(rowHeight / 180).toFixed(1)}
                 </span>
               </motion.div>
