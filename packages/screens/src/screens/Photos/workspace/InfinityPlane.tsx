@@ -2,15 +2,45 @@ import { fetchDecryptedPhotoThumbnail } from "@workspace/core/photosE2e"
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { thumbnailCache } from "./AssetEntity"
 import BottomChrome from "./BottomChrome"
-import { layoutGrid } from "./layout/grid"
-import type { GridAsset, Mode } from "./types"
+import type { GridAsset, Mode, Rect } from "./types"
 
-const WORLD_WIDTH = 2200
-const TILE = 128
-const GAP = 10
+const WORLD_WIDTH = 2400
+const TILE = 150
+const GAP = 14
 const MIN_ZOOM = 0.45
 const MAX_ZOOM = 3.5
 const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi)
+const aspectOf = (asset: GridAsset): number =>
+  clamp(asset.width && asset.height ? asset.width / asset.height : 1, 0.4, 3)
+
+/** Continuous justified flow (aspect-preserved, no day breaks) across a fixed-width world. */
+const justify = (assets: GridAsset[]): { rects: Map<string, Rect>; height: number } => {
+  const rects = new Map<string, Rect>()
+  let row: GridAsset[] = []
+  let aspectSum = 0
+  let y = 0
+  const flush = (stretch: boolean) => {
+    if (row.length === 0) return
+    const gaps = (row.length - 1) * GAP
+    const h = stretch ? (WORLD_WIDTH - gaps) / aspectSum : TILE
+    let x = 0
+    for (const asset of row) {
+      const w = h * aspectOf(asset)
+      rects.set(asset.id, { x, y, w, h })
+      x += w + GAP
+    }
+    y += h + GAP
+    row = []
+    aspectSum = 0
+  }
+  for (const asset of assets) {
+    row.push(asset)
+    aspectSum += aspectOf(asset)
+    if (aspectSum * TILE + (row.length - 1) * GAP >= WORLD_WIDTH) flush(true)
+  }
+  flush(false)
+  return { rects, height: y }
+}
 
 const useThumb = (asset: GridAsset): string | null => {
   const [url, setUrl] = useState<string | null>(() =>
@@ -69,10 +99,7 @@ const InfinityPlane = ({ assets, mode, onMode }: InfinityPlaneProps) => {
   const moved = useRef(false)
 
   const byId = useMemo(() => new Map(assets.map((a) => [a.id, a])), [assets])
-  const layout = useMemo(
-    () => layoutGrid(assets, WORLD_WIDTH, { rowHeight: TILE, gap: GAP, square: true }, 0),
-    [assets],
-  )
+  const layout = useMemo(() => justify(assets), [assets])
 
   useEffect(() => {
     const el = ref.current
