@@ -103,7 +103,11 @@ const PhotoWorkspace = ({
     return layoutGrid(
       sorted,
       width,
-      { rowHeight, gap, square: square === 1 || mode === "infinity" },
+      {
+        rowHeight: mode === "infinity" ? 104 : rowHeight,
+        gap: mode === "infinity" ? 8 : gap,
+        square: square === 1 || mode === "infinity",
+      },
       sidebarInset,
     )
   }, [mode, sorted, width, rowHeight, gap, square, sidebarInset, canvasPositions])
