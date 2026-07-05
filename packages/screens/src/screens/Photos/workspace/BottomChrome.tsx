@@ -106,6 +106,8 @@ const BottomChrome = ({
   const upload = useUploadManager()
   const [hovered, setHovered] = useState(false)
   const hoverTimer = useRef<number | undefined>(undefined)
+  const [sortHovered, setSortHovered] = useState(false)
+  const sortTimer = useRef<number | undefined>(undefined)
   const focused = focusedAsset
   const name = focused
     ? (focused.encrypted && decryptName(focused.encryptedName)) || focused.originalFilename
@@ -126,16 +128,7 @@ const BottomChrome = ({
   return (
     <>
       {showTools ? (
-        <div
-          className="fixed right-5 bottom-5 z-[70] flex items-center gap-2"
-          onPointerEnter={() => {
-            window.clearTimeout(hoverTimer.current)
-            setHovered(true)
-          }}
-          onPointerLeave={() => {
-            hoverTimer.current = window.setTimeout(() => setHovered(false), 140)
-          }}
-        >
+        <div className="pointer-events-none fixed right-5 bottom-5 z-[70] flex items-center gap-2">
           <AnimatePresence>
             {!focused && mode === "grid" ? (
               <motion.div
@@ -147,6 +140,13 @@ const BottomChrome = ({
                 transition={FADE}
                 style={{ borderRadius: 9999 }}
                 className={cn(PILL, "relative h-10 gap-2.5 px-3.5")}
+                onPointerEnter={() => {
+                  window.clearTimeout(hoverTimer.current)
+                  setHovered(true)
+                }}
+                onPointerLeave={() => {
+                  hoverTimer.current = window.setTimeout(() => setHovered(false), 140)
+                }}
               >
                 <MagnifyingGlass className="text-muted-foreground size-4 shrink-0" />
                 <AnimatePresence mode="popLayout" initial={false}>
@@ -330,29 +330,51 @@ const BottomChrome = ({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={FADE}
+                  className="relative"
+                  onPointerEnter={() => {
+                    window.clearTimeout(sortTimer.current)
+                    setSortHovered(true)
+                  }}
+                  onPointerLeave={() => {
+                    sortTimer.current = window.setTimeout(() => setSortHovered(false), 140)
+                  }}
                 >
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      render={
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          aria-label={t("sort", { defaultValue: "Sort" })}
-                          className="rounded-full"
-                        >
-                          <ArrowsDownUp className="size-[18px]" />
-                        </Button>
-                      }
-                    />
-                    <DropdownMenuContent align="end" side="top">
-                      {SORTS.map((option) => (
-                        <DropdownMenuItem key={option.id} onClick={() => onSort(option.id)}>
-                          {option.label}
-                          {sort === option.id ? <Check className="ms-auto size-4" /> : null}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={t("sort", { defaultValue: "Sort" })}
+                    className="rounded-full"
+                  >
+                    <ArrowsDownUp className="size-[18px]" />
+                  </Button>
+                  <AnimatePresence>
+                    {sortHovered ? (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                        transition={FADE}
+                        className="bg-background/90 absolute right-0 bottom-full mb-2 flex w-44 flex-col gap-0.5 rounded-2xl border p-1.5 shadow-xl backdrop-blur-2xl"
+                      >
+                        {SORTS.map((option) => (
+                          <button
+                            key={option.id}
+                            type="button"
+                            onClick={() => onSort(option.id)}
+                            className={cn(
+                              "flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-sm transition",
+                              sort === option.id
+                                ? "bg-muted text-foreground"
+                                : "text-muted-foreground hover:bg-muted/50",
+                            )}
+                          >
+                            <span className="flex-1">{option.label}</span>
+                            {sort === option.id ? <Check className="size-4 shrink-0" /> : null}
+                          </button>
+                        ))}
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>
