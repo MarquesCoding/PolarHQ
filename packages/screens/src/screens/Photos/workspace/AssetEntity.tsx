@@ -168,7 +168,7 @@ const AssetEntity = ({
         left: 0,
         top: 0,
         zIndex: z,
-        contain: "layout paint",
+        contain: focused ? "layout" : "layout paint",
         willChange: dimmed || focused ? "transform" : undefined,
       }}
       onPointerDown={(event) => {
