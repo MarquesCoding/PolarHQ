@@ -21,6 +21,7 @@ import {
 } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
 import type { GridAsset } from "./types"
@@ -64,7 +65,19 @@ const FocusView = ({
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
   const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
-  const zoomed = zoom > 1.02
+  // Show the zoom % only while actively zooming; revert to the filename shortly after the user stops.
+  const [zooming, setZooming] = useState(false)
+  const zoomTimer = useRef<number | undefined>(undefined)
+  useEffect(() => {
+    if (zoom <= 1.02) {
+      setZooming(false)
+      return
+    }
+    setZooming(true)
+    window.clearTimeout(zoomTimer.current)
+    zoomTimer.current = window.setTimeout(() => setZooming(false), 900)
+    return () => window.clearTimeout(zoomTimer.current)
+  }, [zoom])
 
   const favourite = () => {
     void favoriteAssets([asset.id], !asset.isFavorite).then(() => onInvalidate?.())
@@ -99,14 +112,14 @@ const FocusView = ({
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
-            key={zoomed ? "zoom" : "name"}
+            key={zooming ? "zoom" : "name"}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.16, ease: [0.32, 0.72, 0, 1] }}
             className="block truncate tabular-nums"
           >
-            {zoomed ? `${Math.round(zoom * 100)}%` : name}
+            {zooming ? `${Math.round(zoom * 100)}%` : name}
           </motion.span>
         </AnimatePresence>
       </motion.div>
