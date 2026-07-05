@@ -140,87 +140,110 @@ const BottomChrome = ({
                 exit={{ opacity: 0 }}
                 transition={FADE}
                 style={{ borderRadius: 9999 }}
-                className={cn(PILL, "h-10 gap-2.5 px-3.5")}
+                className={cn(PILL, "relative h-10 gap-2.5 px-3.5")}
               >
                 <MagnifyingGlass className="text-muted-foreground size-4 shrink-0" />
                 <AnimatePresence mode="popLayout" initial={false}>
-                  {hovered || pinching ? (
+                  {pinching && !hovered ? (
                     <motion.div
-                      key="controls"
+                      key="bar"
                       layout
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={FADE}
-                      className="flex items-center gap-2.5"
+                      className="w-28 shrink-0"
                     >
-                      <div className="w-28 shrink-0">
-                        <Slider
-                          value={[rowHeight]}
-                          min={110}
-                          max={340}
-                          onValueChange={(value) =>
-                            onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
-                          }
-                          aria-label={t("photoSize", { defaultValue: "Photo size" })}
-                          className={SLIDER}
-                        />
-                      </div>
-                      {hovered ? (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => onSquare(!square)}
-                            aria-label={t("squareView", { defaultValue: "Square crop" })}
-                            className={cn(
-                              "shrink-0 rounded-full p-1.5 transition",
-                              square
-                                ? "bg-muted text-foreground"
-                                : "text-muted-foreground hover:text-foreground",
-                            )}
-                          >
-                            <SquaresFour
-                              weight={square ? "fill" : "regular"}
-                              className="size-[18px]"
-                            />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => onHideDates(!hideDates)}
-                            aria-label={t("hideDates", { defaultValue: "Hide dates" })}
-                            className={cn(
-                              "shrink-0 rounded-full p-1.5 transition",
-                              hideDates
-                                ? "text-muted-foreground/50 hover:text-muted-foreground"
-                                : "bg-muted text-foreground",
-                            )}
-                          >
-                            <CalendarBlank
-                              weight={hideDates ? "regular" : "fill"}
-                              className="size-[18px]"
-                            />
-                          </button>
-                          <ArrowsHorizontal className="text-muted-foreground size-4 shrink-0" />
-                          <div className="w-16 shrink-0">
-                            <Slider
-                              value={[gap]}
-                              min={0}
-                              max={40}
-                              onValueChange={(value) =>
-                                onGap(Array.isArray(value) ? (value[0] ?? gap) : value)
-                              }
-                              aria-label={t("gap", { defaultValue: "Gap" })}
-                              className={SLIDER}
-                            />
-                          </div>
-                        </>
-                      ) : null}
+                      <Slider
+                        value={[rowHeight]}
+                        min={110}
+                        max={340}
+                        onValueChange={(value) =>
+                          onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
+                        }
+                        aria-label={t("photoSize", { defaultValue: "Photo size" })}
+                        className={SLIDER}
+                      />
                     </motion.div>
                   ) : null}
                 </AnimatePresence>
                 <span className="text-muted-foreground shrink-0 text-right text-xs tabular-nums">
                   ×{(rowHeight / 180).toFixed(1)}
                 </span>
+
+                <AnimatePresence>
+                  {hovered ? (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                      transition={FADE}
+                      className="bg-background/90 absolute right-0 bottom-full mb-2 flex w-60 flex-col gap-3 rounded-2xl border p-3 shadow-xl backdrop-blur-2xl"
+                    >
+                      <div className="flex items-center gap-3">
+                        <MagnifyingGlass className="text-muted-foreground size-4 shrink-0" />
+                        <div className="flex-1">
+                          <Slider
+                            value={[rowHeight]}
+                            min={110}
+                            max={340}
+                            onValueChange={(value) =>
+                              onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
+                            }
+                            aria-label={t("photoSize", { defaultValue: "Photo size" })}
+                            className={SLIDER}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <ArrowsHorizontal className="text-muted-foreground size-4 shrink-0" />
+                        <div className="flex-1">
+                          <Slider
+                            value={[gap]}
+                            min={0}
+                            max={40}
+                            onValueChange={(value) =>
+                              onGap(Array.isArray(value) ? (value[0] ?? gap) : value)
+                            }
+                            aria-label={t("gap", { defaultValue: "Gap" })}
+                            className={SLIDER}
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => onSquare(!square)}
+                          className={cn(
+                            "flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-medium transition",
+                            square
+                              ? "bg-muted text-foreground"
+                              : "text-muted-foreground hover:bg-muted/50",
+                          )}
+                        >
+                          <SquaresFour weight={square ? "fill" : "regular"} className="size-4" />
+                          {t("squareView", { defaultValue: "Square" })}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onHideDates(!hideDates)}
+                          className={cn(
+                            "flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-medium transition",
+                            hideDates
+                              ? "bg-muted text-foreground"
+                              : "text-muted-foreground hover:bg-muted/50",
+                          )}
+                        >
+                          <CalendarBlank
+                            weight={hideDates ? "fill" : "regular"}
+                            className="size-4"
+                          />
+                          {t("hideDates", { defaultValue: "Hide dates" })}
+                        </button>
+                      </div>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
               </motion.div>
             ) : null}
           </AnimatePresence>
