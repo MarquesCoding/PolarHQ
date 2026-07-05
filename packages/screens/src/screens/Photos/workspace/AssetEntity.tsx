@@ -30,6 +30,7 @@ interface AssetEntityProps {
   dimmed: boolean
   focused: boolean
   fadingOut: boolean
+  revealing: boolean
   zoom: number
   panX: number
   panY: number
@@ -57,6 +58,7 @@ const AssetEntity = ({
   dimmed,
   focused,
   fadingOut,
+  revealing,
   zoom,
   panX,
   panY,
@@ -155,7 +157,7 @@ const AssetEntity = ({
         y: rect.y + dragOffset.y,
         width: rect.w,
         height: rect.h,
-        opacity: fadingOut ? 0 : dimmed ? 0.5 : 1,
+        opacity: fadingOut ? 0 : revealing ? [0, 1] : dimmed ? 0.5 : 1,
       }}
       transition={{
         default: dragging ? { duration: 0 } : animate ? { duration: 0.45, ease: EASE } : { duration: 0 },
@@ -328,5 +330,6 @@ export default memo(
     a.panY === b.panY &&
     a.animate === b.animate &&
     a.z === b.z &&
-    a.draggable === b.draggable,
+    a.draggable === b.draggable &&
+    a.revealing === b.revealing,
 )

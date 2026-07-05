@@ -237,6 +237,7 @@ const PhotoWorkspace = ({
   const [focus, setFocus] = useState<Focus | null>(null)
   const [fading, setFading] = useState<{ id: string; rect: Rect } | null>(null)
   const [settling, setSettling] = useState<string | null>(null)
+  const [revealing, setRevealing] = useState<string | null>(null)
   const [closingId, setClosingId] = useState<string | null>(null)
   const [info, setInfo] = useState(false)
 
@@ -296,6 +297,8 @@ const PhotoWorkspace = ({
     if (!asset) return
     const prevId = focus.id
     setFading({ id: prevId, rect: focus.rect })
+    setRevealing(id)
+    window.setTimeout(() => setRevealing((current) => (current === id ? null : current)), 320)
     window.setTimeout(() => {
       setFading((current) => (current?.id === prevId ? null : current))
       setSettling(prevId)
@@ -469,6 +472,7 @@ const PhotoWorkspace = ({
             dimmed={focus !== null && !isFocused && !isFading}
             focused={isFocused || isFading}
             fadingOut={isFading}
+            revealing={revealing === asset.id}
             zoom={isFocused ? zoom : 1}
             panX={isFocused ? pan.x : 0}
             panY={isFocused ? pan.y : 0}
