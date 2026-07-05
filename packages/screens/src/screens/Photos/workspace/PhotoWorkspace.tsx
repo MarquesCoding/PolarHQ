@@ -390,11 +390,20 @@ const PhotoWorkspace = ({
     }
   }, [focus])
 
+  const rowHeightRef = useRef(rowHeight)
+  rowHeightRef.current = rowHeight
+  const focusRef = useRef(focus)
+  focusRef.current = focus
+  const modeRef = useRef(mode)
+  modeRef.current = mode
+  const [pinching, setPinching] = useState(false)
+  const pinchTimer = useRef<number | undefined>(undefined)
   useEffect(() => {
-    if (!focus) return
-    let base = zoomRef.current
-    const onStart = () => {
-      base = zoomRef.current
+    const clampSize = (v: number) => Math.round(Math.min(Math.max(v, 110), 340))
+    const markPinching = () => {
+      setPinching(true)
+      window.clearTimeout(pinchTimer.current)
+      pinchTimer.current = window.setTimeout(() => setPinching(false), 900)
     }
     const syncSidebar = (next: number) => {
       const collapse = next > 1.02
@@ -402,18 +411,32 @@ const PhotoWorkspace = ({
       collapsedByZoom.current = collapse
       setOpen(collapse ? false : sidebarWasOpen.current)
     }
+    let base = 1
+    const onStart = () => {
+      base = focusRef.current ? zoomRef.current : rowHeightRef.current
+    }
     const onChange = (event: Event) => {
       const scale = (event as unknown as { scale?: number }).scale
       if (scale === undefined) return
-      const next = base * scale
-      setZoomClamped(next)
-      syncSidebar(next)
+      if (focusRef.current) {
+        const next = base * scale
+        setZoomClamped(next)
+        syncSidebar(next)
+      } else if (modeRef.current === "grid") {
+        markPinching()
+        setRowHeight(clampSize(base * scale))
+      }
     }
     const onWheel = (event: WheelEvent) => {
       if (!event.ctrlKey) return
-      const next = zoomRef.current * (1 - event.deltaY * 0.01)
-      setZoomClamped(next)
-      syncSidebar(next)
+      if (focusRef.current) {
+        const next = zoomRef.current * (1 - event.deltaY * 0.01)
+        setZoomClamped(next)
+        syncSidebar(next)
+      } else if (modeRef.current === "grid") {
+        markPinching()
+        setRowHeight(clampSize(rowHeightRef.current * (1 - event.deltaY * 0.01)))
+      }
     }
     window.addEventListener("gesturestart", onStart)
     window.addEventListener("gesturechange", onChange)
@@ -424,45 +447,7 @@ const PhotoWorkspace = ({
       window.removeEventListener("wheel", onWheel)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focus, setOpen])
-
-  const rowHeightRef = useRef(rowHeight)
-  rowHeightRef.current = rowHeight
-  const [pinching, setPinching] = useState(false)
-  const pinchTimer = useRef<number | undefined>(undefined)
-  useEffect(() => {
-    if (focus || mode !== "grid") return
-    const cl = (v: number) => Math.round(Math.min(Math.max(v, 110), 340))
-    const markPinching = () => {
-      setPinching(true)
-      window.clearTimeout(pinchTimer.current)
-      pinchTimer.current = window.setTimeout(() => setPinching(false), 900)
-    }
-    let base = rowHeightRef.current
-    const onStart = () => {
-      base = rowHeightRef.current
-      markPinching()
-    }
-    const onChange = (event: Event) => {
-      const scale = (event as unknown as { scale?: number }).scale
-      if (scale === undefined) return
-      markPinching()
-      setRowHeight(cl(base * scale))
-    }
-    const onWheel = (event: WheelEvent) => {
-      if (!event.ctrlKey) return
-      markPinching()
-      setRowHeight(cl(rowHeightRef.current * (1 - event.deltaY * 0.01)))
-    }
-    window.addEventListener("gesturestart", onStart)
-    window.addEventListener("gesturechange", onChange)
-    window.addEventListener("wheel", onWheel, { passive: true })
-    return () => {
-      window.removeEventListener("gesturestart", onStart)
-      window.removeEventListener("gesturechange", onChange)
-      window.removeEventListener("wheel", onWheel)
-    }
-  }, [focus, mode, setRowHeight])
+  }, [])
 
   useEffect(() => {
     if (!focus) return
