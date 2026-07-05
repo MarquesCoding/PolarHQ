@@ -476,7 +476,13 @@ const PhotoWorkspace = ({
             zoom={isFocused ? zoom : 1}
             panX={isFocused ? pan.x : 0}
             panY={isFocused ? pan.y : 0}
-            animate={isFading || isSettling ? false : isFocused ? fading === null : true}
+            animate={
+              isFading || isSettling || revealing === asset.id
+                ? false
+                : isFocused
+                  ? fading === null
+                  : true
+            }
             z={isFocused ? 50 : isFading ? 51 : isClosing ? 50 : 1}
             draggable={mode === "canvas" && !focus}
             onOpen={() => openAsset(asset.id)}
