@@ -49,7 +49,7 @@ export const layoutGrid = (
   const markers: Layout["markers"] = []
   if (width <= 0 || assets.length === 0) return { rects, markers, width, height: 0 }
 
-  const { rowHeight, gap, square } = options
+  const { rowHeight, gap, square, continuous } = options
   const left = leftInset + INSET
   const inner = Math.max(width - leftInset - INSET * 2, 1)
 
@@ -100,7 +100,7 @@ export const layoutGrid = (
     const flush = (stretch: boolean) => {
       if (row.length === 0) return
       const labelY = y
-      if (row.some((item) => item.dayStart)) y += HEADER_HEIGHT + HEADER_GAP
+      if (!continuous && row.some((item) => item.dayStart)) y += HEADER_HEIGHT + HEADER_GAP
       const rowY = y
       const gaps = (row.length - 1) * gap
       const height = stretch ? (inner - gaps) / aspectSum : rowHeight
@@ -108,7 +108,7 @@ export const layoutGrid = (
       let lastLabelX = -Infinity
       for (const item of row) {
         const cellWidth = height * item.aspect
-        if (item.dayStart && x - lastLabelX >= LABEL_MIN_GAP) {
+        if (!continuous && item.dayStart && x - lastLabelX >= LABEL_MIN_GAP) {
           addMarker(item, x, labelY)
           lastLabelX = x
         }

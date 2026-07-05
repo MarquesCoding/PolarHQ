@@ -163,7 +163,7 @@ const AssetEntity = ({
         default: dragging
           ? { duration: 0 }
           : animate
-            ? { type: "spring", bounce: 0.22, duration: 0.55 }
+            ? { type: "spring", bounce: 0.2, duration: 0.4 }
             : { duration: 0 },
         opacity: { duration: fadingOut ? 0.3 : 0.4, ease: EASE },
       }}

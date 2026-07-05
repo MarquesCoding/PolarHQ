@@ -9,7 +9,6 @@ import { cn } from "@workspace/ui/lib/utils"
 import AssetEntity from "./AssetEntity"
 import BottomChrome from "./BottomChrome"
 import FocusView from "./FocusView"
-import InfinityPlane from "./InfinityPlane"
 import { layoutCanvas } from "./layout/canvas"
 import { layoutGrid } from "./layout/grid"
 import { decryptName } from "@workspace/core/e2e"
@@ -128,9 +127,10 @@ const PhotoWorkspace = ({
       sorted,
       width,
       {
-        rowHeight: mode === "infinity" ? 104 : rowHeight,
-        gap: mode === "infinity" ? 8 : gap,
-        square: square === 1 || mode === "infinity",
+        rowHeight: mode === "infinity" ? 130 : rowHeight,
+        gap: mode === "infinity" ? 10 : gap,
+        square: square === 1 && mode !== "infinity",
+        continuous: mode === "infinity",
       },
       sidebarInset,
     )
@@ -426,6 +426,34 @@ const PhotoWorkspace = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focus, setOpen])
 
+  const rowHeightRef = useRef(rowHeight)
+  rowHeightRef.current = rowHeight
+  useEffect(() => {
+    if (focus || mode !== "grid") return
+    const cl = (v: number) => Math.round(Math.min(Math.max(v, 110), 340))
+    let base = rowHeightRef.current
+    const onStart = () => {
+      base = rowHeightRef.current
+    }
+    const onChange = (event: Event) => {
+      const scale = (event as unknown as { scale?: number }).scale
+      if (scale === undefined) return
+      setRowHeight(cl(base * scale))
+    }
+    const onWheel = (event: WheelEvent) => {
+      if (!event.ctrlKey) return
+      setRowHeight(cl(rowHeightRef.current * (1 - event.deltaY * 0.01)))
+    }
+    window.addEventListener("gesturestart", onStart)
+    window.addEventListener("gesturechange", onChange)
+    window.addEventListener("wheel", onWheel, { passive: true })
+    return () => {
+      window.removeEventListener("gesturestart", onStart)
+      window.removeEventListener("gesturechange", onChange)
+      window.removeEventListener("wheel", onWheel)
+    }
+  }, [focus, mode, setRowHeight])
+
   useEffect(() => {
     if (!focus) return
     const asset = sorted.find((item) => item.id === focus.id)
@@ -435,19 +463,6 @@ const PhotoWorkspace = ({
     setFocus((current) => (current ? { ...current, rect, vp } : current))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, sidebarInset, info])
-
-  if (mode === "infinity" && !focus) {
-    return (
-      <InfinityPlane
-        assets={sorted}
-        mode={mode}
-        onMode={setMode}
-        sort={sort}
-        onSort={onSort}
-        leftInset={sidebarInset}
-      />
-    )
-  }
 
   return (
     <div

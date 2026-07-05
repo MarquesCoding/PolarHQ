@@ -40,6 +40,8 @@ export interface GridOptions {
   rowHeight: number
   gap: number
   square: boolean
+  /** Infinity: continuous justified flow with no day-header bands. */
+  continuous?: boolean
 }
 
 export type { GridAsset }
