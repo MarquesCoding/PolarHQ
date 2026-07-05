@@ -24,7 +24,7 @@ import {
   Trash,
 } from "@phosphor-icons/react"
 import { AnimatePresence, motion } from "motion/react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import type { GridAsset, Mode, SortKey } from "./types"
@@ -105,6 +105,7 @@ const BottomChrome = ({
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
   const [hovered, setHovered] = useState(false)
+  const hoverTimer = useRef<number | undefined>(undefined)
   const focused = focusedAsset
   const name = focused
     ? (focused.encrypted && decryptName(focused.encryptedName)) || focused.originalFilename
@@ -127,8 +128,13 @@ const BottomChrome = ({
       {showTools ? (
         <div
           className="fixed right-5 bottom-5 z-[70] flex items-center gap-2"
-          onPointerEnter={() => setHovered(true)}
-          onPointerLeave={() => setHovered(false)}
+          onPointerEnter={() => {
+            window.clearTimeout(hoverTimer.current)
+            setHovered(true)
+          }}
+          onPointerLeave={() => {
+            hoverTimer.current = window.setTimeout(() => setHovered(false), 140)
+          }}
         >
           <AnimatePresence>
             {!focused && mode === "grid" ? (
