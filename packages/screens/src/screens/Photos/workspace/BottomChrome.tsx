@@ -23,6 +23,7 @@ import {
   Trash,
 } from "@phosphor-icons/react"
 import { AnimatePresence, motion } from "motion/react"
+import { useState } from "react"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import type { GridAsset, Mode, SortKey } from "./types"
@@ -48,6 +49,8 @@ interface BottomChromeProps {
   focusedAsset: GridAsset | null
   showModes?: boolean
   showTools?: boolean
+  /** True briefly while pinch/⌘-scroll resizing the grid — keeps the size slider revealed. */
+  pinching?: boolean
   /** Left inset (sidebar width) so the centered switcher centers over the visible content, not the window. */
   leftInset?: number
   mode: Mode
@@ -75,6 +78,7 @@ const BottomChrome = ({
   focusedAsset,
   showModes = true,
   showTools = true,
+  pinching = false,
   leftInset = 0,
   mode,
   onMode,
@@ -89,6 +93,7 @@ const BottomChrome = ({
 }: BottomChromeProps) => {
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
+  const [hovered, setHovered] = useState(false)
   const focused = focusedAsset
   const name = focused
     ? (focused.encrypted && decryptName(focused.encryptedName)) || focused.originalFilename
@@ -109,9 +114,13 @@ const BottomChrome = ({
   return (
     <>
       {showTools ? (
-        <div className="pointer-events-none fixed right-5 bottom-5 z-[70] flex items-center gap-2">
+        <div
+          className="fixed right-5 bottom-5 z-[70] flex items-center gap-2"
+          onPointerEnter={() => setHovered(true)}
+          onPointerLeave={() => setHovered(false)}
+        >
           <AnimatePresence>
-            {!focused && mode === "grid" ? (
+            {!focused && mode === "grid" && (hovered || pinching) ? (
               <motion.div
                 key="slider"
                 initial={{ opacity: 0, scale: 0.92 }}
@@ -121,7 +130,7 @@ const BottomChrome = ({
                 className={cn(PILL, "h-10 gap-2.5 px-3.5")}
               >
                 <MagnifyingGlass className="text-muted-foreground size-4 shrink-0" />
-                <div className="w-32 shrink-0">
+                <div className="w-28 shrink-0">
                   <Slider
                     value={[rowHeight]}
                     min={110}
@@ -130,6 +139,11 @@ const BottomChrome = ({
                       onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
                     }
                     aria-label={t("photoSize", { defaultValue: "Photo size" })}
+                    className={cn(
+                      "[&_[data-slot=slider-track]]:h-[7px] [&_[data-slot=slider-track]]:rounded-full [&_[data-slot=slider-track]]:bg-white/15",
+                      "[&_[data-slot=slider-range]]:rounded-full [&_[data-slot=slider-range]]:bg-white/85",
+                      "[&_[data-slot=slider-thumb]]:opacity-0",
+                    )}
                   />
                 </div>
                 <span className="text-muted-foreground w-9 shrink-0 text-right text-xs tabular-nums">
