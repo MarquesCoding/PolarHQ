@@ -85,6 +85,7 @@ interface InfinityPlaneProps {
   onMode: (mode: Mode) => void
   sort: SortKey
   onSort: (value: SortKey) => void
+  leftInset: number
 }
 
 /**
@@ -93,7 +94,7 @@ interface InfinityPlaneProps {
  * the cursor. Only the tiles intersecting the camera viewport render (plain divs — no motion), so the
  * whole library stays cheap however far you zoom out. Clicking a tile dives into it in Grid mode.
  */
-const InfinityPlane = ({ assets, mode, onMode, sort, onSort }: InfinityPlaneProps) => {
+const InfinityPlane = ({ assets, mode, onMode, sort, onSort, leftInset }: InfinityPlaneProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ w: 0, h: 0 })
   const [cam, setCam] = useState({ x: 40, y: 40, zoom: 1 })
@@ -218,6 +219,7 @@ const InfinityPlane = ({ assets, mode, onMode, sort, onSort }: InfinityPlaneProp
       <div onPointerDown={(event) => event.stopPropagation()}>
         <BottomChrome
           focusedAsset={null}
+          leftInset={leftInset}
           mode={mode}
           onMode={onMode}
           rowHeight={0}
