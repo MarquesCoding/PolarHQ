@@ -12,6 +12,7 @@ import FocusView from "./FocusView"
 import { layoutCanvas } from "./layout/canvas"
 import { layoutGrid } from "./layout/grid"
 import { decryptName } from "@workspace/core/e2e"
+import { favoriteAssets } from "@workspace/core/photos"
 import type { GridAsset, Mode, Rect, SortKey } from "./types"
 
 interface Focus {
@@ -361,6 +362,10 @@ const PhotoWorkspace = ({
       if (event.key === "Escape") close()
       else if (event.key === "ArrowRight") page(1)
       else if (event.key === "ArrowLeft") page(-1)
+      else if (event.key === "f" || event.key === "F") {
+        const asset = sorted.find((item) => item.id === focus.id)
+        if (asset) void favoriteAssets([asset.id], !asset.isFavorite).then(() => onInvalidate?.())
+      }
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
