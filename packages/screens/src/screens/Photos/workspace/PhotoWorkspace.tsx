@@ -580,6 +580,7 @@ const PhotoWorkspace = ({
         showModes={showModes}
         pinching={pinching}
         leftInset={sidebarInset}
+        detailsWidth={DETAILS_WIDTH}
         mode={mode}
         onMode={setMode}
         rowHeight={rowHeight}

@@ -56,6 +56,8 @@ interface BottomChromeProps {
   pinching?: boolean
   /** Left inset (sidebar width) so the centered switcher centers over the visible content, not the window. */
   leftInset?: number
+  /** Width of the open details panel — the focused actions shift left by this so they don't overlap it. */
+  detailsWidth?: number
   mode: Mode
   onMode: (mode: Mode) => void
   rowHeight: number
@@ -85,6 +87,7 @@ const BottomChrome = ({
   showTools = true,
   pinching = false,
   leftInset = 0,
+  detailsWidth = 0,
   mode,
   onMode,
   rowHeight,
@@ -128,7 +131,10 @@ const BottomChrome = ({
   return (
     <>
       {showTools ? (
-        <div className="pointer-events-none fixed right-5 bottom-5 z-[70] flex items-center gap-2">
+        <div
+          className="pointer-events-none fixed bottom-5 z-[70] flex items-center gap-2 transition-[right] duration-300"
+          style={{ right: focused && info ? detailsWidth + 20 : 20 }}
+        >
           <AnimatePresence>
             {!focused && mode === "grid" ? (
               <motion.div
@@ -280,7 +286,7 @@ const BottomChrome = ({
                   >
                     <Heart
                       weight={focused.isFavorite ? "fill" : "regular"}
-                      className={cn("size-[18px]", focused.isFavorite && "text-red-500")}
+                      className={cn("size-[18px]", focused.isFavorite && "text-white")}
                     />
                   </Button>
                   <Button
