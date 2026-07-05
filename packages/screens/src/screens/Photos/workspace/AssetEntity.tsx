@@ -140,6 +140,7 @@ const AssetEntity = ({
 
   useEffect(() => {
     if (focused && canPlay) hover()
+    else if (canPlay) setPlaying(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focused, canPlay])
 
