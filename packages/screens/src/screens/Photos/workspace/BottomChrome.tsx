@@ -5,7 +5,6 @@ import { useUploadManager } from "@workspace/screens/uploadManager"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -15,6 +14,7 @@ import {
 import { Slider } from "@workspace/ui/components/slider"
 import {
   ArrowsDownUp,
+  Check,
   DotsThree,
   DownloadSimple,
   Heart,
@@ -48,6 +48,8 @@ interface BottomChromeProps {
   focusedAsset: GridAsset | null
   showModes?: boolean
   showTools?: boolean
+  /** Left inset (sidebar width) so the centered switcher centers over the visible content, not the window. */
+  leftInset?: number
   mode: Mode
   onMode: (mode: Mode) => void
   rowHeight: number
@@ -65,13 +67,15 @@ interface BottomChromeProps {
 }
 
 /**
- * Workspace bottom chrome: a centered Grid/Canvas/Infinity switcher that morphs into the focused-photo
- * actions, plus a right-side tools cluster (inline size slider in grid mode + a sort menu).
+ * Workspace bottom chrome. Center: a Grid/Canvas/Infinity switcher (fades out on focus, never morphs).
+ * Right: the size slider (grid) plus a pill that liquid-morphs between the sort menu and the focused
+ * photo actions (favourite / download / details / more).
  */
 const BottomChrome = ({
   focusedAsset,
   showModes = true,
   showTools = true,
+  leftInset = 0,
   mode,
   onMode,
   rowHeight,
@@ -104,17 +108,18 @@ const BottomChrome = ({
 
   return (
     <>
-      <AnimatePresence>
-        {!focused && showTools ? (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={FADE}
-            className="pointer-events-none fixed right-5 bottom-5 z-[70] flex items-center gap-2"
-          >
-            {mode === "grid" ? (
-              <div className={cn(PILL, "gap-2 px-3 py-1.5")}>
+      {showTools ? (
+        <div className="pointer-events-none fixed right-5 bottom-5 z-[70] flex items-center gap-2">
+          <AnimatePresence>
+            {!focused && mode === "grid" ? (
+              <motion.div
+                key="slider"
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.92 }}
+                transition={FADE}
+                className={cn(PILL, "h-10 gap-2.5 px-3.5")}
+              >
                 <MagnifyingGlass className="text-muted-foreground size-4 shrink-0" />
                 <Slider
                   value={[rowHeight]}
@@ -123,48 +128,17 @@ const BottomChrome = ({
                   onValueChange={(value) =>
                     onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
                   }
-                  className="w-28"
+                  className="w-32"
                   aria-label={t("photoSize", { defaultValue: "Photo size" })}
                 />
                 <span className="text-muted-foreground w-9 shrink-0 text-right text-xs tabular-nums">
                   ×{(rowHeight / 180).toFixed(1)}
                 </span>
-              </div>
+              </motion.div>
             ) : null}
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label={t("sort", { defaultValue: "Sort" })}
-                    className={cn(PILL, "size-10 justify-center rounded-full p-0")}
-                  >
-                    <ArrowsDownUp className="size-[18px]" />
-                  </Button>
-                }
-              />
-              <DropdownMenuContent align="end" side="top">
-                <DropdownMenuLabel>{t("sort", { defaultValue: "Sort" })}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {SORTS.map((option) => (
-                  <DropdownMenuCheckboxItem
-                    key={option.id}
-                    checked={sort === option.id}
-                    onCheckedChange={() => onSort(option.id)}
-                  >
-                    {option.label}
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+          </AnimatePresence>
 
-      {focused || showModes ? (
-        <div className="pointer-events-none fixed bottom-5 left-1/2 z-[70] -translate-x-1/2">
-          <motion.div layout transition={MORPH} className={PILL}>
+          <motion.div layout transition={MORPH} className={cn(PILL, "h-10")}>
             <AnimatePresence mode="popLayout" initial={false}>
               {focused ? (
                 <motion.div
@@ -229,44 +203,84 @@ const BottomChrome = ({
                 </motion.div>
               ) : (
                 <motion.div
-                  key="modes"
+                  key="sort"
                   layout
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={FADE}
-                  className="flex items-center"
                 >
-                  {MODES.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => onMode(item.id)}
-                      className={cn(
-                        "relative rounded-full px-4 py-1.5 text-sm font-medium transition",
-                        mode === item.id
-                          ? "text-foreground"
-                          : "text-muted-foreground hover:text-foreground",
-                      )}
-                    >
-                      {mode === item.id ? (
-                        <motion.span
-                          layoutId="workspace-mode-pill"
-                          className="bg-muted absolute inset-0 rounded-full"
-                          transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
-                        />
-                      ) : null}
-                      <span className="relative">
-                        {t(`modes.${item.id}`, { defaultValue: item.label })}
-                      </span>
-                    </button>
-                  ))}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={t("sort", { defaultValue: "Sort" })}
+                          className="rounded-full"
+                        >
+                          <ArrowsDownUp className="size-[18px]" />
+                        </Button>
+                      }
+                    />
+                    <DropdownMenuContent align="end" side="top">
+                      <DropdownMenuLabel>{t("sort", { defaultValue: "Sort" })}</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {SORTS.map((option) => (
+                        <DropdownMenuItem key={option.id} onClick={() => onSort(option.id)}>
+                          {option.label}
+                          {sort === option.id ? <Check className="ms-auto size-4" /> : null}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
         </div>
       ) : null}
+
+      <AnimatePresence>
+        {showModes && !focused ? (
+          <motion.div
+            key="modes"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={FADE}
+            className="pointer-events-none fixed bottom-5 z-[70] -translate-x-1/2"
+            style={{ left: `calc(50% + ${leftInset / 2}px)` }}
+          >
+            <div className={cn(PILL, "h-10")}>
+              {MODES.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => onMode(item.id)}
+                  className={cn(
+                    "relative rounded-full px-4 py-1.5 text-sm font-medium transition",
+                    mode === item.id
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {mode === item.id ? (
+                    <motion.span
+                      layoutId="workspace-mode-pill"
+                      className="bg-muted absolute inset-0 rounded-full"
+                      transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
+                    />
+                  ) : null}
+                  <span className="relative">
+                    {t(`modes.${item.id}`, { defaultValue: item.label })}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </>
   )
 }

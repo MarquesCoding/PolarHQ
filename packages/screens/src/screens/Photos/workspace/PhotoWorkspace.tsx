@@ -26,8 +26,17 @@ const QUANTUM = 300
 const CANVAS_KEY = "photos.canvasPositions"
 
 const dateOf = (asset: GridAsset): number => new Date(asset.takenAt ?? asset.createdAt).getTime()
-const nameOf = (asset: GridAsset): string =>
-  ((asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename || "").toLowerCase()
+const nameOf = (asset: GridAsset): string => {
+  let name = asset.originalFilename || ""
+  if (asset.encrypted && asset.encryptedName) {
+    try {
+      name = decryptName(asset.encryptedName) || name
+    } catch {
+      /* keep the fallback name */
+    }
+  }
+  return name.toLowerCase()
+}
 
 const SORT_KEYS: SortKey[] = ["date-desc", "date-asc", "name-asc", "name-desc"]
 const comparators: Record<SortKey, (a: GridAsset, b: GridAsset) => number> = {
@@ -428,7 +437,16 @@ const PhotoWorkspace = ({
   }, [width, sidebarInset, info])
 
   if (mode === "infinity" && !focus) {
-    return <InfinityPlane assets={sorted} mode={mode} onMode={setMode} sort={sort} onSort={onSort} />
+    return (
+      <InfinityPlane
+        assets={sorted}
+        mode={mode}
+        onMode={setMode}
+        sort={sort}
+        onSort={onSort}
+        leftInset={sidebarInset}
+      />
+    )
   }
 
   return (
@@ -548,6 +566,7 @@ const PhotoWorkspace = ({
       <BottomChrome
         focusedAsset={focusedAsset ?? null}
         showModes={showModes}
+        leftInset={sidebarInset}
         mode={mode}
         onMode={setMode}
         rowHeight={rowHeight}
