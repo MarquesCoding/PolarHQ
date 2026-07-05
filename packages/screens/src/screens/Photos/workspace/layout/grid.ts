@@ -86,10 +86,10 @@ export const layoutGrid = (
     for (let start = 0; start < items.length; start += cols) {
       const slice = items.slice(start, start + cols)
       const labelY = y
-      if (slice.some((item) => item.dayStart)) y += HEADER_HEIGHT + HEADER_GAP
+      if (!continuous && slice.some((item) => item.dayStart)) y += HEADER_HEIGHT + HEADER_GAP
       slice.forEach((item, column) => {
         const x = left + column * (tile + gap)
-        if (item.dayStart) addMarker(item, x, labelY)
+        if (!continuous && item.dayStart) addMarker(item, x, labelY)
         rects.set(item.asset.id, { x, y, w: tile, h: tile })
       })
       y += tile + gap
