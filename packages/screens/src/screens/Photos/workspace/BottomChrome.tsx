@@ -1,6 +1,7 @@
 import { decryptName } from "@workspace/core/e2e"
 import { favoriteAssets, trashAssets } from "@workspace/core/photos"
 import { downloadItemFor } from "@workspace/core/photosE2e"
+import { useSelection } from "@workspace/screens/selection"
 import { useUploadManager } from "@workspace/screens/uploadManager"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -107,6 +108,8 @@ const BottomChrome = ({
 }: BottomChromeProps) => {
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
+  const selection = useSelection()
+  const selecting = selection.count > 0
   const [hovered, setHovered] = useState(false)
   const hoverTimer = useRef<number | undefined>(undefined)
   const [sortHovered, setSortHovered] = useState(false)
@@ -130,7 +133,7 @@ const BottomChrome = ({
 
   return (
     <>
-      {showTools ? (
+      {showTools && !selecting ? (
         <div
           className="pointer-events-none fixed bottom-5 z-[70] flex items-center gap-2 transition-[right] duration-300"
           style={{ right: focused && info ? detailsWidth + 20 : 20 }}
@@ -389,7 +392,7 @@ const BottomChrome = ({
       ) : null}
 
       <AnimatePresence>
-        {showModes && !focused ? (
+        {showModes && !focused && !selecting ? (
           <motion.div
             key="modes"
             initial={{ opacity: 0, y: 8 }}
