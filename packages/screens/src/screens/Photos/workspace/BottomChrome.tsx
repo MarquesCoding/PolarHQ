@@ -44,8 +44,6 @@ const SORTS: { id: SortKey; label: string }[] = [
 
 const PILL =
   "bg-background/70 pointer-events-auto flex items-center rounded-full border p-1 shadow-lg backdrop-blur-xl"
-const SLIDER =
-  "[&_[data-slot=slider-track]]:h-[7px] [&_[data-slot=slider-track]]:rounded-full [&_[data-slot=slider-track]]:bg-white/15 [&_[data-slot=slider-range]]:rounded-full [&_[data-slot=slider-range]]:bg-white/85 [&_[data-slot=slider-thumb]]:opacity-0"
 const FADE = { duration: 0.16, ease: [0.32, 0.72, 0, 1] as const }
 const MORPH = { layout: { duration: 0.35, ease: [0.32, 0.72, 0, 1] as const } }
 
@@ -179,7 +177,7 @@ const BottomChrome = ({
                           onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
                         }
                         aria-label={t("photoSize", { defaultValue: "Photo size" })}
-                        className={SLIDER}
+                        slim
                       />
                     </motion.div>
                   ) : null}
@@ -208,7 +206,7 @@ const BottomChrome = ({
                               onRowHeight(Array.isArray(value) ? (value[0] ?? rowHeight) : value)
                             }
                             aria-label={t("photoSize", { defaultValue: "Photo size" })}
-                            className={SLIDER}
+                            slim
                           />
                         </div>
                       </div>
@@ -223,7 +221,7 @@ const BottomChrome = ({
                               onGap(Array.isArray(value) ? (value[0] ?? gap) : value)
                             }
                             aria-label={t("gap", { defaultValue: "Gap" })}
-                            className={SLIDER}
+                            slim
                           />
                         </div>
                       </div>
