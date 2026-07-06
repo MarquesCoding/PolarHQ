@@ -411,9 +411,9 @@ const Lightbox = ({
 
   return (
     <div
-      // Transparent — the actual blur/scale/desaturate happens on the grid itself (behind this, in
-      // PhotoGrid), so this just holds the sharp, floating photo and its chrome. Click to close.
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-10"
+      // Self-contained backdrop (blur + dim) so the viewer works standalone in Drive — the sharp,
+      // floating photo and its chrome sit on top. Click the backdrop to close.
+      className="bg-background/45 fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur sm:p-10"
       onPointerDown={(event) => event.stopPropagation()}
       onClick={editing ? undefined : onClose}
     >
