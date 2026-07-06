@@ -151,6 +151,8 @@ const BottomChrome = ({
                 className={cn(PILL, "relative h-10 gap-2.5 px-3.5")}
                 onPointerEnter={() => {
                   window.clearTimeout(hoverTimer.current)
+                  window.clearTimeout(sortTimer.current)
+                  setSortHovered(false)
                   setHovered(true)
                 }}
                 onPointerLeave={() => {
@@ -342,6 +344,8 @@ const BottomChrome = ({
                   className="relative"
                   onPointerEnter={() => {
                     window.clearTimeout(sortTimer.current)
+                    window.clearTimeout(hoverTimer.current)
+                    setHovered(false)
                     setSortHovered(true)
                   }}
                   onPointerLeave={() => {
