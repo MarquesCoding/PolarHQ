@@ -402,7 +402,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
         }}
       />
 
-      <SelectionBar>
+      <SelectionBar contentCentered>
         {single && docTypeOf(single.mimeType) ? (
           <Button variant="ghost" size="sm" onClick={() => open(single)}>
             <ArrowSquareOut className="size-4" />
