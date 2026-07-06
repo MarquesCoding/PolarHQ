@@ -38,7 +38,6 @@ import {
 } from "@phosphor-icons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
-import { useSidebar } from "@workspace/ui/components/sidebar"
 import { AnimatePresence } from "motion/react"
 import { toast } from "sonner"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
@@ -73,7 +72,6 @@ interface BrowserProps {
 
 const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const { t } = useTranslation("drive")
-  const { open: sidebarOpen } = useSidebar()
   const router = useNavigation()
   const queryClient = useQueryClient()
   const selection = useSelection()
@@ -309,10 +307,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   })
 
   return (
-    <div
-      className="flex flex-1 transition-[padding] duration-200"
-      style={{ paddingLeft: sidebarOpen ? "var(--sidebar-width)" : undefined }}
-    >
+    <div className="flex flex-1">
     <DropZone className="relative flex min-w-0 flex-1 flex-col gap-4 p-6" onFiles={uploadFiles}>
       <DriveBackgroundMenu
         onUpload={() => fileInput.current?.click()}
