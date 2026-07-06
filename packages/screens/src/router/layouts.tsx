@@ -28,26 +28,6 @@ export const PhotosLayout = () => {
 
 export const DriveLayout = () => {
   const { t } = useTranslation("drive")
-  const kindIcons: Record<string, string> = {
-    image: "photo",
-    video: "video",
-    audio: "music",
-    document: "document",
-    archive: "file-zip",
-    other: "file-text",
-  }
-  const titles: TopBarTitle[] = [
-    { match: (p) => p === "/drive/trash", label: t("driveNav.trash"), icon: "trash" },
-    { match: (p) => p === "/drive/recent", label: t("driveNav.recents"), icon: "calendar" },
-    { match: (p) => p === "/drive/favorites", label: t("driveNav.favorites"), icon: "favourites" },
-    ...Object.entries(kindIcons).map(([kind, icon]) => ({
-      match: (p: string) => p === `/drive/kind/${kind}`,
-      label: t(`overview.kinds.${kind}`),
-      icon,
-    })),
-    { match: (p) => p === "/drive", label: t("driveNav.overview"), icon: "gauge" },
-    { match: () => true, label: t("driveNav.myDrive"), icon: "folder" },
-  ]
   return (
     <FlatShell
       sidebar={
@@ -55,9 +35,13 @@ export const DriveLayout = () => {
           <DriveNav />
         </FlatSidebar>
       }
-      topBar={<FlatTopBar titles={titles} extra={<DriveToolbar />} />}
+      topBar={null}
+      floatingSidebar
     >
       <Outlet />
+      <div className="bg-background/70 pointer-events-auto fixed right-5 bottom-5 z-[60] flex items-center gap-1 rounded-full border p-1 shadow-lg backdrop-blur-xl">
+        <DriveToolbar />
+      </div>
     </FlatShell>
   )
 }
