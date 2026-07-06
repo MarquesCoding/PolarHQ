@@ -1,5 +1,7 @@
+import type { ReactNode } from "react"
 import { Outlet } from "react-router"
 import { useTranslation } from "react-i18next"
+import { useSidebar } from "@workspace/ui/components/sidebar"
 import { FlatShell, FlatSidebar, FlatTopBar, type TopBarTitle } from "@components/FlatShell"
 import AdminNav from "@pages/Admin/components/AdminNav/AdminNav"
 import CollabNav from "@pages/Collab/CollabNav"
@@ -8,6 +10,20 @@ import DocsToolbar from "@pages/Docs/components/DocsToolbar/DocsToolbar"
 import DriveNav from "@pages/Drive/components/DriveNav/DriveNav"
 import DriveToolbar from "@pages/Drive/components/DriveToolbar/DriveToolbar"
 import PhotosNav from "@pages/Photos/components/PhotosNav/PhotosNav"
+
+/** Offsets floating-layout content by the sidebar width (when open) so it isn't hidden under the
+ *  overlaid sidebar — the shell equivalent of the Photos grid's `sidebarInset`. */
+const FloatingContent = ({ children }: { children: ReactNode }) => {
+  const { open } = useSidebar()
+  return (
+    <div
+      className="flex min-h-full flex-1 transition-[padding] duration-200"
+      style={{ paddingLeft: open ? "var(--sidebar-width)" : undefined }}
+    >
+      {children}
+    </div>
+  )
+}
 
 export const PhotosLayout = () => {
   const { t } = useTranslation("photos")
@@ -38,7 +54,9 @@ export const DriveLayout = () => {
       topBar={null}
       floatingSidebar
     >
-      <Outlet />
+      <FloatingContent>
+        <Outlet />
+      </FloatingContent>
       <div className="bg-background/70 pointer-events-auto fixed right-5 bottom-5 z-[60] flex items-center gap-1 rounded-full border p-1 shadow-lg backdrop-blur-xl">
         <DriveToolbar />
       </div>
