@@ -51,7 +51,7 @@ export const DriveLayout = () => {
   return (
     <FlatShell
       sidebar={
-        <FlatSidebar productName={t("driveNav.drive")} beta searchPlaceholder={t("shell.search")}>
+        <FlatSidebar productName={t("driveNav.drive")} beta searchPlaceholder={t("shell.search")} immersive>
           <DriveNav />
         </FlatSidebar>
       }
