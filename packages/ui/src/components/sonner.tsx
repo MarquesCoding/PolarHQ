@@ -33,15 +33,14 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }}
       style={
         {
-          "--normal-bg": "var(--card)",
-          "--normal-text": "var(--card-foreground)",
+          "--normal-bg": "color-mix(in oklab, var(--background) 72%, transparent)",
+          "--normal-text": "var(--foreground)",
           "--normal-border": "color-mix(in oklab, var(--foreground) 12%, transparent)",
-          "--border-radius": "var(--radius-xl)",
         } as React.CSSProperties
       }
       toastOptions={{
         classNames: {
-          toast: "cn-toast !rounded-2xl shadow-xl",
+          toast: "cn-toast !rounded-full border shadow-lg backdrop-blur-xl",
           title: "font-medium",
           description: "text-muted-foreground",
           icon: "text-muted-foreground",
