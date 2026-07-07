@@ -5,13 +5,14 @@ import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import { photoNotice } from "./workspace/notice"
 import { useTranslation } from "react-i18next"
 import { t } from "@workspace/i18n/config"
 
 const run = async (action: () => Promise<unknown>, message: string, after: () => void) => {
   try {
     await action()
-    toast.success(message)
+    photoNotice(message)
     after()
   } catch {
     toast.error(t("errors:actionFailed"))

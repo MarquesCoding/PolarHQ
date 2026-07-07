@@ -21,6 +21,7 @@ import { ArrowLeft, MinusCircle } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import { photoNotice } from "./workspace/notice"
 import { useTranslation } from "react-i18next"
 
 const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
@@ -68,7 +69,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
   const run = async (action: () => Promise<unknown>, message: string) => {
     try {
       await action()
-      toast.success(message)
+      photoNotice(message)
       afterAction()
     } catch {
       toast.error(t("albumDetailInner.actionFailed"))
@@ -88,7 +89,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
   const removeAlbum = useMutation({
     mutationFn: () => deleteAlbum(albumId),
     onSuccess: () => {
-      toast.success(t("albumDetailInner.albumDeleted"))
+      photoNotice(t("albumDetailInner.albumDeleted"))
       void queryClient.invalidateQueries({ queryKey: ["photos", "albums"] })
       router.push("/photos/albums")
     },

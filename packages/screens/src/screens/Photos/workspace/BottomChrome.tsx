@@ -4,6 +4,7 @@ import { downloadItemFor } from "@workspace/core/photosE2e"
 import { useSelection } from "@workspace/screens/selection"
 import { useUploadManager } from "@workspace/screens/uploadManager"
 import { adaptiveChrome, useContentLight } from "@components/adaptiveChrome"
+import { onPhotoNotice } from "./notice"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -123,6 +124,17 @@ const BottomChrome = ({
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
+  const [notice, setNotice] = useState<string | null>(null)
+  const noticeTimer = useRef<number | undefined>(undefined)
+  useEffect(
+    () =>
+      onPhotoNotice((message) => {
+        setNotice(message)
+        window.clearTimeout(noticeTimer.current)
+        noticeTimer.current = window.setTimeout(() => setNotice(null), 2200)
+      }),
+    [],
+  )
   const selecting = selection.count > 0
   const [hovered, setHovered] = useState(false)
   const hoverTimer = useRef<number | undefined>(undefined)
@@ -210,7 +222,7 @@ const BottomChrome = ({
             ) : null}
           </AnimatePresence>
           <AnimatePresence>
-            {!focused && mode === "grid" ? (
+            {!focused && mode === "grid" && !notice ? (
               <motion.div
                 key="slider"
                 layout
@@ -344,7 +356,19 @@ const BottomChrome = ({
             className={cn(PILL, "h-10", focused && chrome)}
           >
             <AnimatePresence mode="popLayout" initial={false}>
-              {focused ? (
+              {notice && !focused ? (
+                <motion.div
+                  key="notice"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: HIDE }}
+                  transition={REVEAL}
+                  className="flex items-center gap-1.5 px-3"
+                >
+                  <Check weight="bold" className="size-[18px] shrink-0 text-emerald-400" />
+                  <span className="text-sm font-medium whitespace-nowrap">{notice}</span>
+                </motion.div>
+              ) : focused ? (
                 <motion.div
                   key="actions"
                   initial={{ opacity: 0 }}
