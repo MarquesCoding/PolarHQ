@@ -128,5 +128,5 @@ export const useContentLight = (ref: RefObject<HTMLElement | null>): boolean | n
  *  light/dark boundary fades rather than flickers. */
 export const adaptiveChrome = (contentLight: boolean | null): string =>
   contentLight === false
-    ? "border-black/10 bg-white/70 text-black backdrop-blur-xl transition-colors duration-500 ease-out"
-    : "border-white/15 bg-black/45 text-white backdrop-blur-xl transition-colors duration-500 ease-out"
+    ? "border-black/10 bg-white/70 text-black backdrop-blur-xl transition-colors duration-500 ease-out [&_button]:!text-inherit"
+    : "border-white/15 bg-black/45 text-white backdrop-blur-xl transition-colors duration-500 ease-out [&_button]:!text-inherit"
