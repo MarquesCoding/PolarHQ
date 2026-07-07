@@ -338,8 +338,17 @@ const BottomChrome = ({
                         </Button>
                       }
                     />
-                    <DropdownMenuContent align="end" side="top">
-                      <DropdownMenuItem variant="destructive" onClick={trash}>
+                    <DropdownMenuContent
+                      align="end"
+                      side="top"
+                      sideOffset={10}
+                      className="bg-background/70 min-w-0 rounded-full border p-1 shadow-lg backdrop-blur-xl"
+                    >
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onClick={trash}
+                        className="rounded-full px-3 py-1.5"
+                      >
                         <Trash />
                         {t("lightbox.moveToTrash")}
                       </DropdownMenuItem>
