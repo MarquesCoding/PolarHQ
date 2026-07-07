@@ -115,6 +115,14 @@ const BottomChrome = ({
   const selection = useSelection()
   const pillRef = useRef<HTMLDivElement>(null)
   const chrome = adaptiveChrome(useContentLight(pillRef))
+  const [pillW, setPillW] = useState<number | undefined>()
+  useEffect(() => {
+    const el = pillRef.current
+    if (!el) return
+    const observer = new ResizeObserver(() => setPillW(el.offsetWidth))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
   const selecting = selection.count > 0
   const [hovered, setHovered] = useState(false)
   const hoverTimer = useRef<number | undefined>(undefined)
@@ -169,6 +177,38 @@ const BottomChrome = ({
           className="pointer-events-none fixed bottom-5 z-[70] flex items-center gap-2 transition-[right] duration-300"
           style={{ right: focused && info ? detailsWidth + 20 : 20 }}
         >
+          <AnimatePresence>
+            {focused && dlState !== "idle" ? (
+              <motion.div
+                key="downloading"
+                initial={{ opacity: 0, y: 10, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.96 }}
+                transition={FADE}
+                style={{ width: pillW }}
+                className={cn(
+                  "absolute right-0 bottom-full mb-2 flex h-10 items-center gap-2 rounded-full border px-3.5 shadow-lg",
+                  chrome,
+                )}
+              >
+                {dlState === "loading" ? (
+                  <>
+                    <CircleNotch className="size-[18px] shrink-0 animate-spin" />
+                    <span className="truncate text-sm font-medium">
+                      {t("lightbox.saving", { defaultValue: "Saving…" })}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Check weight="bold" className="size-[18px] shrink-0 text-emerald-400" />
+                    <span className="truncate text-sm font-medium">
+                      {t("lightbox.saved", { defaultValue: "Saved" })}
+                    </span>
+                  </>
+                )}
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
           <AnimatePresence>
             {!focused && mode === "grid" ? (
               <motion.div
@@ -304,32 +344,7 @@ const BottomChrome = ({
             className={cn(PILL, "h-10", focused && chrome)}
           >
             <AnimatePresence mode="popLayout" initial={false}>
-              {focused && dlState !== "idle" ? (
-                <motion.div
-                  key="downloading"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0, transition: HIDE }}
-                  transition={REVEAL}
-                  className="flex items-center gap-1.5 px-2.5"
-                >
-                  {dlState === "loading" ? (
-                    <>
-                      <CircleNotch className="size-[18px] shrink-0 animate-spin" />
-                      <span className="text-xs font-medium whitespace-nowrap">
-                        {t("lightbox.saving", { defaultValue: "Saving…" })}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Check weight="bold" className="size-[18px] shrink-0 text-emerald-400" />
-                      <span className="text-xs font-medium whitespace-nowrap text-emerald-400">
-                        {t("lightbox.saved", { defaultValue: "Saved" })}
-                      </span>
-                    </>
-                  )}
-                </motion.div>
-              ) : focused ? (
+              {focused ? (
                 <motion.div
                   key="actions"
                   initial={{ opacity: 0 }}
@@ -393,14 +408,14 @@ const BottomChrome = ({
                       align="end"
                       side="top"
                       sideOffset={10}
-                      className="bg-background/70 w-auto rounded-full border p-1 shadow-lg backdrop-blur-xl"
+                      style={{ width: pillW }}
+                      className={cn("rounded-full border p-1 shadow-lg", chrome)}
                     >
                       <DropdownMenuItem
-                        variant="destructive"
                         onClick={trash}
-                        className="rounded-full px-3 py-1.5 whitespace-nowrap"
+                        className="h-8 justify-center gap-1.5 rounded-full whitespace-nowrap focus:bg-white/10"
                       >
-                        <Trash />
+                        <Trash className="size-[18px]" />
                         {t("lightbox.moveToTrash")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
