@@ -11,6 +11,7 @@ import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setSearchQuery } from "@workspace/screens/store/uiSlice"
+import { cn } from "@workspace/ui/lib/utils"
 import { CaretUpDown, MagnifyingGlass, ShieldCheck, SidebarSimple, SignOut } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
@@ -76,6 +77,7 @@ const FlatSidebar = ({
   const router = useNavigation()
   const dispatch = useAppDispatch()
   const query = useAppSelector((state) => state.ui.searchQuery)
+  const focusContentLight = useAppSelector((state) => state.ui.focusContentLight)
   const { data: session } = authClient.useSession()
 
   const { data: apps } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
@@ -227,12 +229,24 @@ const FlatSidebar = ({
         // render on top of it), and a matching frosted collapse button to its right. Positioned over
         // the titlebar strip. Offsets are tuned to the native light placement.
         <div className="fixed left-[23px] top-[13px] z-[60] flex items-center gap-2">
-          <span className="pointer-events-none h-[26px] w-[79px] rounded-full bg-black/8 shadow-sm backdrop-blur-2xl dark:bg-white/12" />
+          <span
+            className={cn(
+              "pointer-events-none h-[26px] w-[79px] rounded-full backdrop-blur-2xl transition-colors",
+              focusContentLight === true && "bg-black/35 shadow-sm",
+              focusContentLight === false && "bg-white/60 shadow-sm",
+            )}
+          />
           <button
             type="button"
             onClick={toggleSidebar}
             aria-label={t("flatSidebar.toggleSidebar", { defaultValue: "Toggle sidebar" })}
-            className="text-muted-foreground hover:text-foreground flex size-[26px] items-center justify-center rounded-full bg-black/8 shadow-sm backdrop-blur-2xl transition hover:bg-black/14 dark:bg-white/12 dark:hover:bg-white/18"
+            className={cn(
+              "flex size-[26px] items-center justify-center rounded-full backdrop-blur-2xl transition",
+              focusContentLight === null &&
+                "text-muted-foreground hover:text-foreground hover:bg-black/14 dark:hover:bg-white/18",
+              focusContentLight === true && "bg-black/35 text-white shadow-sm hover:bg-black/45",
+              focusContentLight === false && "bg-white/60 text-black shadow-sm hover:bg-white/75",
+            )}
           >
             <SidebarSimple className="size-[18px]" />
           </button>

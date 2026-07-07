@@ -1,12 +1,15 @@
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { useSelection } from "@workspace/screens/selection"
 import { usePersistentNumber } from "@workspace/screens/persistentSetting"
+import { useAppDispatch } from "@workspace/screens/store/hooks"
+import { setFocusContentLight } from "@workspace/screens/store/uiSlice"
+import { LIGHT_THRESHOLD, sampleLuminance } from "./adaptiveChrome"
 import { useSidebar } from "@workspace/ui/components/sidebar"
 import { Button } from "@workspace/ui/components/button"
 import { Circle } from "@phosphor-icons/react"
 import { Icon } from "@workspace/screens/icons"
 import { cn } from "@workspace/ui/lib/utils"
-import AssetEntity from "./AssetEntity"
+import AssetEntity, { thumbnailCache } from "./AssetEntity"
 import BottomChrome from "./BottomChrome"
 import FocusView from "./FocusView"
 import { layoutCanvas } from "./layout/canvas"
@@ -84,6 +87,7 @@ const PhotoWorkspace = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const sidebarWasOpen = useRef(true)
   const collapsedByZoom = useRef(false)
+  const dispatch = useAppDispatch()
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const zoomRef = useRef(1)
@@ -373,6 +377,25 @@ const PhotoWorkspace = ({
   }, [focus, ordered])
 
   const focusedAsset = focus ? sorted.find((item) => item.id === focus.id) : undefined
+
+  useEffect(() => {
+    if (!focusedAsset) {
+      dispatch(setFocusContentLight(null))
+      return
+    }
+    const url = focusedAsset.encrypted
+      ? thumbnailCache.get(focusedAsset.id)
+      : focusedAsset.thumbnailUrl
+    if (!url) return
+    let active = true
+    void sampleLuminance(url).then((luma) => {
+      if (active) dispatch(setFocusContentLight(luma > LIGHT_THRESHOLD))
+    })
+    return () => {
+      active = false
+    }
+  }, [focusedAsset, dispatch])
+  useEffect(() => () => void dispatch(setFocusContentLight(null)), [dispatch])
 
   const renderList = useMemo(() => {
     const pinned = [focus?.id, fading?.id, settling, closingId].filter((id): id is string =>

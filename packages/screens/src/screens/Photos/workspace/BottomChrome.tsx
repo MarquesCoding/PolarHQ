@@ -3,6 +3,8 @@ import { favoriteAssets, trashAssets } from "@workspace/core/photos"
 import { downloadItemFor } from "@workspace/core/photosE2e"
 import { useSelection } from "@workspace/screens/selection"
 import { useUploadManager } from "@workspace/screens/uploadManager"
+import { useAppSelector } from "@workspace/screens/store/hooks"
+import { adaptiveChrome } from "./adaptiveChrome"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -107,6 +109,8 @@ const BottomChrome = ({
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
   const selection = useSelection()
+  const contentLight = useAppSelector((state) => state.ui.focusContentLight)
+  const chrome = adaptiveChrome(contentLight)
   const selecting = selection.count > 0
   const [hovered, setHovered] = useState(false)
   const hoverTimer = useRef<number | undefined>(undefined)
@@ -267,7 +271,7 @@ const BottomChrome = ({
             layout
             transition={MORPH}
             style={{ borderRadius: 9999 }}
-            className={cn(PILL, "h-10")}
+            className={cn(PILL, "h-10", focused && chrome)}
           >
             <AnimatePresence mode="popLayout" initial={false}>
               {focused ? (
@@ -287,10 +291,7 @@ const BottomChrome = ({
                     onClick={favourite}
                     className="rounded-full"
                   >
-                    <Heart
-                      weight={focused.isFavorite ? "fill" : "regular"}
-                      className={cn("size-[18px]", focused.isFavorite && "text-white")}
-                    />
+                    <Heart weight={focused.isFavorite ? "fill" : "regular"} className="size-[18px]" />
                   </Button>
                   <Button
                     variant="ghost"
