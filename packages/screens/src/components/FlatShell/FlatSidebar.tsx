@@ -332,9 +332,11 @@ const FlatSidebar = ({
           </div>
         </Button>
 
-        <div className="px-1 pt-0.5 text-center">
-          <Changelog version={coreConfig().appVersion} build={coreConfig().appBuild} />
-        </div>
+        {coreConfig().dev ? null : (
+          <div className="px-1 pt-0.5 text-center">
+            <Changelog version={coreConfig().appVersion} build={coreConfig().appBuild} />
+          </div>
+        )}
       </div>
 
       <DevicesDialog open={devicesOpen} onOpenChange={setDevicesOpen} />
