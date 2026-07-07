@@ -27,7 +27,7 @@ import {
   Trash,
 } from "@phosphor-icons/react"
 import { AnimatePresence, motion } from "motion/react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import type { GridAsset, Mode, SortKey } from "./types"
@@ -133,11 +133,28 @@ const BottomChrome = ({
       )
     : undefined
 
+  const [dlState, setDlState] = useState<"idle" | "loading" | "done">("idle")
+  useEffect(() => setDlState("idle"), [focused?.id])
+  // Photo downloads are near-instant, so the manager's transient job flashes by unseen. Hold the
+  // spinner a beat, then a checkmark, so the download action gives visible feedback regardless.
+  useEffect(() => {
+    if (dlState !== "loading" || downloadJob) return
+    const timer = setTimeout(() => setDlState("done"), 500)
+    return () => clearTimeout(timer)
+  }, [dlState, downloadJob])
+  useEffect(() => {
+    if (dlState !== "done") return
+    const timer = setTimeout(() => setDlState("idle"), 1300)
+    return () => clearTimeout(timer)
+  }, [dlState])
+
   const favourite = () => {
     if (focused) void favoriteAssets([focused.id], !focused.isFavorite).then(() => onInvalidate?.())
   }
   const download = () => {
-    if (focused) upload.download(name, [downloadItemFor(focused)])
+    if (!focused || dlState === "loading") return
+    setDlState("loading")
+    upload.download(name, [downloadItemFor(focused)])
   }
   const trash = () => {
     if (!focused) return
@@ -321,20 +338,22 @@ const BottomChrome = ({
                     size="icon-sm"
                     aria-label={t("lightbox.download")}
                     onClick={download}
-                    disabled={!!downloadJob}
+                    disabled={dlState === "loading"}
                     className="rounded-full"
                   >
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.span
-                        key={downloadJob ? "loading" : "idle"}
-                        initial={{ scale: 0.6, opacity: 0 }}
+                        key={dlState}
+                        initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.6, opacity: 0 }}
+                        exit={{ scale: 0.5, opacity: 0 }}
                         transition={{ duration: 0.15 }}
                         className="flex"
                       >
-                        {downloadJob ? (
+                        {dlState === "loading" ? (
                           <CircleNotch className="size-[18px] animate-spin" />
+                        ) : dlState === "done" ? (
+                          <Check weight="bold" className="size-[18px] text-emerald-400" />
                         ) : (
                           <DownloadSimple className="size-[18px]" />
                         )}
@@ -367,12 +386,12 @@ const BottomChrome = ({
                       align="end"
                       side="top"
                       sideOffset={10}
-                      className="bg-background/70 min-w-0 rounded-full border p-1 shadow-lg backdrop-blur-xl"
+                      className="bg-background/70 w-auto rounded-full border p-1 shadow-lg backdrop-blur-xl"
                     >
                       <DropdownMenuItem
                         variant="destructive"
                         onClick={trash}
-                        className="rounded-full px-3 py-1.5"
+                        className="rounded-full px-3 py-1.5 whitespace-nowrap"
                       >
                         <Trash />
                         {t("lightbox.moveToTrash")}
