@@ -330,7 +330,14 @@ const AssetEntity = ({
       ) : null}
 
       {asset.isFavorite && !focused ? (
-        <Heart weight="fill" className="absolute bottom-1.5 left-1.5 size-4 text-white drop-shadow" />
+        <motion.span
+          initial={{ scale: 0 }}
+          animate={{ scale: [0, 1.3, 1] }}
+          transition={{ type: "spring", stiffness: 500, damping: 13 }}
+          className="absolute bottom-1.5 left-1.5"
+        >
+          <Heart weight="fill" className="size-4 text-white drop-shadow" />
+        </motion.span>
       ) : null}
       </div>
     </motion.div>

@@ -294,7 +294,18 @@ const BottomChrome = ({
                     onClick={favourite}
                     className="rounded-full"
                   >
-                    <Heart weight={focused.isFavorite ? "fill" : "regular"} className="size-[18px]" />
+                    <motion.span
+                      key={focused.isFavorite ? "on" : "off"}
+                      initial={{ scale: 0.4 }}
+                      animate={{ scale: [0.4, 1.3, 1] }}
+                      transition={{ type: "spring", stiffness: 500, damping: 13 }}
+                      className="flex"
+                    >
+                      <Heart
+                        weight={focused.isFavorite ? "fill" : "regular"}
+                        className={cn("size-[18px]", focused.isFavorite && "text-rose-500")}
+                      />
+                    </motion.span>
                   </Button>
                   <Button
                     variant="ghost"
