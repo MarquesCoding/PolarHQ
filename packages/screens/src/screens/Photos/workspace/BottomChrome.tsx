@@ -333,33 +333,44 @@ const BottomChrome = ({
                       />
                     </motion.span>
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label={t("lightbox.download")}
-                    onClick={download}
-                    disabled={dlState === "loading"}
-                    className="rounded-full"
-                  >
-                    <AnimatePresence mode="wait" initial={false}>
-                      <motion.span
-                        key={dlState}
-                        initial={{ scale: 0.5, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.5, opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className="flex"
-                      >
-                        {dlState === "loading" ? (
-                          <CircleNotch className="size-[18px] animate-spin" />
-                        ) : dlState === "done" ? (
-                          <Check weight="bold" className="size-[18px] text-emerald-400" />
-                        ) : (
-                          <DownloadSimple className="size-[18px]" />
-                        )}
-                      </motion.span>
-                    </AnimatePresence>
-                  </Button>
+                  <motion.div layout transition={MORPH} className="shrink-0">
+                    <Button
+                      variant="ghost"
+                      aria-label={t("lightbox.download")}
+                      onClick={download}
+                      disabled={dlState === "loading"}
+                      className={cn(
+                        "h-8 overflow-hidden rounded-full",
+                        dlState === "idle" ? "w-8 px-0" : "gap-1.5 px-3",
+                      )}
+                    >
+                      {dlState === "loading" ? (
+                        <>
+                          <CircleNotch className="size-[18px] shrink-0 animate-spin" />
+                          <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="text-xs font-medium whitespace-nowrap"
+                          >
+                            {t("lightbox.saving", { defaultValue: "Saving…" })}
+                          </motion.span>
+                        </>
+                      ) : dlState === "done" ? (
+                        <>
+                          <Check weight="bold" className="size-[18px] shrink-0 text-emerald-400" />
+                          <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="text-xs font-medium whitespace-nowrap text-emerald-400"
+                          >
+                            {t("lightbox.saved", { defaultValue: "Saved" })}
+                          </motion.span>
+                        </>
+                      ) : (
+                        <DownloadSimple className="size-[18px] shrink-0" />
+                      )}
+                    </Button>
+                  </motion.div>
                   <Button
                     variant="ghost"
                     size="icon-sm"
