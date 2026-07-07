@@ -8,10 +8,6 @@ export interface UiState {
   sidebarCollapsed: boolean
   viewMode: ViewMode
   driveDetailsOpen: boolean
-  /** Luminance of the content behind the floating chrome while a media viewer is open, so every
-   *  floating element can contrast it: `true` = light content (use dark chrome), `false` = dark
-   *  content (use light chrome), `null` = no viewer open (default chrome / hidden well). */
-  focusContentLight: boolean | null
 }
 
 const initialState: UiState = {
@@ -20,7 +16,6 @@ const initialState: UiState = {
   sidebarCollapsed: false,
   viewMode: "grid",
   driveDetailsOpen: false,
-  focusContentLight: null,
 }
 
 const uiSlice = createSlice({
@@ -45,9 +40,6 @@ const uiSlice = createSlice({
     setDriveDetailsOpen: (state, action: PayloadAction<boolean>) => {
       state.driveDetailsOpen = action.payload
     },
-    setFocusContentLight: (state, action: PayloadAction<boolean | null>) => {
-      state.focusContentLight = action.payload
-    },
   },
 })
 
@@ -58,7 +50,6 @@ export const {
   setSidebarCollapsed,
   setViewMode,
   setDriveDetailsOpen,
-  setFocusContentLight,
 } = uiSlice.actions
 
 export default uiSlice.reducer
