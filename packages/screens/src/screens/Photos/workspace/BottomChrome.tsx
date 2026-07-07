@@ -47,6 +47,10 @@ const PILL =
   "bg-background/70 pointer-events-auto flex items-center rounded-full border p-1 shadow-lg backdrop-blur-xl"
 const FADE = { duration: 0.16, ease: [0.32, 0.72, 0, 1] as const }
 const MORPH = { layout: { duration: 0.35, ease: [0.32, 0.72, 0, 1] as const } }
+// Incoming morph content waits for the pill to finish widening before fading in (so icons don't
+// appear over a half-full bar); outgoing content clears fast.
+const REVEAL = { duration: 0.16, delay: 0.22, ease: [0.32, 0.72, 0, 1] as const }
+const HIDE = { duration: 0.1 }
 
 interface BottomChromeProps {
   focusedAsset: GridAsset | null
@@ -277,11 +281,10 @@ const BottomChrome = ({
               {focused ? (
                 <motion.div
                   key="actions"
-                  layout
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={FADE}
+                  exit={{ opacity: 0, transition: HIDE }}
+                  transition={REVEAL}
                   className="flex items-center gap-0.5"
                 >
                   <Button
@@ -335,11 +338,10 @@ const BottomChrome = ({
               ) : (
                 <motion.div
                   key="sort"
-                  layout
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={FADE}
+                  exit={{ opacity: 0, transition: HIDE }}
+                  transition={REVEAL}
                   className="relative"
                   onPointerEnter={() => {
                     window.clearTimeout(sortTimer.current)
