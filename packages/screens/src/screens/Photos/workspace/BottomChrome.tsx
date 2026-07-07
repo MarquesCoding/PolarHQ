@@ -17,6 +17,7 @@ import {
   ArrowsHorizontal,
   CalendarBlank,
   Check,
+  CircleNotch,
   DotsThree,
   DownloadSimple,
   Heart,
@@ -123,6 +124,14 @@ const BottomChrome = ({
   const name = focused
     ? (focused.encrypted && decryptName(focused.encryptedName)) || focused.originalFilename
     : ""
+  const downloadJob = focused
+    ? upload.items.find(
+        (item) =>
+          item.kind === "download" &&
+          item.status === "uploading" &&
+          (item.assetId === focused.id || item.name === name),
+      )
+    : undefined
 
   const favourite = () => {
     if (focused) void favoriteAssets([focused.id], !focused.isFavorite).then(() => onInvalidate?.())
@@ -312,9 +321,25 @@ const BottomChrome = ({
                     size="icon-sm"
                     aria-label={t("lightbox.download")}
                     onClick={download}
+                    disabled={!!downloadJob}
                     className="rounded-full"
                   >
-                    <DownloadSimple className="size-[18px]" />
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.span
+                        key={downloadJob ? "loading" : "idle"}
+                        initial={{ scale: 0.6, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.6, opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="flex"
+                      >
+                        {downloadJob ? (
+                          <CircleNotch className="size-[18px] animate-spin" />
+                        ) : (
+                          <DownloadSimple className="size-[18px]" />
+                        )}
+                      </motion.span>
+                    </AnimatePresence>
                   </Button>
                   <Button
                     variant="ghost"
