@@ -7,7 +7,6 @@ export const sampleLuminance = (url: string): Promise<number> => {
   if (cached !== undefined) return Promise.resolve(cached)
   return new Promise((resolve) => {
     const img = new Image()
-    img.crossOrigin = "anonymous"
     img.onload = () => {
       try {
         const canvas = document.createElement("canvas")
