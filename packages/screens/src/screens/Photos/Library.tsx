@@ -30,6 +30,7 @@ import { Image, Stack, StackMinus } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Kbd } from "@workspace/ui/components/kbd"
 import { toast } from "sonner"
+import { photoNotice } from "./workspace/notice"
 import { useTranslation } from "react-i18next"
 
 const LibraryInner = () => {
@@ -83,7 +84,7 @@ const LibraryInner = () => {
   const run = async (action: () => Promise<unknown>, message: string) => {
     try {
       await action()
-      toast.success(message)
+      photoNotice(message)
       afterAction()
     } catch {
       toast.error(t("library.actionFailed"))
