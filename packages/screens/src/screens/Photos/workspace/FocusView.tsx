@@ -23,7 +23,9 @@ import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { useAppSelector } from "@workspace/screens/store/hooks"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
+import { adaptiveChrome } from "./adaptiveChrome"
 import type { GridAsset } from "./types"
 
 interface FocusViewProps {
@@ -64,6 +66,8 @@ const FocusView = ({
 }: FocusViewProps) => {
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
+  const contentLight = useAppSelector((state) => state.ui.focusContentLight)
+  const chrome = adaptiveChrome(contentLight)
   const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
   // Show the zoom % only while actively zooming; revert to the filename shortly after the user stops.
   const [zooming, setZooming] = useState(false)
@@ -107,7 +111,10 @@ const FocusView = ({
         transition={CHROME_FADE}
         onClick={stop}
         onPointerDown={stop}
-        className="text-foreground/80 absolute z-[60] -translate-x-1/2 overflow-hidden rounded-full border bg-background/60 px-3 py-1 text-center text-xs font-medium shadow-sm backdrop-blur-md"
+        className={cn(
+          "absolute z-[60] -translate-x-1/2 overflow-hidden rounded-full border px-3 py-1 text-center text-xs font-medium shadow-sm",
+          chrome,
+        )}
         style={{ top: vp.top + 16, left: vp.width / 2, maxWidth: "40%" }}
       >
         <AnimatePresence mode="wait" initial={false}>
@@ -135,7 +142,7 @@ const FocusView = ({
             aria-label={t("lightbox.previous")}
             onClick={onPrev}
             onPointerDown={stop}
-            className="bg-background/40 hover:bg-background/60 border-border/40 size-10 rounded-full border shadow-lg backdrop-blur-2xl"
+            className={cn("size-10 rounded-full border shadow-lg hover:opacity-90", chrome)}
           >
             <CaretLeft className="size-5" />
           </Button>
@@ -153,7 +160,7 @@ const FocusView = ({
             aria-label={t("lightbox.next")}
             onClick={onNext}
             onPointerDown={stop}
-            className="bg-background/40 hover:bg-background/60 border-border/40 size-10 rounded-full border shadow-lg backdrop-blur-2xl"
+            className={cn("size-10 rounded-full border shadow-lg hover:opacity-90", chrome)}
           >
             <CaretRight className="size-5" />
           </Button>
