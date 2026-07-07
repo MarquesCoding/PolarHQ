@@ -40,7 +40,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }
       toastOptions={{
         classNames: {
-          toast: "cn-toast !rounded-full border shadow-lg backdrop-blur-xl",
+          toast: "cn-toast !w-auto !max-w-[min(90vw,28rem)] mx-auto !rounded-full border shadow-lg backdrop-blur-xl",
           title: "font-medium",
           description: "text-muted-foreground",
           icon: "text-muted-foreground",

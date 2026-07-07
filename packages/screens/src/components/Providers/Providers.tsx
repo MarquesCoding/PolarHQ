@@ -43,7 +43,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
                 </PlatformAdapter>
               </UploadProvider>
             </TooltipProvider>
-            <Toaster position="bottom-right" />
+            <Toaster position="top-center" />
           </ThemeProvider>
         </I18nProvider>
       </QueryClientProvider>
