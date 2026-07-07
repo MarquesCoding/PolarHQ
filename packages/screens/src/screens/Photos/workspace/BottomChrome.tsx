@@ -304,7 +304,32 @@ const BottomChrome = ({
             className={cn(PILL, "h-10", focused && chrome)}
           >
             <AnimatePresence mode="popLayout" initial={false}>
-              {focused ? (
+              {focused && dlState !== "idle" ? (
+                <motion.div
+                  key="downloading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: HIDE }}
+                  transition={REVEAL}
+                  className="flex items-center gap-1.5 px-2.5"
+                >
+                  {dlState === "loading" ? (
+                    <>
+                      <CircleNotch className="size-[18px] shrink-0 animate-spin" />
+                      <span className="text-xs font-medium whitespace-nowrap">
+                        {t("lightbox.saving", { defaultValue: "Saving…" })}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Check weight="bold" className="size-[18px] shrink-0 text-emerald-400" />
+                      <span className="text-xs font-medium whitespace-nowrap text-emerald-400">
+                        {t("lightbox.saved", { defaultValue: "Saved" })}
+                      </span>
+                    </>
+                  )}
+                </motion.div>
+              ) : focused ? (
                 <motion.div
                   key="actions"
                   initial={{ opacity: 0 }}
@@ -333,44 +358,15 @@ const BottomChrome = ({
                       />
                     </motion.span>
                   </Button>
-                  <motion.div layout transition={MORPH} className="shrink-0">
-                    <Button
-                      variant="ghost"
-                      aria-label={t("lightbox.download")}
-                      onClick={download}
-                      disabled={dlState === "loading"}
-                      className={cn(
-                        "h-8 overflow-hidden rounded-full",
-                        dlState === "idle" ? "w-8 px-0" : "gap-1.5 px-3",
-                      )}
-                    >
-                      {dlState === "loading" ? (
-                        <>
-                          <CircleNotch className="size-[18px] shrink-0 animate-spin" />
-                          <motion.span
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="text-xs font-medium whitespace-nowrap"
-                          >
-                            {t("lightbox.saving", { defaultValue: "Saving…" })}
-                          </motion.span>
-                        </>
-                      ) : dlState === "done" ? (
-                        <>
-                          <Check weight="bold" className="size-[18px] shrink-0 text-emerald-400" />
-                          <motion.span
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="text-xs font-medium whitespace-nowrap text-emerald-400"
-                          >
-                            {t("lightbox.saved", { defaultValue: "Saved" })}
-                          </motion.span>
-                        </>
-                      ) : (
-                        <DownloadSimple className="size-[18px] shrink-0" />
-                      )}
-                    </Button>
-                  </motion.div>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={t("lightbox.download")}
+                    onClick={download}
+                    className="rounded-full"
+                  >
+                    <DownloadSimple className="size-[18px]" />
+                  </Button>
                   <Button
                     variant="ghost"
                     size="icon-sm"
