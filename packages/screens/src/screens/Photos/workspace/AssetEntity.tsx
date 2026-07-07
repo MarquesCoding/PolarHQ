@@ -9,7 +9,10 @@ import {
 import { Heart, Record, Stack } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
+import { useAppDispatch } from "@workspace/screens/store/hooks"
+import { setFocusContentLight } from "@workspace/screens/store/uiSlice"
 import { fetchCachedOriginal } from "@pages/Photos/components/Lightbox/originalCache"
+import { LIGHT_THRESHOLD, luminanceOfImage } from "./adaptiveChrome"
 import type { GridAsset, Rect } from "./types"
 
 const loaded = new Set<string>()
@@ -112,6 +115,8 @@ const AssetEntity = ({
   const [motionUrl, setMotionUrl] = useState<string | null>(() => motionCache.get(asset.id) ?? null)
   const [playing, setPlaying] = useState(false)
   const videoRef = useRef<HTMLVideoElement | null>(null)
+  const imgRef = useRef<HTMLImageElement | null>(null)
+  const dispatch = useAppDispatch()
   const canPlay = asset.motion || asset.type === "video"
 
   const hover = () => {
@@ -143,6 +148,22 @@ const AssetEntity = ({
     else if (canPlay) setPlaying(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focused, canPlay])
+
+  // When focused, tell the chrome how light/dark the on-screen image is so it can contrast it.
+  useEffect(() => {
+    if (!focused) return
+    const img = imgRef.current
+    if (!img) return
+    const sample = () => {
+      const luma = luminanceOfImage(img)
+      if (luma !== null) dispatch(setFocusContentLight(luma > LIGHT_THRESHOLD))
+    }
+    if (img.complete && img.naturalWidth) sample()
+    else {
+      img.addEventListener("load", sample, { once: true })
+      return () => img.removeEventListener("load", sample)
+    }
+  }, [focused, displaySrc, dispatch])
 
   const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
   const dragged = useRef(false)
@@ -250,6 +271,7 @@ const AssetEntity = ({
       >
       {displaySrc ? (
         <img
+          ref={imgRef}
           src={displaySrc}
           alt={name}
           loading="lazy"

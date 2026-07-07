@@ -3,13 +3,12 @@ import { useSelection } from "@workspace/screens/selection"
 import { usePersistentNumber } from "@workspace/screens/persistentSetting"
 import { useAppDispatch } from "@workspace/screens/store/hooks"
 import { setFocusContentLight } from "@workspace/screens/store/uiSlice"
-import { LIGHT_THRESHOLD, sampleLuminance } from "./adaptiveChrome"
 import { useSidebar } from "@workspace/ui/components/sidebar"
 import { Button } from "@workspace/ui/components/button"
 import { Circle } from "@phosphor-icons/react"
 import { Icon } from "@workspace/screens/icons"
 import { cn } from "@workspace/ui/lib/utils"
-import AssetEntity, { thumbnailCache } from "./AssetEntity"
+import AssetEntity from "./AssetEntity"
 import BottomChrome from "./BottomChrome"
 import FocusView from "./FocusView"
 import { layoutCanvas } from "./layout/canvas"
@@ -379,21 +378,7 @@ const PhotoWorkspace = ({
   const focusedAsset = focus ? sorted.find((item) => item.id === focus.id) : undefined
 
   useEffect(() => {
-    if (!focusedAsset) {
-      dispatch(setFocusContentLight(null))
-      return
-    }
-    const url = focusedAsset.encrypted
-      ? thumbnailCache.get(focusedAsset.id)
-      : focusedAsset.thumbnailUrl
-    if (!url) return
-    let active = true
-    void sampleLuminance(url).then((luma) => {
-      if (active) dispatch(setFocusContentLight(luma > LIGHT_THRESHOLD))
-    })
-    return () => {
-      active = false
-    }
+    if (!focusedAsset) dispatch(setFocusContentLight(null))
   }, [focusedAsset, dispatch])
   useEffect(() => () => void dispatch(setFocusContentLight(null)), [dispatch])
 
