@@ -19,7 +19,13 @@ const inTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window
 /** Point the core data layer at a server. The auth client reads the configured URL per request, so
  *  this can change at runtime (the sign-in screen lets the user pick their server) without a reload. */
 const connect = (apiUrl: string): void => {
-  configureCore({ appName: APP_NAME, apiUrl, appVersion: APP_VERSION, appBuild: APP_BUILD })
+  configureCore({
+    appName: APP_NAME,
+    apiUrl,
+    appVersion: APP_VERSION,
+    appBuild: APP_BUILD,
+    dev: import.meta.env.DEV,
+  })
 }
 
 const Splash = () => (
