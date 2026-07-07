@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from "react"
+import { type ReactNode, useEffect, useRef, useState } from "react"
 import { usePathname, useNavigation } from "@workspace/screens/platform"
 import logo from "./logo.png"
 import { fetchApps } from "@workspace/core/apps"
@@ -11,6 +11,7 @@ import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setSearchQuery } from "@workspace/screens/store/uiSlice"
+import { useContentLight } from "@components/adaptiveChrome"
 import { cn } from "@workspace/ui/lib/utils"
 import { CaretUpDown, MagnifyingGlass, ShieldCheck, SidebarSimple, SignOut } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
@@ -77,7 +78,8 @@ const FlatSidebar = ({
   const router = useNavigation()
   const dispatch = useAppDispatch()
   const query = useAppSelector((state) => state.ui.searchQuery)
-  const focusContentLight = useAppSelector((state) => state.ui.focusContentLight)
+  const clusterRef = useRef<HTMLDivElement>(null)
+  const focusContentLight = useContentLight(clusterRef)
   const { data: session } = authClient.useSession()
 
   const { data: apps } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
@@ -228,10 +230,10 @@ const FlatSidebar = ({
         // Floating top-left cluster: a frosted pill that frames the native macOS traffic lights (which
         // render on top of it), and a matching frosted collapse button to its right. Positioned over
         // the titlebar strip. Offsets are tuned to the native light placement.
-        <div className="fixed left-[23px] top-[13px] z-[60] flex items-center gap-2">
+        <div ref={clusterRef} className="fixed left-[23px] top-[13px] z-[60] flex items-center gap-2">
           <span
             className={cn(
-              "pointer-events-none h-[26px] w-[79px] rounded-full backdrop-blur-2xl transition-colors",
+              "pointer-events-none h-[26px] w-[79px] rounded-full backdrop-blur-2xl transition-colors duration-500 ease-out",
               focusContentLight === true && "bg-black/35 shadow-sm",
               focusContentLight === false && "bg-white/60 shadow-sm",
             )}
@@ -241,7 +243,7 @@ const FlatSidebar = ({
             onClick={toggleSidebar}
             aria-label={t("flatSidebar.toggleSidebar", { defaultValue: "Toggle sidebar" })}
             className={cn(
-              "flex size-[26px] items-center justify-center rounded-full backdrop-blur-2xl transition",
+              "flex size-[26px] items-center justify-center rounded-full backdrop-blur-2xl transition-colors duration-500 ease-out",
               focusContentLight === null &&
                 "text-muted-foreground hover:text-foreground hover:bg-black/14 dark:hover:bg-white/18",
               focusContentLight === true && "bg-black/35 text-white shadow-sm hover:bg-black/45",

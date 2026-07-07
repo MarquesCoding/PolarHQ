@@ -3,8 +3,7 @@ import { favoriteAssets, trashAssets } from "@workspace/core/photos"
 import { downloadItemFor } from "@workspace/core/photosE2e"
 import { useSelection } from "@workspace/screens/selection"
 import { useUploadManager } from "@workspace/screens/uploadManager"
-import { useAppSelector } from "@workspace/screens/store/hooks"
-import { adaptiveChrome } from "./adaptiveChrome"
+import { adaptiveChrome, useContentLight } from "@components/adaptiveChrome"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -109,8 +108,8 @@ const BottomChrome = ({
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
   const selection = useSelection()
-  const contentLight = useAppSelector((state) => state.ui.focusContentLight)
-  const chrome = adaptiveChrome(contentLight)
+  const pillRef = useRef<HTMLDivElement>(null)
+  const chrome = adaptiveChrome(useContentLight(pillRef))
   const selecting = selection.count > 0
   const [hovered, setHovered] = useState(false)
   const hoverTimer = useRef<number | undefined>(undefined)
@@ -268,6 +267,7 @@ const BottomChrome = ({
           </AnimatePresence>
 
           <motion.div
+            ref={pillRef}
             layout
             transition={MORPH}
             style={{ borderRadius: 9999 }}

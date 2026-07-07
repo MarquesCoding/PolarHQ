@@ -23,9 +23,8 @@ import { cn } from "@workspace/ui/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useAppSelector } from "@workspace/screens/store/hooks"
 import InfoPanel from "@pages/Photos/components/InfoPanel/InfoPanel"
-import { adaptiveChrome } from "./adaptiveChrome"
+import { adaptiveChrome, useContentLight } from "@components/adaptiveChrome"
 import type { GridAsset } from "./types"
 
 interface FocusViewProps {
@@ -66,8 +65,12 @@ const FocusView = ({
 }: FocusViewProps) => {
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
-  const contentLight = useAppSelector((state) => state.ui.focusContentLight)
-  const chrome = adaptiveChrome(contentLight)
+  const nameRef = useRef<HTMLDivElement>(null)
+  const prevRef = useRef<HTMLDivElement>(null)
+  const nextRef = useRef<HTMLDivElement>(null)
+  const nameChrome = adaptiveChrome(useContentLight(nameRef))
+  const prevChrome = adaptiveChrome(useContentLight(prevRef))
+  const nextChrome = adaptiveChrome(useContentLight(nextRef))
   const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
   // Show the zoom % only while actively zooming; revert to the filename shortly after the user stops.
   const [zooming, setZooming] = useState(false)
@@ -106,6 +109,7 @@ const FocusView = ({
       />
 
       <motion.div
+        ref={nameRef}
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={CHROME_FADE}
@@ -113,7 +117,7 @@ const FocusView = ({
         onPointerDown={stop}
         className={cn(
           "absolute z-[60] -translate-x-1/2 overflow-hidden rounded-full border px-3 py-1 text-center text-xs font-medium shadow-sm",
-          chrome,
+          nameChrome,
         )}
         style={{ top: vp.top + 16, left: vp.width / 2, maxWidth: "40%" }}
       >
@@ -133,6 +137,7 @@ const FocusView = ({
 
       {hasPrev ? (
         <div
+          ref={prevRef}
           className="absolute z-[60] -translate-y-1/2"
           style={{ top: vp.top + vp.height / 2, left: 20 }}
         >
@@ -142,7 +147,7 @@ const FocusView = ({
             aria-label={t("lightbox.previous")}
             onClick={onPrev}
             onPointerDown={stop}
-            className={cn("size-10 rounded-full border shadow-lg hover:opacity-90", chrome)}
+            className={cn("size-10 rounded-full border shadow-lg hover:opacity-90", prevChrome)}
           >
             <CaretLeft className="size-5" />
           </Button>
@@ -151,6 +156,7 @@ const FocusView = ({
 
       {hasNext ? (
         <div
+          ref={nextRef}
           className="absolute z-[60] -translate-y-1/2"
           style={{ top: vp.top + vp.height / 2, left: vp.width - 20 - 40 }}
         >
@@ -160,7 +166,7 @@ const FocusView = ({
             aria-label={t("lightbox.next")}
             onClick={onNext}
             onPointerDown={stop}
-            className={cn("size-10 rounded-full border shadow-lg hover:opacity-90", chrome)}
+            className={cn("size-10 rounded-full border shadow-lg hover:opacity-90", nextChrome)}
           >
             <CaretRight className="size-5" />
           </Button>
