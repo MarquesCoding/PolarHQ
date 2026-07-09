@@ -120,7 +120,14 @@ const LibraryInner = () => {
       ? run(() => unstackAssets(stackedOne.stackId as string), t("library.unstacked"))
       : undefined
 
-  const favourite = () => run(() => favoriteAssets(ids, true), t("library.addedToFavourites"))
+  const allFavourited = selectedAssets.length > 0 && selectedAssets.every((asset) => asset.isFavorite)
+  const favourite = () =>
+    run(
+      () => favoriteAssets(ids, !allFavourited),
+      allFavourited
+        ? t("favourites.removed", { defaultValue: "Removed from favourites" })
+        : t("library.addedToFavourites"),
+    )
   const download = () => {
     if (downloadItems.length === 0) return
     upload.download(downloadItems.length === 1 ? t("library.photo") : t("library.photosZip", { count: downloadItems.length }), downloadItems)
@@ -178,7 +185,7 @@ const LibraryInner = () => {
       >
         <Button variant="ghost" size="sm" onClick={favourite}>
           <Icon name="favourites" className="size-4" />
-          {t("library.favourite")}
+          {allFavourited ? t("library.unfavourite", { defaultValue: "Unfavourite" }) : t("library.favourite")}
           <Kbd>⇧F</Kbd>
         </Button>
         {ids.length >= 2 ? (
