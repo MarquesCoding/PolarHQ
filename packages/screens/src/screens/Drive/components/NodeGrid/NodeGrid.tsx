@@ -1,4 +1,4 @@
-import { type PointerEvent as ReactPointerEvent, useRef, useState } from "react"
+import { type PointerEvent as ReactPointerEvent, useCallback, useMemo, useRef, useState } from "react"
 import type { DriveNode } from "@workspace/core/drive"
 import { usePersistentNumber } from "@workspace/screens/persistentSetting"
 import type { SelectionApi } from "@workspace/screens/selection"
@@ -38,7 +38,7 @@ const NodeGrid = ({
   actions,
 }: NodeGridProps) => {
   const [tileSize] = usePersistentNumber("drive.tileSize", 150)
-  const ordered = nodes.map((node) => node.id)
+  const ordered = useMemo(() => nodes.map((node) => node.id), [nodes])
 
   const containerRef = useRef<HTMLDivElement>(null)
   const [marquee, setMarquee] = useState<Marquee | null>(null)
@@ -47,14 +47,26 @@ const NodeGrid = ({
   const marqueeBase = useRef<Set<string>>(new Set())
   const dragging = useRef(false)
 
-  const select = (node: DriveNode, shiftKey: boolean, additive: boolean) => {
-    if (shiftKey) selection.rangeTo(node.id, ordered)
-    else if (additive) selection.toggle(node.id, ordered)
-    else selection.selectOnly(node.id)
-  }
+  const select = useCallback(
+    (node: DriveNode, shiftKey: boolean, additive: boolean) => {
+      if (shiftKey) selection.rangeTo(node.id, ordered)
+      else if (additive) selection.toggle(node.id, ordered)
+      else selection.selectOnly(node.id)
+    },
+    [selection, ordered],
+  )
 
-  const dragIdsFor = (node: DriveNode): string[] =>
-    selection.isSelected(node.id) && selection.count > 0 ? [...selection.selected] : [node.id]
+  const toggle = useCallback(
+    (node: DriveNode) => selection.toggle(node.id, ordered),
+    [selection, ordered],
+  )
+
+  // Stable — NodeCard calls it lazily on drag start, so we don't build a fresh array per card per render.
+  const getDragIds = useCallback(
+    (node: DriveNode): string[] =>
+      selection.isSelected(node.id) && selection.count > 0 ? [...selection.selected] : [node.id],
+    [selection],
+  )
 
   const pointFromEvent = (event: ReactPointerEvent) => {
     const rect = containerRef.current?.getBoundingClientRect()
@@ -148,8 +160,8 @@ const NodeGrid = ({
             selected={selection.isSelected(node.id)}
             onOpen={onOpen}
             onSelect={select}
-            onToggle={(target) => selection.toggle(target.id, ordered)}
-            dragIds={dragIdsFor(node)}
+            onToggle={toggle}
+            getDragIds={getDragIds}
             onDropNodes={onDropNodes}
             onSpringInto={onSpringInto}
           />
