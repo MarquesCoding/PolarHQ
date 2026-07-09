@@ -1,8 +1,7 @@
 import { memo, useEffect, useRef, useState } from "react"
-import { fetchDecryptedPhotoThumbnail } from "@workspace/core/photosE2e"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
-import { thumbnailCache } from "./AssetEntity"
+import { useThumbnail } from "./thumbnailStore"
 import type { GridAsset } from "./types"
 
 const StripThumb = ({
@@ -14,21 +13,8 @@ const StripThumb = ({
   active: boolean
   onClick: () => void
 }) => {
-  const [src, setSrc] = useState<string | null>(() =>
-    asset.encrypted ? (thumbnailCache.get(asset.id) ?? null) : asset.thumbnailUrl,
-  )
-  useEffect(() => {
-    if (!asset.encrypted || thumbnailCache.has(asset.id) || !asset.thumbnailUrl) return
-    let live = true
-    void fetchDecryptedPhotoThumbnail(asset.id).then((url) => {
-      if (!url) return
-      thumbnailCache.set(asset.id, url)
-      if (live) setSrc(url)
-    })
-    return () => {
-      live = false
-    }
-  }, [asset.id, asset.encrypted, asset.thumbnailUrl])
+  const src = useThumbnail(asset)
+  const [failed, setFailed] = useState(false)
   return (
     <button
       type="button"
@@ -39,12 +25,12 @@ const StripThumb = ({
         active ? "w-12 ring-2 ring-white" : "w-9 opacity-45 hover:opacity-90",
       )}
     >
-      {src ? (
+      {src && !failed ? (
         <img
           src={src}
           alt=""
           draggable={false}
-          onError={() => setSrc(null)}
+          onError={() => setFailed(true)}
           className="h-full w-full object-cover"
         />
       ) : null}
