@@ -35,15 +35,23 @@ const TagView = ({ tagId }: TagViewProps) => {
       fetcher={(cursor) => fetchAssets({ tag: tagId, cursor })}
       emptyText={t("tagView.emptyText")}
       onDeleteSelected={trashAssets}
-      actions={(ids, after, deleteConfirm) => (
+      actions={(ids, after, deleteConfirm, allFavourited) => (
         <>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => run(() => favoriteAssets(ids, true), t("tagView.addedToFavourites"), after)}
+            onClick={() =>
+              run(
+                () => favoriteAssets(ids, !allFavourited),
+                allFavourited
+                  ? t("favourites.removed", { defaultValue: "Removed from favourites" })
+                  : t("tagView.addedToFavourites"),
+                after,
+              )
+            }
           >
             <Icon name="favourites" className="size-4" />
-            {t("tagView.favourite")}
+            {allFavourited ? t("tagView.unfavourite", { defaultValue: "Unfavourite" }) : t("tagView.favourite")}
           </Button>
           <ConfirmButton
             icon={<Icon name="trash" className="size-4" />}

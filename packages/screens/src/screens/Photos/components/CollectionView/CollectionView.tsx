@@ -21,7 +21,12 @@ export interface CollectionViewProps {
   emptyState?: ReactNode
   /** Optional subtle banner shown above the grid (e.g. the trash auto-delete notice). */
   notice?: ReactNode
-  actions: (ids: string[], afterAction: () => void, deleteConfirm: ArmedConfirm) => ReactNode
+  actions: (
+    ids: string[],
+    afterAction: () => void,
+    deleteConfirm: ArmedConfirm,
+    allFavourited: boolean,
+  ) => ReactNode
   onDeleteSelected?: (ids: string[]) => Promise<unknown>
   deleteMessage?: string
 }
@@ -47,6 +52,7 @@ const CollectionInner = ({
   const one = ids.length === 1 ? visible.find((asset) => asset.id === ids[0]) : undefined
   const selectedSet = new Set(ids)
   const selectedAssets = assets.filter((asset) => selectedSet.has(asset.id))
+  const allFavourited = selectedAssets.length > 0 && selectedAssets.every((asset) => asset.isFavorite)
   const downloadItems = selectedAssets.map(downloadItemFor)
   const burstFrames = selectedAssets.reduce(
     (total, asset) => total + (asset.stackId && asset.stackCount > 1 ? asset.stackCount : 1),
@@ -112,7 +118,7 @@ const CollectionInner = ({
         shareName={one ? downloadItemFor(one).name : undefined}
         shareEncrypted={one?.encrypted}
       >
-        {actions(ids, afterAction, deleteConfirm)}
+        {actions(ids, afterAction, deleteConfirm, allFavourited)}
       </SelectionBar>
     </div>
   )

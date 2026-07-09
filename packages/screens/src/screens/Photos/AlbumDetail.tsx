@@ -53,6 +53,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
   const one = ids.length === 1 ? assets.find((asset) => asset.id === ids[0]) : undefined
   const selectedSet = new Set(ids)
   const selectedAssets = assets.filter((asset) => selectedSet.has(asset.id))
+  const allFavourited = selectedAssets.length > 0 && selectedAssets.every((asset) => asset.isFavorite)
   const downloadItems = selectedAssets.map(downloadItemFor)
   const burstFrames = selectedAssets.reduce(
     (total, asset) => total + (asset.stackId && asset.stackCount > 1 ? asset.stackCount : 1),
@@ -143,11 +144,18 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
           variant="ghost"
           size="sm"
           onClick={() =>
-            run(() => favoriteAssets(ids, true), t("albumDetailInner.addedToFavourites"))
+            run(
+              () => favoriteAssets(ids, !allFavourited),
+              allFavourited
+                ? t("favourites.removed", { defaultValue: "Removed from favourites" })
+                : t("albumDetailInner.addedToFavourites"),
+            )
           }
         >
           <Icon name="favourites" className="size-4" />
-          {t("albumDetailInner.favourite")}
+          {allFavourited
+            ? t("albumDetailInner.unfavourite", { defaultValue: "Unfavourite" })
+            : t("albumDetailInner.favourite")}
         </Button>
         <Button
           variant="ghost"
