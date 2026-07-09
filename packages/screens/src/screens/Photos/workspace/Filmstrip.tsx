@@ -43,13 +43,14 @@ interface FilmstripProps {
   currentId: string
   onJump: (id: string) => void
   leftInset: number
+  rightInset: number
 }
 
 // Only mount a window around the current asset so opening the strip on a huge library doesn't kick
 // off thousands of thumbnail decrypts; navigating re-centres the window.
 const RADIUS = 30
 
-const Filmstrip = ({ assets, currentId, onJump, leftInset }: FilmstripProps) => {
+const Filmstrip = ({ assets, currentId, onJump, leftInset, rightInset }: FilmstripProps) => {
   const activeRef = useRef<HTMLDivElement>(null)
   const index = assets.findIndex((asset) => asset.id === currentId)
   const start = Math.max(0, index - RADIUS)
@@ -64,8 +65,11 @@ const Filmstrip = ({ assets, currentId, onJump, leftInset }: FilmstripProps) => 
       exit={{ opacity: 0, y: 14 }}
       transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
       onPointerDown={(event) => event.stopPropagation()}
-      style={{ left: `calc(50% + ${leftInset / 2}px)` }}
-      className="bg-background/60 pointer-events-auto fixed bottom-20 z-[60] flex max-w-[60vw] -translate-x-1/2 items-center gap-1.5 overflow-x-auto rounded-2xl border p-2 shadow-lg backdrop-blur-xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      style={{
+        left: `calc(50% + ${(leftInset - rightInset) / 2}px)`,
+        maxWidth: `calc(100vw - ${leftInset + rightInset + 48}px)`,
+      }}
+      className="bg-background/60 pointer-events-auto fixed bottom-20 z-[60] flex -translate-x-1/2 items-center gap-1.5 overflow-x-auto rounded-2xl border p-2 shadow-lg backdrop-blur-xl transition-[left,max-width] duration-300 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {windowed.map((asset) => {
         const isActive = asset.id === currentId
