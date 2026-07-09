@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import { type ReactNode, useEffect } from "react"
 import type { TimelinePage } from "@workspace/core/photos"
 import { downloadItemFor, expandStacksToDownloadItems } from "@workspace/core/photosE2e"
 import { SelectionProvider, useSelection } from "@workspace/screens/selection"
@@ -45,6 +45,10 @@ const CollectionInner = ({
   const selection = useSelection()
   const { query, assets, invalidate } = useAssetFeed(queryKey, fetcher)
   const search = useAppSelector((state) => state.ui.searchQuery).trim().toLowerCase()
+  // Search filters client-side, so it needs every page — eager-load them while a query is active.
+  useEffect(() => {
+    if (search && query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
+  }, [search, query.hasNextPage, query.isFetchingNextPage, query])
   const visible = search
     ? assets.filter((asset) => asset.originalFilename.toLowerCase().includes(search))
     : assets
