@@ -141,7 +141,9 @@ const MediaPlayer = ({ kind, src, poster, name }: MediaPlayerProps) => {
   const revealControls = () => {
     setControlsShown(true)
     if (hideTimer.current) clearTimeout(hideTimer.current)
-    if (kind === "video" && playing) {
+    // Only auto-hide in fullscreen; embedded in the viewer the chrome sits above us so the mouse can't
+    // reach us to re-reveal — keep the controls up.
+    if (fullscreen && kind === "video" && playing) {
       hideTimer.current = window.setTimeout(() => setControlsShown(false), 2500)
     }
   }
@@ -216,7 +218,7 @@ const MediaPlayer = ({ kind, src, poster, name }: MediaPlayerProps) => {
       )}
       onMouseMove={revealControls}
       onMouseLeave={() => {
-        if (playing) setControlsShown(false)
+        if (fullscreen && playing) setControlsShown(false)
       }}
     >
       <video
