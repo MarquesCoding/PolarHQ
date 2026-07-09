@@ -40,7 +40,13 @@ const StripThumb = ({
       )}
     >
       {src ? (
-        <img src={src} alt="" draggable={false} className="h-full w-full object-cover" />
+        <img
+          src={src}
+          alt=""
+          draggable={false}
+          onError={() => setSrc(null)}
+          className="h-full w-full object-cover"
+        />
       ) : null}
     </button>
   )

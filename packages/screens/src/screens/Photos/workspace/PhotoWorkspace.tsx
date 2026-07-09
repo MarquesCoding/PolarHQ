@@ -426,12 +426,9 @@ const PhotoWorkspace = ({
       window.clearTimeout(pinchTimer.current)
       pinchTimer.current = window.setTimeout(() => setPinching(false), 900)
     }
-    const syncSidebar = (next: number) => {
-      const collapse = next > 1.02
-      if (collapse === collapsedByZoom.current) return
-      collapsedByZoom.current = collapse
-      setOpen(collapse ? false : sidebarWasOpen.current)
-    }
+    // Note: we deliberately no longer collapse the sidebar on zoom — doing so changed sidebarInset
+    // mid-gesture, which re-centered the base rect and left the image misplaced on zoom-out.
+    const syncSidebar = (_next: number) => {}
     let base = 1
     const onStart = () => {
       base = focusRef.current ? zoomRef.current : rowHeightRef.current
