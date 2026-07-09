@@ -1,4 +1,4 @@
-import { Suspense, lazy, useReducer, useRef, useState } from "react"
+import { Suspense, lazy, useCallback, useMemo, useReducer, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigation } from "@workspace/screens/platform"
 import {
@@ -120,20 +120,29 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const parentId = parent?.id ?? null
   const parentLocked = Boolean(parent?.locked) && !isFolderUnlocked(parentId ?? "")
   const children = data?.children ?? []
-  const filtered = search
-    ? children.filter((node) => node.name.toLowerCase().includes(search))
-    : children
-  const visible = source
-    ? filtered
-    : filtered.slice().sort((a, b) => {
-        if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
-        const rank = (node: DriveNode) => (node.special ? 0 : node.locked ? 1 : 2)
-        if (rank(a) !== rank(b)) return rank(a) - rank(b)
-        return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
-      })
-  const byId = new Map(children.map((node) => [node.id, node]))
+  const filtered = useMemo(
+    () =>
+      search ? children.filter((node) => node.name.toLowerCase().includes(search)) : children,
+    [children, search],
+  )
+  const visible = useMemo(
+    () =>
+      source
+        ? filtered
+        : filtered.slice().sort((a, b) => {
+            if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
+            const rank = (node: DriveNode) => (node.special ? 0 : node.locked ? 1 : 2)
+            if (rank(a) !== rank(b)) return rank(a) - rank(b)
+            return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
+          }),
+    [filtered, source],
+  )
+  const byId = useMemo(() => new Map(children.map((node) => [node.id, node])), [children])
 
-  const imageNodes = visible.filter((node) => node.mimeType?.startsWith("image/"))
+  const imageNodes = useMemo(
+    () => visible.filter((node) => node.mimeType?.startsWith("image/")),
+    [visible],
+  )
   const driveController = useDriveViewer(imageNodes)
   const viewingIndex = viewingNode
     ? imageNodes.findIndex((node) => node.id === viewingNode.id)
@@ -269,7 +278,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const single = ids.length === 1 ? byId.get(ids[0]!) : undefined
   const canExtract = single?.kind === "file" && isArchiveName(single.name)
 
-  const actions: DriveNodeActions = {
+  const actionsImpl: DriveNodeActions = {
     open: (node) => open(node),
     view: (node) => (is3DModelName(node.name) ? setViewingModel(node) : setViewingNode(node)),
     download: (node) => downloadIds([node.id]),
@@ -293,6 +302,30 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     versions: (node) => setVersionsNode(node),
     trash: (node) => void trash([node.id]),
   }
+  // Stable `actions` identity (delegates to the latest impl via a ref) so it doesn't defeat the memo
+  // on every grid/table/miller row.
+  const actionsRef = useRef(actionsImpl)
+  actionsRef.current = actionsImpl
+  const actions = useMemo<DriveNodeActions>(
+    () => ({
+      open: (n) => actionsRef.current.open(n),
+      view: (n) => actionsRef.current.view(n),
+      download: (n) => actionsRef.current.download(n),
+      copyLink: (n) => actionsRef.current.copyLink(n),
+      share: (n) => actionsRef.current.share(n),
+      move: (n) => actionsRef.current.move(n),
+      copy: (n) => actionsRef.current.copy(n),
+      extract: (n) => actionsRef.current.extract(n),
+      lock: (n) => actionsRef.current.lock(n),
+      removeLock: (n) => actionsRef.current.removeLock(n),
+      favorite: (n) => actionsRef.current.favorite(n),
+      rename: (n) => actionsRef.current.rename(n),
+      details: (n) => actionsRef.current.details(n),
+      versions: (n) => actionsRef.current.versions(n),
+      trash: (n) => actionsRef.current.trash(n),
+    }),
+    [],
+  )
 
   const selectedNodes = ids
     .map((id) => byId.get(id))
