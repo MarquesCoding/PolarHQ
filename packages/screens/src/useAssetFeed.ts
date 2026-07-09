@@ -6,9 +6,10 @@ import { type InfiniteData, useInfiniteQuery, useQueryClient } from "@tanstack/r
 type FeedData = InfiniteData<TimelinePage, string | undefined>
 
 /**
- * Asset feed for a view, auto-refreshed by WebSocket events. Eagerly loads the
- * whole timeline (all pages) so the justified layout and date scrubber cover
- * every date; rendering stays virtualized, so only on-screen tiles mount.
+ * Asset feed for a view, auto-refreshed by WebSocket events. Loads the first page up front and pages
+ * the rest lazily as the grid scrolls (the workspace calls `onReachEnd`) — a large library no longer
+ * fetches every page on mount. Screens that filter client-side (search) eager-load all pages while a
+ * query is active.
  *
  * Local mutations should call {@link patchAssets}/{@link removeAssets} for an instant, refetch-free
  * update; the debounced live-event handler reconciles with the server afterward.
@@ -29,10 +30,6 @@ export const useAssetFeed = (
       return last.nextCursor
     },
   })
-
-  useEffect(() => {
-    if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
-  }, [query.hasNextPage, query.isFetchingNextPage, query.fetchNextPage])
 
   const invalidate = useCallback(() => {
     void queryClient.invalidateQueries({ queryKey })
