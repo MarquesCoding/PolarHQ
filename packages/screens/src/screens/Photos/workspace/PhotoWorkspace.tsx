@@ -1,6 +1,8 @@
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react"
 import { useSelection } from "@workspace/screens/selection"
 import { usePersistentNumber } from "@workspace/screens/persistentSetting"
+import { AnimatePresence } from "motion/react"
+import Filmstrip from "./Filmstrip"
 import { useSidebar } from "@workspace/ui/components/sidebar"
 import { Button } from "@workspace/ui/components/button"
 import { Circle } from "@phosphor-icons/react"
@@ -118,6 +120,8 @@ const PhotoWorkspace = ({
   const sort: SortKey = SORT_KEYS[sortNum] ?? "date-desc"
   const onSort = (next: SortKey) => setSortNum(Math.max(0, SORT_KEYS.indexOf(next)))
   const [hideDatesNum, setHideDatesNum] = usePersistentNumber("photos.hideDates", 0)
+  const [stripNum, setStripNum] = usePersistentNumber("photos.filmstrip", 0)
+  const strip = stripNum === 1
   const hideDates = hideDatesNum === 1
   const [canvasPositions, setCanvasPositions] = useState<Map<string, Rect>>(loadCanvasPositions)
   const [hoveredDay, setHoveredDay] = useState<string | null>(null)
@@ -329,7 +333,11 @@ const PhotoWorkspace = ({
   const page = (delta: number) => {
     if (!focus) return
     const id = ordered[ordered.indexOf(focus.id) + delta]
-    if (!id) return
+    if (id) goTo(id)
+  }
+
+  const goTo = (id: string) => {
+    if (!focus || id === focus.id) return
     const asset = sorted.find((item) => item.id === id)
     if (!asset) return
     const prevId = focus.id
@@ -575,6 +583,12 @@ const PhotoWorkspace = ({
         />
       ) : null}
 
+      <AnimatePresence>
+        {focus && focusedAsset && strip ? (
+          <Filmstrip assets={sorted} currentId={focus.id} onJump={goTo} />
+        ) : null}
+      </AnimatePresence>
+
       {marquee ? (
         <div
           className="border-primary/60 bg-primary/10 pointer-events-none absolute z-20 rounded-sm border"
@@ -607,6 +621,8 @@ const PhotoWorkspace = ({
         onSort={onSort}
         info={info}
         onToggleInfo={() => setInfo((value) => !value)}
+        strip={strip}
+        onToggleStrip={() => setStripNum(strip ? 0 : 1)}
         onClose={close}
         onInvalidate={onInvalidate}
       />

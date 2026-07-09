@@ -21,6 +21,7 @@ import {
   CircleNotch,
   DotsThree,
   DownloadSimple,
+  FilmStrip,
   Heart,
   Info,
   MagnifyingGlass,
@@ -78,6 +79,8 @@ interface BottomChromeProps {
   onSort: (value: SortKey) => void
   info: boolean
   onToggleInfo: () => void
+  strip: boolean
+  onToggleStrip: () => void
   onClose: () => void
   onInvalidate?: () => void
 }
@@ -108,6 +111,8 @@ const BottomChrome = ({
   onSort,
   info,
   onToggleInfo,
+  strip,
+  onToggleStrip,
   onClose,
   onInvalidate,
 }: BottomChromeProps) => {
@@ -414,6 +419,15 @@ const BottomChrome = ({
                     className={cn("rounded-full", info && "bg-muted")}
                   >
                     <Info className="size-[18px]" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={t("lightbox.filmstrip", { defaultValue: "Filmstrip" })}
+                    onClick={onToggleStrip}
+                    className={cn("rounded-full", strip && "bg-muted")}
+                  >
+                    <FilmStrip className="size-[18px]" />
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger
