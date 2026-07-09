@@ -249,8 +249,8 @@ const AssetEntity = ({
     >
       <div
         className={cn(
-          "bg-muted relative h-full w-full overflow-hidden",
-          focused ? "rounded-2xl" : "rounded-lg",
+          "bg-muted relative h-full w-full overflow-hidden transition-[border-radius] duration-200",
+          focused ? (zoom > 1.01 ? "rounded-none" : "rounded-2xl") : "rounded-lg",
         )}
         style={{
           transform: focused ? `translate(${panX}px, ${panY}px) scale(${zoom})` : undefined,
