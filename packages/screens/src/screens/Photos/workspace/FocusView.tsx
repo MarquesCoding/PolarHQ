@@ -33,6 +33,7 @@ interface FocusViewProps {
   zoom: number
   info: boolean
   panelWidth: number
+  leftInset: number
   hasPrev: boolean
   hasNext: boolean
   onClose: () => void
@@ -55,6 +56,7 @@ const FocusView = ({
   zoom,
   info,
   panelWidth,
+  leftInset,
   hasPrev,
   hasNext,
   onClose,
@@ -71,6 +73,10 @@ const FocusView = ({
   const nameChrome = adaptiveChrome(useContentLight(nameRef))
   const prevChrome = adaptiveChrome(useContentLight(prevRef))
   const nextChrome = adaptiveChrome(useContentLight(nextRef))
+  // Chrome aligns to the focused image, which is centered within [leftInset, vp.width - rightInset].
+  const imgLeft = leftInset
+  const imgRight = vp.width - (info ? panelWidth : 0)
+  const imgCenter = (imgLeft + imgRight) / 2
   const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
   // Show the zoom % only while actively zooming; revert to the filename shortly after the user stops.
   const [zooming, setZooming] = useState(false)
@@ -119,7 +125,7 @@ const FocusView = ({
           "absolute z-[60] -translate-x-1/2 overflow-hidden rounded-full border px-3 py-1 text-center text-xs font-medium shadow-sm",
           nameChrome,
         )}
-        style={{ top: vp.top + 16, left: vp.width / 2, maxWidth: "40%" }}
+        style={{ top: vp.top + 16, left: imgCenter, maxWidth: "40%" }}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
@@ -139,7 +145,7 @@ const FocusView = ({
         <div
           ref={prevRef}
           className="absolute z-[60] -translate-y-1/2"
-          style={{ top: vp.top + vp.height / 2, left: 20 }}
+          style={{ top: vp.top + vp.height / 2, left: imgLeft + 20 }}
         >
           <Button
             variant="ghost"
@@ -158,7 +164,7 @@ const FocusView = ({
         <div
           ref={nextRef}
           className="absolute z-[60] -translate-y-1/2"
-          style={{ top: vp.top + vp.height / 2, left: vp.width - 20 - 40 }}
+          style={{ top: vp.top + vp.height / 2, left: imgRight - 20 - 40 }}
         >
           <Button
             variant="ghost"

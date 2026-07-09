@@ -226,7 +226,13 @@ const PhotoWorkspace = ({
 
   const pointFrom = (event: ReactPointerEvent) => {
     const rect = containerRef.current?.getBoundingClientRect()
-    return { x: event.clientX - (rect?.left ?? 0), y: event.clientY - (rect?.top ?? 0) }
+    // Clamp inside the container so dragging past the edge doesn't push the marquee out and scroll the page.
+    const x = event.clientX - (rect?.left ?? 0)
+    const y = event.clientY - (rect?.top ?? 0)
+    return {
+      x: Math.max(0, Math.min(x, rect?.width ?? x)),
+      y: Math.max(0, Math.min(y, rect?.height ?? y)),
+    }
   }
   const onMarqueeDown = (event: ReactPointerEvent) => {
     if (event.pointerType !== "mouse" || event.button !== 0) return
@@ -469,7 +475,7 @@ const PhotoWorkspace = ({
   return (
     <div
       ref={containerRef}
-      className="relative min-h-full w-full select-none"
+      className="relative min-h-full w-full overflow-x-clip select-none"
       style={{ height: layout.height }}
       onPointerDown={onMarqueeDown}
       onPointerMove={onMarqueeMove}
@@ -558,6 +564,7 @@ const PhotoWorkspace = ({
           zoom={zoom}
           info={info}
           panelWidth={sidebarWidth}
+          leftInset={sidebarInset}
           hasPrev={ordered.indexOf(focus.id) > 0}
           hasNext={ordered.indexOf(focus.id) < ordered.length - 1}
           onClose={close}
