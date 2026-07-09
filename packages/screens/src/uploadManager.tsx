@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react"
@@ -575,13 +576,12 @@ export const UploadProvider = ({ children }: { children: ReactNode }) => {
   )
   useLiveEvents(onEvent, authed)
 
-  return (
-    <UploadContext.Provider
-      value={{ items, upload, download, downloadFile, archive, task, remove, clearFinished, retry }}
-    >
-      {children}
-    </UploadContext.Provider>
+  const value = useMemo(
+    () => ({ items, upload, download, downloadFile, archive, task, remove, clearFinished, retry }),
+    [items, upload, download, downloadFile, archive, task, remove, clearFinished, retry],
   )
+
+  return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>
 }
 
 export const useUploadManager = (): UploadManagerApi => {
