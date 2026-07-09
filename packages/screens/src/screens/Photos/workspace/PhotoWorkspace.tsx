@@ -124,6 +124,17 @@ const PhotoWorkspace = ({
   const [hideDatesNum, setHideDatesNum] = usePersistentNumber("photos.hideDates", 0)
   const [stripNum, setStripNum] = usePersistentNumber("photos.filmstrip", 0)
   const strip = stripNum === 1
+  // Coalesce pinch/wheel resize to one row-height commit per frame — otherwise each wheel event
+  // re-lays-out the whole library and writes localStorage synchronously.
+  const rowHeightQueue = useRef({ pending: -1, raf: 0 })
+  const queueRowHeight = (value: number) => {
+    rowHeightQueue.current.pending = value
+    if (rowHeightQueue.current.raf) return
+    rowHeightQueue.current.raf = requestAnimationFrame(() => {
+      rowHeightQueue.current.raf = 0
+      if (rowHeightQueue.current.pending >= 0) setRowHeight(rowHeightQueue.current.pending)
+    })
+  }
   const hideDates = hideDatesNum === 1
   const [canvasPositions, setCanvasPositions] = useState<Map<string, Rect>>(loadCanvasPositions)
   const [hoveredDay, setHoveredDay] = useState<string | null>(null)
@@ -456,7 +467,7 @@ const PhotoWorkspace = ({
         syncSidebar(next)
       } else if (modeRef.current === "grid") {
         markPinching()
-        setRowHeight(clampSize(base * scale))
+        queueRowHeight(clampSize(base * scale))
       }
     }
     const onWheel = (event: WheelEvent) => {
@@ -467,7 +478,9 @@ const PhotoWorkspace = ({
         syncSidebar(next)
       } else if (modeRef.current === "grid") {
         markPinching()
-        setRowHeight(clampSize(rowHeightRef.current * (1 - event.deltaY * 0.01)))
+        const from =
+          rowHeightQueue.current.pending >= 0 ? rowHeightQueue.current.pending : rowHeightRef.current
+        queueRowHeight(clampSize(from * (1 - event.deltaY * 0.01)))
       }
     }
     window.addEventListener("gesturestart", onStart)
