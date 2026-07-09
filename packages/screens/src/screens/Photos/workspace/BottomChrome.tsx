@@ -83,6 +83,7 @@ interface BottomChromeProps {
   onToggleStrip: () => void
   onClose: () => void
   onInvalidate?: () => void
+  onFavourite?: (ids: string[], next: boolean) => void
 }
 
 /**
@@ -115,6 +116,7 @@ const BottomChrome = ({
   onToggleStrip,
   onClose,
   onInvalidate,
+  onFavourite,
 }: BottomChromeProps) => {
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
@@ -174,7 +176,9 @@ const BottomChrome = ({
   }, [dlState])
 
   const favourite = () => {
-    if (focused) void favoriteAssets([focused.id], !focused.isFavorite).then(() => onInvalidate?.())
+    if (!focused) return
+    if (onFavourite) onFavourite([focused.id], !focused.isFavorite)
+    else void favoriteAssets([focused.id], !focused.isFavorite).then(() => onInvalidate?.())
   }
   const download = () => {
     if (!focused || dlState === "loading") return
