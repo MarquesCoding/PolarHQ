@@ -327,6 +327,20 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     [],
   )
 
+  // Stable identities for the callbacks that reach the memoized NodeCard (delegate to the latest impl
+  // via a ref) so selection changes don't re-render every card.
+  const gridRef = useRef({ open, moveInto, router })
+  gridRef.current = { open, moveInto, router }
+  const onGridOpen = useCallback((node: DriveNode) => gridRef.current.open(node), [])
+  const onGridDrop = useCallback(
+    (folder: DriveNode, dragged: string[]) => void gridRef.current.moveInto(folder, dragged),
+    [],
+  )
+  const onGridSpringInto = useCallback(
+    (folder: DriveNode) => gridRef.current.router.push(`/drive/${folder.id}`),
+    [],
+  )
+
   const selectedNodes = ids
     .map((id) => byId.get(id))
     .filter((node): node is DriveNode => Boolean(node))
@@ -411,9 +425,9 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
           <NodeGrid
             nodes={visible}
             selection={selection}
-            onOpen={open}
-            onDropNodes={(folder, dragged) => void moveInto(folder, dragged)}
-            onSpringInto={(folder) => router.push(`/drive/${folder.id}`)}
+            onOpen={onGridOpen}
+            onDropNodes={onGridDrop}
+            onSpringInto={onGridSpringInto}
             onParentOpen={parentHref ? () => router.push(parentHref) : undefined}
             onParentDrop={
               parentFolder ? (dragged) => void moveInto(parentFolder, dragged) : undefined
