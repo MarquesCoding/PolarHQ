@@ -1,11 +1,8 @@
 import { type PointerEvent as ReactPointerEvent, memo, useEffect, useRef, useState } from "react"
 import { decryptName } from "@workspace/core/e2e"
 import { Icon } from "@workspace/screens/icons"
-import {
-  fetchDecryptedMotionVideo,
-  fetchDecryptedPhotoOriginal,
-  fetchDecryptedPhotoThumbnail,
-} from "@workspace/core/photosE2e"
+import { fetchDecryptedMotionVideo, fetchDecryptedPhotoOriginal } from "@workspace/core/photosE2e"
+import { useThumbnail } from "./thumbnailStore"
 import { Heart, Record, Stack } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
@@ -15,8 +12,6 @@ import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
 import type { GridAsset, Rect } from "./types"
 
 const loaded = new Set<string>()
-/** Session cache of decrypted thumbnail object URLs so a re-mounted entity shows instantly. */
-export const thumbnailCache = new Map<string, string>()
 const motionCache = new Map<string, string>()
 
 const formatDuration = (ms: number): string => {
@@ -72,22 +67,8 @@ const AssetEntity = ({
   onPan,
   onDragCommit,
 }: AssetEntityProps) => {
-  const [thumb, setThumb] = useState<string | null>(() =>
-    asset.encrypted ? (thumbnailCache.get(asset.id) ?? null) : asset.thumbnailUrl,
-  )
+  const thumb = useThumbnail(asset)
   const [isLoaded, setLoaded] = useState(() => loaded.has(asset.id))
-  useEffect(() => {
-    if (!asset.encrypted || thumbnailCache.has(asset.id) || !asset.thumbnailUrl) return
-    let active = true
-    void fetchDecryptedPhotoThumbnail(asset.id).then((url) => {
-      if (!url) return
-      thumbnailCache.set(asset.id, url)
-      if (active) setThumb(url)
-    })
-    return () => {
-      active = false
-    }
-  }, [asset.id, asset.encrypted, asset.thumbnailUrl])
 
   const [original, setOriginal] = useState<string | null>(null)
   useEffect(() => {
