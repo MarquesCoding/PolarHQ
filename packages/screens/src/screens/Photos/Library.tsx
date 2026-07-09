@@ -39,7 +39,7 @@ const LibraryInner = () => {
   const upload = useUploadManager()
   const search = useAppSelector((state) => state.ui.searchQuery).trim().toLowerCase()
 
-  const { query, assets, invalidate } = useAssetFeed(["photos", "timeline"], (cursor) =>
+  const { query, assets, invalidate, patchAssets, removeAssets } = useAssetFeed(["photos", "timeline"], (cursor) =>
     fetchAssets({ view: "library", cursor }),
   )
 
@@ -95,6 +95,7 @@ const LibraryInner = () => {
     const target = [...ids]
     if (target.length === 0) return
     selection.clear()
+    removeAssets(target)
     upload.task(
       t("library.deleting", { count: target.length }),
       target.length,
@@ -121,13 +122,22 @@ const LibraryInner = () => {
       : undefined
 
   const allFavourited = selectedAssets.length > 0 && selectedAssets.every((asset) => asset.isFavorite)
-  const favourite = () =>
-    run(
-      () => favoriteAssets(ids, !allFavourited),
-      allFavourited
-        ? t("favourites.removed", { defaultValue: "Removed from favourites" })
-        : t("library.addedToFavourites"),
+  const favourite = () => {
+    if (ids.length === 0) return
+    const next = !allFavourited
+    const target = [...ids]
+    patchAssets(target, { isFavorite: next })
+    photoNotice(
+      next
+        ? t("library.addedToFavourites")
+        : t("favourites.removed", { defaultValue: "Removed from favourites" }),
     )
+    selection.clear()
+    void favoriteAssets(target, next).catch(() => {
+      toast.error(t("library.actionFailed"))
+      invalidate()
+    })
+  }
   const download = () => {
     if (downloadItems.length === 0) return
     upload.download(downloadItems.length === 1 ? t("library.photo") : t("library.photosZip", { count: downloadItems.length }), downloadItems)
