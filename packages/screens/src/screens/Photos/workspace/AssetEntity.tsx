@@ -11,6 +11,7 @@ import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 import { clearFocusedImage, setFocusedImage } from "@components/adaptiveChrome"
 import { fetchCachedOriginal } from "@pages/Photos/components/Lightbox/originalCache"
+import MediaPlayer from "@pages/Photos/components/MediaPlayer/MediaPlayer"
 import type { GridAsset, Rect } from "./types"
 
 const loaded = new Set<string>()
@@ -281,18 +282,25 @@ const AssetEntity = ({
         </div>
       ) : null}
 
-      {canPlay && motionUrl ? (
+      {focused && canPlay && motionUrl ? (
+        <div className="absolute inset-0">
+          <MediaPlayer
+            kind={asset.type === "audio" ? "audio" : "video"}
+            src={motionUrl}
+            poster={thumb ?? undefined}
+            name={name}
+          />
+        </div>
+      ) : canPlay && motionUrl ? (
         <video
           ref={videoRef}
           src={motionUrl}
-          muted={!focused}
-          loop={!focused}
+          muted
+          loop
           playsInline
-          controls={focused}
           className={cn(
-            "absolute inset-0 h-full w-full transition-opacity duration-300",
-            focused ? "object-contain" : "pointer-events-none object-cover",
-            playing || focused ? "opacity-100" : "opacity-0",
+            "pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-300",
+            playing ? "opacity-100" : "opacity-0",
           )}
         />
       ) : null}
