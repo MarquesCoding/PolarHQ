@@ -582,7 +582,7 @@ const PhotoWorkspace = ({
 
       <AnimatePresence>
         {focus && focusedAsset && strip ? (
-          <Filmstrip assets={sorted} currentId={focus.id} onJump={goTo} />
+          <Filmstrip assets={sorted} currentId={focus.id} onJump={goTo} leftInset={sidebarInset} />
         ) : null}
       </AnimatePresence>
 
