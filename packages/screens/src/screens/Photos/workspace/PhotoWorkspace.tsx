@@ -229,6 +229,7 @@ const PhotoWorkspace = ({
   const marqueePointer = useRef<number | null>(null)
   const marqueeStart = useRef<{ x: number; y: number } | null>(null)
   const marqueeBase = useRef<Set<string>>(new Set())
+  const marqueeHits = useRef<Set<string>>(new Set())
 
   const pointFrom = (event: ReactPointerEvent) => {
     const rect = containerRef.current?.getBoundingClientRect()
@@ -246,6 +247,7 @@ const PhotoWorkspace = ({
     marqueePointer.current = event.pointerId
     marqueeStart.current = pointFrom(event)
     marqueeBase.current = event.shiftKey ? new Set(selection.selected) : new Set()
+    marqueeHits.current = new Set()
     containerRef.current?.setPointerCapture(event.pointerId)
   }
   const onMarqueeMove = (event: ReactPointerEvent) => {
@@ -263,7 +265,15 @@ const PhotoWorkspace = ({
       if (rect.x < box.x1 && rect.x + rect.w > box.x0 && rect.y < box.y1 && rect.y + rect.h > box.y0)
         hits.add(asset.id)
     }
-    selection.selectAll([...hits])
+    // Only commit when the hit-set actually changed since the last move — otherwise a marquee drag
+    // fires selectAll (→ new Set → context churn → re-render every tile) on every pointermove.
+    const prev = marqueeHits.current
+    let changed = hits.size !== prev.size
+    if (!changed) for (const id of hits) if (!prev.has(id)) { changed = true; break }
+    if (changed) {
+      marqueeHits.current = hits
+      selection.selectAll([...hits])
+    }
   }
   const onMarqueeUp = (event: ReactPointerEvent) => {
     if (marqueePointer.current !== event.pointerId) return
