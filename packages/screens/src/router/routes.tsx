@@ -35,13 +35,21 @@ import Backup from "@pages/Admin/Backup"
 import Settings from "@pages/Admin/Settings"
 import Audit from "@pages/Admin/Audit"
 import DocsList from "@pages/Docs/DocsList"
-import Editor from "@pages/Docs/Editor"
 import SheetsList from "@pages/Sheets/SheetsList"
-import FullEditor from "@pages/Sheets/FullEditor"
 import WhiteboardList from "@pages/Whiteboard/WhiteboardList"
-import WhiteboardEditor from "@pages/Whiteboard/WhiteboardEditor"
 
+// The three editors carry the heaviest deps (tiptap, hyperformula, glide-data-grid) — lazy-load them
+// so they stay out of the initial bundle for users who only ever open Photos/Drive.
 const PhotoMap = lazy(() => import("@pages/Photos/PhotoMap"))
+const Editor = lazy(() => import("@pages/Docs/Editor"))
+const FullEditor = lazy(() => import("@pages/Sheets/FullEditor"))
+const WhiteboardEditor = lazy(() => import("@pages/Whiteboard/WhiteboardEditor"))
+
+const editorFallback = (
+  <div className="text-muted-foreground flex min-h-0 flex-1 items-center justify-center text-sm">
+    {t("common:loading", { defaultValue: "Loading…" })}
+  </div>
+)
 const DRIVE_KINDS: StorageKind[] = ["image", "video", "audio", "document", "archive", "other"]
 
 const DriveFolder = () => {
@@ -89,17 +97,29 @@ const PhotoMapRoute = () => (
 
 const DocEditorRoute = () => {
   const { id } = useParams()
-  return <Editor key={id} nodeId={id ?? ""} />
+  return (
+    <Suspense fallback={editorFallback}>
+      <Editor key={id} nodeId={id ?? ""} />
+    </Suspense>
+  )
 }
 
 const SheetEditorRoute = () => {
   const { id } = useParams()
-  return <FullEditor key={id} nodeId={id ?? ""} />
+  return (
+    <Suspense fallback={editorFallback}>
+      <FullEditor key={id} nodeId={id ?? ""} />
+    </Suspense>
+  )
 }
 
 const WhiteboardEditorRoute = () => {
   const { id } = useParams()
-  return <WhiteboardEditor key={id} nodeId={id ?? ""} />
+  return (
+    <Suspense fallback={editorFallback}>
+      <WhiteboardEditor key={id} nodeId={id ?? ""} />
+    </Suspense>
+  )
 }
 
 const SheetsIdRedirect = () => {
