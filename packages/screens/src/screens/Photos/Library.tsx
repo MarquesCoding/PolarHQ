@@ -171,6 +171,10 @@ const LibraryInner = () => {
         </div>
       ) : (
         <PhotoWorkspace
+          onFavourite={(fids, next) => {
+            patchAssets(fids, { isFavorite: next })
+            void favoriteAssets(fids, next).catch(() => invalidate())
+          }}
           assets={visible}
           onInvalidate={invalidate}
           onReachEnd={

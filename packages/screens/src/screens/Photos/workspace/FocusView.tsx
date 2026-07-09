@@ -41,6 +41,7 @@ interface FocusViewProps {
   onNext: () => void
   onToggleInfo: () => void
   onInvalidate?: () => void
+  onFavourite?: (ids: string[], next: boolean) => void
 }
 
 const CHROME_FADE = { duration: 0.25, ease: [0.32, 0.72, 0, 1] as const }
@@ -64,6 +65,7 @@ const FocusView = ({
   onNext,
   onToggleInfo,
   onInvalidate,
+  onFavourite,
 }: FocusViewProps) => {
   const { t } = useTranslation("photos")
   const upload = useUploadManager()
@@ -93,7 +95,8 @@ const FocusView = ({
   }, [zoom])
 
   const favourite = () => {
-    void favoriteAssets([asset.id], !asset.isFavorite).then(() => onInvalidate?.())
+    if (onFavourite) onFavourite([asset.id], !asset.isFavorite)
+    else void favoriteAssets([asset.id], !asset.isFavorite).then(() => onInvalidate?.())
   }
   const download = () => upload.download(name, [downloadItemFor(asset)])
   const trash = () => {

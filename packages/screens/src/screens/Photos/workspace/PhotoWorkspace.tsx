@@ -71,6 +71,7 @@ interface PhotoWorkspaceProps {
   assets: GridAsset[]
   onReachEnd?: () => void
   onInvalidate?: () => void
+  onFavourite?: (ids: string[], next: boolean) => void
   /** Sub-collections (albums, favourites, trash…) render grid-only — no Grid/Canvas/Infinity switcher. */
   showModes?: boolean
 }
@@ -79,6 +80,7 @@ const PhotoWorkspace = ({
   assets,
   onReachEnd,
   onInvalidate,
+  onFavourite,
   showModes = true,
 }: PhotoWorkspaceProps) => {
   const selection = useSelection()
@@ -378,7 +380,9 @@ const PhotoWorkspace = ({
       else if (event.key === "ArrowLeft") page(-1)
       else if (event.key === "f" || event.key === "F") {
         const asset = sorted.find((item) => item.id === focus.id)
-        if (asset) void favoriteAssets([asset.id], !asset.isFavorite).then(() => onInvalidate?.())
+        if (!asset) return
+        if (onFavourite) onFavourite([asset.id], !asset.isFavorite)
+        else void favoriteAssets([asset.id], !asset.isFavorite).then(() => onInvalidate?.())
       }
     }
     window.addEventListener("keydown", onKey)
@@ -577,6 +581,7 @@ const PhotoWorkspace = ({
           onNext={() => page(1)}
           onToggleInfo={() => setInfo((value) => !value)}
           onInvalidate={onInvalidate}
+          onFavourite={onFavourite}
         />
       ) : null}
 
@@ -622,6 +627,7 @@ const PhotoWorkspace = ({
         onToggleStrip={() => setStripNum(strip ? 0 : 1)}
         onClose={close}
         onInvalidate={onInvalidate}
+        onFavourite={onFavourite}
       />
     </div>
   )
