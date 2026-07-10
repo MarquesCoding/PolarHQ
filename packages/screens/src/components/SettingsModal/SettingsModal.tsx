@@ -95,15 +95,18 @@ const SettingsModal = ({
     <motion.div
       {...backdropMotion}
       onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 p-4 backdrop-blur-sm sm:p-8"
+      data-tauri-drag-region
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 p-4 backdrop-blur-sm sm:p-10"
     >
       <motion.div
         {...panelMotion}
         onClick={(event) => event.stopPropagation()}
-        className="bg-sidebar flex h-full max-h-[900px] w-full max-w-5xl overflow-hidden rounded-2xl border shadow-2xl"
+        className="bg-sidebar flex h-full max-h-[820px] w-full max-w-4xl overflow-hidden rounded-2xl border shadow-2xl"
       >
-        <div className="flex w-60 shrink-0 flex-col gap-2 border-r p-3">
-          <div className="px-1 pt-1 pb-2">{header}</div>
+        <div className="flex w-56 shrink-0 flex-col gap-2 border-r p-3">
+          <div data-tauri-drag-region className="px-1 pt-1 pb-2">
+            {header}
+          </div>
           <div className="relative">
             <MagnifyingGlass className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
             <Input
@@ -145,7 +148,7 @@ const SettingsModal = ({
             size="icon"
             aria-label={closeLabel}
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground absolute top-4 right-4 z-10 size-9 rounded-full"
+            className="text-muted-foreground hover:text-foreground bg-sidebar/80 absolute top-3.5 right-3.5 z-30 size-9 rounded-full backdrop-blur"
           >
             <X className="size-5" />
           </Button>
