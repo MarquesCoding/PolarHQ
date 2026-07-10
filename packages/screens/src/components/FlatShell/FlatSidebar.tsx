@@ -206,7 +206,7 @@ const FlatSidebar = ({
               </DropdownMenuItem>
             ) : null}
             {isAdmin ? (
-              <DropdownMenuItem onClick={() => router.push("/admin")}>
+              <DropdownMenuItem onClick={() => dispatch(openSettings({ scope: "admin" }))}>
                 <ShieldCheck className="size-4" />
                 {t("apps.admin")}
               </DropdownMenuItem>
