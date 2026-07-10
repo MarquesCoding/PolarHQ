@@ -1,6 +1,7 @@
 import { AnimatePresence } from "motion/react"
 import { useAppSelector } from "@workspace/screens/store/hooks"
 import AccountSettings from "@pages/Account/AccountSettings"
+import AdminSettings from "@pages/Admin/AdminSettings"
 
 /**
  * App-root mount for the settings modal. Reads the active scope from the ui slice and renders the
@@ -12,6 +13,7 @@ const SettingsOverlay = () => {
   return (
     <AnimatePresence>
       {scope === "account" ? <AccountSettings key="account" /> : null}
+      {scope === "admin" ? <AdminSettings key="admin" /> : null}
     </AnimatePresence>
   )
 }
