@@ -15,6 +15,7 @@ import {
 import SignIn from "@pages/SignIn/SignIn"
 import Setup from "@pages/Setup/Setup"
 import Account from "@pages/Account/Account"
+import SettingsOverlay from "@components/SettingsModal/SettingsOverlay"
 import Library from "@pages/Photos/Library"
 import PhotosTrash from "@pages/Photos/Trash"
 import Favourites from "@pages/Photos/Favourites"
@@ -204,5 +205,6 @@ export const AppRoutes = () => (
     <Route path="/document/:id" element={<DocEditorRoute />} />
     <Route path="/whiteboard/:id" element={<WhiteboardEditorRoute />} />
     </Routes>
+    <SettingsOverlay />
   </SetupGate>
 )
