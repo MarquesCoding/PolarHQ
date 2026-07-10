@@ -10,7 +10,7 @@ import { fetchStorageStats } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
-import { setSearchQuery } from "@workspace/screens/store/uiSlice"
+import { openSettings, setSearchQuery } from "@workspace/screens/store/uiSlice"
 import { useContentLight } from "@components/adaptiveChrome"
 import { cn } from "@workspace/ui/lib/utils"
 import { CaretUpDown, MagnifyingGlass, ShieldCheck, SidebarSimple, SignOut } from "@phosphor-icons/react"
@@ -197,7 +197,7 @@ const FlatSidebar = ({
               </span>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push("/account")}>
+            <DropdownMenuItem onClick={() => dispatch(openSettings({ scope: "account" }))}>
               {t("flatSidebar.account")}
             </DropdownMenuItem>
             {!readOnly ? (

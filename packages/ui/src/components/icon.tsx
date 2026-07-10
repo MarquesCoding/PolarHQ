@@ -53,6 +53,7 @@ import { Stack } from "@phosphor-icons/react/Stack"
 import { Table } from "@phosphor-icons/react/Table"
 import { Tag } from "@phosphor-icons/react/Tag"
 import { Trash } from "@phosphor-icons/react/Trash"
+import { User } from "@phosphor-icons/react/User"
 import { Users } from "@phosphor-icons/react/Users"
 import { UsersThree } from "@phosphor-icons/react/UsersThree"
 import { VideoCamera } from "@phosphor-icons/react/VideoCamera"
@@ -120,6 +121,7 @@ const icons: Record<string, IconComponent> = {
   "volume-mute": SpeakerSimpleX,
   fullscreen: ArrowsIn,
   gauge: Gauge,
+  user: User,
   users: Users,
   "users-group": UsersThree,
   "user-shield": ShieldCheck,

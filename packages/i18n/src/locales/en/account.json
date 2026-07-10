@@ -2,6 +2,17 @@
   "title": "Account",
   "subtitle": "Manage your profile and preferences.",
   "back": "Back",
+  "close": "Close",
+  "searchSettings": "Search",
+  "groupUser": "User Settings",
+  "groupData": "Data",
+  "nav": {
+    "profile": "Profile",
+    "appearance": "Appearance",
+    "devices": "Devices",
+    "import": "Import",
+    "sync": "Synced Folders"
+  },
   "profile": "Profile",
   "name": "Name",
   "email": "Email",
