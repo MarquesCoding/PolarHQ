@@ -31,6 +31,10 @@ export const generateSplat = (inputPath: string): Promise<string> =>
 /** Current peer-to-peer device-link status (e.g. `"offline"`). */
 export const p2pStatus = (): Promise<string> => invoke<string>("p2p_status")
 
+/** Native folder picker (run from Rust — the JS dialog plugin crashes the webview on this window's
+ *  drag-drop-disabled config on macOS). Resolves to the chosen absolute path, or null if cancelled. */
+export const pickFolder = (): Promise<string | null> => invoke<string | null>("pick_folder")
+
 /** Trigger a device-sync pass. Rejects until implemented. */
 export const syncNow = (): Promise<string> => invoke<string>("sync_now")
 
