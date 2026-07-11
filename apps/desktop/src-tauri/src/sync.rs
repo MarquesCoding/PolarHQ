@@ -132,14 +132,20 @@ pub struct SyncState {
     watchers: Mutex<HashMap<String, RecommendedWatcher>>,
 }
 
-/// Index a folder on demand (the JS controller reconciles the result against Drive).
+/// Index a folder on demand (the JS controller reconciles the result against Drive). Async + run on a
+/// blocking pool thread: the walk+hash can take a while on a large folder, and a synchronous command
+/// would run it on the main thread and freeze the UI (beachball).
 #[tauri::command]
-pub fn sync_index(path: String) -> Result<Vec<IndexEntry>, String> {
-    let root = PathBuf::from(&path);
-    if !root.is_dir() {
-        return Err(format!("not a directory: {path}"));
-    }
-    Ok(index_folder(&root))
+pub async fn sync_index(path: String) -> Result<Vec<IndexEntry>, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let root = PathBuf::from(&path);
+        if !root.is_dir() {
+            return Err(format!("not a directory: {path}"));
+        }
+        Ok(index_folder(&root))
+    })
+    .await
+    .map_err(|e| e.to_string())?
 }
 
 /// Read a file's raw bytes for the JS controller to encrypt + upload. Returns them as a binary IPC
@@ -147,10 +153,12 @@ pub fn sync_index(path: String) -> Result<Vec<IndexEntry>, String> {
 /// filesystem access, so this sidesteps the fs plugin's path-scope restrictions for the user-granted
 /// synced folder.
 #[tauri::command]
-pub fn sync_read_file(path: String) -> Result<tauri::ipc::Response, String> {
-    std::fs::read(&path)
-        .map(tauri::ipc::Response::new)
-        .map_err(|e| e.to_string())
+pub async fn sync_read_file(path: String) -> Result<tauri::ipc::Response, String> {
+    let bytes = tauri::async_runtime::spawn_blocking(move || std::fs::read(&path))
+        .await
+        .map_err(|e| e.to_string())?
+        .map_err(|e| e.to_string())?;
+    Ok(tauri::ipc::Response::new(bytes))
 }
 
 /// Start watching a synced folder; emits `sync://change` (payload = the folder path) on any FS change.
