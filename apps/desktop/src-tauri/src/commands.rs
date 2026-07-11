@@ -17,6 +17,22 @@ pub async fn p2p_status() -> Result<String, String> {
     Ok("offline".into())
 }
 
+/// Native folder picker, driven from Rust. The main window is built with `disable_drag_drop_handler()`
+/// (needed for in-app HTML5 drag-and-drop), and opening an `NSOpenPanel` through the JS dialog plugin
+/// on such a window crashes the WKWebView renderer on macOS. Running the panel from the Rust side
+/// sidesteps that. Runs on a blocking pool thread so the panel (dispatched to the main thread by the
+/// plugin) doesn't deadlock the runtime. Returns the chosen absolute path, or `None` if cancelled.
+#[tauri::command]
+pub async fn pick_folder(app: tauri::AppHandle) -> Option<String> {
+    use tauri_plugin_dialog::DialogExt;
+    tauri::async_runtime::spawn_blocking(move || app.dialog().file().blocking_pick_folder())
+        .await
+        .ok()
+        .flatten()
+        .and_then(|path| path.into_path().ok())
+        .map(|path| path.to_string_lossy().into_owned())
+}
+
 /// Run a device-sync pass. Stub: rejects until device sync is implemented.
 #[tauri::command]
 pub async fn sync_now() -> Result<String, String> {

@@ -27,6 +27,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::generate_splat,
             commands::p2p_status,
+            commands::pick_folder,
             commands::sync_now,
             commands::write_temp_media,
             sync::sync_index,

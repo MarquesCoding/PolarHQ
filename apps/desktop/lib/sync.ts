@@ -1,6 +1,5 @@
-import { open } from "@tauri-apps/plugin-dialog"
 import { type Store, load } from "@tauri-apps/plugin-store"
-import { type SyncEntry, syncIndex, syncReadFile } from "@lib/native"
+import { type SyncEntry, pickFolder, syncIndex, syncReadFile } from "@lib/native"
 import { createDriveFolder } from "@workspace/core/drive"
 import {
   CHUNKED_UPLOAD_THRESHOLD,
@@ -88,8 +87,8 @@ const toInfo = (record: FolderRecord): SyncedFolderInfo => ({
 const list = async (): Promise<SyncedFolderInfo[]> => (await readRecords()).map(toInfo)
 
 const add = async (): Promise<SyncedFolderInfo | null> => {
-  const picked = await open({ directory: true, multiple: false })
-  if (!picked || typeof picked !== "string") return null
+  const picked = await pickFolder()
+  if (!picked) return null
   const records = await readRecords()
   const existing = records.find((record) => record.localPath === picked)
   if (existing) return toInfo(existing)
