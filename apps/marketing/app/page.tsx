@@ -1,12 +1,10 @@
 import Hero from "@components/Hero"
-import AppShowcase from "@components/AppShowcase"
 import Showcase from "@components/Showcase"
 import Footer from "@components/Footer"
 
 const Page = () => (
   <main className="bg-background min-h-svh">
     <Hero />
-    <AppShowcase />
     <Showcase />
     <div
       aria-hidden

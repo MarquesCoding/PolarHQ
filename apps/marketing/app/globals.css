@@ -18,15 +18,18 @@ body {
   --background: #0a0a12;
 }
 
-/* Bold, rounded, cartoon-leaning display type for headlines. */
+/* Clean grotesque display type for headlines — tight, editorial, not rounded. */
 .wordmark,
 .font-display {
-  font-family: var(--font-display), ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.03em;
 }
 .wordmark {
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 0.85;
+  line-height: 0.9;
+}
+.font-serif {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
 }
 
 /* Flat violet primary button (no embossed ring). */
