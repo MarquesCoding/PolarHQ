@@ -21,13 +21,31 @@ const meshFromGeometry = (geometry: THREE.BufferGeometry): THREE.Mesh => {
   return new THREE.Mesh(geometry, baseMaterial())
 }
 
+const pointsFromGeometry = (geometry: THREE.BufferGeometry): THREE.Points => {
+  const vertexColors = geometry.hasAttribute("color")
+  const material = new THREE.PointsMaterial({
+    size: 2.5,
+    sizeAttenuation: false,
+    vertexColors,
+    color: vertexColors ? 0xffffff : 0xb6bac4,
+  })
+  return new THREE.Points(geometry, material)
+}
+
+/** True for a Three.js object made of points (a point cloud) rather than a shaded mesh. */
+export const isPointCloud = (object: THREE.Object3D): boolean =>
+  (object as THREE.Points).isPoints === true
+
 /** Parse a 3D model's bytes into a Three.js object, picking the loader by file extension. */
 export const loadModel = async (name: string, buffer: ArrayBuffer): Promise<THREE.Object3D> => {
   switch (extensionOf(name)) {
     case "stl":
       return meshFromGeometry(new STLLoader().parse(buffer))
-    case "ply":
-      return meshFromGeometry(new PLYLoader().parse(buffer))
+    case "ply": {
+      const geometry = new PLYLoader().parse(buffer)
+      const hasFaces = (geometry.index?.count ?? 0) > 0
+      return hasFaces ? meshFromGeometry(geometry) : pointsFromGeometry(geometry)
+    }
     case "obj":
       return new OBJLoader().parse(new TextDecoder().decode(new Uint8Array(buffer)))
     case "fbx":
@@ -92,13 +110,13 @@ export const hasTextures = (object: THREE.Object3D): boolean => {
   return found
 }
 
-/** Release GPU resources for a loaded model. */
+/** Release GPU resources for a loaded model (meshes and point clouds alike). */
 export const disposeModel = (object: THREE.Object3D): void => {
   object.traverse((child) => {
-    const mesh = child as THREE.Mesh
-    if (!mesh.isMesh) return
-    mesh.geometry?.dispose()
-    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+    const drawable = child as THREE.Mesh | THREE.Points
+    if (!drawable.geometry) return
+    drawable.geometry.dispose()
+    const materials = Array.isArray(drawable.material) ? drawable.material : [drawable.material]
     materials.forEach((m) => m?.dispose())
   })
 }
