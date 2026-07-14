@@ -7,6 +7,8 @@ export interface SetupStatus {
   registrationMode: RegistrationMode
   /** Read-only/demo mode — non-admins can't mutate content. */
   demoMode: boolean
+  /** Name the operator gave this instance (labels the "cloud" device). Null until set. */
+  instanceName: string | null
 }
 
 export const fetchSetupStatus = (): Promise<SetupStatus> =>
@@ -17,6 +19,7 @@ export interface CompleteSetupInput {
   email: string
   password: string
   registrationMode: RegistrationMode
+  instanceName?: string
 }
 
 export const completeSetup = (input: CompleteSetupInput): Promise<{ userId: string }> =>

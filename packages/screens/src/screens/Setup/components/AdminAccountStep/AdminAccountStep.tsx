@@ -36,6 +36,7 @@ const fieldError = (errors: unknown[]): string | null => {
 const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
   const { t } = useTranslation("setup")
   const schema = z.object({
+    instanceName: z.string().max(120),
     name: z.string().min(1, t("adminAccountStep.nameRequired")),
     email: z.string().email(t("adminAccountStep.invalidEmail")),
     password: z.string().min(8, t("adminAccountStep.passwordMin")),
@@ -51,6 +52,7 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
 
   const form = useForm({
     defaultValues: {
+      instanceName: "",
       name: "",
       email: "",
       password: "",
@@ -98,6 +100,22 @@ const AdminAccountStep = ({ onComplete }: AdminAccountStepProps) => {
         void form.handleSubmit()
       }}
     >
+      <form.Field name="instanceName">
+        {(field) => (
+          <div className="flex flex-col gap-2">
+            <Label htmlFor={field.name}>{t("adminAccountStep.instanceNameLabel")}</Label>
+            <Input
+              id={field.name}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(event) => field.handleChange(event.target.value)}
+              placeholder={t("adminAccountStep.instanceNamePlaceholder")}
+            />
+            <p className="text-muted-foreground text-xs">{t("adminAccountStep.instanceNameHint")}</p>
+          </div>
+        )}
+      </form.Field>
+
       <form.Field name="name">
         {(field) => (
           <div className="flex flex-col gap-2">

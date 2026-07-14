@@ -54,3 +54,5 @@ next-env.d.ts
 /PLAN.md
 /AGENTS.md
 /docs/
+
+.claude/worktrees/
