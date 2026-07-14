@@ -10,6 +10,7 @@ import {
   applyShadeMode,
   disposeModel,
   hasTextures,
+  isPointCloud,
   loadModel,
 } from "@workspace/screens/model3d"
 import {
@@ -29,7 +30,10 @@ import { t } from "@workspace/i18n/config"
 import type * as THREE from "three"
 
 interface ModelViewerProps {
-  node: DriveNode
+  /** A Drive model to fetch + decrypt. Mutually exclusive with {@link ModelViewerProps.src}. */
+  node?: DriveNode
+  /** A ready, webview-loadable model (e.g. a generated splat PLY from the native pipeline). */
+  src?: { url: string; name: string }
   onClose: () => void
 }
 
@@ -74,7 +78,7 @@ const Scene = ({
 }
 
 /** Full-screen 3D viewer for Drive models (STL/OBJ/FBX/PLY/glTF), with shading + texture toggles. */
-const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
+const ModelViewer = ({ node, src, onClose }: ModelViewerProps) => {
   const { t } = useTranslation("drive")
   const [object, setObject] = useState<THREE.Object3D | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -82,6 +86,8 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
   const [showGrid, setShowGrid] = useState(true)
   const [autoRotate, setAutoRotate] = useState(false)
   const [showTextures, setShowTextures] = useState(true)
+
+  const name = node?.name ?? src?.name ?? ""
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => event.key === "Escape" && onClose()
@@ -96,8 +102,10 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
     setError(null)
     void (async () => {
       try {
-        const buffer = await fetchModelBuffer(node)
-        const result = await loadModel(node.name, buffer)
+        const buffer = src
+          ? await fetch(src.url).then((response) => response.arrayBuffer())
+          : await fetchModelBuffer(node!)
+        const result = await loadModel(name, buffer)
         if (cancelled) {
           disposeModel(result)
           return
@@ -112,8 +120,9 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
       cancelled = true
       if (loaded) disposeModel(loaded)
     }
-  }, [node])
+  }, [node, src?.url])
 
+  const points = object ? isPointCloud(object) : false
   const textured = object ? hasTextures(object) : false
 
   const modes: { key: ShadeMode; label: string; icon: typeof Cube }[] = [
@@ -141,24 +150,26 @@ const ModelViewer = ({ node, onClose }: ModelViewerProps) => {
           >
             <Icon name="xmark" className="size-5" />
           </Button>
-          <span className="truncate text-xs font-medium">{node.name}</span>
+          <span className="truncate text-xs font-medium">{name}</span>
         </div>
 
         <div className="panel flex items-center gap-0.5 rounded-full p-1 shadow-lg">
-          {modes.map((item) => (
-            <Button
-              key={item.key}
-              variant="ghost"
-              size="sm"
-              onClick={() => setMode(item.key)}
-              className={cn("rounded-full", mode === item.key && "bg-muted")}
-            >
-              <item.icon className="size-4" />
-              {item.label}
-            </Button>
-          ))}
-          <span className="bg-border mx-0.5 h-5 w-px" />
-          {textured ? (
+          {points
+            ? null
+            : modes.map((item) => (
+                <Button
+                  key={item.key}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMode(item.key)}
+                  className={cn("rounded-full", mode === item.key && "bg-muted")}
+                >
+                  <item.icon className="size-4" />
+                  {item.label}
+                </Button>
+              ))}
+          {points ? null : <span className="bg-border mx-0.5 h-5 w-px" />}
+          {textured && !points ? (
             <Button
               variant="ghost"
               size="icon-sm"

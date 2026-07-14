@@ -17,7 +17,9 @@ import {
   trashDriveNode,
 } from "@workspace/core/drive"
 import { type DocType, docTypeOf, openEditor } from "@workspace/core/docs"
-import { downloadDriveFile } from "@workspace/core/driveE2e"
+import { downloadDriveFile, fetchDecryptedFile } from "@workspace/core/driveE2e"
+import { coreConfig } from "@workspace/core/config"
+import { getHost } from "@workspace/core/host"
 import { importDriveFile, officeTypeForName } from "@workspace/screens/importFlow"
 import { createEncryptedDoc } from "@workspace/core/e2e"
 import { Icon } from "@workspace/screens/icons"
@@ -88,6 +90,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const [shareNode, setShareNode] = useState<DriveNode | null>(null)
   const [viewingNode, setViewingNode] = useState<DriveNode | null>(null)
   const [viewingModel, setViewingModel] = useState<DriveNode | null>(null)
+  const [splatSrc, setSplatSrc] = useState<{ url: string; name: string } | null>(null)
   const [lockDialog, setLockDialog] = useState<{ node: DriveNode; mode: "lock" | "remove" } | null>(
     null,
   )
@@ -173,6 +176,38 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     } else if (node.mimeType?.startsWith("image/")) setViewingNode(node)
     else if (is3DModelName(node.name)) setViewingModel(node)
     else downloadIds([node.id])
+  }
+
+  const imageBytes = async (node: DriveNode): Promise<Uint8Array> => {
+    if (node.encrypted && node.downloadUrl) {
+      const url = await fetchDecryptedFile(node.id, node.downloadUrl, node.mimeType)
+      if (!url) throw new Error("decrypt")
+      try {
+        const buffer: ArrayBuffer = await (await fetch(url)).arrayBuffer()
+        return new Uint8Array(buffer)
+      } finally {
+        URL.revokeObjectURL(url)
+      }
+    }
+    const href =
+      node.downloadUrl ?? `${coreConfig().apiUrl}/api/v1/drive/nodes/${node.id}/download`
+    const buffer: ArrayBuffer = await (await fetch(href, { credentials: "include" })).arrayBuffer()
+    return new Uint8Array(buffer)
+  }
+
+  const generate3d = async (node: DriveNode) => {
+    const host = getHost()
+    if (!host.generateSplat) return
+    const toastId = toast.loading(t("browser.generating3d"))
+    try {
+      const bytes = await imageBytes(node)
+      const url = await host.generateSplat(bytes, node.mimeType ?? "image/jpeg")
+      toast.dismiss(toastId)
+      setSplatSrc({ url, name: `${node.name.replace(/\.[^.]+$/, "")}.ply` })
+    } catch {
+      toast.dismiss(toastId)
+      toast.error(t("browser.generate3dFailed"))
+    }
   }
 
   const newDoc = async (type: DocType) => {
@@ -272,6 +307,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const actions: DriveNodeActions = {
     open: (node) => open(node),
     view: (node) => (is3DModelName(node.name) ? setViewingModel(node) : setViewingNode(node)),
+    generate3d: (node) => void generate3d(node),
     download: (node) => downloadIds([node.id]),
     copyLink: (node) => {
       if (!node.downloadUrl) return
@@ -523,6 +559,11 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
       {viewingModel ? (
         <Suspense fallback={null}>
           <ModelViewer key="model" node={viewingModel} onClose={() => setViewingModel(null)} />
+        </Suspense>
+      ) : null}
+      {splatSrc ? (
+        <Suspense fallback={null}>
+          <ModelViewer key="splat" src={splatSrc} onClose={() => setSplatSrc(null)} />
         </Suspense>
       ) : null}
     </AnimatePresence>

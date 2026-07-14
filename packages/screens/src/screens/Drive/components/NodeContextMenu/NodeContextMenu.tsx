@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
 import { type DriveNode, isArchiveName } from "@workspace/core/drive"
+import { getHost } from "@workspace/core/host"
 import { docTypeOf } from "@workspace/core/docs"
 import { officeTypeForName } from "@workspace/screens/importFlow"
 import { is3DModelName } from "@workspace/screens/model3dExt"
@@ -10,6 +11,7 @@ import {
   ArrowSquareOut,
   ClockCounterClockwise,
   Copy,
+  Cube,
   DownloadSimple,
   Export,
   Eye,
@@ -34,6 +36,7 @@ import {
 export interface DriveNodeActions {
   open: (node: DriveNode) => void
   view: (node: DriveNode) => void
+  generate3d?: (node: DriveNode) => void
   download: (node: DriveNode) => void
   copyLink: (node: DriveNode) => void
   share: (node: DriveNode) => void
@@ -61,6 +64,8 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
   const isFile = node.kind === "file"
   const isImage = isFile && Boolean(node.mimeType?.startsWith("image/"))
   const is3D = isFile && is3DModelName(node.name)
+  const canGenerate3d =
+    isImage && Boolean(actions.generate3d) && getHost().isDesktop && Boolean(getHost().generateSplat)
 
   return (
     <ContextMenu>
@@ -96,6 +101,12 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
               <ContextMenuItem onClick={() => actions.view(node)}>
                 <Eye />
                 {is3D ? t("nodeContextMenu.viewIn3d") : t("nodeContextMenu.view")}
+              </ContextMenuItem>
+            ) : null}
+            {canGenerate3d ? (
+              <ContextMenuItem onClick={() => actions.generate3d?.(node)}>
+                <Cube />
+                {t("nodeContextMenu.generate3d")}
               </ContextMenuItem>
             ) : null}
             {isFile ? (
