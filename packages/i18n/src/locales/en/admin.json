@@ -108,6 +108,9 @@
     "passwordHint": "At least 8 characters.",
     "title": "Create user"
   },
+  "editor": {
+    "back": "Back"
+  },
   "groupDetailSheet": {
     "add": "Add",
     "addMemberPlaceholder": "Add a member…",
@@ -170,6 +173,16 @@
     "storageUsed": "Storage used",
     "title": "Overview",
     "users": "Users"
+  },
+  "roleEditor": {
+    "newRoleTitle": "New role",
+    "noPermissions": "No permissions match your search.",
+    "permissionCount_one": "{{count}} permission",
+    "permissionCount_other": "{{count}} permissions",
+    "searchPermissions": "Search permissions…",
+    "tabDisplay": "Display",
+    "tabPermissions": "Permissions",
+    "toggleAll": "Toggle all {{app}} permissions"
   },
   "roles": {
     "delete": "Delete",
