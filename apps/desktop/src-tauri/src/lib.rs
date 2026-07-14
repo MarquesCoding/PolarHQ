@@ -1,4 +1,5 @@
 mod commands;
+mod splat;
 mod sync;
 
 /// Boots the Tauri runtime and registers the native command surface the frontend reaches through
