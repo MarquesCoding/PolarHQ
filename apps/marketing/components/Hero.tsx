@@ -4,11 +4,11 @@ import { type Variants, motion } from "motion/react"
 import { Button } from "@workspace/ui/components/button"
 import { RELEASES } from "@lib/changelog"
 import {
-  AndroidLogo,
   AppleLogo,
   GithubLogo,
-  Globe,
   LinuxLogo,
+  LockKey,
+  ShieldCheck,
   WindowsLogo,
 } from "@phosphor-icons/react"
 
@@ -18,75 +18,63 @@ const VERSION = RELEASES[0]?.version ?? "0.5.0-alpha"
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
+  show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } },
+}
+const item: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 0.61, 0.36, 1] } },
 }
 
-const item: Variants = {
-  hidden: { opacity: 0, y: 22 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 0.61, 0.36, 1] } },
-}
+const PROPS = [
+  "End-to-end encrypted",
+  "Self-hosted",
+  "Open source",
+  "Photos · Drive · Docs · Sheets",
+]
 
 const Hero = () => (
-  <section className="relative isolate overflow-hidden px-6 pt-36 pb-24 text-center sm:pt-40 sm:pb-28">
-    {/* Clean, flat backdrop: a faint violet tint at the top fading into the page — no glow blobs. */}
+  <section className="relative isolate flex min-h-svh flex-col overflow-hidden px-6 pt-32 pb-0 sm:pt-36">
     <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-      <div className="from-primary/10 absolute inset-x-0 top-0 h-[460px] bg-gradient-to-b to-transparent" />
-      <div className="to-background absolute inset-x-0 bottom-0 h-56 bg-gradient-to-b from-transparent" />
+      <div className="from-primary/10 absolute inset-x-0 top-0 h-[520px] bg-gradient-to-b to-transparent" />
     </div>
-
-    {/* Two bears sitting on the bottom edge (fully visible, grounded), framing the content. */}
-    <motion.img
-      src="/stickers/bear-wave.png"
-      alt=""
-      width={340}
-      height={340}
-      className="pointer-events-none absolute bottom-0 left-2 -z-0 w-36 rotate-6 drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)] sm:left-8 sm:w-52 lg:w-60"
-      initial={{ opacity: 0, y: 50, rotate: 16 }}
-      animate={{ opacity: 1, y: 0, rotate: 6 }}
-      transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
-    />
-
-    <motion.img
-      src="/stickers/bear-read.png"
-      alt=""
-      width={300}
-      height={300}
-      className="pointer-events-none absolute right-2 bottom-0 -z-0 hidden w-44 -rotate-6 drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)] sm:right-6 lg:block lg:w-52"
-      initial={{ opacity: 0, y: 50, rotate: -16 }}
-      animate={{ opacity: 1, y: 0, rotate: -6 }}
-      transition={{ duration: 0.9, delay: 0.7, ease: [0.22, 0.61, 0.36, 1] }}
-    />
 
     <motion.div
       variants={container}
       initial="hidden"
       animate="show"
-      className="mx-auto flex max-w-4xl flex-col items-center"
+      className="mx-auto flex w-full max-w-3xl flex-col items-center text-center"
     >
-      <motion.div
+      <motion.a
         variants={item}
-        className="border-primary/30 bg-primary/10 text-primary inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-semibold backdrop-blur"
+        href={`${REPO_URL}/releases/latest`}
+        target="_blank"
+        rel="noreferrer"
+        className="border-primary/25 bg-primary/10 text-primary hover:bg-primary/15 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-colors"
       >
-        Open source · self-hosted · end-to-end encrypted
-      </motion.div>
+        <ShieldCheck className="size-3.5" weight="fill" />
+        Own your data — alpha v{VERSION}
+      </motion.a>
 
       <motion.h1
         variants={item}
-        className="font-display text-foreground mt-6 text-5xl leading-[1.04] font-bold tracking-tight sm:text-7xl"
+        className="font-display text-foreground mt-6 text-[2.75rem] leading-[1.02] font-bold tracking-tight sm:text-[4.25rem]"
       >
-        Your digital life,
+        Your whole digital life,
         <br />
-        under your <span className="text-primary">control</span>.
+        <span className="font-serif font-normal italic">private</span> and{" "}
+        <span className="text-primary">self-hosted</span>.
       </motion.h1>
 
       <motion.p
         variants={item}
-        className="text-foreground/75 mx-auto mt-6 max-w-xl text-lg sm:text-xl"
+        className="text-foreground/65 mx-auto mt-6 max-w-xl text-lg text-pretty sm:text-xl"
       >
-        A friendly home for your photos, files and documents — built around ownership, not lock-in.
+        PolarHQ is an open-source suite — Photos, Drive, Docs and Sheets — that runs on your own
+        server. Every file is end-to-end encrypted, so nobody but you can read it. No subscriptions,
+        no lock-in, no one mining your library.
       </motion.p>
 
-      <motion.div variants={item} className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
+      <motion.div variants={item} className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
         <Button
           render={<a href={DOWNLOAD_URL} target="_blank" rel="noreferrer" />}
           size="lg"
@@ -106,43 +94,56 @@ const Hero = () => (
         </Button>
       </motion.div>
 
-      <motion.div variants={item} className="text-foreground/50 mt-6 flex items-center gap-3 text-sm">
-        <span>Alpha v{VERSION}</span>
-        <span aria-hidden className="bg-foreground/25 h-3 w-px" />
-        <span>macOS · Windows · Linux</span>
-      </motion.div>
+      <motion.ul
+        variants={item}
+        className="text-foreground/60 mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-medium"
+      >
+        {PROPS.map((prop) => (
+          <li key={prop} className="flex items-center gap-1.5">
+            <LockKey className="text-primary/70 size-3.5" weight="fill" />
+            {prop}
+          </li>
+        ))}
+      </motion.ul>
 
-      <motion.div variants={item} className="mt-7 flex items-center gap-6">
-        <a
-          href={DOWNLOAD_URL}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Download for macOS"
-          className="text-foreground/45 hover:text-foreground transition-colors"
-        >
-          <AppleLogo className="size-[18px]" />
-        </a>
-        <a
-          href={DOWNLOAD_URL}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Download for Windows"
-          className="text-foreground/45 hover:text-foreground transition-colors"
-        >
-          <WindowsLogo className="size-[18px]" />
-        </a>
-        <a
-          href={DOWNLOAD_URL}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Download for Linux"
-          className="text-foreground/45 hover:text-foreground transition-colors"
-        >
-          <LinuxLogo className="size-[18px]" />
-        </a>
-        <AndroidLogo className="text-foreground/25 size-[18px]" />
-        <Globe className="text-foreground/45 size-[18px]" />
+      <motion.div
+        variants={item}
+        className="text-foreground/45 mt-6 flex items-center gap-4 text-sm"
+      >
+        <span className="flex items-center gap-1.5">
+          <AppleLogo className="size-4" /> macOS
+        </span>
+        <span className="flex items-center gap-1.5">
+          <WindowsLogo className="size-4" /> Windows
+        </span>
+        <span className="flex items-center gap-1.5">
+          <LinuxLogo className="size-4" /> Linux
+        </span>
       </motion.div>
+    </motion.div>
+
+    {/* App shot fills the rest of the hero and is cut off at the fold, fading 100% → 50% top-to-bottom. */}
+    <motion.div
+      initial={{ opacity: 0, y: 60 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1, delay: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+      className="relative mt-12 min-h-[280px] flex-1 sm:mt-16"
+    >
+      <div
+        className="border-foreground/10 mx-auto h-full max-w-6xl overflow-hidden rounded-t-2xl border border-b-0 shadow-[0_-8px_70px_-16px_rgba(0,0,0,0.3)]"
+        style={{
+          maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 100%)",
+        }}
+      >
+        <img
+          src="/landing.jpg"
+          alt="The PolarHQ desktop app"
+          width={2400}
+          height={1350}
+          className="h-full w-full object-cover object-top"
+        />
+      </div>
     </motion.div>
   </section>
 )
