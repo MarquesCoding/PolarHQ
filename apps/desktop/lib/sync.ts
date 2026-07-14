@@ -89,6 +89,7 @@ const toInfo = (record: FolderRecord): SyncedFolderInfo => ({
   localPath: record.localPath,
   name: record.name,
   fileCount: Object.values(record.manifest).filter((entry) => !entry.dir).length,
+  driveNodeId: record.driveNodeId,
   lastSyncedAt: record.lastSyncedAt,
 })
 

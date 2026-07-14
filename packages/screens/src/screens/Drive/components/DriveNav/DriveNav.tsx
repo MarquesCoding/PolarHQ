@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next"
 import { motion } from "motion/react"
 import { cn } from "@workspace/ui/lib/utils"
 import { NavRow, SectionLabel, navItemVariants, navRowClass } from "@components/FlatShell"
+import DevicesNav from "@pages/Drive/components/DevicesNav/DevicesNav"
 
 const isMyDrive = (pathname: string): boolean =>
   /^\/drive\/[^/]+$/.test(pathname) &&
@@ -19,16 +20,8 @@ const isMyDrive = (pathname: string): boolean =>
   pathname !== "/drive/recent" &&
   pathname !== "/drive/favorites"
 
-const FILE_KINDS: { kind: string; icon: string }[] = [
-  { kind: "image", icon: "photo" },
-  { kind: "video", icon: "video" },
-  { kind: "audio", icon: "music" },
-  { kind: "document", icon: "document" },
-  { kind: "archive", icon: "file-zip" },
-]
-
-/** Drive nav: Overview / My Drive / Recents / Trash, the File-kinds smart views, and the current
- *  folder's location trail. */
+/** Drive nav: Overview / My Drive / Recents / Trash, the Devices section (synced folders + P2P), and
+ *  the current folder's location trail. */
 const DriveNav = () => {
   const { t } = useTranslation("drive")
   const pathname = usePathname()
@@ -75,17 +68,7 @@ const DriveNav = () => {
       />
       <NavRow href="/drive/trash" icon="trash" label={t("driveNav.trash")} active={pathname === "/drive/trash"} />
 
-      <SectionLabel>{t("driveNav.fileKinds")}</SectionLabel>
-      {FILE_KINDS.map(({ kind, icon }) => (
-        <NavRow
-          key={kind}
-          href={`/drive/kind/${kind}`}
-          icon={icon}
-          label={t(`overview.kinds.${kind}`)}
-          active={pathname === `/drive/kind/${kind}`}
-          compact
-        />
-      ))}
+      <DevicesNav />
 
       {searches.length > 0 ? (
         <>
