@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { AppLink as Link, usePathname } from "@workspace/screens/platform"
 import { getHost } from "@workspace/core/host"
+import { fetchSetupStatus } from "@workspace/core/setup"
 import { getSyncBridge } from "@workspace/screens/syncBridge"
 import { Icon } from "@workspace/screens/icons"
 import { SectionLabel, navRowClass } from "@components/FlatShell"
@@ -96,6 +97,8 @@ const DevicesNav = () => {
     queryFn: () => bridge!.list(),
     enabled: Boolean(bridge),
   })
+  const { data: setup } = useQuery({ queryKey: ["setup-status"], queryFn: fetchSetupStatus })
+  const cloudName = setup?.instanceName || t("driveNav.cloud")
   const syncedPaths = new Set(synced.map((folder) => `/drive/${folder.driveNodeId}`))
   const peers: P2pDevice[] = []
 
@@ -103,7 +106,7 @@ const DevicesNav = () => {
     <>
       <SectionLabel>{t("driveNav.devices")}</SectionLabel>
 
-      <DeviceHeader icon="cloud" name={t("driveNav.cloud")} badge={t("driveNav.tagCloud")} />
+      <DeviceHeader icon="cloud" name={cloudName} badge={t("driveNav.tagCloud")} />
       <DeviceChild
         href="/drive/files"
         icon="folder"
