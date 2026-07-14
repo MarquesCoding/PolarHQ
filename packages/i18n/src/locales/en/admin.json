@@ -217,6 +217,8 @@
     "noGroups": "Not in any group.",
     "noRoles": "No roles assigned.",
     "removeRole": "Remove {{name}}",
+    "unlimited": "Unlimited",
+    "usage": "Storage used",
     "roleAssigned": "Role assigned",
     "roleRemoved": "Role removed",
     "roles": "Roles",

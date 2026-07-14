@@ -434,7 +434,27 @@ export const getUserDetail = async (userId: string) => {
       override: (overrides.get(def.key) ?? null) as number | string | boolean | null,
     })),
   )
-  return { ...profile, roles: roleRows, groups: groupRows, limits }
+
+  // Usage AMOUNT only (bytes) — scoped to this user, never their file contents. Mirrors getOverview's
+  // aggregate but filtered by ownerId.
+  const [photoBytes] = await db
+    .select({ value: sql<string>`coalesce(sum(${schema.assets.sizeBytes}), 0)` })
+    .from(schema.assets)
+    .where(and(eq(schema.assets.ownerId, userId), eq(schema.assets.isTrashed, false)))
+  const [fileBytes] = await db
+    .select({ value: sql<string>`coalesce(sum(${schema.nodes.sizeBytes}), 0)` })
+    .from(schema.nodes)
+    .where(
+      and(
+        eq(schema.nodes.ownerId, userId),
+        eq(schema.nodes.kind, "file"),
+        isNull(schema.nodes.photoAssetId),
+        isNull(schema.nodes.trashedAt),
+      ),
+    )
+  const usageBytes = Number(photoBytes?.value ?? 0) + Number(fileBytes?.value ?? 0)
+
+  return { ...profile, roles: roleRows, groups: groupRows, limits, usageBytes }
 }
 
 /** Assign one of the catalog roles to a user via the RBAC subject_roles table. */
