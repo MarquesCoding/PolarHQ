@@ -6,6 +6,7 @@ import { ArrowSquareOut } from "@phosphor-icons/react/ArrowSquareOut"
 import { Buildings } from "@phosphor-icons/react/Buildings"
 import { Calendar } from "@phosphor-icons/react/Calendar"
 import { Camera } from "@phosphor-icons/react/Camera"
+import { Cloud } from "@phosphor-icons/react/Cloud"
 import { CaretLeft } from "@phosphor-icons/react/CaretLeft"
 import { CaretRight } from "@phosphor-icons/react/CaretRight"
 import { CheckCircle } from "@phosphor-icons/react/CheckCircle"
@@ -124,6 +125,7 @@ const icons: Record<string, IconComponent> = {
   "volume-mute": SpeakerSimpleX,
   fullscreen: ArrowsIn,
   gauge: Gauge,
+  cloud: Cloud,
   laptop: Laptop,
   desktop: Desktop,
   "device-mobile": DeviceMobile,

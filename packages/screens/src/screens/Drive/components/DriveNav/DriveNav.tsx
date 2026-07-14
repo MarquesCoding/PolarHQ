@@ -13,15 +13,8 @@ import { cn } from "@workspace/ui/lib/utils"
 import { NavRow, SectionLabel, navItemVariants, navRowClass } from "@components/FlatShell"
 import DevicesNav from "@pages/Drive/components/DevicesNav/DevicesNav"
 
-const isMyDrive = (pathname: string): boolean =>
-  /^\/drive\/[^/]+$/.test(pathname) &&
-  pathname !== "/drive/trash" &&
-  pathname !== "/drive/overview" &&
-  pathname !== "/drive/recent" &&
-  pathname !== "/drive/favorites"
-
-/** Drive nav: Overview / My Drive / Recents / Trash, the Devices section (synced folders + P2P), and
- *  the current folder's location trail. */
+/** Device-first Drive nav: Overview on top, then the Devices section (cloud views + this computer's
+ *  synced folders + P2P), saved searches, and the current folder's location trail. */
 const DriveNav = () => {
   const { t } = useTranslation("drive")
   const pathname = usePathname()
@@ -46,27 +39,7 @@ const DriveNav = () => {
 
   return (
     <>
-      <SectionLabel>{t("driveNav.drive")}</SectionLabel>
       <NavRow href="/drive" icon="gauge" label={t("driveNav.overview")} active={pathname === "/drive"} />
-      <NavRow
-        href="/drive/files"
-        icon="folder"
-        label={t("driveNav.myDrive")}
-        active={isMyDrive(pathname)}
-      />
-      <NavRow
-        href="/drive/recent"
-        icon="calendar"
-        label={t("driveNav.recents")}
-        active={pathname === "/drive/recent"}
-      />
-      <NavRow
-        href="/drive/favorites"
-        icon="favourites"
-        label={t("driveNav.favorites")}
-        active={pathname === "/drive/favorites"}
-      />
-      <NavRow href="/drive/trash" icon="trash" label={t("driveNav.trash")} active={pathname === "/drive/trash"} />
 
       <DevicesNav />
 

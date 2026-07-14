@@ -69,6 +69,7 @@
     "uploadFiles": "Upload files"
   },
   "driveNav": {
+    "cloud": "Cloud",
     "devices": "Devices",
     "drive": "Drive",
     "favorites": "Favorites",
