@@ -8,7 +8,7 @@ import { tauriSecureStoreBackend } from "@lib/secureStore"
 import { loadAuthToken, saveAuthToken } from "@lib/authToken"
 import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
 import { loadLastServerUrl, loadServerUrl, saveServerUrl } from "@lib/server"
-import { nativeMediaUrl } from "@lib/native"
+import { deviceName, nativeMediaUrl } from "@lib/native"
 import Updater from "./Updater"
 import Spinner from "@components/Spinner/Spinner"
 
@@ -90,6 +90,9 @@ export const Bootstrap = () => {
           openExternal: (url) => void openUrl(url),
           nativeMediaUrl,
         })
+        void deviceName()
+          .then((name) => configureHost({ deviceName: name }))
+          .catch(() => undefined)
       }
       const win = window as Window & { __polarServer?: ServerBridge }
       win.__polarServer = {

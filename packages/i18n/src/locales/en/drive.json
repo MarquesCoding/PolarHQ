@@ -75,6 +75,8 @@
     "fileKinds": "File kinds",
     "location": "Location",
     "myDrive": "My Drive",
+    "noSyncedFolders": "No folders synced yet",
+    "thisDevice": "This device",
     "thisMac": "This Mac",
     "overview": "Overview",
     "recents": "Recents",

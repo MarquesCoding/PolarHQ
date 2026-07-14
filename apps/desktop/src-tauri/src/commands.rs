@@ -17,6 +17,13 @@ pub async fn p2p_status() -> Result<String, String> {
     Ok("offline".into())
 }
 
+/// The friendly name of this machine (macOS ComputerName, etc.) — labels the local device in the
+/// Drive "Devices" list.
+#[tauri::command]
+pub fn device_name() -> String {
+    whoami::devicename()
+}
+
 /// Native folder picker, driven from Rust. The main window is built with `disable_drag_drop_handler()`
 /// (needed for in-app HTML5 drag-and-drop), and opening an `NSOpenPanel` through the JS dialog plugin
 /// on such a window crashes the WKWebView renderer on macOS. Running the panel from the Rust side

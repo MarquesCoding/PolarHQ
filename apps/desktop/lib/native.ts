@@ -35,6 +35,9 @@ export const p2pStatus = (): Promise<string> => invoke<string>("p2p_status")
  *  drag-drop-disabled config on macOS). Resolves to the chosen absolute path, or null if cancelled. */
 export const pickFolder = (): Promise<string | null> => invoke<string | null>("pick_folder")
 
+/** Friendly name of this machine (e.g. macOS ComputerName) — labels the local device in Drive. */
+export const deviceName = (): Promise<string> => invoke<string>("device_name")
+
 /** Trigger a device-sync pass. Rejects until implemented. */
 export const syncNow = (): Promise<string> => invoke<string>("sync_now")
 

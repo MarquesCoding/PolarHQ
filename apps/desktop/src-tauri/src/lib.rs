@@ -25,6 +25,7 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            commands::device_name,
             commands::generate_splat,
             commands::p2p_status,
             commands::pick_folder,
