@@ -6,6 +6,8 @@
  */
 export interface HostCapabilities {
   isDesktop: boolean
+  /** Friendly name of the local machine (e.g. macOS ComputerName). Desktop-only. */
+  deviceName?: string
   /** Open a URL in the user's real browser (not the app webview). Desktop-only. */
   openExternal?: (url: string) => Promise<void> | void
   /**

@@ -10,9 +10,9 @@ import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 
 /**
- * Remote peer-to-peer devices. The P2P transport (discovery, connection, remote directory transfer)
- * is not implemented yet — `p2pStatus` is a stub — so this list is a placeholder demonstrating the
- * intended states (online/offline/connecting/failed). Swap for real discovery once P2P lands.
+ * A discoverable peer device. The P2P transport (discovery, connection, remote directory transfer)
+ * isn't implemented yet — `p2pStatus` is a stub — so no remote devices are listed; the row component
+ * below carries the intended online/offline/connecting/failed states for when real discovery lands.
  */
 interface P2pDevice {
   id: string
@@ -20,15 +20,11 @@ interface P2pDevice {
   icon: string
   online: boolean
 }
-const P2P_DEVICES: P2pDevice[] = [
-  { id: "p2p-macbook", name: "MacBook Pro", icon: "laptop", online: true },
-  { id: "p2p-iphone", name: "iPhone", icon: "device-mobile", online: false },
-]
 
 const CONNECT_TIMEOUT_MS = 15000
 
-/** A P2P device row. Offline devices are greyed + inert; clicking a live one shows a spinner and,
- *  since there's no backend to complete the handshake, surfaces the failure state after 15s. */
+/** A remote device row: offline devices are greyed + inert; clicking a live one shows a spinner and,
+ *  with no backend to complete the handshake, surfaces the failure state after 15s. */
 const P2pDeviceRow = ({ device }: { device: P2pDevice }) => {
   const [state, setState] = useState<"idle" | "connecting" | "failed">("idle")
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -57,48 +53,56 @@ const P2pDeviceRow = ({ device }: { device: P2pDevice }) => {
   )
 }
 
-/** DEVICES section of the Drive sidebar: this computer's synced folders (the 1:1 Drive mirror, no P2P
- *  needed) plus discoverable P2P devices. Hidden entirely when there are no devices (e.g. on web). */
+/** DEVICES section: this computer (its real name, always shown on desktop) with its synced folders
+ *  linking to their 1:1 Drive mirror, plus any discoverable P2P peers. Hidden on web. */
 const DevicesNav = () => {
   const { t } = useTranslation("drive")
   const pathname = usePathname()
   const bridge = getSyncBridge()
-  const desktop = getHost().isDesktop
+  const host = getHost()
+  const desktop = host.isDesktop
+  const localName = host.deviceName || t("driveNav.thisDevice")
 
   const { data: synced = [] } = useQuery({
     queryKey: ["sync", "folders"],
     queryFn: () => bridge!.list(),
     enabled: Boolean(bridge),
   })
-  const devices = desktop ? P2P_DEVICES : []
+  const peers: P2pDevice[] = []
 
-  if (synced.length === 0 && devices.length === 0) return null
+  if (!desktop && peers.length === 0) return null
 
   return (
     <>
       <SectionLabel>{t("driveNav.devices")}</SectionLabel>
-      {bridge && synced.length > 0 ? (
+      {desktop ? (
         <>
-          <div className="text-muted-foreground flex items-center gap-2.5 px-2.5 py-1.5 text-sm">
+          <div className="text-foreground flex items-center gap-2.5 px-2.5 py-1.5 text-sm font-medium">
             <Icon name="laptop" className="size-[18px] shrink-0" />
-            <span className="min-w-0 flex-1 truncate">{t("driveNav.thisMac")}</span>
+            <span className="min-w-0 flex-1 truncate">{localName}</span>
           </div>
-          {synced.map((folder) => {
-            const active = pathname === `/drive/${folder.driveNodeId}`
-            return (
-              <Link
-                key={folder.id}
-                href={`/drive/${folder.driveNodeId}`}
-                className={cn(navRowClass(active, true), "pl-8", active && "bg-sidebar-accent/60")}
-              >
-                <Icon name="folder" className="relative size-4 shrink-0" />
-                <span className="relative min-w-0 flex-1 truncate">{folder.name}</span>
-              </Link>
-            )
-          })}
+          {synced.length > 0 ? (
+            synced.map((folder) => {
+              const active = pathname === `/drive/${folder.driveNodeId}`
+              return (
+                <Link
+                  key={folder.id}
+                  href={`/drive/${folder.driveNodeId}`}
+                  className={cn(navRowClass(active, true), "pl-8", active && "bg-sidebar-accent/60")}
+                >
+                  <Icon name="folder" className="relative size-4 shrink-0" />
+                  <span className="relative min-w-0 flex-1 truncate">{folder.name}</span>
+                </Link>
+              )
+            })
+          ) : (
+            <p className="text-muted-foreground/60 px-2.5 pb-1 pl-8 text-xs">
+              {t("driveNav.noSyncedFolders")}
+            </p>
+          )}
         </>
       ) : null}
-      {devices.map((device) => (
+      {peers.map((device) => (
         <P2pDeviceRow key={device.id} device={device} />
       ))}
     </>

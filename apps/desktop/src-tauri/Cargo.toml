@@ -36,6 +36,8 @@ serde_json = "1"
 ignore = "0.4"
 notify = "6"
 blake3 = "1"
+# Friendly local device name (e.g. macOS ComputerName) for the "Devices" list.
+whoami = "1"
 
 # Desktop-only: auto-update (the updater plugin isn't built for mobile targets).
 [target."cfg(any(target_os = \"macos\", target_os = \"windows\", target_os = \"linux\"))".dependencies]
