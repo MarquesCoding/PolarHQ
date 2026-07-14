@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { AppLink as Link, usePathname } from "@workspace/screens/platform"
 import { getHost } from "@workspace/core/host"
 import { getSyncBridge } from "@workspace/screens/syncBridge"
@@ -22,12 +22,19 @@ const isMyDrive = (pathname: string): boolean =>
   /^\/drive\/[^/]+$/.test(pathname) &&
   !["/drive/trash", "/drive/overview", "/drive/recent", "/drive/favorites"].includes(pathname)
 
+/** A small uppercase type tag (CLOUD / LOCAL / P2P) shown next to a device's name. */
+const DeviceBadge = ({ label }: { label: string }) => (
+  <span className="bg-sidebar-accent text-muted-foreground/80 shrink-0 rounded px-1.5 py-px text-[9px] font-semibold tracking-wider uppercase">
+    {label}
+  </span>
+)
+
 /** A device's title row (cloud / this computer / a peer) — not itself a link; its contents are. */
-const DeviceHeader = ({ icon, name, trailing }: { icon: string; name: string; trailing?: ReactNode }) => (
+const DeviceHeader = ({ icon, name, badge }: { icon: string; name: string; badge: string }) => (
   <div className="text-foreground flex items-center gap-2.5 px-2.5 py-1.5 text-sm font-medium">
     <Icon name={icon} className="size-[18px] shrink-0" />
     <span className="min-w-0 flex-1 truncate">{name}</span>
-    {trailing}
+    <DeviceBadge label={badge} />
   </div>
 )
 
@@ -62,6 +69,7 @@ const P2pDeviceRow = ({ device }: { device: P2pDevice }) => {
     >
       <Icon name={device.icon} className="relative size-[18px] shrink-0" />
       <span className="relative min-w-0 flex-1 truncate text-left">{device.name}</span>
+      <DeviceBadge label="P2P" />
       {state === "connecting" ? <Spinner className="relative size-4" /> : null}
       {state === "failed" ? (
         <Icon name="circle-warning" className="relative size-4 text-amber-500" />
@@ -95,7 +103,7 @@ const DevicesNav = () => {
     <>
       <SectionLabel>{t("driveNav.devices")}</SectionLabel>
 
-      <DeviceHeader icon="cloud" name={t("driveNav.cloud")} />
+      <DeviceHeader icon="cloud" name={t("driveNav.cloud")} badge={t("driveNav.tagCloud")} />
       <DeviceChild
         href="/drive/files"
         icon="folder"
@@ -123,7 +131,7 @@ const DevicesNav = () => {
 
       {desktop ? (
         <>
-          <DeviceHeader icon="laptop" name={localName} />
+          <DeviceHeader icon="laptop" name={localName} badge={t("driveNav.tagLocal")} />
           {synced.length > 0 ? (
             synced.map((folder) => (
               <DeviceChild
