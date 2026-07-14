@@ -8,6 +8,7 @@ import {
   setLimitFor,
   unassignRole,
 } from "@workspace/core/admin"
+import { formatBytes } from "@workspace/core/format"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
@@ -161,6 +162,27 @@ const UserDetailSheet = ({ userId, onOpenChange }: UserDetailSheetProps) => {
               <SheetTitle>{detail.name}</SheetTitle>
               <span className="text-muted-foreground text-sm">{detail.email}</span>
             </SheetHeader>
+
+            <section className="flex flex-col gap-1">
+              <h3 className="text-xs font-semibold tracking-wide uppercase">
+                {t("userDetailSheet.usage")}
+              </h3>
+              {(() => {
+                const quota = detail.limits.find((limit) => limit.key === "storage.quota.bytes")?.value
+                const quotaBytes = typeof quota === "number" ? quota : null
+                return (
+                  <p className="text-sm tabular-nums">
+                    {formatBytes(detail.usageBytes)}
+                    <span className="text-muted-foreground">
+                      {" / "}
+                      {quotaBytes !== null
+                        ? formatBytes(quotaBytes)
+                        : t("userDetailSheet.unlimited")}
+                    </span>
+                  </p>
+                )
+              })()}
+            </section>
 
             <section className="flex flex-col gap-2">
               <h3 className="text-xs font-semibold tracking-wide uppercase">

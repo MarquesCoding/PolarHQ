@@ -87,6 +87,8 @@ export interface AdminUserDetail extends AdminUser {
   roles: { id: string; name: string }[]
   groups: { id: string; name: string }[]
   limits: UserLimit[]
+  /** Storage the user occupies, in bytes (usage amount only — never file contents). */
+  usageBytes: number
 }
 
 export const fetchOverview = (): Promise<AdminOverview> =>
