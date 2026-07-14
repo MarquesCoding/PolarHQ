@@ -11,6 +11,8 @@ import { CaretRight } from "@phosphor-icons/react/CaretRight"
 import { CheckCircle } from "@phosphor-icons/react/CheckCircle"
 import { Copy } from "@phosphor-icons/react/Copy"
 import { Database } from "@phosphor-icons/react/Database"
+import { Desktop } from "@phosphor-icons/react/Desktop"
+import { DeviceMobile } from "@phosphor-icons/react/DeviceMobile"
 import { DownloadSimple } from "@phosphor-icons/react/DownloadSimple"
 import { File } from "@phosphor-icons/react/File"
 import { FilePdf } from "@phosphor-icons/react/FilePdf"
@@ -50,6 +52,7 @@ import { SpeakerHigh } from "@phosphor-icons/react/SpeakerHigh"
 import { SpeakerSimpleX } from "@phosphor-icons/react/SpeakerSimpleX"
 import { SquaresFour } from "@phosphor-icons/react/SquaresFour"
 import { Stack } from "@phosphor-icons/react/Stack"
+import { Laptop } from "@phosphor-icons/react/Laptop"
 import { Table } from "@phosphor-icons/react/Table"
 import { Tag } from "@phosphor-icons/react/Tag"
 import { Trash } from "@phosphor-icons/react/Trash"
@@ -121,6 +124,9 @@ const icons: Record<string, IconComponent> = {
   "volume-mute": SpeakerSimpleX,
   fullscreen: ArrowsIn,
   gauge: Gauge,
+  laptop: Laptop,
+  desktop: Desktop,
+  "device-mobile": DeviceMobile,
   user: User,
   users: Users,
   "users-group": UsersThree,

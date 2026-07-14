@@ -69,11 +69,13 @@
     "uploadFiles": "Upload files"
   },
   "driveNav": {
+    "devices": "Devices",
     "drive": "Drive",
     "favorites": "Favorites",
     "fileKinds": "File kinds",
     "location": "Location",
     "myDrive": "My Drive",
+    "thisMac": "This Mac",
     "overview": "Overview",
     "recents": "Recents",
     "removeSearch": "Remove saved search",

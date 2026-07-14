@@ -1,4 +1,5 @@
 import { Suspense, lazy, useCallback, useMemo, useReducer, useRef, useState } from "react"
+import { getSyncBridge } from "@workspace/screens/syncBridge"
 import { useTranslation } from "react-i18next"
 import { useNavigation } from "@workspace/screens/platform"
 import {
@@ -120,11 +121,23 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const parentId = parent?.id ?? null
   const parentLocked = Boolean(parent?.locked) && !isFolderUnlocked(parentId ?? "")
   const children = data?.children ?? []
-  const filtered = useMemo(
-    () =>
-      search ? children.filter((node) => node.name.toLowerCase().includes(search)) : children,
-    [children, search],
+  // Synced folders live under "Devices → This Mac", so hide their Drive mirror from the My Drive root.
+  const syncBridge = getSyncBridge()
+  const { data: syncedFolders } = useQuery({
+    queryKey: ["sync", "folders"],
+    queryFn: () => syncBridge!.list(),
+    enabled: Boolean(syncBridge),
+  })
+  const syncedIds = useMemo(
+    () => new Set((syncedFolders ?? []).map((folder) => folder.driveNodeId)),
+    [syncedFolders],
   )
+  const atRoot = !folderId && !source
+  const filtered = useMemo(() => {
+    let list = atRoot && syncedIds.size > 0 ? children.filter((node) => !syncedIds.has(node.id)) : children
+    if (search) list = list.filter((node) => node.name.toLowerCase().includes(search))
+    return list
+  }, [children, search, atRoot, syncedIds])
   const visible = useMemo(
     () =>
       source
