@@ -88,6 +88,9 @@ const PhotoWorkspace = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const sidebarWasOpen = useRef(true)
   const collapsedByZoom = useRef(false)
+  // Sidebar inset captured when a photo opens. The focus rect is framed against this frozen value so
+  // that collapsing the sidebar mid-zoom doesn't re-center the base rect (which misplaced the image).
+  const focusInset = useRef(0)
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const zoomRef = useRef(1)
@@ -342,15 +345,18 @@ const PhotoWorkspace = ({
     const asset = sorted.find((item) => item.id === id)
     const element = containerRef.current
     if (!asset || !element) return
+    // Keep the sidebar as-is on open; it collapses only as you zoom in (see syncSidebar). Freeze the
+    // inset used to frame the photo so a mid-zoom collapse can't re-center the base rect.
     sidebarWasOpen.current = sidebarOpen
     collapsedByZoom.current = false
+    focusInset.current = sidebarInset
     setZoomClamped(1)
     const vp: Focus["vp"] = {
       top: -element.getBoundingClientRect().top,
       height: getScrollParent(element)?.clientHeight ?? window.innerHeight,
       width,
     }
-    setFocus({ id, rect: focusRectFor(asset, vp, info ? DETAILS_WIDTH : 0, sidebarInset), vp })
+    setFocus({ id, rect: focusRectFor(asset, vp, info ? DETAILS_WIDTH : 0, focusInset.current), vp })
   }
 
   const page = (delta: number) => {
@@ -375,7 +381,7 @@ const PhotoWorkspace = ({
     setZoomClamped(1)
     setFocus({
       id,
-      rect: focusRectFor(asset, focus.vp, info ? DETAILS_WIDTH : 0, sidebarInset),
+      rect: focusRectFor(asset, focus.vp, info ? DETAILS_WIDTH : 0, focusInset.current),
       vp: focus.vp,
     })
   }
@@ -451,9 +457,15 @@ const PhotoWorkspace = ({
       window.clearTimeout(pinchTimer.current)
       pinchTimer.current = window.setTimeout(() => setPinching(false), 900)
     }
-    // Note: we deliberately no longer collapse the sidebar on zoom — doing so changed sidebarInset
-    // mid-gesture, which re-centered the base rect and left the image misplaced on zoom-out.
-    const syncSidebar = (_next: number) => {}
+    // Collapse the sidebar once you zoom past ~1x for an immersive view; restore it on the way back.
+    // The focus rect is framed against a frozen inset (focusInset), so this collapse no longer
+    // re-centers the base rect mid-gesture — the bug that previously forced this to be removed.
+    const syncSidebar = (next: number) => {
+      const collapse = next > 1.02
+      if (collapse === collapsedByZoom.current) return
+      collapsedByZoom.current = collapse
+      setOpen(collapse ? false : sidebarWasOpen.current)
+    }
     let base = 1
     const onStart = () => {
       base = focusRef.current ? zoomRef.current : rowHeightRef.current
@@ -499,10 +511,10 @@ const PhotoWorkspace = ({
     const asset = sorted.find((item) => item.id === focus.id)
     if (!asset) return
     const vp = { ...focus.vp, width }
-    const rect = focusRectFor(asset, vp, info ? DETAILS_WIDTH : 0, sidebarInset)
+    const rect = focusRectFor(asset, vp, info ? DETAILS_WIDTH : 0, focusInset.current)
     setFocus((current) => (current ? { ...current, rect, vp } : current))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width, sidebarInset, info])
+  }, [width, info])
 
   return (
     <div
