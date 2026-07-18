@@ -8,6 +8,34 @@ commits; you may polish the wording in the Release PR before merging.
 Format: each release is `## [version] - date — Title`, an optional `<!-- tags: a, b -->` line,
 then Markdown notes.
 
+## [0.6.0] - 2026-07-18 — PolarHQ Mobile, a reimagined Photos & Drive, and one-command self-hosting
+<!-- tags: Release, Mobile, Photos, Drive -->
+
+The big one this round: **PolarHQ Mobile** — a native iOS and Android app — alongside a ground-up reimagining of Photos and Drive on desktop, one-command self-hosting, a real admin console, and the whole interface in 21 languages.
+
+### Added
+- **PolarHQ Mobile (iOS & Android)** — a native app built on the same encrypted core as web and desktop. Your camera roll backs up automatically (photos *and* video), everything is decrypted on-device, and you get a Google-Photos-style grid with albums and search, a swipeable viewer with pinch-to-zoom, multi-select, and a full Drive browser (folder navigation, upload, new folder / rename / delete) with live updates and push notifications. iOS uses real Liquid Glass controls; end-to-end crypto runs natively on the device.
+- **Self-host in one command** — a `curl … | sh` installer (and a PowerShell one for Windows) that checks Docker, asks for your domain, sets up Caddy with automatic HTTPS — or a self-signed cert for localhost — and brings the whole stack up. Front and centre on the site now.
+- **Import from Google** — bring your Google Photos and Drive across in a guided migration.
+- **Admin console** — inline, Discord-style editors for Users, Groups and Roles: create accounts, edit and delete custom roles, per-user storage usage (usage only — never your contents or devices), and a demo / read-only mode. Settings and admin now open as an overlay over the live app.
+- **Photos, reimagined** — a new workspace with **Grid**, **Canvas** (drag-to-arrange with saved positions) and **Infinity** modes; a focus viewer with a filmstrip, an ambient blurred backdrop, floating chrome that adapts to each image's brightness, drag-to-pan when zoomed, a proper video/audio player, and a download button that morphs into a spinner then a "Saved" check.
+- **A device-first Drive** — the sidebar leads with an Overview, then your Devices: the Cloud (My Drive / Recents / Favorites / Trash), this device and its synced folders, and P2P peers, each tagged CLOUD / LOCAL / P2P. A redesigned Overview dashboard (storage hero, file-kind breakdown, a space treemap, largest files) and the same floating, top-bar-free chrome as Photos.
+- **Desktop folder sync** — a Rust indexer + file watcher with live background auto-upload, plus offline **image→3D** generation (monocular-depth point clouds you can view in-app) and native video playback.
+- **21 languages** — the entire UI is translated (Arabic, Chinese, Czech, Dutch, French, German, Hindi, Italian, Japanese, Korean, and more), with dates, numbers and app names localised too.
+
+### Improved
+- **A big performance pass.** Large media decrypts in a **Web Worker**, off the main thread; a shared thumbnail store decrypts once and dedupes across the grid and filmstrip; the grid uses lightweight CSS entities with deferred decrypt for fast scrolling; pinch/wheel resize is coalesced to one relayout per frame; and the Docs/Sheets/Whiteboard editors lazy-load out of the initial bundle. Drive got the same care — cached, deduped thumbnails and memoised cards so selection and drag only re-render what changed.
+- Optimistic favourite / trash in Photos (no full-feed refetch) and lazier feed paging on scroll.
+
+### Fixed
+- **Desktop** builds and runs reliably — the folder-sync UI freeze and folder-picker crash are gone (indexing is async, the picker is native), the real bundle version shows, and the keypair stays unlocked across launches.
+- **No more nags** — the macOS keychain isn't touched on every launch, and there's no per-refresh encryption-unlock prompt.
+- **iOS** stability — logins and E2E keys persist, the library paginates fully, photos order by capture date, and auto-unlock works.
+- **Localisation** — dates, times and day labels now follow the selected language everywhere.
+
+### Notes
+- Still moving fast. Keep your **recovery code** safe — without your password, encrypted data can't be recovered.
+
 ## [0.5.0] - 2026-06-20 — PolarHQ Desktop + a shared-everything rebuild
 <!-- tags: Release, Desktop, Architecture -->
 
