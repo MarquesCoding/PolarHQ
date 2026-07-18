@@ -76,13 +76,16 @@ const Hero = () => {
       ref={sectionRef}
       className="relative isolate flex flex-col overflow-hidden px-5 pt-28 pb-12 sm:h-svh sm:min-h-[780px] sm:px-6 sm:pt-40 sm:pb-0"
     >
-      {/* Layered mountain parallax over a plain background. Ridge sits in a sunk bottom band so the
-          copy stays over clean space; only mid/distant drift on scroll — close is fixed. */}
+      {/* Layered mountain parallax over a plain background. The ridge is framed to the first viewport
+          (h-svh) so it sits at the fold no matter how tall the hero grows on mobile; the sink is small
+          on phones (short, width-driven mountains) and deeper on desktop. Only mid/distant drift. */}
       <div aria-hidden className="bg-background absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-x-0 bottom-[-34%]">
-          {MOUNTAINS.map((m, i) => (
-            <MountainLayer key={m.src} {...m} index={i} progress={scrollYProgress} />
-          ))}
+        <div className="absolute inset-x-0 top-0 h-svh overflow-hidden">
+          <div className="absolute inset-x-0 bottom-[-6%] sm:bottom-[-34%]">
+            {MOUNTAINS.map((m, i) => (
+              <MountainLayer key={m.src} {...m} index={i} progress={scrollYProgress} />
+            ))}
+          </div>
         </div>
         {/* Subtle violet top-glow, matching the ContentHeroBackdrop on the other pages. */}
         <div className="from-primary/10 absolute inset-x-0 top-0 h-[420px] bg-gradient-to-b to-transparent" />
