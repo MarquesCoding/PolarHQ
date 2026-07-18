@@ -6,7 +6,6 @@ interface PageHeroProps {
 
 const PageHero = ({ title, subtitle, eyebrow }: PageHeroProps) => (
   <section className="relative flex min-h-[360px] w-full flex-col items-center justify-center overflow-hidden px-6 pt-28 pb-14 text-center sm:min-h-[420px]">
-    {/* Reading bear peeking in from the bottom-right edge. */}
     <img
       src="/stickers/bear-read.png"
       alt=""

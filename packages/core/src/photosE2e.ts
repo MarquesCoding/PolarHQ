@@ -7,6 +7,7 @@ import {
   secretstreamInit,
   secretstreamOpenAll,
 } from "./crypto"
+import { decryptBlobAsync } from "./cryptoWorkerClient"
 import { CHUNKED_UPLOAD_THRESHOLD } from "./driveE2e"
 import { streamDecryptToDisk, supportsStreamingDownload } from "./streamDownload"
 import {
@@ -343,7 +344,7 @@ export const fetchDecryptedMotionVideo = async (assetId: string): Promise<string
   })
   if (!response.ok) return null
   try {
-    const plain = secretboxOpen(new Uint8Array(await response.arrayBuffer()), key)
+    const plain = await decryptBlobAsync(new Uint8Array(await response.arrayBuffer()), key)
     return URL.createObjectURL(new Blob([plain as BlobPart], { type: "video/mp4" }))
   } catch {
     return null
@@ -411,9 +412,7 @@ export const fetchDecryptedPhotoOriginal = async (
   if (!response.ok) return null
   try {
     const bytes = new Uint8Array(await response.arrayBuffer())
-    const plain = isStreamBlob(bytes) ? secretstreamOpenAll(bytes, key) : secretboxOpen(bytes, key)
-    // On desktop, route video through a real temp file so WKWebView decodes it with macOS's native
-    // codecs (HEVC/.mov), which it can't do from a blob: URL. Images stay as blob URLs everywhere.
+    const plain = await decryptBlobAsync(bytes, key)
     const native = getHost().nativeMediaUrl
     if (native && mimeType.startsWith("video/")) {
       return native(plain, mimeType)

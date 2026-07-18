@@ -122,8 +122,10 @@ export const uploadEncryptedDriveFileChunked = async (
   }
 }
 
-/** Fetch + decrypt an encrypted node's thumbnail into an object URL (or null). */
-export const fetchDecryptedThumbnail = async (nodeId: string): Promise<string | null> => {
+const thumbCache = new Map<string, string>()
+const thumbInflight = new Map<string, Promise<string | null>>()
+
+const decryptThumbnail = async (nodeId: string): Promise<string | null> => {
   const key = await getDocContentKey(nodeId)
   if (!key) return null
   const response = await fetch(`${coreConfig().apiUrl}/api/v1/drive/nodes/${nodeId}/thumbnail`, {
@@ -136,6 +138,30 @@ export const fetchDecryptedThumbnail = async (nodeId: string): Promise<string | 
   } catch {
     return null
   }
+}
+
+/** Fetch + decrypt an encrypted node's thumbnail into an object URL (or null). Cached + deduped, so a
+ *  folder decrypts each thumbnail once and scrolling back into view reuses it (no re-decrypt). */
+export const fetchDecryptedThumbnail = (nodeId: string): Promise<string | null> => {
+  const cached = thumbCache.get(nodeId)
+  if (cached) return Promise.resolve(cached)
+  const existing = thumbInflight.get(nodeId)
+  if (existing) return existing
+  const promise = decryptThumbnail(nodeId).then((url) => {
+    thumbInflight.delete(nodeId)
+    if (url) thumbCache.set(nodeId, url)
+    return url
+  })
+  thumbInflight.set(nodeId, promise)
+  return promise
+}
+
+/** Drop a node's cached thumbnail (e.g. it was replaced by a new version). */
+export const invalidateDriveThumbnail = (nodeId: string): void => {
+  const url = thumbCache.get(nodeId)
+  if (url) URL.revokeObjectURL(url)
+  thumbCache.delete(nodeId)
+  thumbInflight.delete(nodeId)
 }
 
 export { supportsStreamingDownload }

@@ -5,6 +5,10 @@
     "backup": "备份",
     "branding": "品牌定制",
     "console": "控制台",
+    "groupActivity": "活动",
+    "groupAppsLimits": "应用与限额",
+    "groupInstance": "实例",
+    "groupPeople": "人员",
     "groups": "群组",
     "limits": "限额",
     "overview": "概览",
@@ -70,15 +74,41 @@
     "saved": "品牌定制已保存",
     "title": "品牌定制"
   },
+  "close": "关闭",
+  "consoleTitle": "管理控制台",
   "createRoleDialog": {
     "cancel": "取消",
     "createError": "无法创建该角色",
     "createRole": "创建角色",
     "created": "角色已创建",
+    "delete": "删除角色",
+    "deleteConfirm": "删除此角色？被分配该角色的用户将失去它所授予的权限。",
+    "deleteError": "无法删除该角色",
+    "deleted": "角色已删除",
     "description": "描述",
+    "editRole": "编辑角色",
     "name": "名称",
     "newRole": "新建角色",
-    "permissions": "权限"
+    "permissions": "权限",
+    "saveChanges": "保存更改",
+    "updateError": "无法更新该角色",
+    "updated": "角色已更新"
+  },
+  "createUserDialog": {
+    "cancel": "取消",
+    "create": "创建用户",
+    "createError": "无法创建该用户",
+    "created": "用户已创建",
+    "email": "邮箱",
+    "makeAdmin": "将此用户设为管理员",
+    "name": "姓名",
+    "newUser": "新用户",
+    "password": "密码",
+    "passwordHint": "至少 8 个字符。",
+    "title": "创建用户"
+  },
+  "editor": {
+    "back": "返回"
   },
   "groupDetailSheet": {
     "add": "添加",
@@ -143,14 +173,30 @@
     "title": "概览",
     "users": "用户"
   },
+  "roleEditor": {
+    "newRoleTitle": "新角色",
+    "noPermissions": "没有与你的搜索匹配的权限。",
+    "permissionCount_one": "{{count}} 项权限",
+    "permissionCount_other": "{{count}} 项权限",
+    "searchPermissions": "搜索权限…",
+    "tabDisplay": "显示",
+    "tabPermissions": "权限",
+    "toggleAll": "切换所有 {{app}} 权限"
+  },
   "roles": {
+    "delete": "删除",
     "description": "可分配给用户和群组的权限集合。",
+    "edit": "编辑",
+    "roleActions": "角色操作",
     "system": "系统",
     "title": "角色"
   },
+  "searchSettings": "搜索",
   "settings": {
     "allowedDomains": "允许的邮箱域名",
     "configure": "配置",
+    "demoMode": "演示模式（只读）",
+    "demoModeHint": "开启后，只有管理员可以上传、编辑或删除。其他人只能查看，无法进行任何更改。",
     "description": "注册及实例级策略。",
     "domainsHint": "以逗号分隔。留空则允许任意域名。",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +233,9 @@
     "roleAssigned": "角色已分配",
     "roleRemoved": "角色已移除",
     "roles": "角色",
-    "unassignError": "无法移除该角色"
+    "unassignError": "无法移除该角色",
+    "unlimited": "无限制",
+    "usage": "已用存储"
   },
   "users": {
     "admin": "管理员",

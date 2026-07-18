@@ -5,6 +5,10 @@
     "backup": "Säkerhetskopiering",
     "branding": "Varumärke",
     "console": "Konsol",
+    "groupActivity": "Aktivitet",
+    "groupAppsLimits": "Appar & gränser",
+    "groupInstance": "Instans",
+    "groupPeople": "Personer",
     "groups": "Grupper",
     "limits": "Gränser",
     "overview": "Översikt",
@@ -70,15 +74,41 @@
     "saved": "Varumärke sparat",
     "title": "Varumärke"
   },
+  "close": "Stäng",
+  "consoleTitle": "Adminkonsol",
   "createRoleDialog": {
     "cancel": "Avbryt",
     "createError": "Det gick inte att skapa rollen",
     "createRole": "Skapa roll",
     "created": "Roll skapad",
+    "delete": "Ta bort roll",
+    "deleteConfirm": "Ta bort den här rollen? Alla som har den förlorar den åtkomst den gav.",
+    "deleteError": "Kunde inte ta bort rollen",
+    "deleted": "Roll borttagen",
     "description": "Beskrivning",
+    "editRole": "Redigera roll",
     "name": "Namn",
     "newRole": "Ny roll",
-    "permissions": "Behörigheter"
+    "permissions": "Behörigheter",
+    "saveChanges": "Spara ändringar",
+    "updateError": "Kunde inte uppdatera rollen",
+    "updated": "Roll uppdaterad"
+  },
+  "createUserDialog": {
+    "cancel": "Avbryt",
+    "create": "Skapa användare",
+    "createError": "Kunde inte skapa användaren",
+    "created": "Användare skapad",
+    "email": "E-post",
+    "makeAdmin": "Gör den här användaren till administratör",
+    "name": "Namn",
+    "newUser": "Ny användare",
+    "password": "Lösenord",
+    "passwordHint": "Minst 8 tecken.",
+    "title": "Skapa användare"
+  },
+  "editor": {
+    "back": "Tillbaka"
   },
   "groupDetailSheet": {
     "add": "Lägg till",
@@ -143,14 +173,30 @@
     "title": "Översikt",
     "users": "Användare"
   },
+  "roleEditor": {
+    "newRoleTitle": "Ny roll",
+    "noPermissions": "Inga behörigheter matchar din sökning.",
+    "permissionCount_one": "{{count}} behörighet",
+    "permissionCount_other": "{{count}} behörigheter",
+    "searchPermissions": "Sök behörigheter…",
+    "tabDisplay": "Visning",
+    "tabPermissions": "Behörigheter",
+    "toggleAll": "Växla alla behörigheter för {{app}}"
+  },
   "roles": {
+    "delete": "Ta bort",
     "description": "Behörighetsuppsättningar du kan tilldela användare och grupper.",
+    "edit": "Redigera",
+    "roleActions": "Rollåtgärder",
     "system": "System",
     "title": "Roller"
   },
+  "searchSettings": "Sök",
   "settings": {
     "allowedDomains": "Tillåtna e-postdomäner",
     "configure": "Konfigurera",
+    "demoMode": "Demoläge (skrivskyddat)",
+    "demoModeHint": "När det är aktiverat kan endast administratörer ladda upp, redigera eller ta bort. Alla andra kan visa men inte ändra något.",
     "description": "Registrering och instansomfattande policy.",
     "domainsHint": "Kommaseparerade. Lämna tomt för att tillåta valfri domän.",
     "domainsPlaceholder": "exempel.se, team.org",
@@ -187,7 +233,9 @@
     "roleAssigned": "Roll tilldelad",
     "roleRemoved": "Roll borttagen",
     "roles": "Roller",
-    "unassignError": "Det gick inte att ta bort rollen"
+    "unassignError": "Det gick inte att ta bort rollen",
+    "unlimited": "Obegränsat",
+    "usage": "Använt lagringsutrymme"
   },
   "users": {
     "admin": "Administratör",

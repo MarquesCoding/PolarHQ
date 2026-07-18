@@ -82,13 +82,9 @@ const Updater = ({ onDone }: UpdaterProps) => {
       }
     }
 
-    // TEMP: show the splash for ~5s, then start the app. Restore `void attempt()` (and drop this
-    // timer) to re-enable the real update check.
-    void attempt
-    const splashTimer = setTimeout(finish, 5000)
+    void attempt()
     return () => {
       cancelled = true
-      clearTimeout(splashTimer)
       clearTimeout(retryTimer)
       clearInterval(countdown)
     }

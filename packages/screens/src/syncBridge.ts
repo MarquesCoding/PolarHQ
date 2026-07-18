@@ -18,6 +18,9 @@ export interface SyncedFolderInfo {
   localPath: string
   name: string
   fileCount: number
+  /** The Drive folder this local folder mirrors into (so the UI can open the 1:1 copy + hide it from
+   *  "My Drive"). */
+  driveNodeId: string
   /** Epoch ms of the last successful sync, or null if never synced. */
   lastSyncedAt: number | null
 }

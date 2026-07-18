@@ -26,6 +26,8 @@ interface FlatShellProps {
   sidebar: ReactNode
   /** The configured `FlatTopBar`. */
   topBar: ReactNode
+  /** Float the sidebar OVER a full-window content area (Photos), so content runs behind it. */
+  floatingSidebar?: boolean
   children: ReactNode
 }
 
@@ -35,7 +37,7 @@ interface FlatShellProps {
  * Handles auth redirect, the encryption-unlock prompt, the upload manager, and iframe-embedded
  * mode (sidebar hidden). Every app shares this; apps differ only in the sidebar/top-bar content.
  */
-const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
+const FlatShell = ({ sidebar, topBar, floatingSidebar, children }: FlatShellProps) => {
   const router = useNavigation()
   const { data: session, isPending } = authClient.useSession()
   const [embedded, setEmbedded] = useState(false)
@@ -81,14 +83,17 @@ const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
       data-slot="flat-content"
       className="bg-background relative flex min-h-0 flex-1 flex-col"
     >
-      <div
-        data-slot="content-frost"
-        className="pointer-events-none absolute inset-x-0 top-0 z-20"
-      />
+      {floatingSidebar ? null : (
+        <div
+          data-slot="content-frost"
+          className="pointer-events-none absolute inset-x-0 top-0 z-20"
+        />
+      )}
       <div className="absolute inset-x-0 top-0 z-30">{topBar}</div>
       <main
         data-slot="flat-main"
-        className="scrollbar-slim min-h-0 flex-1 overflow-y-auto overscroll-none pt-14"
+        data-floating={floatingSidebar || undefined}
+        className={`scrollbar-slim min-h-0 flex-1 overflow-y-auto overscroll-none ${floatingSidebar ? "pt-3" : "pt-14"}`}
       >
         {children}
       </main>
@@ -106,10 +111,19 @@ const FlatShell = ({ sidebar, topBar, children }: FlatShellProps) => {
 
   return (
     <>
-      <SidebarProvider className="bg-background h-svh overflow-hidden select-none">
+      <SidebarProvider className="bg-background relative h-svh overflow-hidden select-none">
         <CloseSidebarOnNavigate />
-        {sidebar}
-        <div className="flex min-w-0 flex-1 flex-col">{content}</div>
+        {floatingSidebar ? (
+          <>
+            <div className="absolute inset-0 z-0 flex min-w-0 flex-col">{content}</div>
+            <div className="relative z-30">{sidebar}</div>
+          </>
+        ) : (
+          <>
+            {sidebar}
+            <div className="flex min-w-0 flex-1 flex-col">{content}</div>
+          </>
+        )}
       </SidebarProvider>
       <OnboardingCard />
       <UnlockDialog

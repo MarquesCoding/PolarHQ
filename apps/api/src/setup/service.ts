@@ -12,6 +12,8 @@ export interface SetupStatus {
   setupCompleted: boolean
   registrationMode: RegistrationMode
   demoMode: boolean
+  /** Name the operator gave this instance during setup (labels the "cloud" device). */
+  instanceName: string | null
 }
 
 export const getSetupStatus = async (): Promise<SetupStatus> => {
@@ -20,6 +22,7 @@ export const getSetupStatus = async (): Promise<SetupStatus> => {
     setupCompleted: settings.setupCompleted,
     registrationMode: settings.registrationMode,
     demoMode: settings.demoMode,
+    instanceName: settings.instanceName ?? null,
   }
 }
 
@@ -28,6 +31,7 @@ export interface CompleteSetupInput {
   password: string
   name: string
   registrationMode?: RegistrationMode
+  instanceName?: string
 }
 
 export interface CompleteSetupResult {
@@ -64,9 +68,11 @@ export const completeSetup = async (input: CompleteSetupInput): Promise<Complete
     scopeType: "global",
   })
 
+  const instanceName = input.instanceName?.trim()
   await updateInstanceSettings({
     setupCompleted: true,
     registrationMode: input.registrationMode ?? "invite_only",
+    ...(instanceName ? { instanceName } : {}),
   })
 
   return { userId }

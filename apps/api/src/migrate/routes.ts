@@ -21,8 +21,6 @@ import {
 
 const routes = new Hono()
 
-// Short-lived OAuth `state` → userId map (CSRF + ties the callback to the user). In-memory is fine for
-// a single instance; entries expire after 10 minutes.
 const pendingStates = new Map<string, { userId: string; desktop: boolean; expires: number }>()
 const STATE_TTL = 10 * 60 * 1000
 

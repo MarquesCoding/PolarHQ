@@ -61,8 +61,6 @@ app.use(
       return null
     },
     credentials: true,
-    // Expose the bearer token better-auth issues so cross-origin shells (the Tauri desktop, which
-    // can't use the SameSite cookie) can read it and authenticate with Authorization: Bearer.
     exposeHeaders: ["Content-Disposition", "set-auth-token"],
   }),
 )
@@ -122,8 +120,6 @@ app.route("/api/v1/account", accountRoutes)
 app.route("/api/v1/admin", adminRoutes)
 app.route("/api/v1/apps", appsRoutes)
 
-// Demo/read-only gate: blocks content mutations for non-admins when demo mode is on. Must precede
-// the content routes. Docs keeps the E2E key endpoints open so viewers can still unlock encryption.
 app.use("/api/v1/photos/*", demoReadOnly())
 app.use("/api/v1/drive/*", demoReadOnly())
 app.use("/api/v1/docs/*", demoReadOnly(["/keys"]))

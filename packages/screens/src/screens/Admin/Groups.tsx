@@ -1,65 +1,14 @@
 import { useState } from "react"
-import {
-  type AdminGroup,
-  addGroupMember,
-  createAdminGroup,
-  fetchAdminGroups,
-  fetchAdminUsers,
-} from "@workspace/core/admin"
-import GroupDetailSheet from "@pages/Admin/components/GroupDetailSheet/GroupDetailSheet"
+import { type AdminGroup, createAdminGroup, fetchAdminGroups } from "@workspace/core/admin"
+import GroupEditor from "@pages/Admin/components/GroupEditor/GroupEditor"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui/components/select"
+import { CaretRight } from "@phosphor-icons/react"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
-
-const AddMember = ({ groupId }: { groupId: string }) => {
-  const { t } = useTranslation("admin")
-  const { data: users } = useQuery({ queryKey: ["admin", "users"], queryFn: fetchAdminUsers })
-  const [userId, setUserId] = useState("")
-  const add = useMutation({
-    mutationFn: () => addGroupMember(groupId, userId),
-    onSuccess: () => {
-      toast.success(t("groups.memberAdded"))
-      setUserId("")
-    },
-    onError: () => toast.error(t("groups.memberAddError")),
-  })
-
-  return (
-    <div className="flex items-center gap-2">
-      <Select value={userId} onValueChange={(value) => setUserId(value ?? "")}>
-        <SelectTrigger className="w-52">
-          <SelectValue placeholder={t("groups.addMemberPlaceholder")} />
-        </SelectTrigger>
-        <SelectContent>
-          {(users ?? []).map((user) => (
-            <SelectItem key={user.id} value={user.id}>
-              {user.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <Button
-        size="sm"
-        variant="secondary"
-        disabled={!userId || add.isPending}
-        onClick={() => add.mutate()}
-      >
-        {t("groups.add")}
-      </Button>
-    </div>
-  )
-}
 
 const Groups = () => {
   const { t } = useTranslation("admin")
@@ -83,20 +32,27 @@ const Groups = () => {
   })
 
   const groupRow = (group: AdminGroup) => (
-    <div key={group.id} className="flex items-center gap-3 px-3 py-3">
-      <Button
-        variant="ghost"
-        onClick={() => setSelected(group.id)}
-        className="-mx-1 h-auto min-w-0 flex-1 flex-col items-start gap-0 px-1 py-1 font-normal"
-      >
-        <span className="w-full truncate text-sm font-medium">{group.name}</span>
+    <Button
+      key={group.id}
+      variant="ghost"
+      onClick={() => setSelected(group.id)}
+      className="h-auto w-full justify-start gap-3 rounded-none px-3 py-3 font-normal"
+    >
+      <div className="flex min-w-0 flex-1 flex-col items-start">
+        <span className="w-full truncate text-left text-sm font-medium">{group.name}</span>
         {group.description ? (
-          <span className="text-muted-foreground w-full truncate text-xs">{group.description}</span>
+          <span className="text-muted-foreground w-full truncate text-left text-xs">
+            {group.description}
+          </span>
         ) : null}
-      </Button>
-      <AddMember groupId={group.id} />
-    </div>
+      </div>
+      <CaretRight className="text-muted-foreground size-4 shrink-0" />
+    </Button>
   )
+
+  if (selected) {
+    return <GroupEditor groupId={selected} onBack={() => setSelected(null)} />
+  }
 
   return (
     <AdminPage
@@ -125,7 +81,6 @@ const Groups = () => {
       ) : (
         <p className="text-muted-foreground text-sm">{t("groups.empty")}</p>
       )}
-      <GroupDetailSheet groupId={selected} onOpenChange={(open) => !open && setSelected(null)} />
     </AdminPage>
   )
 }

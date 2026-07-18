@@ -8,7 +8,7 @@ import { tauriSecureStoreBackend } from "@lib/secureStore"
 import { loadAuthToken, saveAuthToken } from "@lib/authToken"
 import { APP_BUILD, APP_NAME, APP_VERSION } from "@lib/env"
 import { loadLastServerUrl, loadServerUrl, saveServerUrl } from "@lib/server"
-import { nativeMediaUrl } from "@lib/native"
+import { deviceName, generateSplat, nativeMediaUrl } from "@lib/native"
 import Updater from "./Updater"
 import Spinner from "@components/Spinner/Spinner"
 
@@ -19,7 +19,13 @@ const inTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window
 /** Point the core data layer at a server. The auth client reads the configured URL per request, so
  *  this can change at runtime (the sign-in screen lets the user pick their server) without a reload. */
 const connect = (apiUrl: string): void => {
-  configureCore({ appName: APP_NAME, apiUrl, appVersion: APP_VERSION, appBuild: APP_BUILD })
+  configureCore({
+    appName: APP_NAME,
+    apiUrl,
+    appVersion: APP_VERSION,
+    appBuild: APP_BUILD,
+    dev: import.meta.env.DEV,
+  })
 }
 
 const Splash = () => (
@@ -51,6 +57,24 @@ type Phase = "updating" | "configuring" | "ready"
 export const Bootstrap = () => {
   const [phase, setPhase] = useState<Phase>(inTauri ? "updating" : "configuring")
 
+  // WebKit delivers trackpad pinch as `gesture*` events (and ctrl+wheel), which zoom the whole page —
+  // scaling the app and shoving the floating sidebar off-screen. Suppress native page-zoom app-wide;
+  // the lightbox still zooms the image via its own stage handler.
+  useEffect(() => {
+    if (!inTauri) return
+    const prevent = (event: Event) => event.preventDefault()
+    const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey) event.preventDefault()
+    }
+    const gestures = ["gesturestart", "gesturechange", "gestureend"]
+    for (const type of gestures) document.addEventListener(type, prevent, { passive: false })
+    document.addEventListener("wheel", onWheel, { passive: false })
+    return () => {
+      for (const type of gestures) document.removeEventListener(type, prevent)
+      document.removeEventListener("wheel", onWheel)
+    }
+  }, [])
+
   useEffect(() => {
     if (phase !== "configuring") return
     let active = true
@@ -65,7 +89,11 @@ export const Bootstrap = () => {
           isDesktop: true,
           openExternal: (url) => void openUrl(url),
           nativeMediaUrl,
+          generateSplat,
         })
+        void deviceName()
+          .then((name) => configureHost({ deviceName: name }))
+          .catch(() => undefined)
       }
       const win = window as Window & { __polarServer?: ServerBridge }
       win.__polarServer = {

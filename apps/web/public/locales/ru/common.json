@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Администрирование",
+    "authenticator": "Аутентификатор",
+    "calendar": "Календарь",
     "docs": "Документы",
     "drive": "Диск",
+    "meet": "Встречи",
+    "passwords": "Пароли",
     "photos": "Фото",
     "sheets": "Таблицы",
     "whiteboard": "Доска"
@@ -42,6 +46,20 @@
     "saving": "Сохранение…",
     "share": "Поделиться",
     "title": "Название"
+  },
+  "commandPalette": {
+    "albums": "Альбомы",
+    "description": "Найдите страницу или выполните команду.",
+    "empty": "Нет результатов.",
+    "favourites": "Избранное",
+    "groupActions": "Действия",
+    "groupNavigate": "Перейти",
+    "map": "Карта",
+    "placeholder": "Введите команду или запрос…",
+    "recent": "Недавние",
+    "title": "Палитра команд",
+    "toggleTheme": "Переключить светлую/тёмную тему",
+    "trash": "Корзина"
   },
   "confirmButton": {
     "confirm": "Подтвердить"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Переключить тёмную тему",
     "unlimited": "Без ограничений"
   },
+  "flatTopBar": {
+    "search": "Поиск…",
+    "toggleSidebar": "Показать/скрыть боковую панель"
+  },
   "importButton": {
     "import": "Импортировать",
     "importFailed": "Не удалось импортировать этот файл"
@@ -180,6 +202,19 @@
     "loading": "Загрузка…",
     "saving": "Сохранение…"
   },
+  "storageDialog": {
+    "byApp": "Хранилище по приложениям",
+    "files_few": "{{count}} файла",
+    "files_many": "{{count}} файлов",
+    "files_one": "{{count}} файл",
+    "files_other": "{{count}} файла",
+    "largest": "Самые крупные файлы",
+    "noFiles": "Файлов пока нет",
+    "ofTotal": "{{used}} из {{total}}",
+    "open": "Сведения о хранилище",
+    "title": "Хранилище",
+    "usedOnly": "Использовано: {{used}}"
+  },
   "units": {
     "items_few": "{{count}} элемента",
     "items_many": "{{count}} элементов",
@@ -215,13 +250,17 @@
     "downloadingItems_many": "Скачивание {{count}} элементов",
     "downloadingItems_one": "Скачивание {{count}} элемента",
     "downloadingItems_other": "Скачивание {{count}} элементов",
+    "etaMinutes": "Осталось {{minutes}} мин",
+    "etaSeconds": "Осталось {{seconds}} с",
     "expand": "Развернуть",
     "failed": "Ошибка",
+    "percentDone": "{{percent}}%",
     "processing": "Обработка…",
     "processingItems_few": "Обработка {{count}} элементов",
     "processingItems_many": "Обработка {{count}} элементов",
     "processingItems_one": "Обработка {{count}} элемента",
     "processingItems_other": "Обработка {{count}} элементов",
+    "retry": "Повторить",
     "speed": "{{speed}}/с",
     "transcoding": "Перекодирование…",
     "uploading": "Загрузка…",
@@ -242,6 +281,7 @@
     "uploaded_other": "Загружено {{count}} фото"
   },
   "viewToggle": {
+    "columnsView": "Вид колонками",
     "gridView": "Сетка",
     "tableView": "Таблица"
   }

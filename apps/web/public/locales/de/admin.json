@@ -5,6 +5,10 @@
     "backup": "Backup",
     "branding": "Branding",
     "console": "Konsole",
+    "groupActivity": "Aktivität",
+    "groupAppsLimits": "Apps & Limits",
+    "groupInstance": "Instanz",
+    "groupPeople": "Personen",
     "groups": "Gruppen",
     "limits": "Limits",
     "overview": "Übersicht",
@@ -70,15 +74,41 @@
     "saved": "Branding gespeichert",
     "title": "Branding"
   },
+  "close": "Schließen",
+  "consoleTitle": "Admin-Konsole",
   "createRoleDialog": {
     "cancel": "Abbrechen",
     "createError": "Rolle konnte nicht erstellt werden",
     "createRole": "Rolle erstellen",
     "created": "Rolle erstellt",
+    "delete": "Rolle löschen",
+    "deleteConfirm": "Diese Rolle löschen? Zugewiesene Benutzer verlieren den damit gewährten Zugriff.",
+    "deleteError": "Die Rolle konnte nicht gelöscht werden",
+    "deleted": "Rolle gelöscht",
     "description": "Beschreibung",
+    "editRole": "Rolle bearbeiten",
     "name": "Name",
     "newRole": "Neue Rolle",
-    "permissions": "Berechtigungen"
+    "permissions": "Berechtigungen",
+    "saveChanges": "Änderungen speichern",
+    "updateError": "Die Rolle konnte nicht aktualisiert werden",
+    "updated": "Rolle aktualisiert"
+  },
+  "createUserDialog": {
+    "cancel": "Abbrechen",
+    "create": "Benutzer erstellen",
+    "createError": "Der Benutzer konnte nicht erstellt werden",
+    "created": "Benutzer erstellt",
+    "email": "E-Mail",
+    "makeAdmin": "Diesen Benutzer zum Administrator machen",
+    "name": "Name",
+    "newUser": "Neuer Benutzer",
+    "password": "Passwort",
+    "passwordHint": "Mindestens 8 Zeichen.",
+    "title": "Benutzer erstellen"
+  },
+  "editor": {
+    "back": "Zurück"
   },
   "groupDetailSheet": {
     "add": "Hinzufügen",
@@ -143,14 +173,30 @@
     "title": "Übersicht",
     "users": "Benutzer"
   },
+  "roleEditor": {
+    "newRoleTitle": "Neue Rolle",
+    "noPermissions": "Keine Berechtigungen entsprechen deiner Suche.",
+    "permissionCount_one": "{{count}} Berechtigung",
+    "permissionCount_other": "{{count}} Berechtigungen",
+    "searchPermissions": "Berechtigungen durchsuchen…",
+    "tabDisplay": "Anzeige",
+    "tabPermissions": "Berechtigungen",
+    "toggleAll": "Alle {{app}}-Berechtigungen umschalten"
+  },
   "roles": {
+    "delete": "Löschen",
     "description": "Berechtigungssätze, die du Benutzern und Gruppen zuweisen kannst.",
+    "edit": "Bearbeiten",
+    "roleActions": "Rollenaktionen",
     "system": "System",
     "title": "Rollen"
   },
+  "searchSettings": "Suchen",
   "settings": {
     "allowedDomains": "Zugelassene E-Mail-Domains",
     "configure": "Konfigurieren",
+    "demoMode": "Demo-Modus (nur lesen)",
+    "demoModeHint": "Wenn aktiviert, können nur Administratoren hochladen, bearbeiten oder löschen. Alle anderen können nur ansehen, aber nichts ändern.",
     "description": "Registrierung und instanzweite Richtlinien.",
     "domainsHint": "Durch Kommas getrennt. Leer lassen, um jede Domain zuzulassen.",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +233,9 @@
     "roleAssigned": "Rolle zugewiesen",
     "roleRemoved": "Rolle entfernt",
     "roles": "Rollen",
-    "unassignError": "Rolle konnte nicht entfernt werden"
+    "unassignError": "Rolle konnte nicht entfernt werden",
+    "unlimited": "Unbegrenzt",
+    "usage": "Genutzter Speicher"
   },
   "users": {
     "admin": "Admin",

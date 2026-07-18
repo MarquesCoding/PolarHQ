@@ -320,18 +320,31 @@ const fetchWrappedDocKey = (nodeId: string): Promise<string | null> =>
 export const isDocEncrypted = async (nodeId: string): Promise<boolean> =>
   Boolean(await fetchWrappedDocKey(nodeId))
 
-/** The decrypted symmetric content key for a doc, or null if plaintext / undecryptable. */
+const contentKeyInflight = new Map<string, Promise<Uint8Array | null>>()
+
+/** The decrypted symmetric content key for a doc, or null if plaintext / undecryptable. Concurrent
+ *  callers for the same node share one fetch+unwrap (a grid of encrypted tiles asks all at once). */
 export const getDocContentKey = async (nodeId: string): Promise<Uint8Array | null> => {
   const cached = contentKeyCache.get(nodeId)
   if (cached) return cached
-  const wrapped = await fetchWrappedDocKey(nodeId)
-  if (!wrapped || !keypair) return null
+  const existing = contentKeyInflight.get(nodeId)
+  if (existing) return existing
+  const promise = (async (): Promise<Uint8Array | null> => {
+    const wrapped = await fetchWrappedDocKey(nodeId)
+    if (!wrapped || !keypair) return null
+    try {
+      const key = openSealed(fromB64(wrapped), keypair)
+      contentKeyCache.set(nodeId, key)
+      return key
+    } catch {
+      return null
+    }
+  })()
+  contentKeyInflight.set(nodeId, promise)
   try {
-    const key = openSealed(fromB64(wrapped), keypair)
-    contentKeyCache.set(nodeId, key)
-    return key
-  } catch {
-    return null
+    return await promise
+  } finally {
+    contentKeyInflight.delete(nodeId)
   }
 }
 

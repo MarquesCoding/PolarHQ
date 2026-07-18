@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Administración",
+    "authenticator": "Autenticador",
+    "calendar": "Calendario",
     "docs": "Docs",
     "drive": "Unidad",
+    "meet": "Meet",
+    "passwords": "Contraseñas",
     "photos": "Fotos",
     "sheets": "Sheets",
     "whiteboard": "Pizarra"
@@ -42,6 +46,20 @@
     "saving": "Guardando…",
     "share": "Compartir",
     "title": "Título"
+  },
+  "commandPalette": {
+    "albums": "Álbumes",
+    "description": "Busca una página o ejecuta un comando.",
+    "empty": "Sin resultados.",
+    "favourites": "Favoritos",
+    "groupActions": "Acciones",
+    "groupNavigate": "Ir a",
+    "map": "Mapa",
+    "placeholder": "Escribe un comando o busca…",
+    "recent": "Recientes",
+    "title": "Paleta de comandos",
+    "toggleTheme": "Alternar claro / oscuro",
+    "trash": "Papelera"
   },
   "confirmButton": {
     "confirm": "Confirmar"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Alternar modo oscuro",
     "unlimited": "Ilimitado"
   },
+  "flatTopBar": {
+    "search": "Buscar…",
+    "toggleSidebar": "Mostrar u ocultar barra lateral"
+  },
   "importButton": {
     "import": "Importar",
     "importFailed": "No se pudo importar este archivo"
@@ -180,6 +202,17 @@
     "loading": "Cargando…",
     "saving": "Guardando…"
   },
+  "storageDialog": {
+    "byApp": "Almacenamiento por app",
+    "files_one": "{{count}} archivo",
+    "files_other": "{{count}} archivos",
+    "largest": "Archivos más grandes",
+    "noFiles": "Aún no hay archivos almacenados",
+    "ofTotal": "{{used}} de {{total}}",
+    "open": "Detalles de almacenamiento",
+    "title": "Almacenamiento",
+    "usedOnly": "{{used}} usado"
+  },
   "units": {
     "items_one": "{{count}} elemento",
     "items_other": "{{count}} elementos"
@@ -209,11 +242,15 @@
     "downloading": "Descargando…",
     "downloadingItems_one": "Descargando {{count}} elemento",
     "downloadingItems_other": "Descargando {{count}} elementos",
+    "etaMinutes": "quedan {{minutes}} min",
+    "etaSeconds": "quedan {{seconds}} s",
     "expand": "Expandir",
     "failed": "Error",
+    "percentDone": "{{percent}}%",
     "processing": "Procesando…",
     "processingItems_one": "Procesando {{count}} elemento",
     "processingItems_other": "Procesando {{count}} elementos",
+    "retry": "Reintentar",
     "speed": "{{speed}}/s",
     "transcoding": "Transcodificando…",
     "uploading": "Subiendo…",
@@ -228,6 +265,7 @@
     "uploaded_other": "{{count}} fotos subidas"
   },
   "viewToggle": {
+    "columnsView": "Vista en columnas",
     "gridView": "Vista de cuadrícula",
     "tableView": "Vista de tabla"
   }

@@ -58,7 +58,6 @@ const SignIn = () => {
   const [recoveryCode, setRecoveryCode] = useState<string | null>(null)
   const manualRedirect = useRef(false)
 
-  // Desktop only: choose the server right here (the web shell talks to its own same-origin API).
   const server =
     typeof window !== "undefined"
       ? (window as Window & { __polarServer?: ServerBridge }).__polarServer
@@ -66,8 +65,6 @@ const SignIn = () => {
   const [mode, setMode] = useState<HostMode>("self")
   const [serverUrl, setServerUrl] = useState(() => server?.last ?? "")
 
-  // Keep the core data layer (and thus the auth client) pointed at the chosen self-hosted server, so
-  // sign-in talks to it without a reload (authClient reads the configured URL per request).
   useEffect(() => {
     if (!server) return
     const url = mode === "cloud" ? POLAR_CLOUD_URL : normalizeUrl(serverUrl)

@@ -6,12 +6,19 @@
     "branding": "Branding",
     "console": "Console",
     "groups": "Groups",
+    "groupInstance": "Instance",
+    "groupPeople": "People",
+    "groupAppsLimits": "Apps & Limits",
+    "groupActivity": "Activity",
     "limits": "Limits",
     "overview": "Overview",
     "roles": "Roles",
     "settings": "Settings",
     "users": "Users"
   },
+  "consoleTitle": "Admin console",
+  "searchSettings": "Search",
+  "close": "Close",
   "apps": {
     "comingSoon": "Coming soon",
     "description": "Turn suite apps on or off for everyone on this instance.",
@@ -101,6 +108,9 @@
     "passwordHint": "At least 8 characters.",
     "title": "Create user"
   },
+  "editor": {
+    "back": "Back"
+  },
   "groupDetailSheet": {
     "add": "Add",
     "addMemberPlaceholder": "Add a member…",
@@ -164,6 +174,16 @@
     "title": "Overview",
     "users": "Users"
   },
+  "roleEditor": {
+    "newRoleTitle": "New role",
+    "noPermissions": "No permissions match your search.",
+    "permissionCount_one": "{{count}} permission",
+    "permissionCount_other": "{{count}} permissions",
+    "searchPermissions": "Search permissions…",
+    "tabDisplay": "Display",
+    "tabPermissions": "Permissions",
+    "toggleAll": "Toggle all {{app}} permissions"
+  },
   "roles": {
     "delete": "Delete",
     "description": "Permission sets you can assign to users and groups.",
@@ -210,6 +230,8 @@
     "noGroups": "Not in any group.",
     "noRoles": "No roles assigned.",
     "removeRole": "Remove {{name}}",
+    "unlimited": "Unlimited",
+    "usage": "Storage used",
     "roleAssigned": "Role assigned",
     "roleRemoved": "Role removed",
     "roles": "Roles",

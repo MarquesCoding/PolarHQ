@@ -6,7 +6,7 @@ import {
   setUserBanned,
   setUserRole,
 } from "@workspace/core/admin"
-import UserDetailSheet from "@pages/Admin/components/UserDetailSheet/UserDetailSheet"
+import UserEditor from "@pages/Admin/components/UserEditor/UserEditor"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Badge } from "@workspace/ui/components/badge"
@@ -33,6 +33,7 @@ import { Label } from "@workspace/ui/components/label"
 import { DotsThreeVertical } from "@phosphor-icons/react"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AdminPage from "@pages/Admin/components/AdminPage/AdminPage"
+import { initials } from "@pages/Admin/lib/initials"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 
@@ -120,15 +121,6 @@ const CreateUserDialog = ({ onCreated }: { onCreated: () => void }) => {
     </Dialog>
   )
 }
-
-const initials = (name: string): string =>
-  name
-    .split(" ")
-    .map((part) => part[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase()
 
 const isAdmin = (role: string | null): boolean => role === "admin" || role === "owner"
 
@@ -218,6 +210,10 @@ const Users = () => {
     </div>
   )
 
+  if (selected) {
+    return <UserEditor userId={selected} onBack={() => setSelected(null)} />
+  }
+
   return (
     <AdminPage
       title={t("users.title")}
@@ -229,7 +225,6 @@ const Users = () => {
       ) : (
         <div className="panel overflow-hidden rounded-xl">{(users ?? []).map(row)}</div>
       )}
-      <UserDetailSheet userId={selected} onOpenChange={(open) => !open && setSelected(null)} />
     </AdminPage>
   )
 }

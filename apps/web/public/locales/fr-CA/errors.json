@@ -26,6 +26,7 @@
   "forbidden": "Vous n’avez pas la permission de faire cela.",
   "generic": "Une erreur est survenue.",
   "invalidInput": "Entrée invalide.",
+  "network": "Erreur réseau — vérifiez votre connexion et réessayez.",
   "notFound": "Introuvable.",
   "photos": {
     "fileRequired": "Un fichier est requis.",

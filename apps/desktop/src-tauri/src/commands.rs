@@ -1,20 +1,62 @@
-//! Native command stubs. Each returns a placeholder until the real Rust pipeline lands; the IPC
-//! surface is wired now so the frontend (`lib/native.ts`) can target these from day one.
+//! Native commands reached over Tauri IPC from the frontend (`lib/native.ts`).
 
-/// Generate a 3D Gaussian-splat scene from a source image/video path.
+/// Generate a 3D point-cloud "splat" from a source image and return the path to the written `.ply`.
 ///
-/// Stub: the splat pipeline is not implemented yet, so this rejects. Wired so the frontend has a
-/// stable command name to call.
+/// Runs the offline monocular-depth pipeline in [`crate::splat`]: estimate depth from photometric
+/// cues, back-project to a colored 3D point cloud, and export a PLY the Three.js viewer renders. This
+/// is not a learned/optimized 3D Gaussian-Splatting reconstruction (that needs a GPU ML stack we
+/// can't ship) — it's the pragmatic image->3D relief, and it runs with no network or Python/CUDA.
+///
+/// A sync command so Tauri runs the CPU work on a worker thread rather than blocking the async
+/// runtime. The output lands in the app temp dir (asset-protocol scope) so the webview can load it.
 #[tauri::command]
-pub async fn generate_splat(input_path: String) -> Result<String, String> {
-    let _ = input_path;
-    Err("gaussian-splat generation is not implemented yet".into())
+pub fn generate_splat(app: tauri::AppHandle, input_path: String) -> Result<String, String> {
+    use tauri::Manager;
+
+    let dir = app
+        .path()
+        .temp_dir()
+        .map_err(|e| e.to_string())?
+        .join("polarhq-media");
+    std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+
+    let stamp = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_nanos())
+        .unwrap_or(0);
+    let output = dir.join(format!("splat-{stamp}.ply"));
+
+    crate::splat::generate_point_cloud_ply(&input_path, &output)?;
+    Ok(output.to_string_lossy().into_owned())
 }
 
 /// Report peer-to-peer device-link status. Stub: always reports offline until the p2p stack lands.
 #[tauri::command]
 pub async fn p2p_status() -> Result<String, String> {
     Ok("offline".into())
+}
+
+/// The friendly name of this machine (macOS ComputerName, etc.) — labels the local device in the
+/// Drive "Devices" list.
+#[tauri::command]
+pub fn device_name() -> String {
+    whoami::devicename()
+}
+
+/// Native folder picker, driven from Rust. The main window is built with `disable_drag_drop_handler()`
+/// (needed for in-app HTML5 drag-and-drop), and opening an `NSOpenPanel` through the JS dialog plugin
+/// on such a window crashes the WKWebView renderer on macOS. Running the panel from the Rust side
+/// sidesteps that. Runs on a blocking pool thread so the panel (dispatched to the main thread by the
+/// plugin) doesn't deadlock the runtime. Returns the chosen absolute path, or `None` if cancelled.
+#[tauri::command]
+pub async fn pick_folder(app: tauri::AppHandle) -> Option<String> {
+    use tauri_plugin_dialog::DialogExt;
+    tauri::async_runtime::spawn_blocking(move || app.dialog().file().blocking_pick_folder())
+        .await
+        .ok()
+        .flatten()
+        .and_then(|path| path.into_path().ok())
+        .map(|path| path.to_string_lossy().into_owned())
 }
 
 /// Run a device-sync pass. Stub: rejects until device sync is implemented.

@@ -5,6 +5,10 @@
     "backup": "Cópia de segurança",
     "branding": "Identidade",
     "console": "Consola",
+    "groupActivity": "Atividade",
+    "groupAppsLimits": "Apps e limites",
+    "groupInstance": "Instância",
+    "groupPeople": "Pessoas",
     "groups": "Grupos",
     "limits": "Limites",
     "overview": "Visão geral",
@@ -70,15 +74,41 @@
     "saved": "Identidade guardada",
     "title": "Identidade"
   },
+  "close": "Fechar",
+  "consoleTitle": "Console de administração",
   "createRoleDialog": {
     "cancel": "Cancelar",
     "createError": "Não foi possível criar a função",
     "createRole": "Criar função",
     "created": "Função criada",
+    "delete": "Excluir função",
+    "deleteConfirm": "Excluir esta função? Quem estiver atribuído a ela perde o acesso concedido.",
+    "deleteError": "Não foi possível excluir a função",
+    "deleted": "Função excluída",
     "description": "Descrição",
+    "editRole": "Editar função",
     "name": "Nome",
     "newRole": "Nova função",
-    "permissions": "Permissões"
+    "permissions": "Permissões",
+    "saveChanges": "Salvar alterações",
+    "updateError": "Não foi possível atualizar a função",
+    "updated": "Função atualizada"
+  },
+  "createUserDialog": {
+    "cancel": "Cancelar",
+    "create": "Criar usuário",
+    "createError": "Não foi possível criar o usuário",
+    "created": "Usuário criado",
+    "email": "E-mail",
+    "makeAdmin": "Tornar este usuário administrador",
+    "name": "Nome",
+    "newUser": "Novo usuário",
+    "password": "Senha",
+    "passwordHint": "Pelo menos 8 caracteres.",
+    "title": "Criar usuário"
+  },
+  "editor": {
+    "back": "Voltar"
   },
   "groupDetailSheet": {
     "add": "Adicionar",
@@ -143,14 +173,30 @@
     "title": "Visão geral",
     "users": "Utilizadores"
   },
+  "roleEditor": {
+    "newRoleTitle": "Nova função",
+    "noPermissions": "Nenhuma permissão corresponde à sua pesquisa.",
+    "permissionCount_one": "{{count}} permissão",
+    "permissionCount_other": "{{count}} permissões",
+    "searchPermissions": "Pesquisar permissões…",
+    "tabDisplay": "Exibição",
+    "tabPermissions": "Permissões",
+    "toggleAll": "Alternar todas as permissões de {{app}}"
+  },
   "roles": {
+    "delete": "Excluir",
     "description": "Conjuntos de permissões que pode atribuir a utilizadores e grupos.",
+    "edit": "Editar",
+    "roleActions": "Ações da função",
     "system": "Sistema",
     "title": "Funções"
   },
+  "searchSettings": "Pesquisar",
   "settings": {
     "allowedDomains": "Domínios de e-mail permitidos",
     "configure": "Configurar",
+    "demoMode": "Modo de demonstração (somente leitura)",
+    "demoModeHint": "Quando ativado, apenas administradores podem enviar, editar ou excluir. Os demais podem visualizar, mas não alterar nada.",
     "description": "Registo e políticas para toda a instância.",
     "domainsHint": "Separados por vírgulas. Deixe em branco para permitir qualquer domínio.",
     "domainsPlaceholder": "exemplo.com, equipa.org",
@@ -187,7 +233,9 @@
     "roleAssigned": "Função atribuída",
     "roleRemoved": "Função removida",
     "roles": "Funções",
-    "unassignError": "Não foi possível remover a função"
+    "unassignError": "Não foi possível remover a função",
+    "unlimited": "Ilimitado",
+    "usage": "Armazenamento usado"
   },
   "users": {
     "admin": "Administrador",

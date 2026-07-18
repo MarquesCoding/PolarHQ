@@ -1,4 +1,5 @@
 mod commands;
+mod splat;
 mod sync;
 
 /// Boots the Tauri runtime and registers the native command surface the frontend reaches through
@@ -25,8 +26,10 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            commands::device_name,
             commands::generate_splat,
             commands::p2p_status,
+            commands::pick_folder,
             commands::sync_now,
             commands::write_temp_media,
             sync::sync_index,
@@ -62,7 +65,16 @@ fn build_main_window(app: &tauri::App) -> tauri::Result<()> {
     }
     let window = builder.build()?;
     #[cfg(target_os = "macos")]
-    apply_invisible_toolbar(&window);
+    {
+        apply_invisible_toolbar(&window);
+        inset_traffic_lights(&window);
+        let win = window.clone();
+        window.on_window_event(move |event| {
+            if matches!(event, tauri::WindowEvent::Resized(_)) {
+                inset_traffic_lights(&win);
+            }
+        });
+    }
     Ok(())
 }
 
@@ -115,6 +127,36 @@ fn updater_window_mode(window: tauri::WebviewWindow, compact: bool) {
     }
     #[cfg(target_os = "macos")]
     set_traffic_lights_hidden(&window, compact);
+}
+
+/// Nudge the native traffic lights inward (right) so they line up with the sidebar's content padding.
+/// macOS re-lays out the toolbar buttons on resize, so this is re-applied from the resize handler.
+#[cfg(target_os = "macos")]
+fn inset_traffic_lights(window: &tauri::WebviewWindow) {
+    use objc2::msg_send;
+    use objc2::runtime::AnyObject;
+    use objc2_foundation::{NSPoint, NSRect};
+
+    const INSET_X: f64 = 14.0;
+    let Ok(ptr) = window.ns_window() else {
+        return;
+    };
+    let ns_window = ptr as *mut AnyObject;
+    unsafe {
+        // NSWindowButton: 0 = close, 1 = miniaturize, 2 = zoom.
+        for index in 0u64..3 {
+            let button: *mut AnyObject = msg_send![ns_window, standardWindowButton: index];
+            if button.is_null() {
+                continue;
+            }
+            let frame: NSRect = msg_send![button, frame];
+            let origin = NSPoint {
+                x: frame.origin.x + INSET_X,
+                y: frame.origin.y,
+            };
+            let _: () = msg_send![button, setFrameOrigin: origin];
+        }
+    }
 }
 
 /// Hide/show the macOS traffic-light window buttons (close/minimise/zoom) without dropping the window

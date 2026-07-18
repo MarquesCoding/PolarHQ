@@ -3,9 +3,6 @@ import { config } from "@workspace/config"
 const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 const TOKEN_URL = "https://oauth2.googleapis.com/token"
 
-// Photos uses the **Picker API** scope, not the old Library `readonly` scope: since 2025 Google only
-// lets third-party apps read media the *user explicitly picks* (the Library readonly scope no longer
-// grants whole-library access). Drive keeps full read access; email is for display.
 const SCOPES = [
   "https://www.googleapis.com/auth/photospicker.mediaitems.readonly",
   "https://www.googleapis.com/auth/drive.readonly",

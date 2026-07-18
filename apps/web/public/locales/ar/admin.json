@@ -5,6 +5,10 @@
     "backup": "النسخ الاحتياطي",
     "branding": "الهوية البصرية",
     "console": "لوحة التحكم",
+    "groupActivity": "النشاط",
+    "groupAppsLimits": "التطبيقات والحدود",
+    "groupInstance": "النسخة",
+    "groupPeople": "الأشخاص",
     "groups": "المجموعات",
     "limits": "الحدود",
     "overview": "نظرة عامة",
@@ -70,15 +74,41 @@
     "saved": "تم حفظ الهوية البصرية",
     "title": "الهوية البصرية"
   },
+  "close": "إغلاق",
+  "consoleTitle": "لوحة تحكم المسؤول",
   "createRoleDialog": {
     "cancel": "إلغاء",
     "createError": "تعذّر إنشاء الدور",
     "createRole": "إنشاء دور",
     "created": "تم إنشاء الدور",
+    "delete": "حذف الدور",
+    "deleteConfirm": "هل تريد حذف هذا الدور؟ سيفقد كل من عُيِّن له الصلاحيات التي منحها.",
+    "deleteError": "تعذّر حذف الدور",
+    "deleted": "تم حذف الدور",
     "description": "الوصف",
+    "editRole": "تعديل الدور",
     "name": "الاسم",
     "newRole": "دور جديد",
-    "permissions": "الأذونات"
+    "permissions": "الأذونات",
+    "saveChanges": "حفظ التغييرات",
+    "updateError": "تعذّر تحديث الدور",
+    "updated": "تم تحديث الدور"
+  },
+  "createUserDialog": {
+    "cancel": "إلغاء",
+    "create": "إنشاء مستخدم",
+    "createError": "تعذّر إنشاء المستخدم",
+    "created": "تم إنشاء المستخدم",
+    "email": "البريد الإلكتروني",
+    "makeAdmin": "اجعل هذا المستخدم مسؤولًا",
+    "name": "الاسم",
+    "newUser": "مستخدم جديد",
+    "password": "كلمة المرور",
+    "passwordHint": "8 أحرف على الأقل.",
+    "title": "إنشاء مستخدم"
+  },
+  "editor": {
+    "back": "رجوع"
   },
   "groupDetailSheet": {
     "add": "إضافة",
@@ -143,14 +173,34 @@
     "title": "نظرة عامة",
     "users": "المستخدمون"
   },
+  "roleEditor": {
+    "newRoleTitle": "دور جديد",
+    "noPermissions": "لا توجد صلاحيات مطابقة لبحثك.",
+    "permissionCount_few": "{{count}} صلاحيات",
+    "permissionCount_many": "{{count}} صلاحية",
+    "permissionCount_one": "صلاحية واحدة",
+    "permissionCount_other": "{{count}} صلاحية",
+    "permissionCount_two": "صلاحيتان",
+    "permissionCount_zero": "لا صلاحيات",
+    "searchPermissions": "البحث في الصلاحيات…",
+    "tabDisplay": "العرض",
+    "tabPermissions": "الصلاحيات",
+    "toggleAll": "تبديل جميع صلاحيات {{app}}"
+  },
   "roles": {
+    "delete": "حذف",
     "description": "مجموعات أذونات يمكنك إسنادها إلى المستخدمين والمجموعات.",
+    "edit": "تعديل",
+    "roleActions": "إجراءات الدور",
     "system": "النظام",
     "title": "الأدوار"
   },
+  "searchSettings": "بحث",
   "settings": {
     "allowedDomains": "نطاقات البريد الإلكتروني المسموح بها",
     "configure": "تهيئة",
+    "demoMode": "وضع العرض التجريبي (للقراءة فقط)",
+    "demoModeHint": "عند التفعيل، يمكن للمسؤولين فقط الرفع أو التعديل أو الحذف. يمكن للجميع المشاهدة دون تغيير أي شيء.",
     "description": "سياسة التسجيل والسياسة على مستوى النسخة.",
     "domainsHint": "مفصولة بفواصل. اتركها فارغة للسماح بأي نطاق.",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +237,9 @@
     "roleAssigned": "تم إسناد الدور",
     "roleRemoved": "تمت إزالة الدور",
     "roles": "الأدوار",
-    "unassignError": "تعذّرت إزالة الدور"
+    "unassignError": "تعذّرت إزالة الدور",
+    "unlimited": "غير محدود",
+    "usage": "التخزين المستخدم"
   },
   "users": {
     "admin": "مسؤول",

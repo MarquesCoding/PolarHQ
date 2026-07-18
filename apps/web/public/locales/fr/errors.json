@@ -26,6 +26,7 @@
   "forbidden": "Vous n’avez pas l’autorisation de faire cela.",
   "generic": "Une erreur s’est produite.",
   "invalidInput": "Saisie non valide.",
+  "network": "Erreur réseau — vérifiez votre connexion et réessayez.",
   "notFound": "Introuvable.",
   "photos": {
     "fileRequired": "Un fichier est requis.",

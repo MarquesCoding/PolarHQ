@@ -7,6 +7,7 @@ const CompleteSetupSchema = z.object({
   password: z.string().min(8),
   name: z.string().min(1),
   registrationMode: z.enum(["invite_only", "open", "closed"]).optional(),
+  instanceName: z.string().max(120).optional(),
 })
 
 export const setupRoutes = new Hono()

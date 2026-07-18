@@ -10,6 +10,9 @@ export interface CoreConfig {
   apiUrl: string
   appVersion: string
   appBuild: string
+  /** True when the shell is running from a dev server (not a packaged build) — used to hide the
+   *  version/changelog and other release-only chrome. */
+  dev: boolean
 }
 
 const DEFAULTS: CoreConfig = {
@@ -17,6 +20,7 @@ const DEFAULTS: CoreConfig = {
   apiUrl: "http://localhost:3001",
   appVersion: "0.0.1",
   appBuild: "dev",
+  dev: false,
 }
 
 let current: CoreConfig = DEFAULTS

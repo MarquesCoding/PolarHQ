@@ -26,6 +26,7 @@
   "forbidden": "你没有执行此操作的权限。",
   "generic": "出错了。",
   "invalidInput": "输入无效。",
+  "network": "网络错误——请检查你的网络连接后重试。",
   "notFound": "未找到。",
   "photos": {
     "fileRequired": "请提供一个文件。",

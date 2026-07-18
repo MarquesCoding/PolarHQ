@@ -6,6 +6,8 @@
  */
 export interface HostCapabilities {
   isDesktop: boolean
+  /** Friendly name of the local machine (e.g. macOS ComputerName). Desktop-only. */
+  deviceName?: string
   /** Open a URL in the user's real browser (not the app webview). Desktop-only. */
   openExternal?: (url: string) => Promise<void> | void
   /**
@@ -14,6 +16,12 @@ export interface HostCapabilities {
    * codecs, e.g. HEVC) instead of a `blob:` URL, which WKWebView can't decode for many formats.
    */
   nativeMediaUrl?: (bytes: Uint8Array, mimeType: string) => Promise<string>
+  /**
+   * Generate a 3D point-cloud "splat" from an image and return a webview-loadable URL for the
+   * resulting `.ply`. The Tauri desktop shell provides this; it runs an offline monocular-depth
+   * pipeline natively (no ML runtime, network, or Python/CUDA). Absent on web.
+   */
+  generateSplat?: (bytes: Uint8Array, mimeType: string) => Promise<string>
 }
 
 let host: HostCapabilities = { isDesktop: false }

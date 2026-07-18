@@ -24,12 +24,34 @@ export const nativeMediaUrl = async (bytes: Uint8Array, mimeType: string): Promi
  * features can target it now. Only call these inside the desktop shell (Tauri context).
  */
 
-/** Generate a 3D Gaussian-splat scene from a source image/video path. Rejects until implemented. */
-export const generateSplat = (inputPath: string): Promise<string> =>
-  invoke<string>("generate_splat", { inputPath })
+/**
+ * Generate a 3D point-cloud "splat" from an image and return an asset-protocol URL for the produced
+ * `.ply`. The bytes are staged to a temp file (`write_temp_media`), the native pipeline
+ * (`generate_splat`, monocular depth -> colored point cloud, fully offline) writes a PLY next to it,
+ * and its path is returned as a webview-loadable URL. Feed the URL to the 3D ModelViewer.
+ */
+export const generateSplat = async (bytes: Uint8Array, mimeType: string): Promise<string> => {
+  const ext = mimeType.includes("png")
+    ? "png"
+    : mimeType.includes("webp")
+      ? "webp"
+      : "jpg"
+  const inputPath = await invoke<string>("write_temp_media", bytes, {
+    headers: { "x-media-ext": ext },
+  })
+  const plyPath = await invoke<string>("generate_splat", { inputPath })
+  return convertFileSrc(plyPath)
+}
 
 /** Current peer-to-peer device-link status (e.g. `"offline"`). */
 export const p2pStatus = (): Promise<string> => invoke<string>("p2p_status")
+
+/** Native folder picker (run from Rust — the JS dialog plugin crashes the webview on this window's
+ *  drag-drop-disabled config on macOS). Resolves to the chosen absolute path, or null if cancelled. */
+export const pickFolder = (): Promise<string | null> => invoke<string | null>("pick_folder")
+
+/** Friendly name of this machine (e.g. macOS ComputerName) — labels the local device in Drive. */
+export const deviceName = (): Promise<string> => invoke<string>("device_name")
 
 /** Trigger a device-sync pass. Rejects until implemented. */
 export const syncNow = (): Promise<string> => invoke<string>("sync_now")
