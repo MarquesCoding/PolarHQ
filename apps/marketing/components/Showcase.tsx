@@ -2,13 +2,8 @@
 
 import { type ComponentType } from "react"
 import { motion } from "motion/react"
-import {
-  Check,
-  FileText,
-  FolderSimple,
-  Images,
-  ShieldCheck,
-} from "@phosphor-icons/react"
+import { Check, FolderSimple, Images, ShieldCheck } from "@phosphor-icons/react"
+import { cn } from "@workspace/ui/lib/utils"
 
 interface Feature {
   icon: ComponentType<{ className?: string; weight?: "fill" | "regular" }>
@@ -17,6 +12,8 @@ interface Feature {
   description: string
   points: string[]
   shot: string
+  video?: string
+  sticker: string
 }
 
 const FEATURES: Feature[] = [
@@ -27,7 +24,9 @@ const FEATURES: Feature[] = [
     description:
       "A fast, Apple-Photos-grade gallery that finds faces, places and things — entirely on device. Thumbnails and originals are decrypted in your browser, never on the server.",
     points: ["On-device search & albums", "Live photos and video", "Stacks, favourites and a map"],
-    shot: "/shots/shot-2.jpg",
+    shot: "/shots/photos.jpg",
+    video: "/demos/photos.mp4",
+    sticker: "/stickers/bear-browse.png",
   },
   {
     icon: FolderSimple,
@@ -36,16 +35,9 @@ const FEATURES: Feature[] = [
     description:
       "Upload, organise and share anything. Sync a local folder like Dropbox, browse it as a device, and open Office files in a click — with everything end-to-end encrypted at rest.",
     points: ["Folder sync across devices", "Share links you control", "Versions, trash and locked folders"],
-    shot: "/shots/shot-3.jpg",
-  },
-  {
-    icon: FileText,
-    eyebrow: "Docs & Sheets",
-    title: "Write and calculate, privately",
-    description:
-      "Collaborative documents and spreadsheets with real-time editing and end-to-end encryption on every keystroke. No one — not even your server — can read what you type.",
-    points: ["Real-time collaboration", "Import Word & Excel", "Encrypted revision history"],
-    shot: "/shots/shot-4.jpg",
+    shot: "/shots/drive-files.jpg",
+    video: "/demos/drive.mp4",
+    sticker: "/stickers/bear-organise.png",
   },
   {
     icon: ShieldCheck,
@@ -54,7 +46,8 @@ const FEATURES: Feature[] = [
     description:
       "Deploy the whole suite with a single command. An admin console gives you users, roles, per-user limits and off-site backups — and no telemetry, ever.",
     points: ["One-command deploy", "Roles, groups & limits", "Automatic S3 / Drive backups"],
-    shot: "/shots/shot-5.jpg",
+    shot: "/shots/drive-overview.jpg",
+    sticker: "/stickers/bear-hide.png",
   },
 ]
 
@@ -96,18 +89,44 @@ const FeatureRow = ({ feature, flip }: { feature: Feature; flip: boolean }) => {
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1], delay: 0.06 }}
-        className={flip ? "sm:order-1" : ""}
+        className={cn("relative", flip ? "sm:order-1" : "")}
       >
         <div className="border-foreground/10 overflow-hidden rounded-2xl border bg-black/5 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.35)]">
-          <img
-            src={feature.shot}
-            alt={`${feature.eyebrow} in PolarHQ`}
-            width={1800}
-            height={1200}
-            loading="lazy"
-            className="block w-full"
-          />
+          {feature.video ? (
+            <video
+              src={feature.video}
+              poster={feature.shot}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="block w-full"
+            />
+          ) : (
+            <img
+              src={feature.shot}
+              alt={`${feature.eyebrow} in PolarHQ`}
+              width={1800}
+              height={1200}
+              loading="lazy"
+              className="block w-full"
+            />
+          )}
         </div>
+        <motion.img
+          src={feature.sticker}
+          alt=""
+          aria-hidden
+          initial={{ opacity: 0, y: 16, rotate: flip ? 8 : -8 }}
+          whileInView={{ opacity: 1, y: 0, rotate: flip ? 6 : -6 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
+          className={cn(
+            "pointer-events-none absolute -top-10 z-10 w-24 drop-shadow-xl sm:w-28",
+            flip ? "-right-4 sm:-right-8" : "-left-4 sm:-left-8",
+          )}
+        />
       </motion.div>
     </div>
   )
@@ -115,7 +134,17 @@ const FeatureRow = ({ feature, flip }: { feature: Feature; flip: boolean }) => {
 
 const Showcase = () => (
   <section className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
-    <div className="mx-auto max-w-2xl text-center">
+    <div className="relative mx-auto max-w-2xl text-center">
+      <motion.img
+        src="/stickers/bear-wave.png"
+        alt=""
+        aria-hidden
+        initial={{ opacity: 0, y: 20, rotate: -10 }}
+        whileInView={{ opacity: 1, y: 0, rotate: -6 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.55, ease: [0.22, 0.61, 0.36, 1] }}
+        className="pointer-events-none absolute -top-24 left-1/2 hidden w-28 -translate-x-1/2 drop-shadow-xl sm:block"
+      />
       <div className="border-primary/25 bg-primary/10 text-primary inline-flex items-center rounded-full border px-3.5 py-1.5 text-[13px] font-semibold">
         Everything in one place
       </div>

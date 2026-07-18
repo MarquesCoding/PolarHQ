@@ -1,5 +1,13 @@
 @import "@workspace/ui/globals.css";
 
+/* Marketing-only brand primary override. */
+:root {
+  --primary: #735fe2;
+}
+.dark {
+  --primary: #735fe2;
+}
+
 html {
   scroll-behavior: smooth;
 }

@@ -4,6 +4,10 @@ import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google"
 import Nav from "@components/Nav"
 import ContentHeroBackdrop from "@components/ContentHeroBackdrop"
 import PageTransition from "@components/PageTransition"
+import BackToTop from "@components/BackToTop"
+
+// Runs before paint: honours a saved preference, otherwise defaults to dark — avoids a light flash.
+const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem("theme");var d=document.documentElement.classList;if(t==="light"){d.remove("dark")}else{d.add("dark")}}catch(e){}})()`
 import "./globals.css"
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" })
@@ -44,13 +48,17 @@ export const viewport: Viewport = {
 }
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
-  <html lang="en">
+  <html lang="en" className="dark" suppressHydrationWarning>
+    <head>
+      <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+    </head>
     <body
       className={`${geist.variable} ${geistMono.variable} ${serif.variable} bg-background antialiased`}
     >
       <Nav />
       <ContentHeroBackdrop />
       <PageTransition>{children}</PageTransition>
+      <BackToTop />
     </body>
   </html>
 )
