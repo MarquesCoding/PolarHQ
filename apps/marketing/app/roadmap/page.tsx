@@ -5,7 +5,7 @@ import Reveal from "@components/Reveal"
 import { ROADMAP, type RoadmapStatus } from "@lib/roadmap"
 
 export const metadata: Metadata = {
-  title: "Roadmap — PolarHQ",
+  title: "Roadmap · PolarHQ",
   description: "What's shipped, what's being built, and what's coming next.",
 }
 

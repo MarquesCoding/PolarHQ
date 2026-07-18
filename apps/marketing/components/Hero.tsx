@@ -84,14 +84,15 @@ const Hero = () => {
             <MountainLayer key={m.src} {...m} index={i} progress={scrollYProgress} />
           ))}
         </div>
-        <div className="from-background absolute inset-x-0 top-0 h-40 bg-gradient-to-b to-transparent" />
+        {/* Subtle violet top-glow, matching the ContentHeroBackdrop on the other pages. */}
+        <div className="from-primary/10 absolute inset-x-0 top-0 h-[420px] bg-gradient-to-b to-transparent" />
       </div>
 
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="mx-auto flex w-full max-w-3xl flex-col items-center text-center [text-shadow:0_1px_2px_rgb(8_8_16/0.7),0_2px_22px_rgb(8_8_16/0.55)]"
+        className="mx-auto flex w-full max-w-3xl flex-col items-center text-center dark:[text-shadow:0_1px_2px_rgb(8_8_16/0.7),0_2px_22px_rgb(8_8_16/0.55)]"
       >
         <motion.h1
           variants={item}
@@ -106,7 +107,7 @@ const Hero = () => {
           variants={item}
           className="text-foreground/85 mx-auto mt-4 max-w-lg font-medium text-pretty sm:text-lg"
         >
-          An open-source suite — Photos, Drive, Docs and Sheets — that runs on your own server,
+          An open-source suite of Photos, Drive, Docs and Sheets that runs on your own server,
           end-to-end encrypted. No subscriptions, no lock-in, no one mining your library.
         </motion.p>
 
