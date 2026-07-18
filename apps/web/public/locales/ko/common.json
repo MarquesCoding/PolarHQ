@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "관리자",
+    "authenticator": "인증 앱",
+    "calendar": "캘린더",
     "docs": "문서",
     "drive": "드라이브",
+    "meet": "미팅",
+    "passwords": "비밀번호",
     "photos": "사진",
     "sheets": "Sheets",
     "whiteboard": "화이트보드"
@@ -42,6 +46,20 @@
     "saving": "저장 중…",
     "share": "공유",
     "title": "제목"
+  },
+  "commandPalette": {
+    "albums": "앨범",
+    "description": "페이지를 검색하거나 명령을 실행하세요.",
+    "empty": "결과가 없습니다.",
+    "favourites": "즐겨찾기",
+    "groupActions": "작업",
+    "groupNavigate": "이동",
+    "map": "지도",
+    "placeholder": "명령을 입력하거나 검색…",
+    "recent": "최근 항목",
+    "title": "명령 팔레트",
+    "toggleTheme": "라이트/다크 모드 전환",
+    "trash": "휴지통"
   },
   "confirmButton": {
     "confirm": "확인"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "다크 모드 전환",
     "unlimited": "무제한"
   },
+  "flatTopBar": {
+    "search": "검색…",
+    "toggleSidebar": "사이드바 전환"
+  },
   "importButton": {
     "import": "가져오기",
     "importFailed": "이 파일을 가져올 수 없습니다"
@@ -180,6 +202,16 @@
     "loading": "불러오는 중…",
     "saving": "저장 중…"
   },
+  "storageDialog": {
+    "byApp": "앱별 저장 용량",
+    "files_other": "파일 {{count}}개",
+    "largest": "가장 큰 파일",
+    "noFiles": "아직 저장된 파일이 없습니다",
+    "ofTotal": "{{total}} 중 {{used}}",
+    "open": "저장 용량 상세",
+    "title": "저장 용량",
+    "usedOnly": "{{used}} 사용됨"
+  },
   "units": {
     "items_one": "{{count}}개 항목",
     "items_other": "{{count}}개 항목"
@@ -209,11 +241,15 @@
     "downloading": "다운로드 중…",
     "downloadingItems_one": "{{count}}개 항목 다운로드 중",
     "downloadingItems_other": "{{count}}개 항목 다운로드 중",
+    "etaMinutes": "{{minutes}}분 남음",
+    "etaSeconds": "{{seconds}}초 남음",
     "expand": "펼치기",
     "failed": "실패",
+    "percentDone": "{{percent}}%",
     "processing": "처리 중…",
     "processingItems_one": "{{count}}개 항목 처리 중",
     "processingItems_other": "{{count}}개 항목 처리 중",
+    "retry": "다시 시도",
     "speed": "{{speed}}/초",
     "transcoding": "트랜스코딩 중…",
     "uploading": "업로드 중…",
@@ -228,6 +264,7 @@
     "uploaded_other": "사진 {{count}}장 업로드됨"
   },
   "viewToggle": {
+    "columnsView": "열 보기",
     "gridView": "그리드 보기",
     "tableView": "표 보기"
   }

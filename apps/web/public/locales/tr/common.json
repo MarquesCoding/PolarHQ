@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Yönetim",
+    "authenticator": "Kimlik Doğrulayıcı",
+    "calendar": "Takvim",
     "docs": "Belgeler",
     "drive": "Drive",
+    "meet": "Meet",
+    "passwords": "Şifreler",
     "photos": "Fotoğraflar",
     "sheets": "Sheets",
     "whiteboard": "Beyaz Tahta"
@@ -42,6 +46,20 @@
     "saving": "Kaydediliyor…",
     "share": "Paylaş",
     "title": "Başlık"
+  },
+  "commandPalette": {
+    "albums": "Albümler",
+    "description": "Bir sayfa arayın veya bir komut çalıştırın.",
+    "empty": "Sonuç yok.",
+    "favourites": "Favoriler",
+    "groupActions": "İşlemler",
+    "groupNavigate": "Git",
+    "map": "Harita",
+    "placeholder": "Bir komut yazın veya arayın…",
+    "recent": "Son kullanılanlar",
+    "title": "Komut paleti",
+    "toggleTheme": "Açık / koyu temayı değiştir",
+    "trash": "Çöp kutusu"
   },
   "confirmButton": {
     "confirm": "Onayla"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Koyu modu aç/kapat",
     "unlimited": "Sınırsız"
   },
+  "flatTopBar": {
+    "search": "Ara…",
+    "toggleSidebar": "Kenar çubuğunu aç/kapat"
+  },
   "importButton": {
     "import": "İçe aktar",
     "importFailed": "Bu dosya içe aktarılamadı"
@@ -180,6 +202,16 @@
     "loading": "Yükleniyor…",
     "saving": "Kaydediliyor…"
   },
+  "storageDialog": {
+    "byApp": "Uygulamaya göre depolama",
+    "files_other": "{{count}} dosya",
+    "largest": "En büyük dosyalar",
+    "noFiles": "Henüz depolanmış dosya yok",
+    "ofTotal": "{{total}} içinden {{used}}",
+    "open": "Depolama ayrıntıları",
+    "title": "Depolama",
+    "usedOnly": "{{used}} kullanıldı"
+  },
   "units": {
     "items_one": "{{count}} öğe",
     "items_other": "{{count}} öğe"
@@ -209,11 +241,15 @@
     "downloading": "İndiriliyor…",
     "downloadingItems_one": "{{count}} öğe indiriliyor",
     "downloadingItems_other": "{{count}} öğe indiriliyor",
+    "etaMinutes": "{{minutes}} dk kaldı",
+    "etaSeconds": "{{seconds}} sn kaldı",
     "expand": "Genişlet",
     "failed": "Başarısız",
+    "percentDone": "%{{percent}}",
     "processing": "İşleniyor…",
     "processingItems_one": "{{count}} öğe işleniyor",
     "processingItems_other": "{{count}} öğe işleniyor",
+    "retry": "Yeniden dene",
     "speed": "{{speed}}/sn",
     "transcoding": "Dönüştürülüyor…",
     "uploading": "Yükleniyor…",
@@ -228,6 +264,7 @@
     "uploaded_other": "{{count}} fotoğraf yüklendi"
   },
   "viewToggle": {
+    "columnsView": "Sütun görünümü",
     "gridView": "Izgara görünümü",
     "tableView": "Tablo görünümü"
   }

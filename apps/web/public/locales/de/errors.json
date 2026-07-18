@@ -26,6 +26,7 @@
   "forbidden": "Dazu hast du keine Berechtigung.",
   "generic": "Etwas ist schiefgelaufen.",
   "invalidInput": "Ungültige Eingabe.",
+  "network": "Netzwerkfehler — überprüfe deine Verbindung und versuche es erneut.",
   "notFound": "Nicht gefunden.",
   "photos": {
     "fileRequired": "Eine Datei ist erforderlich.",

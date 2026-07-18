@@ -5,6 +5,10 @@
     "backup": "बैकअप",
     "branding": "ब्रांडिंग",
     "console": "कंसोल",
+    "groupActivity": "गतिविधि",
+    "groupAppsLimits": "ऐप्स और सीमाएं",
+    "groupInstance": "इंस्टेंस",
+    "groupPeople": "लोग",
     "groups": "समूह",
     "limits": "सीमाएँ",
     "overview": "अवलोकन",
@@ -70,15 +74,41 @@
     "saved": "ब्रांडिंग सहेजी गई",
     "title": "ब्रांडिंग"
   },
+  "close": "बंद करें",
+  "consoleTitle": "एडमिन कंसोल",
   "createRoleDialog": {
     "cancel": "रद्द करें",
     "createError": "भूमिका नहीं बनाई जा सकी",
     "createRole": "भूमिका बनाएँ",
     "created": "भूमिका बनाई गई",
+    "delete": "भूमिका हटाएं",
+    "deleteConfirm": "यह भूमिका हटाएं? जिसे भी यह सौंपी गई है, उसकी दी गई पहुंच खत्म हो जाएगी।",
+    "deleteError": "भूमिका हटाई नहीं जा सकी",
+    "deleted": "भूमिका हटाई गई",
     "description": "विवरण",
+    "editRole": "भूमिका संपादित करें",
     "name": "नाम",
     "newRole": "नई भूमिका",
-    "permissions": "अनुमतियाँ"
+    "permissions": "अनुमतियाँ",
+    "saveChanges": "बदलाव सहेजें",
+    "updateError": "भूमिका अपडेट नहीं हो सकी",
+    "updated": "भूमिका अपडेट हुई"
+  },
+  "createUserDialog": {
+    "cancel": "रद्द करें",
+    "create": "उपयोगकर्ता बनाएं",
+    "createError": "उपयोगकर्ता बनाया नहीं जा सका",
+    "created": "उपयोगकर्ता बनाया गया",
+    "email": "ईमेल",
+    "makeAdmin": "इस उपयोगकर्ता को एडमिन बनाएं",
+    "name": "नाम",
+    "newUser": "नया उपयोगकर्ता",
+    "password": "पासवर्ड",
+    "passwordHint": "कम से कम 8 अक्षर।",
+    "title": "उपयोगकर्ता बनाएं"
+  },
+  "editor": {
+    "back": "वापस"
   },
   "groupDetailSheet": {
     "add": "जोड़ें",
@@ -143,14 +173,30 @@
     "title": "अवलोकन",
     "users": "उपयोगकर्ता"
   },
+  "roleEditor": {
+    "newRoleTitle": "नई भूमिका",
+    "noPermissions": "आपकी खोज से कोई अनुमति मेल नहीं खाती।",
+    "permissionCount_one": "{{count}} अनुमति",
+    "permissionCount_other": "{{count}} अनुमतियां",
+    "searchPermissions": "अनुमतियां खोजें…",
+    "tabDisplay": "प्रदर्शन",
+    "tabPermissions": "अनुमतियां",
+    "toggleAll": "सभी {{app}} अनुमतियां टॉगल करें"
+  },
   "roles": {
+    "delete": "हटाएं",
     "description": "अनुमति सेट जिन्हें आप उपयोगकर्ताओं और समूहों को सौंप सकते हैं।",
+    "edit": "संपादित करें",
+    "roleActions": "भूमिका क्रियाएं",
     "system": "सिस्टम",
     "title": "भूमिकाएँ"
   },
+  "searchSettings": "खोजें",
   "settings": {
     "allowedDomains": "अनुमत ईमेल डोमेन",
     "configure": "कॉन्फ़िगर करें",
+    "demoMode": "डेमो मोड (केवल पढ़ने योग्य)",
+    "demoModeHint": "चालू होने पर, केवल एडमिन अपलोड, संपादित या हटा सकते हैं। बाकी सभी देख सकते हैं पर कुछ बदल नहीं सकते।",
     "description": "पंजीकरण और इंस्टेंस-व्यापी नीति।",
     "domainsHint": "अल्पविराम से अलग करें। किसी भी डोमेन की अनुमति देने के लिए खाली छोड़ें।",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +233,9 @@
     "roleAssigned": "भूमिका सौंपी गई",
     "roleRemoved": "भूमिका हटाई गई",
     "roles": "भूमिकाएँ",
-    "unassignError": "भूमिका हटाई नहीं जा सकी"
+    "unassignError": "भूमिका हटाई नहीं जा सकी",
+    "unlimited": "असीमित",
+    "usage": "उपयोग किया गया संग्रहण"
   },
   "users": {
     "admin": "एडमिन",

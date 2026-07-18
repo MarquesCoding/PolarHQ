@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "管理后台",
+    "authenticator": "身份验证器",
+    "calendar": "日历",
     "docs": "文档",
     "drive": "云端硬盘",
+    "meet": "会议",
+    "passwords": "密码",
     "photos": "照片",
     "sheets": "表格",
     "whiteboard": "白板"
@@ -42,6 +46,20 @@
     "saving": "正在保存…",
     "share": "分享",
     "title": "标题"
+  },
+  "commandPalette": {
+    "albums": "相册",
+    "description": "搜索页面或运行命令。",
+    "empty": "没有结果。",
+    "favourites": "收藏",
+    "groupActions": "操作",
+    "groupNavigate": "前往",
+    "map": "地图",
+    "placeholder": "输入命令或搜索…",
+    "recent": "最近",
+    "title": "命令面板",
+    "toggleTheme": "切换浅色/深色模式",
+    "trash": "回收站"
   },
   "confirmButton": {
     "confirm": "确认"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "切换深色模式",
     "unlimited": "无限制"
   },
+  "flatTopBar": {
+    "search": "搜索…",
+    "toggleSidebar": "切换侧边栏"
+  },
   "importButton": {
     "import": "导入",
     "importFailed": "无法导入此文件"
@@ -180,6 +202,17 @@
     "loading": "正在加载…",
     "saving": "正在保存…"
   },
+  "storageDialog": {
+    "byApp": "按应用分类的存储空间",
+    "files_one": "{{count}} 个文件",
+    "files_other": "{{count}} 个文件",
+    "largest": "最大的文件",
+    "noFiles": "尚未存储任何文件",
+    "ofTotal": "{{used}} / {{total}}",
+    "open": "存储详情",
+    "title": "存储空间",
+    "usedOnly": "已使用 {{used}}"
+  },
   "units": {
     "items_one": "{{count}} 项",
     "items_other": "{{count}} 项"
@@ -209,11 +242,15 @@
     "downloading": "正在下载…",
     "downloadingItems_one": "正在下载 {{count}} 项",
     "downloadingItems_other": "正在下载 {{count}} 项",
+    "etaMinutes": "剩余 {{minutes}} 分钟",
+    "etaSeconds": "剩余 {{seconds}} 秒",
     "expand": "展开",
     "failed": "失败",
+    "percentDone": "{{percent}}%",
     "processing": "正在处理…",
     "processingItems_one": "正在处理 {{count}} 项",
     "processingItems_other": "正在处理 {{count}} 项",
+    "retry": "重试",
     "speed": "{{speed}}/秒",
     "transcoding": "正在转码…",
     "uploading": "正在上传…",
@@ -228,6 +265,7 @@
     "uploaded_other": "已上传 {{count}} 张照片"
   },
   "viewToggle": {
+    "columnsView": "分栏视图",
     "gridView": "网格视图",
     "tableView": "表格视图"
   }

@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "管理",
+    "authenticator": "認証システム",
+    "calendar": "カレンダー",
     "docs": "ドキュメント",
     "drive": "ドライブ",
+    "meet": "Meet",
+    "passwords": "パスワード",
     "photos": "写真",
     "sheets": "Sheets",
     "whiteboard": "ホワイトボード"
@@ -42,6 +46,20 @@
     "saving": "保存中…",
     "share": "共有",
     "title": "タイトル"
+  },
+  "commandPalette": {
+    "albums": "アルバム",
+    "description": "ページを検索するかコマンドを実行します。",
+    "empty": "結果がありません。",
+    "favourites": "お気に入り",
+    "groupActions": "アクション",
+    "groupNavigate": "移動",
+    "map": "マップ",
+    "placeholder": "コマンドを入力または検索…",
+    "recent": "最近",
+    "title": "コマンドパレット",
+    "toggleTheme": "ライト/ダークを切り替え",
+    "trash": "ゴミ箱"
   },
   "confirmButton": {
     "confirm": "確定"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "ダークモードの切り替え",
     "unlimited": "無制限"
   },
+  "flatTopBar": {
+    "search": "検索…",
+    "toggleSidebar": "サイドバーを切り替え"
+  },
   "importButton": {
     "import": "インポート",
     "importFailed": "このファイルをインポートできませんでした"
@@ -180,6 +202,16 @@
     "loading": "読み込み中…",
     "saving": "保存中…"
   },
+  "storageDialog": {
+    "byApp": "アプリ別ストレージ",
+    "files_other": "{{count}} 件のファイル",
+    "largest": "サイズの大きいファイル",
+    "noFiles": "まだファイルが保存されていません",
+    "ofTotal": "{{total}} 中 {{used}}",
+    "open": "ストレージの詳細",
+    "title": "ストレージ",
+    "usedOnly": "{{used}} 使用中"
+  },
   "units": {
     "items_one": "{{count}}件",
     "items_other": "{{count}}件"
@@ -209,11 +241,15 @@
     "downloading": "ダウンロード中…",
     "downloadingItems_one": "{{count}}件をダウンロード中",
     "downloadingItems_other": "{{count}}件をダウンロード中",
+    "etaMinutes": "残り{{minutes}}分",
+    "etaSeconds": "残り{{seconds}}秒",
     "expand": "展開",
     "failed": "失敗しました",
+    "percentDone": "{{percent}}%",
     "processing": "処理中…",
     "processingItems_one": "{{count}}件を処理中",
     "processingItems_other": "{{count}}件を処理中",
+    "retry": "再試行",
     "speed": "{{speed}}/秒",
     "transcoding": "トランスコード中…",
     "uploading": "アップロード中…",
@@ -228,6 +264,7 @@
     "uploaded_other": "{{count}}枚の写真をアップロードしました"
   },
   "viewToggle": {
+    "columnsView": "カラム表示",
     "gridView": "グリッド表示",
     "tableView": "テーブル表示"
   }

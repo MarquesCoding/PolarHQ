@@ -26,6 +26,7 @@
   "forbidden": "Du har inte behörighet att göra det.",
   "generic": "Något gick fel.",
   "invalidInput": "Ogiltiga indata.",
+  "network": "Nätverksfel — kontrollera din anslutning och försök igen.",
   "notFound": "Hittades inte.",
   "photos": {
     "fileRequired": "En fil krävs.",

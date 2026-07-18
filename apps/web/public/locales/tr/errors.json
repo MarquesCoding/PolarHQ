@@ -26,6 +26,7 @@
   "forbidden": "Bunu yapma izniniz yok.",
   "generic": "Bir şeyler ters gitti.",
   "invalidInput": "Geçersiz giriş.",
+  "network": "Ağ hatası — bağlantınızı kontrol edip tekrar deneyin.",
   "notFound": "Bulunamadı.",
   "photos": {
     "fileRequired": "Bir dosya gerekli.",

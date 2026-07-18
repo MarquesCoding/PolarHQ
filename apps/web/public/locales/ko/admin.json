@@ -5,6 +5,10 @@
     "backup": "백업",
     "branding": "브랜딩",
     "console": "콘솔",
+    "groupActivity": "활동",
+    "groupAppsLimits": "앱 및 제한",
+    "groupInstance": "인스턴스",
+    "groupPeople": "사용자",
     "groups": "그룹",
     "limits": "제한",
     "overview": "개요",
@@ -70,15 +74,41 @@
     "saved": "브랜딩이 저장되었습니다",
     "title": "브랜딩"
   },
+  "close": "닫기",
+  "consoleTitle": "관리자 콘솔",
   "createRoleDialog": {
     "cancel": "취소",
     "createError": "역할을 생성할 수 없습니다",
     "createRole": "역할 생성",
     "created": "역할이 생성되었습니다",
+    "delete": "역할 삭제",
+    "deleteConfirm": "이 역할을 삭제할까요? 이 역할이 부여된 사람은 관련 권한을 잃습니다.",
+    "deleteError": "역할을 삭제할 수 없습니다",
+    "deleted": "역할이 삭제되었습니다",
     "description": "설명",
+    "editRole": "역할 편집",
     "name": "이름",
     "newRole": "새 역할",
-    "permissions": "권한"
+    "permissions": "권한",
+    "saveChanges": "변경 사항 저장",
+    "updateError": "역할을 업데이트할 수 없습니다",
+    "updated": "역할이 업데이트되었습니다"
+  },
+  "createUserDialog": {
+    "cancel": "취소",
+    "create": "사용자 생성",
+    "createError": "사용자를 생성할 수 없습니다",
+    "created": "사용자가 생성되었습니다",
+    "email": "이메일",
+    "makeAdmin": "이 사용자를 관리자로 지정",
+    "name": "이름",
+    "newUser": "새 사용자",
+    "password": "비밀번호",
+    "passwordHint": "8자 이상이어야 합니다.",
+    "title": "사용자 생성"
+  },
+  "editor": {
+    "back": "뒤로"
   },
   "groupDetailSheet": {
     "add": "추가",
@@ -143,14 +173,29 @@
     "title": "개요",
     "users": "사용자"
   },
+  "roleEditor": {
+    "newRoleTitle": "새 역할",
+    "noPermissions": "검색과 일치하는 권한이 없습니다.",
+    "permissionCount_other": "권한 {{count}}개",
+    "searchPermissions": "권한 검색…",
+    "tabDisplay": "표시",
+    "tabPermissions": "권한",
+    "toggleAll": "{{app}}의 모든 권한 전환"
+  },
   "roles": {
+    "delete": "삭제",
     "description": "사용자와 그룹에 할당할 수 있는 권한 집합입니다.",
+    "edit": "편집",
+    "roleActions": "역할 작업",
     "system": "시스템",
     "title": "역할"
   },
+  "searchSettings": "검색",
   "settings": {
     "allowedDomains": "허용된 이메일 도메인",
     "configure": "구성",
+    "demoMode": "데모 모드 (읽기 전용)",
+    "demoModeHint": "켜져 있으면 관리자만 업로드, 편집, 삭제할 수 있습니다. 다른 사용자는 보기만 할 수 있고 변경할 수 없습니다.",
     "description": "가입 및 인스턴스 전체 정책입니다.",
     "domainsHint": "쉼표로 구분합니다. 비워 두면 모든 도메인을 허용합니다.",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +232,9 @@
     "roleAssigned": "역할이 할당되었습니다",
     "roleRemoved": "역할이 제거되었습니다",
     "roles": "역할",
-    "unassignError": "역할을 제거할 수 없습니다"
+    "unassignError": "역할을 제거할 수 없습니다",
+    "unlimited": "무제한",
+    "usage": "사용된 저장 용량"
   },
   "users": {
     "admin": "관리자",

@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Адміністрування",
+    "authenticator": "Автентифікатор",
+    "calendar": "Календар",
     "docs": "Документи",
     "drive": "Диск",
+    "meet": "Зустрічі",
+    "passwords": "Паролі",
     "photos": "Фото",
     "sheets": "Таблиці",
     "whiteboard": "Дошка"
@@ -42,6 +46,20 @@
     "saving": "Збереження…",
     "share": "Поділитися",
     "title": "Назва"
+  },
+  "commandPalette": {
+    "albums": "Альбоми",
+    "description": "Знайдіть сторінку або виконайте команду.",
+    "empty": "Немає результатів.",
+    "favourites": "Обране",
+    "groupActions": "Дії",
+    "groupNavigate": "Перейти до",
+    "map": "Карта",
+    "placeholder": "Введіть команду або пошуковий запит…",
+    "recent": "Нещодавні",
+    "title": "Палітра команд",
+    "toggleTheme": "Перемкнути світлу/темну тему",
+    "trash": "Кошик"
   },
   "confirmButton": {
     "confirm": "Підтвердити"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Перемкнути темний режим",
     "unlimited": "Без обмежень"
   },
+  "flatTopBar": {
+    "search": "Пошук…",
+    "toggleSidebar": "Перемкнути бічну панель"
+  },
   "importButton": {
     "import": "Імпортувати",
     "importFailed": "Не вдалося імпортувати цей файл"
@@ -180,6 +202,19 @@
     "loading": "Завантаження…",
     "saving": "Збереження…"
   },
+  "storageDialog": {
+    "byApp": "Сховище за додатком",
+    "files_few": "{{count}} файли",
+    "files_many": "{{count}} файлів",
+    "files_one": "{{count}} файл",
+    "files_other": "{{count}} файлу",
+    "largest": "Найбільші файли",
+    "noFiles": "Ще немає збережених файлів",
+    "ofTotal": "{{used}} з {{total}}",
+    "open": "Відомості про сховище",
+    "title": "Сховище",
+    "usedOnly": "Використано {{used}}"
+  },
   "units": {
     "items_few": "{{count}} елементи",
     "items_many": "{{count}} елементів",
@@ -215,13 +250,17 @@
     "downloadingItems_many": "Завантаження {{count}} елементів",
     "downloadingItems_one": "Завантаження {{count}} елемента",
     "downloadingItems_other": "Завантаження {{count}} елемента",
+    "etaMinutes": "Залишилося {{minutes}} хв",
+    "etaSeconds": "Залишилося {{seconds}} с",
     "expand": "Розгорнути",
     "failed": "Помилка",
+    "percentDone": "{{percent}}%",
     "processing": "Обробка…",
     "processingItems_few": "Обробка {{count}} елементів",
     "processingItems_many": "Обробка {{count}} елементів",
     "processingItems_one": "Обробка {{count}} елемента",
     "processingItems_other": "Обробка {{count}} елемента",
+    "retry": "Повторити",
     "speed": "{{speed}}/с",
     "transcoding": "Перекодування…",
     "uploading": "Вивантаження…",
@@ -242,6 +281,7 @@
     "uploaded_other": "Вивантажено {{count}} фото"
   },
   "viewToggle": {
+    "columnsView": "Вигляд колонками",
     "gridView": "Сітка",
     "tableView": "Таблиця"
   }

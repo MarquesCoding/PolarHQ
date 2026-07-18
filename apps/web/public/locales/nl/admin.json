@@ -5,6 +5,10 @@
     "backup": "Back-up",
     "branding": "Huisstijl",
     "console": "Console",
+    "groupActivity": "Activiteit",
+    "groupAppsLimits": "Apps & limieten",
+    "groupInstance": "Instantie",
+    "groupPeople": "Personen",
     "groups": "Groepen",
     "limits": "Limieten",
     "overview": "Overzicht",
@@ -70,15 +74,41 @@
     "saved": "Huisstijl opgeslagen",
     "title": "Huisstijl"
   },
+  "close": "Sluiten",
+  "consoleTitle": "Beheerconsole",
   "createRoleDialog": {
     "cancel": "Annuleren",
     "createError": "Kan de rol niet aanmaken",
     "createRole": "Rol aanmaken",
     "created": "Rol aangemaakt",
+    "delete": "Rol verwijderen",
+    "deleteConfirm": "Deze rol verwijderen? Iedereen aan wie hij is toegewezen verliest de bijbehorende toegang.",
+    "deleteError": "Kon de rol niet verwijderen",
+    "deleted": "Rol verwijderd",
     "description": "Beschrijving",
+    "editRole": "Rol bewerken",
     "name": "Naam",
     "newRole": "Nieuwe rol",
-    "permissions": "Machtigingen"
+    "permissions": "Machtigingen",
+    "saveChanges": "Wijzigingen opslaan",
+    "updateError": "Kon de rol niet bijwerken",
+    "updated": "Rol bijgewerkt"
+  },
+  "createUserDialog": {
+    "cancel": "Annuleren",
+    "create": "Gebruiker aanmaken",
+    "createError": "Kon de gebruiker niet aanmaken",
+    "created": "Gebruiker aangemaakt",
+    "email": "E-mail",
+    "makeAdmin": "Maak deze gebruiker beheerder",
+    "name": "Naam",
+    "newUser": "Nieuwe gebruiker",
+    "password": "Wachtwoord",
+    "passwordHint": "Minimaal 8 tekens.",
+    "title": "Gebruiker aanmaken"
+  },
+  "editor": {
+    "back": "Terug"
   },
   "groupDetailSheet": {
     "add": "Toevoegen",
@@ -143,14 +173,30 @@
     "title": "Overzicht",
     "users": "Gebruikers"
   },
+  "roleEditor": {
+    "newRoleTitle": "Nieuwe rol",
+    "noPermissions": "Geen machtigingen komen overeen met je zoekopdracht.",
+    "permissionCount_one": "{{count}} machtiging",
+    "permissionCount_other": "{{count}} machtigingen",
+    "searchPermissions": "Machtigingen zoeken…",
+    "tabDisplay": "Weergave",
+    "tabPermissions": "Machtigingen",
+    "toggleAll": "Alle {{app}}-machtigingen wisselen"
+  },
   "roles": {
+    "delete": "Verwijderen",
     "description": "Machtigingensets die je aan gebruikers en groepen kunt toewijzen.",
+    "edit": "Bewerken",
+    "roleActions": "Rolacties",
     "system": "Systeem",
     "title": "Rollen"
   },
+  "searchSettings": "Zoeken",
   "settings": {
     "allowedDomains": "Toegestane e-maildomeinen",
     "configure": "Configureren",
+    "demoMode": "Demomodus (alleen-lezen)",
+    "demoModeHint": "Indien ingeschakeld kunnen alleen beheerders uploaden, bewerken of verwijderen. Anderen kunnen alleen bekijken.",
     "description": "Registratie en beleid voor de hele instantie.",
     "domainsHint": "Door komma's gescheiden. Laat leeg om elk domein toe te staan.",
     "domainsPlaceholder": "voorbeeld.com, team.org",
@@ -187,7 +233,9 @@
     "roleAssigned": "Rol toegewezen",
     "roleRemoved": "Rol verwijderd",
     "roles": "Rollen",
-    "unassignError": "Kan de rol niet verwijderen"
+    "unassignError": "Kan de rol niet verwijderen",
+    "unlimited": "Onbeperkt",
+    "usage": "Gebruikte opslag"
   },
   "users": {
     "admin": "Beheerder",

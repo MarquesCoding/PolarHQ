@@ -5,6 +5,10 @@
     "backup": "Sao lưu",
     "branding": "Thương hiệu",
     "console": "Bảng điều khiển",
+    "groupActivity": "Hoạt động",
+    "groupAppsLimits": "Ứng dụng & Giới hạn",
+    "groupInstance": "Hệ thống",
+    "groupPeople": "Con người",
     "groups": "Nhóm",
     "limits": "Giới hạn",
     "overview": "Tổng quan",
@@ -70,15 +74,41 @@
     "saved": "Đã lưu thương hiệu",
     "title": "Thương hiệu"
   },
+  "close": "Đóng",
+  "consoleTitle": "Bảng điều khiển quản trị",
   "createRoleDialog": {
     "cancel": "Hủy",
     "createError": "Không thể tạo vai trò",
     "createRole": "Tạo vai trò",
     "created": "Đã tạo vai trò",
+    "delete": "Xóa vai trò",
+    "deleteConfirm": "Xóa vai trò này? Người được gán sẽ mất quyền truy cập mà vai trò này cấp.",
+    "deleteError": "Không thể xóa vai trò",
+    "deleted": "Đã xóa vai trò",
     "description": "Mô tả",
+    "editRole": "Chỉnh sửa vai trò",
     "name": "Tên",
     "newRole": "Vai trò mới",
-    "permissions": "Quyền"
+    "permissions": "Quyền",
+    "saveChanges": "Lưu thay đổi",
+    "updateError": "Không thể cập nhật vai trò",
+    "updated": "Đã cập nhật vai trò"
+  },
+  "createUserDialog": {
+    "cancel": "Hủy",
+    "create": "Tạo người dùng",
+    "createError": "Không thể tạo người dùng",
+    "created": "Đã tạo người dùng",
+    "email": "Email",
+    "makeAdmin": "Đặt người dùng này làm quản trị viên",
+    "name": "Tên",
+    "newUser": "Người dùng mới",
+    "password": "Mật khẩu",
+    "passwordHint": "Ít nhất 8 ký tự.",
+    "title": "Tạo người dùng"
+  },
+  "editor": {
+    "back": "Quay lại"
   },
   "groupDetailSheet": {
     "add": "Thêm",
@@ -143,14 +173,29 @@
     "title": "Tổng quan",
     "users": "Người dùng"
   },
+  "roleEditor": {
+    "newRoleTitle": "Vai trò mới",
+    "noPermissions": "Không có quyền hạn nào khớp với tìm kiếm của bạn.",
+    "permissionCount_other": "{{count}} quyền hạn",
+    "searchPermissions": "Tìm quyền hạn…",
+    "tabDisplay": "Hiển thị",
+    "tabPermissions": "Quyền hạn",
+    "toggleAll": "Bật/tắt tất cả quyền {{app}}"
+  },
   "roles": {
+    "delete": "Xóa",
     "description": "Các tập quyền bạn có thể gán cho người dùng và nhóm.",
+    "edit": "Chỉnh sửa",
+    "roleActions": "Thao tác vai trò",
     "system": "Hệ thống",
     "title": "Vai trò"
   },
+  "searchSettings": "Tìm kiếm",
   "settings": {
     "allowedDomains": "Tên miền email được phép",
     "configure": "Cấu hình",
+    "demoMode": "Chế độ demo (chỉ xem)",
+    "demoModeHint": "Khi bật, chỉ quản trị viên mới có thể tải lên, chỉnh sửa hoặc xóa. Người khác chỉ xem được, không thay đổi được.",
     "description": "Chính sách đăng ký và toàn phiên bản.",
     "domainsHint": "Phân tách bằng dấu phẩy. Để trống để cho phép bất kỳ tên miền nào.",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +232,9 @@
     "roleAssigned": "Đã gán vai trò",
     "roleRemoved": "Đã xóa vai trò",
     "roles": "Vai trò",
-    "unassignError": "Không thể xóa vai trò"
+    "unassignError": "Không thể xóa vai trò",
+    "unlimited": "Không giới hạn",
+    "usage": "Dung lượng đã dùng"
   },
   "users": {
     "admin": "Quản trị viên",

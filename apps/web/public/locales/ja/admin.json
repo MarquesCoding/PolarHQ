@@ -5,6 +5,10 @@
     "backup": "バックアップ",
     "branding": "ブランディング",
     "console": "コンソール",
+    "groupActivity": "アクティビティ",
+    "groupAppsLimits": "アプリと制限",
+    "groupInstance": "インスタンス",
+    "groupPeople": "ユーザー",
     "groups": "グループ",
     "limits": "制限",
     "overview": "概要",
@@ -70,15 +74,41 @@
     "saved": "ブランディングを保存しました",
     "title": "ブランディング"
   },
+  "close": "閉じる",
+  "consoleTitle": "管理コンソール",
   "createRoleDialog": {
     "cancel": "キャンセル",
     "createError": "ロールを作成できませんでした",
     "createRole": "ロールを作成",
     "created": "ロールを作成しました",
+    "delete": "ロールを削除",
+    "deleteConfirm": "このロールを削除しますか？割り当てられているユーザーは付与されていたアクセス権を失います。",
+    "deleteError": "ロールを削除できませんでした",
+    "deleted": "ロールを削除しました",
     "description": "説明",
+    "editRole": "ロールを編集",
     "name": "名前",
     "newRole": "新しいロール",
-    "permissions": "権限"
+    "permissions": "権限",
+    "saveChanges": "変更を保存",
+    "updateError": "ロールを更新できませんでした",
+    "updated": "ロールを更新しました"
+  },
+  "createUserDialog": {
+    "cancel": "キャンセル",
+    "create": "ユーザーを作成",
+    "createError": "ユーザーを作成できませんでした",
+    "created": "ユーザーを作成しました",
+    "email": "メールアドレス",
+    "makeAdmin": "このユーザーを管理者にする",
+    "name": "名前",
+    "newUser": "新規ユーザー",
+    "password": "パスワード",
+    "passwordHint": "8文字以上にしてください。",
+    "title": "ユーザーを作成"
+  },
+  "editor": {
+    "back": "戻る"
   },
   "groupDetailSheet": {
     "add": "追加",
@@ -143,14 +173,29 @@
     "title": "概要",
     "users": "ユーザー"
   },
+  "roleEditor": {
+    "newRoleTitle": "新しいロール",
+    "noPermissions": "検索条件に一致する権限がありません。",
+    "permissionCount_other": "{{count}} 件の権限",
+    "searchPermissions": "権限を検索…",
+    "tabDisplay": "表示",
+    "tabPermissions": "権限",
+    "toggleAll": "{{app}} の権限をすべて切り替え"
+  },
   "roles": {
+    "delete": "削除",
     "description": "ユーザーやグループに割り当てられる権限セットです。",
+    "edit": "編集",
+    "roleActions": "ロール操作",
     "system": "システム",
     "title": "ロール"
   },
+  "searchSettings": "検索",
   "settings": {
     "allowedDomains": "許可するメールドメイン",
     "configure": "設定",
+    "demoMode": "デモモード（読み取り専用）",
+    "demoModeHint": "オンにすると、管理者のみがアップロード・編集・削除できます。他のユーザーは閲覧のみで変更はできません。",
     "description": "登録およびインスタンス全体のポリシーです。",
     "domainsHint": "カンマ区切り。すべてのドメインを許可する場合は空欄のままにします。",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +232,9 @@
     "roleAssigned": "ロールを割り当てました",
     "roleRemoved": "ロールを削除しました",
     "roles": "ロール",
-    "unassignError": "ロールを削除できませんでした"
+    "unassignError": "ロールを削除できませんでした",
+    "unlimited": "無制限",
+    "usage": "使用ストレージ"
   },
   "users": {
     "admin": "管理者",
