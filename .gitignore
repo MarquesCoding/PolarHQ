@@ -56,3 +56,6 @@ next-env.d.ts
 /docs/
 
 .claude/worktrees/
+
+# scratch: local screen recordings / screenshots used to build marketing assets
+/temp/

@@ -4,10 +4,11 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { AnimatePresence, motion } from "motion/react"
+import { AnimatePresence, motion, useScroll, useTransform } from "motion/react"
 import { GithubLogo, List, X } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
+import ThemeToggle from "@components/ThemeToggle"
 
 const LINKS = [
   { label: "Blog", href: "/blog" },
@@ -24,6 +25,8 @@ const Nav = () => {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const { scrollYProgress } = useScroll()
+  const dashOffset = useTransform(scrollYProgress, [0, 1], [1, 0])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -35,15 +38,38 @@ const Nav = () => {
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      animate={{ y: -20, opacity: 1 }}
       transition={{ duration: 0.8, delay: 1.1, ease: [0.22, 0.61, 0.36, 1] }}
       className={cn(
         "fixed inset-x-0 z-50 mx-auto w-fit rounded-2xl border transition-all duration-300",
         scrolled || open
-          ? "border-white/10 bg-black/60 backdrop-blur-md top-3"
+          ? "border-foreground/10 bg-background/70 backdrop-blur-md top-12"
           : "border-transparent top-12",
       )}
     >
+      {/* Scroll-progress ring traced around the nav's rounded border. Matches rounded-2xl
+          (--radius 0.85rem × 1.8 ≈ 24px); pathLength=1 keeps it size-agnostic as the nav resizes. */}
+      <svg
+        aria-hidden
+        className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+        fill="none"
+      >
+        <motion.rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          rx="24"
+          ry="24"
+          pathLength={1}
+          stroke="var(--primary)"
+          strokeWidth={2}
+          strokeDasharray="1 1"
+          strokeLinecap="round"
+          style={{ strokeDashoffset: dashOffset }}
+        />
+      </svg>
+
       <nav className="flex h-12 items-center gap-6 px-4 sm:gap-8 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.png" alt="PolarHQ" width={24} height={24} className="size-6" priority />
@@ -84,6 +110,8 @@ const Nav = () => {
           <GithubLogo weight="fill" className="size-5" />
         </a>
 
+        <ThemeToggle />
+
         <Button
           variant="ghost"
           size="icon-sm"
@@ -117,8 +145,8 @@ const Nav = () => {
                     className={cn(
                       "rounded-lg px-3 py-2 text-sm transition-colors",
                       active
-                        ? "text-foreground bg-white/10"
-                        : "text-foreground/80 hover:text-foreground hover:bg-white/5",
+                        ? "text-foreground bg-foreground/10"
+                        : "text-foreground/80 hover:text-foreground hover:bg-foreground/5",
                     )}
                   >
                     {link.label}
@@ -128,7 +156,7 @@ const Nav = () => {
               <a
                 href="#"
                 onClick={() => setOpen(false)}
-                className="text-foreground/80 hover:text-foreground flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/5"
+                className="text-foreground/80 hover:text-foreground flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-foreground/5"
               >
                 <GithubLogo weight="fill" className="size-4" />
                 GitHub
