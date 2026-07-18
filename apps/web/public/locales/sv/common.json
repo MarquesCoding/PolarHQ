@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Admin",
+    "authenticator": "Authenticator",
+    "calendar": "Kalender",
     "docs": "Dokument",
     "drive": "Enhet",
+    "meet": "Meet",
+    "passwords": "Lösenord",
     "photos": "Foton",
     "sheets": "Sheets",
     "whiteboard": "Whiteboard"
@@ -42,6 +46,20 @@
     "saving": "Sparar…",
     "share": "Dela",
     "title": "Titel"
+  },
+  "commandPalette": {
+    "albums": "Album",
+    "description": "Sök efter en sida eller kör ett kommando.",
+    "empty": "Inga resultat.",
+    "favourites": "Favoriter",
+    "groupActions": "Åtgärder",
+    "groupNavigate": "Gå till",
+    "map": "Karta",
+    "placeholder": "Skriv ett kommando eller sök…",
+    "recent": "Senaste",
+    "title": "Kommandopalett",
+    "toggleTheme": "Växla ljust/mörkt",
+    "trash": "Papperskorg"
   },
   "confirmButton": {
     "confirm": "Bekräfta"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Växla mörkt läge",
     "unlimited": "Obegränsat"
   },
+  "flatTopBar": {
+    "search": "Sök…",
+    "toggleSidebar": "Växla sidofält"
+  },
   "importButton": {
     "import": "Importera",
     "importFailed": "Det gick inte att importera den här filen"
@@ -180,6 +202,17 @@
     "loading": "Läser in…",
     "saving": "Sparar…"
   },
+  "storageDialog": {
+    "byApp": "Lagring per app",
+    "files_one": "{{count}} fil",
+    "files_other": "{{count}} filer",
+    "largest": "Största filer",
+    "noFiles": "Inga filer lagrade ännu",
+    "ofTotal": "{{used}} av {{total}}",
+    "open": "Lagringsdetaljer",
+    "title": "Lagringsutrymme",
+    "usedOnly": "{{used}} använt"
+  },
   "units": {
     "items_one": "{{count}} objekt",
     "items_other": "{{count}} objekt"
@@ -209,11 +242,15 @@
     "downloading": "Laddar ner…",
     "downloadingItems_one": "Laddar ner {{count}} objekt",
     "downloadingItems_other": "Laddar ner {{count}} objekt",
+    "etaMinutes": "{{minutes}} min kvar",
+    "etaSeconds": "{{seconds}} s kvar",
     "expand": "Expandera",
     "failed": "Misslyckades",
+    "percentDone": "{{percent}} %",
     "processing": "Bearbetar…",
     "processingItems_one": "Bearbetar {{count}} objekt",
     "processingItems_other": "Bearbetar {{count}} objekt",
+    "retry": "Försök igen",
     "speed": "{{speed}}/s",
     "transcoding": "Omkodar…",
     "uploading": "Laddar upp…",
@@ -228,6 +265,7 @@
     "uploaded_other": "Laddade upp {{count}} foton"
   },
   "viewToggle": {
+    "columnsView": "Kolumnvy",
     "gridView": "Rutnätsvy",
     "tableView": "Tabellvy"
   }

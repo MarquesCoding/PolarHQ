@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Administracja",
+    "authenticator": "Uwierzytelnianie",
+    "calendar": "Kalendarz",
     "docs": "Dokumenty",
     "drive": "Dysk",
+    "meet": "Meet",
+    "passwords": "Hasła",
     "photos": "Zdjęcia",
     "sheets": "Arkusze",
     "whiteboard": "Tablica"
@@ -42,6 +46,20 @@
     "saving": "Zapisywanie…",
     "share": "Udostępnij",
     "title": "Tytuł"
+  },
+  "commandPalette": {
+    "albums": "Albumy",
+    "description": "Znajdź stronę lub uruchom polecenie.",
+    "empty": "Brak wyników.",
+    "favourites": "Ulubione",
+    "groupActions": "Działania",
+    "groupNavigate": "Przejdź do",
+    "map": "Mapa",
+    "placeholder": "Wpisz polecenie lub wyszukaj…",
+    "recent": "Ostatnie",
+    "title": "Paleta poleceń",
+    "toggleTheme": "Przełącz jasny / ciemny",
+    "trash": "Kosz"
   },
   "confirmButton": {
     "confirm": "Potwierdź"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Przełącz tryb ciemny",
     "unlimited": "Bez limitu"
   },
+  "flatTopBar": {
+    "search": "Szukaj…",
+    "toggleSidebar": "Przełącz pasek boczny"
+  },
   "importButton": {
     "import": "Importuj",
     "importFailed": "Nie udało się zaimportować tego pliku"
@@ -180,6 +202,19 @@
     "loading": "Ładowanie…",
     "saving": "Zapisywanie…"
   },
+  "storageDialog": {
+    "byApp": "Pamięć według aplikacji",
+    "files_few": "{{count}} pliki",
+    "files_many": "{{count}} plików",
+    "files_one": "{{count}} plik",
+    "files_other": "{{count}} pliku",
+    "largest": "Największe pliki",
+    "noFiles": "Nie zapisano jeszcze żadnych plików",
+    "ofTotal": "{{used}} z {{total}}",
+    "open": "Szczegóły pamięci",
+    "title": "Pamięć",
+    "usedOnly": "wykorzystano {{used}}"
+  },
   "units": {
     "items_few": "{{count}} elementy",
     "items_many": "{{count}} elementów",
@@ -215,13 +250,17 @@
     "downloadingItems_many": "Pobieranie {{count}} elementów",
     "downloadingItems_one": "Pobieranie {{count}} elementu",
     "downloadingItems_other": "Pobieranie {{count}} elementu",
+    "etaMinutes": "Pozostało {{minutes}} min",
+    "etaSeconds": "Pozostało {{seconds}} s",
     "expand": "Rozwiń",
     "failed": "Niepowodzenie",
+    "percentDone": "{{percent}}%",
     "processing": "Przetwarzanie…",
     "processingItems_few": "Przetwarzanie {{count}} elementów",
     "processingItems_many": "Przetwarzanie {{count}} elementów",
     "processingItems_one": "Przetwarzanie {{count}} elementu",
     "processingItems_other": "Przetwarzanie {{count}} elementu",
+    "retry": "Ponów",
     "speed": "{{speed}}/s",
     "transcoding": "Transkodowanie…",
     "uploading": "Przesyłanie…",
@@ -242,6 +281,7 @@
     "uploaded_other": "Przesłano {{count}} zdjęcia"
   },
   "viewToggle": {
+    "columnsView": "Widok kolumn",
     "gridView": "Widok siatki",
     "tableView": "Widok tabeli"
   }

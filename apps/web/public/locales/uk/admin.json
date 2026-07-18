@@ -5,6 +5,10 @@
     "backup": "Резервне копіювання",
     "branding": "Брендування",
     "console": "Консоль",
+    "groupActivity": "Активність",
+    "groupAppsLimits": "Додатки й ліміти",
+    "groupInstance": "Інстанс",
+    "groupPeople": "Люди",
     "groups": "Групи",
     "limits": "Ліміти",
     "overview": "Огляд",
@@ -70,15 +74,41 @@
     "saved": "Брендування збережено",
     "title": "Брендування"
   },
+  "close": "Закрити",
+  "consoleTitle": "Консоль адміністратора",
   "createRoleDialog": {
     "cancel": "Скасувати",
     "createError": "Не вдалося створити роль",
     "createRole": "Створити роль",
     "created": "Роль створено",
+    "delete": "Видалити роль",
+    "deleteConfirm": "Видалити цю роль? Усі, кому вона призначена, втратять наданий нею доступ.",
+    "deleteError": "Не вдалося видалити роль",
+    "deleted": "Роль видалено",
     "description": "Опис",
+    "editRole": "Редагувати роль",
     "name": "Назва",
     "newRole": "Нова роль",
-    "permissions": "Дозволи"
+    "permissions": "Дозволи",
+    "saveChanges": "Зберегти зміни",
+    "updateError": "Не вдалося оновити роль",
+    "updated": "Роль оновлено"
+  },
+  "createUserDialog": {
+    "cancel": "Скасувати",
+    "create": "Створити користувача",
+    "createError": "Не вдалося створити користувача",
+    "created": "Користувача створено",
+    "email": "Ел. пошта",
+    "makeAdmin": "Зробити цього користувача адміністратором",
+    "name": "Ім'я",
+    "newUser": "Новий користувач",
+    "password": "Пароль",
+    "passwordHint": "Щонайменше 8 символів.",
+    "title": "Створити користувача"
+  },
+  "editor": {
+    "back": "Назад"
   },
   "groupDetailSheet": {
     "add": "Додати",
@@ -143,14 +173,32 @@
     "title": "Огляд",
     "users": "Користувачі"
   },
+  "roleEditor": {
+    "newRoleTitle": "Нова роль",
+    "noPermissions": "Немає дозволів, що відповідають вашому пошуку.",
+    "permissionCount_few": "{{count}} дозволи",
+    "permissionCount_many": "{{count}} дозволів",
+    "permissionCount_one": "{{count}} дозвіл",
+    "permissionCount_other": "{{count}} дозволу",
+    "searchPermissions": "Пошук дозволів…",
+    "tabDisplay": "Відображення",
+    "tabPermissions": "Дозволи",
+    "toggleAll": "Перемкнути всі дозволи «{{app}}»"
+  },
   "roles": {
+    "delete": "Видалити",
     "description": "Набори дозволів, які можна призначати користувачам і групам.",
+    "edit": "Редагувати",
+    "roleActions": "Дії з роллю",
     "system": "Системна",
     "title": "Ролі"
   },
+  "searchSettings": "Пошук",
   "settings": {
     "allowedDomains": "Дозволені поштові домени",
     "configure": "Налаштувати",
+    "demoMode": "Демонстраційний режим (лише перегляд)",
+    "demoModeHint": "Коли увімкнено, лише адміністратори можуть вивантажувати, редагувати чи видаляти. Усі інші можуть переглядати, але не змінювати.",
     "description": "Реєстрація та політика для всього інстансу.",
     "domainsHint": "Через кому. Залиште порожнім, щоб дозволити будь-який домен.",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +235,9 @@
     "roleAssigned": "Роль призначено",
     "roleRemoved": "Роль видалено",
     "roles": "Ролі",
-    "unassignError": "Не вдалося видалити роль"
+    "unassignError": "Не вдалося видалити роль",
+    "unlimited": "Без обмежень",
+    "usage": "Використано сховища"
   },
   "users": {
     "admin": "Адміністратор",

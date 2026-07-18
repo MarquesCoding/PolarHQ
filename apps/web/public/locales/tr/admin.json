@@ -5,6 +5,10 @@
     "backup": "Yedekleme",
     "branding": "Marka",
     "console": "Konsol",
+    "groupActivity": "Etkinlik",
+    "groupAppsLimits": "Uygulamalar ve Sınırlar",
+    "groupInstance": "Sunucu",
+    "groupPeople": "Kişiler",
     "groups": "Gruplar",
     "limits": "Limitler",
     "overview": "Genel bakış",
@@ -70,15 +74,41 @@
     "saved": "Marka ayarları kaydedildi",
     "title": "Marka"
   },
+  "close": "Kapat",
+  "consoleTitle": "Yönetici konsolu",
   "createRoleDialog": {
     "cancel": "İptal",
     "createError": "Rol oluşturulamadı",
     "createRole": "Rol oluştur",
     "created": "Rol oluşturuldu",
+    "delete": "Rolü sil",
+    "deleteConfirm": "Bu rol silinsin mi? Bu role atanmış kişiler sağladığı erişimi kaybeder.",
+    "deleteError": "Rol silinemedi",
+    "deleted": "Rol silindi",
     "description": "Açıklama",
+    "editRole": "Rolü düzenle",
     "name": "Ad",
     "newRole": "Yeni rol",
-    "permissions": "İzinler"
+    "permissions": "İzinler",
+    "saveChanges": "Değişiklikleri kaydet",
+    "updateError": "Rol güncellenemedi",
+    "updated": "Rol güncellendi"
+  },
+  "createUserDialog": {
+    "cancel": "İptal",
+    "create": "Kullanıcı oluştur",
+    "createError": "Kullanıcı oluşturulamadı",
+    "created": "Kullanıcı oluşturuldu",
+    "email": "E-posta",
+    "makeAdmin": "Bu kullanıcıyı yönetici yap",
+    "name": "Ad",
+    "newUser": "Yeni kullanıcı",
+    "password": "Parola",
+    "passwordHint": "En az 8 karakter.",
+    "title": "Kullanıcı oluştur"
+  },
+  "editor": {
+    "back": "Geri"
   },
   "groupDetailSheet": {
     "add": "Ekle",
@@ -143,14 +173,29 @@
     "title": "Genel bakış",
     "users": "Kullanıcılar"
   },
+  "roleEditor": {
+    "newRoleTitle": "Yeni rol",
+    "noPermissions": "Aramanızla eşleşen izin yok.",
+    "permissionCount_other": "{{count}} izin",
+    "searchPermissions": "İzinlerde ara…",
+    "tabDisplay": "Görünüm",
+    "tabPermissions": "İzinler",
+    "toggleAll": "Tüm {{app}} izinlerini aç/kapat"
+  },
   "roles": {
+    "delete": "Sil",
     "description": "Kullanıcılara ve gruplara atayabileceğiniz izin kümeleri.",
+    "edit": "Düzenle",
+    "roleActions": "Rol işlemleri",
     "system": "Sistem",
     "title": "Roller"
   },
+  "searchSettings": "Ara",
   "settings": {
     "allowedDomains": "İzin verilen e-posta alan adları",
     "configure": "Yapılandır",
+    "demoMode": "Demo modu (salt okunur)",
+    "demoModeHint": "Açıkken yalnızca yöneticiler yükleyebilir, düzenleyebilir veya silebilir. Diğer herkes görüntüleyebilir ama değişiklik yapamaz.",
     "description": "Kayıt ve örnek geneli politika.",
     "domainsHint": "Virgülle ayrılmış. Herhangi bir alan adına izin vermek için boş bırakın.",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +232,9 @@
     "roleAssigned": "Rol atandı",
     "roleRemoved": "Rol kaldırıldı",
     "roles": "Roller",
-    "unassignError": "Rol kaldırılamadı"
+    "unassignError": "Rol kaldırılamadı",
+    "unlimited": "Sınırsız",
+    "usage": "Kullanılan depolama"
   },
   "users": {
     "admin": "Yönetici",

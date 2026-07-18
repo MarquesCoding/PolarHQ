@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "एडमिन",
+    "authenticator": "ऑथेंटिकेटर",
+    "calendar": "कैलेंडर",
     "docs": "Docs",
     "drive": "ड्राइव",
+    "meet": "मीट",
+    "passwords": "पासवर्ड",
     "photos": "फ़ोटो",
     "sheets": "Sheets",
     "whiteboard": "व्हाइटबोर्ड"
@@ -42,6 +46,20 @@
     "saving": "सहेजा जा रहा है…",
     "share": "साझा करें",
     "title": "शीर्षक"
+  },
+  "commandPalette": {
+    "albums": "एल्बम",
+    "description": "किसी पेज को खोजें या कमांड चलाएं।",
+    "empty": "कोई परिणाम नहीं।",
+    "favourites": "पसंदीदा",
+    "groupActions": "क्रियाएं",
+    "groupNavigate": "यहां जाएं",
+    "map": "मानचित्र",
+    "placeholder": "कोई कमांड टाइप करें या खोजें…",
+    "recent": "हाल की",
+    "title": "कमांड पैलेट",
+    "toggleTheme": "लाइट / डार्क टॉगल करें",
+    "trash": "ट्रैश"
   },
   "confirmButton": {
     "confirm": "पुष्टि करें"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "डार्क मोड टॉगल करें",
     "unlimited": "असीमित"
   },
+  "flatTopBar": {
+    "search": "खोजें…",
+    "toggleSidebar": "साइडबार टॉगल करें"
+  },
   "importButton": {
     "import": "इम्पोर्ट करें",
     "importFailed": "इस फ़ाइल को इम्पोर्ट नहीं किया जा सका"
@@ -180,6 +202,17 @@
     "loading": "लोड हो रहा है…",
     "saving": "सहेजा जा रहा है…"
   },
+  "storageDialog": {
+    "byApp": "ऐप के अनुसार संग्रहण",
+    "files_one": "{{count}} फ़ाइल",
+    "files_other": "{{count}} फ़ाइलें",
+    "largest": "सबसे बड़ी फ़ाइलें",
+    "noFiles": "अभी तक कोई फ़ाइल संग्रहीत नहीं है",
+    "ofTotal": "{{total}} में से {{used}}",
+    "open": "संग्रहण विवरण",
+    "title": "संग्रहण",
+    "usedOnly": "{{used}} इस्तेमाल हुआ"
+  },
   "units": {
     "items_one": "{{count}} आइटम",
     "items_other": "{{count}} आइटम"
@@ -209,11 +242,15 @@
     "downloading": "डाउनलोड हो रहा है…",
     "downloadingItems_one": "{{count}} आइटम डाउनलोड हो रहा है",
     "downloadingItems_other": "{{count}} आइटम डाउनलोड हो रहे हैं",
+    "etaMinutes": "{{minutes}} मिनट शेष",
+    "etaSeconds": "{{seconds}} सेकंड शेष",
     "expand": "विस्तृत करें",
     "failed": "विफल",
+    "percentDone": "{{percent}}%",
     "processing": "प्रोसेस किया जा रहा है…",
     "processingItems_one": "{{count}} आइटम प्रोसेस किया जा रहा है",
     "processingItems_other": "{{count}} आइटम प्रोसेस किए जा रहे हैं",
+    "retry": "फिर से प्रयास करें",
     "speed": "{{speed}}/से",
     "transcoding": "ट्रांसकोड किया जा रहा है…",
     "uploading": "अपलोड हो रहा है…",
@@ -228,6 +265,7 @@
     "uploaded_other": "{{count}} फ़ोटो अपलोड हुईं"
   },
   "viewToggle": {
+    "columnsView": "कॉलम दृश्य",
     "gridView": "ग्रिड व्यू",
     "tableView": "टेबल व्यू"
   }

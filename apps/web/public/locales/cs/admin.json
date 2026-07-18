@@ -5,6 +5,10 @@
     "backup": "Záloha",
     "branding": "Branding",
     "console": "Konzole",
+    "groupActivity": "Aktivita",
+    "groupAppsLimits": "Aplikace a limity",
+    "groupInstance": "Instance",
+    "groupPeople": "Lidé",
     "groups": "Skupiny",
     "limits": "Limity",
     "overview": "Přehled",
@@ -70,15 +74,41 @@
     "saved": "Branding uložen",
     "title": "Branding"
   },
+  "close": "Zavřít",
+  "consoleTitle": "Admin konzole",
   "createRoleDialog": {
     "cancel": "Zrušit",
     "createError": "Roli se nepodařilo vytvořit",
     "createRole": "Vytvořit roli",
     "created": "Role vytvořena",
+    "delete": "Smazat roli",
+    "deleteConfirm": "Smazat tuto roli? Kdokoliv, komu je přiřazená, přijde o přístup, který poskytovala.",
+    "deleteError": "Roli se nepodařilo smazat",
+    "deleted": "Role smazána",
     "description": "Popis",
+    "editRole": "Upravit roli",
     "name": "Název",
     "newRole": "Nová role",
-    "permissions": "Oprávnění"
+    "permissions": "Oprávnění",
+    "saveChanges": "Uložit změny",
+    "updateError": "Roli se nepodařilo aktualizovat",
+    "updated": "Role aktualizována"
+  },
+  "createUserDialog": {
+    "cancel": "Zrušit",
+    "create": "Vytvořit uživatele",
+    "createError": "Uživatele se nepodařilo vytvořit",
+    "created": "Uživatel vytvořen",
+    "email": "E-mail",
+    "makeAdmin": "Udělat z tohoto uživatele administrátora",
+    "name": "Jméno",
+    "newUser": "Nový uživatel",
+    "password": "Heslo",
+    "passwordHint": "Alespoň 8 znaků.",
+    "title": "Vytvořit uživatele"
+  },
+  "editor": {
+    "back": "Zpět"
   },
   "groupDetailSheet": {
     "add": "Přidat",
@@ -143,14 +173,31 @@
     "title": "Přehled",
     "users": "Uživatelé"
   },
+  "roleEditor": {
+    "newRoleTitle": "Nová role",
+    "noPermissions": "Žádná oprávnění neodpovídají hledání.",
+    "permissionCount_few": "{{count}} oprávnění",
+    "permissionCount_one": "{{count}} oprávnění",
+    "permissionCount_other": "{{count}} oprávnění",
+    "searchPermissions": "Hledat oprávnění…",
+    "tabDisplay": "Zobrazení",
+    "tabPermissions": "Oprávnění",
+    "toggleAll": "Přepnout všechna oprávnění aplikace {{app}}"
+  },
   "roles": {
+    "delete": "Smazat",
     "description": "Sady oprávnění, které lze přiřadit uživatelům a skupinám.",
+    "edit": "Upravit",
+    "roleActions": "Akce role",
     "system": "Systém",
     "title": "Role"
   },
+  "searchSettings": "Hledat",
   "settings": {
     "allowedDomains": "Povolené e-mailové domény",
     "configure": "Konfigurovat",
+    "demoMode": "Demo režim (jen pro čtení)",
+    "demoModeHint": "Když je zapnutý, nahrávat, upravovat a mazat mohou jen administrátoři. Ostatní mohou vše prohlížet, ale nic měnit.",
     "description": "Registrace a zásady pro celou instanci.",
     "domainsHint": "Oddělené čárkou. Ponechte prázdné pro povolení libovolné domény.",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +234,9 @@
     "roleAssigned": "Role přiřazena",
     "roleRemoved": "Role odebrána",
     "roles": "Role",
-    "unassignError": "Roli se nepodařilo odebrat"
+    "unassignError": "Roli se nepodařilo odebrat",
+    "unlimited": "Neomezeno",
+    "usage": "Využité úložiště"
   },
   "users": {
     "admin": "Administrátor",

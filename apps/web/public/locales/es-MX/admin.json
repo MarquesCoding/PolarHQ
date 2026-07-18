@@ -5,6 +5,10 @@
     "backup": "Respaldo",
     "branding": "Identidad de marca",
     "console": "Consola",
+    "groupActivity": "Actividad",
+    "groupAppsLimits": "Apps y límites",
+    "groupInstance": "Instancia",
+    "groupPeople": "Personas",
     "groups": "Grupos",
     "limits": "Límites",
     "overview": "Resumen",
@@ -70,15 +74,41 @@
     "saved": "Identidad de marca guardada",
     "title": "Identidad de marca"
   },
+  "close": "Cerrar",
+  "consoleTitle": "Consola de administración",
   "createRoleDialog": {
     "cancel": "Cancelar",
     "createError": "No se pudo crear el rol",
     "createRole": "Crear rol",
     "created": "Rol creado",
+    "delete": "Eliminar rol",
+    "deleteConfirm": "¿Eliminar este rol? Quienes lo tengan asignado perderán el acceso que otorgaba.",
+    "deleteError": "No se pudo eliminar el rol",
+    "deleted": "Rol eliminado",
     "description": "Descripción",
+    "editRole": "Editar rol",
     "name": "Nombre",
     "newRole": "Nuevo rol",
-    "permissions": "Permisos"
+    "permissions": "Permisos",
+    "saveChanges": "Guardar cambios",
+    "updateError": "No se pudo actualizar el rol",
+    "updated": "Rol actualizado"
+  },
+  "createUserDialog": {
+    "cancel": "Cancelar",
+    "create": "Crear usuario",
+    "createError": "No se pudo crear el usuario",
+    "created": "Usuario creado",
+    "email": "Correo electrónico",
+    "makeAdmin": "Hacer administrador a este usuario",
+    "name": "Nombre",
+    "newUser": "Nuevo usuario",
+    "password": "Contraseña",
+    "passwordHint": "Al menos 8 caracteres.",
+    "title": "Crear usuario"
+  },
+  "editor": {
+    "back": "Atrás"
   },
   "groupDetailSheet": {
     "add": "Agregar",
@@ -143,14 +173,30 @@
     "title": "Resumen",
     "users": "Usuarios"
   },
+  "roleEditor": {
+    "newRoleTitle": "Nuevo rol",
+    "noPermissions": "Ningún permiso coincide con tu búsqueda.",
+    "permissionCount_one": "{{count}} permiso",
+    "permissionCount_other": "{{count}} permisos",
+    "searchPermissions": "Buscar permisos…",
+    "tabDisplay": "Visualización",
+    "tabPermissions": "Permisos",
+    "toggleAll": "Activar o desactivar todos los permisos de {{app}}"
+  },
   "roles": {
+    "delete": "Eliminar",
     "description": "Conjuntos de permisos que puedes asignar a usuarios y grupos.",
+    "edit": "Editar",
+    "roleActions": "Acciones del rol",
     "system": "Sistema",
     "title": "Roles"
   },
+  "searchSettings": "Buscar",
   "settings": {
     "allowedDomains": "Dominios de correo permitidos",
     "configure": "Configurar",
+    "demoMode": "Modo demostración (solo lectura)",
+    "demoModeHint": "Cuando está activado, solo los administradores pueden subir, editar o eliminar. El resto puede ver, pero no cambiar nada.",
     "description": "Registro y políticas para toda la instancia.",
     "domainsHint": "Separados por comas. Deja en blanco para permitir cualquier dominio.",
     "domainsPlaceholder": "ejemplo.com, equipo.org",
@@ -187,7 +233,9 @@
     "roleAssigned": "Rol asignado",
     "roleRemoved": "Rol eliminado",
     "roles": "Roles",
-    "unassignError": "No se pudo eliminar el rol"
+    "unassignError": "No se pudo eliminar el rol",
+    "unlimited": "Ilimitado",
+    "usage": "Almacenamiento usado"
   },
   "users": {
     "admin": "Administrador",

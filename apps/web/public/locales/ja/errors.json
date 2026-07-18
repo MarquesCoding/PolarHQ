@@ -26,6 +26,7 @@
   "forbidden": "この操作を行う権限がありません。",
   "generic": "問題が発生しました。",
   "invalidInput": "入力内容が無効です。",
+  "network": "ネットワークエラー — 接続を確認して再度お試しください。",
   "notFound": "見つかりませんでした。",
   "photos": {
     "fileRequired": "ファイルが必要です。",

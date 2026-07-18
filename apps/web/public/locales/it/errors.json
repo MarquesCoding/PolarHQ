@@ -26,6 +26,7 @@
   "forbidden": "Non hai l'autorizzazione per farlo.",
   "generic": "Qualcosa è andato storto.",
   "invalidInput": "Input non valido.",
+  "network": "Errore di rete — controlla la connessione e riprova.",
   "notFound": "Non trovato.",
   "photos": {
     "fileRequired": "È richiesto un file.",

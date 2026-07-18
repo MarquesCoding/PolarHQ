@@ -5,6 +5,10 @@
     "backup": "Kopia zapasowa",
     "branding": "Wygląd marki",
     "console": "Konsola",
+    "groupActivity": "Aktywność",
+    "groupAppsLimits": "Aplikacje i limity",
+    "groupInstance": "Instancja",
+    "groupPeople": "Osoby",
     "groups": "Grupy",
     "limits": "Limity",
     "overview": "Przegląd",
@@ -70,15 +74,41 @@
     "saved": "Zapisano wygląd marki",
     "title": "Wygląd marki"
   },
+  "close": "Zamknij",
+  "consoleTitle": "Konsola administracyjna",
   "createRoleDialog": {
     "cancel": "Anuluj",
     "createError": "Nie udało się utworzyć roli",
     "createRole": "Utwórz rolę",
     "created": "Utworzono rolę",
+    "delete": "Usuń rolę",
+    "deleteConfirm": "Usunąć tę rolę? Osoby, którym ją przypisano, stracą nadany przez nią dostęp.",
+    "deleteError": "Nie udało się usunąć roli",
+    "deleted": "Usunięto rolę",
     "description": "Opis",
+    "editRole": "Edytuj rolę",
     "name": "Nazwa",
     "newRole": "Nowa rola",
-    "permissions": "Uprawnienia"
+    "permissions": "Uprawnienia",
+    "saveChanges": "Zapisz zmiany",
+    "updateError": "Nie udało się zaktualizować roli",
+    "updated": "Zaktualizowano rolę"
+  },
+  "createUserDialog": {
+    "cancel": "Anuluj",
+    "create": "Utwórz użytkownika",
+    "createError": "Nie udało się utworzyć użytkownika",
+    "created": "Utworzono użytkownika",
+    "email": "E-mail",
+    "makeAdmin": "Nadaj temu użytkownikowi uprawnienia administratora",
+    "name": "Imię",
+    "newUser": "Nowy użytkownik",
+    "password": "Hasło",
+    "passwordHint": "Co najmniej 8 znaków.",
+    "title": "Utwórz użytkownika"
+  },
+  "editor": {
+    "back": "Wstecz"
   },
   "groupDetailSheet": {
     "add": "Dodaj",
@@ -143,14 +173,32 @@
     "title": "Przegląd",
     "users": "Użytkownicy"
   },
+  "roleEditor": {
+    "newRoleTitle": "Nowa rola",
+    "noPermissions": "Żadne uprawnienia nie pasują do wyszukiwania.",
+    "permissionCount_few": "{{count}} uprawnienia",
+    "permissionCount_many": "{{count}} uprawnień",
+    "permissionCount_one": "{{count}} uprawnienie",
+    "permissionCount_other": "{{count}} uprawnienia",
+    "searchPermissions": "Szukaj uprawnień…",
+    "tabDisplay": "Wyświetlanie",
+    "tabPermissions": "Uprawnienia",
+    "toggleAll": "Przełącz wszystkie uprawnienia {{app}}"
+  },
   "roles": {
+    "delete": "Usuń",
     "description": "Zestawy uprawnień, które możesz przypisywać użytkownikom i grupom.",
+    "edit": "Edytuj",
+    "roleActions": "Działania na roli",
     "system": "Systemowa",
     "title": "Role"
   },
+  "searchSettings": "Szukaj",
   "settings": {
     "allowedDomains": "Dozwolone domeny e-mail",
     "configure": "Konfiguruj",
+    "demoMode": "Tryb demonstracyjny (tylko do odczytu)",
+    "demoModeHint": "Gdy włączony, tylko administratorzy mogą przesyłać, edytować lub usuwać dane. Pozostali mogą jedynie przeglądać, bez możliwości wprowadzania zmian.",
     "description": "Rejestracja i zasady obowiązujące w całej instancji.",
     "domainsHint": "Oddzielone przecinkami. Pozostaw puste, aby zezwolić na dowolną domenę.",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +235,9 @@
     "roleAssigned": "Przypisano rolę",
     "roleRemoved": "Usunięto rolę",
     "roles": "Role",
-    "unassignError": "Nie udało się usunąć roli"
+    "unassignError": "Nie udało się usunąć roli",
+    "unlimited": "Bez limitu",
+    "usage": "Wykorzystane miejsce"
   },
   "users": {
     "admin": "Administrator",

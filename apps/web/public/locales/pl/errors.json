@@ -26,6 +26,7 @@
   "forbidden": "Nie masz uprawnień, aby to zrobić.",
   "generic": "Coś poszło nie tak.",
   "invalidInput": "Nieprawidłowe dane.",
+  "network": "Błąd sieci — sprawdź połączenie i spróbuj ponownie.",
   "notFound": "Nie znaleziono.",
   "photos": {
     "fileRequired": "Plik jest wymagany.",

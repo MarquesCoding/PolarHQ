@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "الإدارة",
+    "authenticator": "المصادقة",
+    "calendar": "التقويم",
     "docs": "المستندات",
     "drive": "القرص",
+    "meet": "الاجتماعات",
+    "passwords": "كلمات المرور",
     "photos": "الصور",
     "sheets": "الجداول",
     "whiteboard": "اللوح الأبيض"
@@ -42,6 +46,20 @@
     "saving": "جارٍ الحفظ…",
     "share": "مشاركة",
     "title": "العنوان"
+  },
+  "commandPalette": {
+    "albums": "الألبومات",
+    "description": "ابحث عن صفحة أو نفّذ أمرًا.",
+    "empty": "لا توجد نتائج.",
+    "favourites": "المفضّلة",
+    "groupActions": "الإجراءات",
+    "groupNavigate": "الانتقال إلى",
+    "map": "الخريطة",
+    "placeholder": "اكتب أمرًا أو ابحث…",
+    "recent": "الأخيرة",
+    "title": "لوحة الأوامر",
+    "toggleTheme": "تبديل الوضع الفاتح / الداكن",
+    "trash": "سلة المحذوفات"
   },
   "confirmButton": {
     "confirm": "تأكيد"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "تبديل الوضع الداكن",
     "unlimited": "غير محدود"
   },
+  "flatTopBar": {
+    "search": "بحث…",
+    "toggleSidebar": "تبديل الشريط الجانبي"
+  },
   "importButton": {
     "import": "استيراد",
     "importFailed": "تعذّر استيراد هذا الملف"
@@ -180,6 +202,21 @@
     "loading": "جارٍ التحميل…",
     "saving": "جارٍ الحفظ…"
   },
+  "storageDialog": {
+    "byApp": "التخزين حسب التطبيق",
+    "files_few": "{{count}} ملفات",
+    "files_many": "{{count}} ملفًا",
+    "files_one": "ملف واحد",
+    "files_other": "{{count}} ملف",
+    "files_two": "ملفان",
+    "files_zero": "لا ملفات",
+    "largest": "أكبر الملفات",
+    "noFiles": "لا توجد ملفات مخزَّنة بعد",
+    "ofTotal": "{{used}} من {{total}}",
+    "open": "تفاصيل التخزين",
+    "title": "التخزين",
+    "usedOnly": "تم استخدام {{used}}"
+  },
   "units": {
     "items_few": "{{count}} عناصر",
     "items_many": "{{count}} عنصرًا",
@@ -221,8 +258,11 @@
     "downloadingItems_other": "جارٍ تنزيل {{count}} عنصر",
     "downloadingItems_two": "جارٍ تنزيل عنصرين",
     "downloadingItems_zero": "جارٍ تنزيل لا عناصر",
+    "etaMinutes": "متبقٍ {{minutes}} دقيقة",
+    "etaSeconds": "متبقٍ {{seconds}} ثانية",
     "expand": "توسيع",
     "failed": "فشل",
+    "percentDone": "{{percent}}٪",
     "processing": "جارٍ المعالجة…",
     "processingItems_few": "جارٍ معالجة {{count}} عناصر",
     "processingItems_many": "جارٍ معالجة {{count}} عنصرًا",
@@ -230,6 +270,7 @@
     "processingItems_other": "جارٍ معالجة {{count}} عنصر",
     "processingItems_two": "جارٍ معالجة عنصرين",
     "processingItems_zero": "جارٍ معالجة لا عناصر",
+    "retry": "إعادة المحاولة",
     "speed": "{{speed}}/ث",
     "transcoding": "جارٍ إعادة الترميز…",
     "uploading": "جارٍ الرفع…",
@@ -256,6 +297,7 @@
     "uploaded_zero": "لم تُرفع أي صور"
   },
   "viewToggle": {
+    "columnsView": "عرض الأعمدة",
     "gridView": "عرض شبكي",
     "tableView": "عرض جدولي"
   }
