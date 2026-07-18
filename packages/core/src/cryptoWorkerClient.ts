@@ -55,7 +55,6 @@ export const decryptBlobAsync = async (blob: Uint8Array, key: Uint8Array): Promi
   const active = getWorker()
   if (!active) return syncDecrypt(blob, key)
   const id = nextId++
-  // Copy before transferring so `blob`/`key` stay intact for the fallback path.
   const blobCopy = blob.slice()
   const keyCopy = key.slice()
   try {

@@ -6,7 +6,6 @@ import ContentHeroBackdrop from "@components/ContentHeroBackdrop"
 import PageTransition from "@components/PageTransition"
 import BackToTop from "@components/BackToTop"
 
-// Runs before paint: honours a saved preference, otherwise defaults to dark — avoids a light flash.
 const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem("theme");var d=document.documentElement.classList;if(t==="light"){d.remove("dark")}else{d.add("dark")}}catch(e){}})()`
 import "./globals.css"
 

@@ -1,7 +1,5 @@
 import { type RefObject, useEffect, useState } from "react"
 
-// Hysteresis band: flip to "light content" only above HIGH, back to "dark content" only below LOW, so
-// a value hovering near the midpoint doesn't chatter between the two.
 const LIGHT_HIGH = 0.62
 const LIGHT_LOW = 0.5
 
@@ -17,8 +15,6 @@ let raf = 0
 
 const clamp01 = (n: number) => Math.max(0, Math.min(1, n))
 
-// One reusable offscreen canvas for all luminance sampling — avoids allocating a canvas per probe per
-// frame (was ~60 allocations/sec while a viewer is open).
 const SAMPLE = 10
 let sampleCtx: CanvasRenderingContext2D | null = null
 const getSampleCtx = (): CanvasRenderingContext2D | null => {
@@ -81,16 +77,11 @@ const luminanceBehind = (rect: DOMRect, box: DOMRect): number | null => {
 
 let lastSample = 0
 
-// Throttled to ~15Hz: the canvas readback is the expensive part and the 500ms colour tween smooths
-// between samples, so there's no benefit to probing every frame (and it keeps pan/zoom cheap).
 const rectSig = (r: DOMRect) => `${r.left | 0},${r.top | 0},${r.width | 0},${r.height | 0}`
 
 const tick = (now: number) => {
   if (now - lastSample >= 66) {
     lastSample = now
-    // Compute the image box once for the whole frame; skip the (expensive) readback for any probe
-    // whose image box + element rect are unchanged since its last sample — so a static open image
-    // costs only cheap getBoundingClientRect comparisons per frame, no GPU→CPU readbacks.
     const box = focusedImg?.getBoundingClientRect()
     const boxSig = box ? rectSig(box) : ""
     for (const probe of probes) {

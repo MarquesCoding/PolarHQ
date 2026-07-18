@@ -421,8 +421,6 @@ export const listAssets = async (
         isNull(schema.assets.stackId),
     )
   }
-  // The timeline is organized by capture date (the EXIF "taken" time), falling back to the upload
-  // time when a photo has no date — so imported/old photos slot into their real place in history.
   const sortAt = sql`coalesce(${schema.assets.takenAt}, ${schema.assets.createdAt})`
   if (options.cursor) {
     const [createdAtPart, idPart] = options.cursor.split("|")

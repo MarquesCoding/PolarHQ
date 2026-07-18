@@ -133,10 +133,6 @@ const Lightbox = ({
   const { t } = useTranslation("photos")
   const { items } = controller
 
-  // Hero FLIP: zoom the photo out of its grid tile on open, and back into it on close. The photo
-  // renders in a portal above the (blurred, scaled) grid, so it stays sharp throughout. We compute
-  // where object-contain *will* place the photo from the stage size + the known aspect ratio, so it
-  // works even though the encrypted image hasn't decrypted/loaded yet at open time.
   const stageRef = useRef<HTMLDivElement>(null)
   const flipControls = useAnimationControls()
   const flipFrom = useRef<{ x: number; y: number; scale: number } | null>(null)
@@ -145,7 +141,7 @@ const Lightbox = ({
   const [isPresent, safeToRemove] = usePresence()
 
   useLayoutEffect(() => {
-    if (didOpenRef.current) return // only animate on the initial open, not on next/prev navigation
+    if (didOpenRef.current) return
     const stage = stageRef.current
     const opened = items[index]
     if (!stage || !originRect) return
@@ -194,7 +190,6 @@ const Lightbox = ({
   const activeThumbRef = useRef<HTMLButtonElement | null>(null)
   const stripRef = useRef<HTMLDivElement | null>(null)
 
-  // Lock the page behind the fullscreen viewer so the content underneath can't scroll.
   useEffect(() => {
     const previous = document.body.style.overflow
     document.body.style.overflow = "hidden"
@@ -324,10 +319,7 @@ const Lightbox = ({
       return
     }
     let active = true
-    // Reset so the previous photo doesn't linger; the thumbnail shows while the original decrypts.
     setDecryptedSrc(null)
-    // The cache owns the object URL (revoked on LRU eviction), so we don't revoke it here — that's
-    // what made revisits re-download + re-decrypt the full original every time.
     void controller.fetchOriginal(item).then((result) => {
       if (active) setDecryptedSrc(result)
     })
@@ -337,7 +329,6 @@ const Lightbox = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item.id, item.encrypted, item.mimeType, tooLargeToPreview])
 
-  // Prefetch the neighbouring originals (into the same cache) so next/prev is instant.
   useEffect(() => {
     for (const neighbour of [items[index + 1], items[index - 1]]) {
       if (neighbour?.encrypted && neighbour.kind === "image") {
@@ -411,8 +402,6 @@ const Lightbox = ({
 
   return (
     <div
-      // Self-contained backdrop (blur + dim) so the viewer works standalone in Drive — the sharp,
-      // floating photo and its chrome sit on top. Click the backdrop to close.
       className="bg-background/45 fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur sm:p-10"
       onPointerDown={(event) => event.stopPropagation()}
       onClick={editing ? undefined : onClose}
@@ -437,11 +426,9 @@ const Lightbox = ({
           </div>
         ) : (
           <>
-            {/* Floating filename, top-centre (no top bar). */}
             <span className="text-foreground/80 pointer-events-none absolute top-4 left-1/2 z-20 max-w-[40vw] -translate-x-1/2 truncate rounded-full border bg-background/50 px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md">
               {item.name}
             </span>
-            {/* Floating action pill, bottom-centre (frosted). */}
             <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-0.5 rounded-full border bg-background/55 p-1 shadow-xl backdrop-blur-2xl">
               {controller.toggleFavorite ? (
                 <Button

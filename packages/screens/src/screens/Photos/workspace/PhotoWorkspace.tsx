@@ -88,8 +88,6 @@ const PhotoWorkspace = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const sidebarWasOpen = useRef(true)
   const collapsedByZoom = useRef(false)
-  // Sidebar inset captured when a photo opens. The focus rect is framed against this frozen value so
-  // that collapsing the sidebar mid-zoom doesn't re-center the base rect (which misplaced the image).
   const focusInset = useRef(0)
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
@@ -127,8 +125,6 @@ const PhotoWorkspace = ({
   const [hideDatesNum, setHideDatesNum] = usePersistentNumber("photos.hideDates", 0)
   const [stripNum, setStripNum] = usePersistentNumber("photos.filmstrip", 0)
   const strip = stripNum === 1
-  // Coalesce pinch/wheel resize to one row-height commit per frame — otherwise each wheel event
-  // re-lays-out the whole library and writes localStorage synchronously.
   const rowHeightQueue = useRef({ pending: -1, raf: 0 })
   const queueRowHeight = (value: number) => {
     rowHeightQueue.current.pending = value
@@ -247,7 +243,6 @@ const PhotoWorkspace = ({
 
   const pointFrom = (event: ReactPointerEvent) => {
     const rect = containerRef.current?.getBoundingClientRect()
-    // Clamp inside the container so dragging past the edge doesn't push the marquee out and scroll the page.
     const x = event.clientX - (rect?.left ?? 0)
     const y = event.clientY - (rect?.top ?? 0)
     return {
@@ -279,8 +274,6 @@ const PhotoWorkspace = ({
       if (rect.x < box.x1 && rect.x + rect.w > box.x0 && rect.y < box.y1 && rect.y + rect.h > box.y0)
         hits.add(asset.id)
     }
-    // Only commit when the hit-set actually changed since the last move — otherwise a marquee drag
-    // fires selectAll (→ new Set → context churn → re-render every tile) on every pointermove.
     const prev = marqueeHits.current
     let changed = hits.size !== prev.size
     if (!changed) for (const id of hits) if (!prev.has(id)) { changed = true; break }
@@ -308,9 +301,6 @@ const PhotoWorkspace = ({
   const [closingId, setClosingId] = useState<string | null>(null)
   const [info, setInfo] = useState(false)
 
-  // Each non-focused photo is its own entity: push it AWAY from the opened photo, strongest for the
-  // nearest neighbours and fading off with distance — so they part to make room, rather than the whole
-  // grid scaling uniformly.
   const PUSH_MAX = 300
   const PUSH_FALLOFF = 360
   const repel = (rect: Rect, cx: number, cy: number): Rect => {
@@ -345,8 +335,6 @@ const PhotoWorkspace = ({
     const asset = sorted.find((item) => item.id === id)
     const element = containerRef.current
     if (!asset || !element) return
-    // Keep the sidebar as-is on open; it collapses only as you zoom in (see syncSidebar). Freeze the
-    // inset used to frame the photo so a mid-zoom collapse can't re-center the base rect.
     sidebarWasOpen.current = sidebarOpen
     collapsedByZoom.current = false
     focusInset.current = sidebarInset
@@ -457,9 +445,6 @@ const PhotoWorkspace = ({
       window.clearTimeout(pinchTimer.current)
       pinchTimer.current = window.setTimeout(() => setPinching(false), 900)
     }
-    // Collapse the sidebar once you zoom past ~1x for an immersive view; restore it on the way back.
-    // The focus rect is framed against a frozen inset (focusInset), so this collapse no longer
-    // re-centers the base rect mid-gesture — the bug that previously forced this to be removed.
     const syncSidebar = (next: number) => {
       const collapse = next > 1.02
       if (collapse === collapsedByZoom.current) return

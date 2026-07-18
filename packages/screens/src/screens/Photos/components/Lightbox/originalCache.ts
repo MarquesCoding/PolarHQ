@@ -7,7 +7,7 @@ import { fetchDecryptedPhotoOriginal } from "@workspace/core/photosE2e"
  * requests are de-duplicated so prefetching a neighbour and opening it don't double-fetch.
  */
 const MAX_ENTRIES = 12
-const urls = new Map<string, string>() // id -> object URL, ordered oldest→newest
+const urls = new Map<string, string>()
 const inflight = new Map<string, Promise<string | null>>()
 
 const touch = (id: string, url: string): void => {

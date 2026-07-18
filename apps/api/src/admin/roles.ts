@@ -75,7 +75,6 @@ export const seedSystemRoles = async (): Promise<void> => {
       roleId = role.id
     }
 
-    // Re-sync permissions: clear and re-insert so the role always matches the def.
     await db.delete(schema.rolePermissions).where(eq(schema.rolePermissions.roleId, roleId))
     await db.insert(schema.rolePermissions).values(
       def.permissions.map((permission) => ({

@@ -33,8 +33,6 @@ export const apiFetch = async <T>(path: string, init?: RequestInit): Promise<T> 
     ...init,
     headers: {
       "content-type": "application/json",
-      // Bearer auth for cross-origin shells (desktop) that can't use the SameSite cookie. Unset on
-      // the web (same-origin cookie) and overridable by a shell's own headers (RN injects a cookie).
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...authHeaders?.(),
       ...init?.headers,

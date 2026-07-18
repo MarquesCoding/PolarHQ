@@ -13,7 +13,7 @@
 
 const DB_NAME = "orbit-secure"
 const STORE = "kv"
-const WRAP_KEY = "wrap-key" // legacy non-extractable CryptoKey entry — cleared, never written
+const WRAP_KEY = "wrap-key"
 const WRAP_KEY_RAW = "wrap-key-raw"
 const BLOB_KEY = "kp-blob"
 
@@ -55,8 +55,6 @@ const idbDel = async (key: string): Promise<void> => {
 }
 
 const getWrapKey = async (): Promise<CryptoKey> => {
-  // Raw key bytes, imported to a (non-extractable in-memory) AES-GCM key. Stored as bytes so it
-  // always persists, independent of any browser/OS keychain — see the module comment.
   const existing = await idbGet<Uint8Array>(WRAP_KEY_RAW)
   const raw = existing ?? crypto.getRandomValues(new Uint8Array(32))
   if (!existing) await idbSet(WRAP_KEY_RAW, raw)

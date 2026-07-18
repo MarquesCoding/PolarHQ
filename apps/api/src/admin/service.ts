@@ -435,8 +435,6 @@ export const getUserDetail = async (userId: string) => {
     })),
   )
 
-  // Usage AMOUNT only (bytes) — scoped to this user, never their file contents. Mirrors getOverview's
-  // aggregate but filtered by ownerId.
   const [photoBytes] = await db
     .select({ value: sql<string>`coalesce(sum(${schema.assets.sizeBytes}), 0)` })
     .from(schema.assets)

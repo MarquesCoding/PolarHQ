@@ -227,9 +227,6 @@ const FlatSidebar = ({
   return (
     <Sidebar collapsible="offcanvas">
       {immersive ? (
-        // Floating top-left cluster: a frosted pill that frames the native macOS traffic lights (which
-        // render on top of it), and a matching frosted collapse button to its right. Positioned over
-        // the titlebar strip. Offsets are tuned to the native light placement.
         <div ref={clusterRef} className="fixed left-[23px] top-[13px] z-[60] flex items-center gap-2">
           <span
             className={cn(

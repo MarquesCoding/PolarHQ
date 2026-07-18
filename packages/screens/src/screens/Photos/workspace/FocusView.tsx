@@ -75,12 +75,10 @@ const FocusView = ({
   const nameChrome = adaptiveChrome(useContentLight(nameRef))
   const prevChrome = adaptiveChrome(useContentLight(prevRef))
   const nextChrome = adaptiveChrome(useContentLight(nextRef))
-  // Chrome aligns to the focused image, which is centered within [leftInset, vp.width - rightInset].
   const imgLeft = leftInset
   const imgRight = vp.width - (info ? panelWidth : 0)
   const imgCenter = (imgLeft + imgRight) / 2
   const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
-  // Show the zoom % only while actively zooming; revert to the filename shortly after the user stops.
   const [zooming, setZooming] = useState(false)
   const zoomTimer = useRef<number | undefined>(undefined)
   useEffect(() => {

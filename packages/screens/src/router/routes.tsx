@@ -29,8 +29,6 @@ import DocsList from "@pages/Docs/DocsList"
 import SheetsList from "@pages/Sheets/SheetsList"
 import WhiteboardList from "@pages/Whiteboard/WhiteboardList"
 
-// The three editors carry the heaviest deps (tiptap, hyperformula, glide-data-grid) — lazy-load them
-// so they stay out of the initial bundle for users who only ever open Photos/Drive.
 const PhotoMap = lazy(() => import("@pages/Photos/PhotoMap"))
 const Editor = lazy(() => import("@pages/Docs/Editor"))
 const FullEditor = lazy(() => import("@pages/Sheets/FullEditor"))

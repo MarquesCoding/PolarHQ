@@ -47,8 +47,6 @@ const Nav = () => {
           : "border-transparent top-12",
       )}
     >
-      {/* Scroll-progress ring traced around the nav's rounded border. Matches rounded-2xl
-          (--radius 0.85rem × 1.8 ≈ 24px); pathLength=1 keeps it size-agnostic as the nav resizes. */}
       <svg
         aria-hidden
         className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"

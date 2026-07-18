@@ -28,8 +28,6 @@ const dynamicFetch = async (
     if (token && !headers.has("authorization")) headers.set("authorization", `Bearer ${token}`)
     response = await fetch(String(input).replace(PLACEHOLDER_ORIGIN, apiUrl), { ...init, headers })
   }
-  // Capture the bearer token better-auth issues so cross-origin shells (desktop) can authenticate
-  // without the SameSite cookie. Harmless on the web (which keeps using its same-origin cookie).
   const issued = response.headers.get("set-auth-token")
   if (issued) setAuthToken(issued)
   return response

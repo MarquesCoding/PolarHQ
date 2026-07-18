@@ -61,7 +61,6 @@ const NodeGrid = ({
     [selection, ordered],
   )
 
-  // Stable — NodeCard calls it lazily on drag start, so we don't build a fresh array per card per render.
   const getDragIds = useCallback(
     (node: DriveNode): string[] =>
       selection.isSelected(node.id) && selection.count > 0 ? [...selection.selected] : [node.id],

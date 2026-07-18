@@ -50,8 +50,6 @@ const PILL =
   "bg-background/70 pointer-events-auto flex items-center rounded-full border p-1 shadow-lg backdrop-blur-xl"
 const FADE = { duration: 0.16, ease: [0.32, 0.72, 0, 1] as const }
 const MORPH = { layout: { duration: 0.35, ease: [0.32, 0.72, 0, 1] as const } }
-// Incoming morph content waits for the pill to finish widening before fading in (so icons don't
-// appear over a half-full bar); outgoing content clears fast.
 const REVEAL = { duration: 0.16, delay: 0.22, ease: [0.32, 0.72, 0, 1] as const }
 const HIDE = { duration: 0.1 }
 
@@ -162,8 +160,6 @@ const BottomChrome = ({
 
   const [dlState, setDlState] = useState<"idle" | "loading" | "done">("idle")
   useEffect(() => setDlState("idle"), [focused?.id])
-  // Photo downloads are near-instant, so the manager's transient job flashes by unseen. Hold the
-  // spinner a beat, then a checkmark, so the download action gives visible feedback regardless.
   useEffect(() => {
     if (dlState !== "loading" || downloadJob) return
     const timer = setTimeout(() => setDlState("done"), 500)

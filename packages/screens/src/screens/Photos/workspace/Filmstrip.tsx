@@ -46,8 +46,6 @@ interface FilmstripProps {
   rightInset: number
 }
 
-// Only mount a window around the current asset so opening the strip on a huge library doesn't kick
-// off thousands of thumbnail decrypts; navigating re-centres the window.
 const RADIUS = 30
 
 const Filmstrip = ({ assets, currentId, onJump, leftInset, rightInset }: FilmstripProps) => {
