@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { type ReactNode, useState } from "react"
 import { motion } from "motion/react"
 import {
   AppleLogo,
@@ -20,6 +20,48 @@ const COMMANDS = {
 } as const
 
 type OS = keyof typeof COMMANDS
+
+const VALUE = "text-emerald-600 dark:text-emerald-400"
+
+// Lightweight, dependency-free YAML colouriser for the compose block: comments muted,
+// keys in the brand violet, values in green. Good enough for a static, well-formed file.
+const yamlLine = (raw: string, i: number): ReactNode => {
+  const indent = raw.match(/^\s*/)?.[0] ?? ""
+  const body = raw.slice(indent.length)
+  let inner: ReactNode = null
+  if (body.startsWith("#")) {
+    inner = <span className="text-foreground/40">{body}</span>
+  } else if (body.startsWith("- ")) {
+    inner = (
+      <>
+        <span className="text-foreground/50">- </span>
+        <span className={VALUE}>{body.slice(2)}</span>
+      </>
+    )
+  } else {
+    const m = body.match(/^([\w.-]+)(:)(\s*)(.*)$/)
+    inner = m ? (
+      <>
+        <span className="text-primary">{m[1]}</span>
+        <span className="text-foreground/50">{m[2]}</span>
+        {m[3]}
+        {m[4] ? <span className={VALUE}>{m[4]}</span> : null}
+      </>
+    ) : (
+      <span className="text-foreground/80">{body}</span>
+    )
+  }
+  return (
+    <span key={i}>
+      {indent}
+      {inner}
+      {"\n"}
+    </span>
+  )
+}
+
+const highlightCompose = (yaml: string): ReactNode =>
+  yaml.replace(/\n$/, "").split("\n").map(yamlLine)
 
 const InstallCommand = () => {
   const [os, setOs] = useState<OS>("unix")
@@ -150,8 +192,8 @@ const InstallCommand = () => {
                   {copiedCompose ? "Copied" : "Copy"}
                 </Button>
               </div>
-              <pre className="text-foreground/85 max-h-[420px] overflow-auto px-4 py-3 text-left font-mono text-[12px] leading-relaxed">
-                <code>{DOCKER_COMPOSE}</code>
+              <pre className="max-h-[420px] overflow-auto px-4 py-3 text-left font-mono text-[12px] leading-relaxed">
+                <code>{highlightCompose(DOCKER_COMPOSE)}</code>
               </pre>
             </div>
             <p className="text-foreground/45 mt-3 text-xs">
