@@ -23,13 +23,14 @@ import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import AddToAlbumDialog from "@pages/Photos/components/AddToAlbumDialog/AddToAlbumDialog"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
-import PhotoGrid from "@pages/Photos/components/PhotoGrid/PhotoGrid"
+import PhotoWorkspace from "@pages/Photos/workspace/PhotoWorkspace"
 import TagDialog from "@pages/Photos/components/TagDialog/TagDialog"
 import { Icon } from "@workspace/screens/icons"
 import { Image, Stack, StackMinus } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { Kbd } from "@workspace/ui/components/kbd"
 import { toast } from "sonner"
+import { photoNotice } from "./workspace/notice"
 import { useTranslation } from "react-i18next"
 
 const LibraryInner = () => {
@@ -38,7 +39,7 @@ const LibraryInner = () => {
   const upload = useUploadManager()
   const search = useAppSelector((state) => state.ui.searchQuery).trim().toLowerCase()
 
-  const { query, assets, invalidate } = useAssetFeed(["photos", "timeline"], (cursor) =>
+  const { query, assets, invalidate, patchAssets, removeAssets } = useAssetFeed(["photos", "timeline"], (cursor) =>
     fetchAssets({ view: "library", cursor }),
   )
 
@@ -83,7 +84,7 @@ const LibraryInner = () => {
   const run = async (action: () => Promise<unknown>, message: string) => {
     try {
       await action()
-      toast.success(message)
+      photoNotice(message)
       afterAction()
     } catch {
       toast.error(t("library.actionFailed"))
@@ -94,6 +95,7 @@ const LibraryInner = () => {
     const target = [...ids]
     if (target.length === 0) return
     selection.clear()
+    removeAssets(target)
     upload.task(
       t("library.deleting", { count: target.length }),
       target.length,
@@ -119,7 +121,23 @@ const LibraryInner = () => {
       ? run(() => unstackAssets(stackedOne.stackId as string), t("library.unstacked"))
       : undefined
 
-  const favourite = () => run(() => favoriteAssets(ids, true), t("library.addedToFavourites"))
+  const allFavourited = selectedAssets.length > 0 && selectedAssets.every((asset) => asset.isFavorite)
+  const favourite = () => {
+    if (ids.length === 0) return
+    const next = !allFavourited
+    const target = [...ids]
+    patchAssets(target, { isFavorite: next })
+    photoNotice(
+      next
+        ? t("library.addedToFavourites")
+        : t("favourites.removed", { defaultValue: "Removed from favourites" }),
+    )
+    selection.clear()
+    void favoriteAssets(target, next).catch(() => {
+      toast.error(t("library.actionFailed"))
+      invalidate()
+    })
+  }
   const download = () => {
     if (downloadItems.length === 0) return
     upload.download(downloadItems.length === 1 ? t("library.photo") : t("library.photosZip", { count: downloadItems.length }), downloadItems)
@@ -152,8 +170,13 @@ const LibraryInner = () => {
           </p>
         </div>
       ) : (
-        <PhotoGrid
+        <PhotoWorkspace
+          onFavourite={(fids, next) => {
+            patchAssets(fids, { isFavorite: next })
+            void favoriteAssets(fids, next).catch(() => invalidate())
+          }}
           assets={visible}
+          onInvalidate={invalidate}
           onReachEnd={
             search
               ? undefined
@@ -165,6 +188,7 @@ const LibraryInner = () => {
       )}
 
       <SelectionBar
+        contentCentered
         downloadItems={downloadItems}
         downloadAllFrames={downloadAllFrames}
         shareAssetId={one?.id}
@@ -175,7 +199,7 @@ const LibraryInner = () => {
       >
         <Button variant="ghost" size="sm" onClick={favourite}>
           <Icon name="favourites" className="size-4" />
-          {t("library.favourite")}
+          {allFavourited ? t("library.unfavourite", { defaultValue: "Unfavourite" }) : t("library.favourite")}
           <Kbd>⇧F</Kbd>
         </Button>
         {ids.length >= 2 ? (

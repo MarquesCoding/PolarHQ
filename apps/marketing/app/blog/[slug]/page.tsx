@@ -18,8 +18,8 @@ export const generateMetadata = async ({
 }): Promise<Metadata> => {
   const { slug } = await params
   const post = getPost(slug)
-  if (!post) return { title: "Blog — PolarHQ" }
-  return { title: `${post.title} — PolarHQ`, description: post.excerpt }
+  if (!post) return { title: "Blog · PolarHQ" }
+  return { title: `${post.title} · PolarHQ`, description: post.excerpt }
 }
 
 const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {

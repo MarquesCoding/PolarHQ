@@ -141,7 +141,7 @@ const MediaPlayer = ({ kind, src, poster, name }: MediaPlayerProps) => {
   const revealControls = () => {
     setControlsShown(true)
     if (hideTimer.current) clearTimeout(hideTimer.current)
-    if (kind === "video" && playing) {
+    if (fullscreen && kind === "video" && playing) {
       hideTimer.current = window.setTimeout(() => setControlsShown(false), 2500)
     }
   }
@@ -216,7 +216,7 @@ const MediaPlayer = ({ kind, src, poster, name }: MediaPlayerProps) => {
       )}
       onMouseMove={revealControls}
       onMouseLeave={() => {
-        if (playing) setControlsShown(false)
+        if (fullscreen && playing) setControlsShown(false)
       }}
     >
       <video

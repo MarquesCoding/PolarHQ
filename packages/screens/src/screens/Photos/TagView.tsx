@@ -5,13 +5,14 @@ import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import { photoNotice } from "./workspace/notice"
 import { useTranslation } from "react-i18next"
 import { t } from "@workspace/i18n/config"
 
 const run = async (action: () => Promise<unknown>, message: string, after: () => void) => {
   try {
     await action()
-    toast.success(message)
+    photoNotice(message)
     after()
   } catch {
     toast.error(t("errors:actionFailed"))
@@ -34,15 +35,23 @@ const TagView = ({ tagId }: TagViewProps) => {
       fetcher={(cursor) => fetchAssets({ tag: tagId, cursor })}
       emptyText={t("tagView.emptyText")}
       onDeleteSelected={trashAssets}
-      actions={(ids, after, deleteConfirm) => (
+      actions={(ids, after, deleteConfirm, allFavourited) => (
         <>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => run(() => favoriteAssets(ids, true), t("tagView.addedToFavourites"), after)}
+            onClick={() =>
+              run(
+                () => favoriteAssets(ids, !allFavourited),
+                allFavourited
+                  ? t("favourites.removed", { defaultValue: "Removed from favourites" })
+                  : t("tagView.addedToFavourites"),
+                after,
+              )
+            }
           >
             <Icon name="favourites" className="size-4" />
-            {t("tagView.favourite")}
+            {allFavourited ? t("tagView.unfavourite", { defaultValue: "Unfavourite" }) : t("tagView.favourite")}
           </Button>
           <ConfirmButton
             icon={<Icon name="trash" className="size-4" />}

@@ -1,29 +1,27 @@
 import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
-import { Fredoka, Geist, Geist_Mono, Instrument_Serif } from "next/font/google"
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google"
 import Nav from "@components/Nav"
 import ContentHeroBackdrop from "@components/ContentHeroBackdrop"
 import PageTransition from "@components/PageTransition"
+import BackToTop from "@components/BackToTop"
+
+const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem("theme");var d=document.documentElement.classList;if(t==="light"){d.remove("dark")}else{d.add("dark")}}catch(e){}})()`
 import "./globals.css"
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" })
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
+/** Editorial serif used sparingly for accent words in headlines. */
 const serif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
   style: ["normal", "italic"],
   variable: "--font-serif",
 })
-/** Rounded, friendly display face for the cartoon-leaning landing headlines. */
-const display = Fredoka({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-display",
-})
 
-const TITLE = "PolarHQ — your private home for everything"
+const TITLE = "PolarHQ · your private home for everything"
 const DESCRIPTION =
-  "Open-source, self-hosted, end-to-end encrypted Photos, Drive and Docs — one private suite you run yourself."
+  "Open-source, self-hosted, end-to-end encrypted Photos, Drive and Docs. One private suite you run yourself."
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://polarhq.app"),
@@ -49,13 +47,17 @@ export const viewport: Viewport = {
 }
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
-  <html lang="en" className="dark">
+  <html lang="en" className="dark" suppressHydrationWarning>
+    <head>
+      <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+    </head>
     <body
-      className={`${geist.variable} ${geistMono.variable} ${serif.variable} ${display.variable} bg-background antialiased`}
+      className={`${geist.variable} ${geistMono.variable} ${serif.variable} bg-background antialiased`}
     >
       <Nav />
       <ContentHeroBackdrop />
       <PageTransition>{children}</PageTransition>
+      <BackToTop />
     </body>
   </html>
 )

@@ -1,150 +1,165 @@
 "use client"
 
-import { type Variants, motion } from "motion/react"
-import { Button } from "@workspace/ui/components/button"
-import { RELEASES } from "@lib/changelog"
+import { useRef } from "react"
 import {
-  AndroidLogo,
-  AppleLogo,
-  GithubLogo,
-  Globe,
-  LinuxLogo,
-  WindowsLogo,
-} from "@phosphor-icons/react"
+  type MotionValue,
+  type Variants,
+  motion,
+  useScroll,
+  useTransform,
+} from "motion/react"
+import { Button } from "@workspace/ui/components/button"
+import { AppleLogo, GithubLogo, LockKey } from "@phosphor-icons/react"
 
 const REPO_URL = "https://github.com/MarquesCoding/PolarHQ"
 const DOWNLOAD_URL = `${REPO_URL}/releases/latest`
-const VERSION = RELEASES[0]?.version ?? "0.5.0-alpha"
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
+  show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } },
 }
-
 const item: Variants = {
-  hidden: { opacity: 0, y: 22 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 0.61, 0.36, 1] } },
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 0.61, 0.36, 1] } },
 }
 
-const Hero = () => (
-  <section className="relative isolate overflow-hidden px-6 pt-36 pb-24 text-center sm:pt-40 sm:pb-28">
-    {/* Clean, flat backdrop: a faint violet tint at the top fading into the page — no glow blobs. */}
-    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-      <div className="from-primary/10 absolute inset-x-0 top-0 h-[460px] bg-gradient-to-b to-transparent" />
-      <div className="to-background absolute inset-x-0 bottom-0 h-56 bg-gradient-to-b from-transparent" />
-    </div>
+const PROPS = ["End-to-end encrypted", "Self-hosted", "Open source", "Photos · Drive · Docs · Sheets"]
 
-    {/* Two bears sitting on the bottom edge (fully visible, grounded), framing the content. */}
+const MOUNTAINS = [
+  { src: "/parallax/distant_mountains.png", base: -18, drift: 18 },
+  { src: "/parallax/mid_mountains.png", base: -8, drift: 12 },
+  { src: "/parallax/close_mountains.png", base: 5, drift: 0 },
+]
+
+const MountainLayer = ({
+  src,
+  base,
+  drift,
+  index,
+  progress,
+}: {
+  src: string
+  base: number
+  drift: number
+  index: number
+  progress: MotionValue<number>
+}) => {
+  const y = useTransform(progress, [0, 1], [`${base}%`, `${base + drift}%`])
+  return (
     <motion.img
-      src="/stickers/bear-wave.png"
+      src={src}
       alt=""
-      width={340}
-      height={340}
-      className="pointer-events-none absolute bottom-0 left-2 -z-0 w-36 rotate-6 drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)] sm:left-8 sm:w-52 lg:w-60"
-      initial={{ opacity: 0, y: 50, rotate: 16 }}
-      animate={{ opacity: 1, y: 0, rotate: 6 }}
-      transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
+      aria-hidden
+      style={{ y }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.9, delay: 0.25 + index * 0.15, ease: [0.22, 0.61, 0.36, 1] }}
+      className="pointer-events-none absolute bottom-0 left-0 w-full select-none"
     />
+  )
+}
 
-    <motion.img
-      src="/stickers/bear-read.png"
-      alt=""
-      width={300}
-      height={300}
-      className="pointer-events-none absolute right-2 bottom-0 -z-0 hidden w-44 -rotate-6 drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)] sm:right-6 lg:block lg:w-52"
-      initial={{ opacity: 0, y: 50, rotate: -16 }}
-      animate={{ opacity: 1, y: 0, rotate: -6 }}
-      transition={{ duration: 0.9, delay: 0.7, ease: [0.22, 0.61, 0.36, 1] }}
-    />
+const Hero = () => {
+  const sectionRef = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  })
+  const shotY = useTransform(scrollYProgress, [0, 1], ["0%", "-5%"])
 
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="mx-auto flex max-w-4xl flex-col items-center"
+  return (
+    <section
+      ref={sectionRef}
+      className="relative isolate flex flex-col overflow-hidden px-5 pt-28 pb-12 sm:h-svh sm:min-h-[780px] sm:px-6 sm:pt-40 sm:pb-0"
     >
+      <div aria-hidden className="bg-background absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-svh overflow-hidden">
+          <div className="absolute inset-x-0 bottom-[-6%] sm:bottom-[-34%]">
+            {MOUNTAINS.map((m, i) => (
+              <MountainLayer key={m.src} {...m} index={i} progress={scrollYProgress} />
+            ))}
+          </div>
+        </div>
+        <div className="from-primary/10 absolute inset-x-0 top-0 h-[420px] bg-gradient-to-b to-transparent" />
+      </div>
+
       <motion.div
-        variants={item}
-        className="border-primary/30 bg-primary/10 text-primary inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-semibold backdrop-blur"
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="mx-auto flex w-full max-w-3xl flex-col items-center text-center dark:[text-shadow:0_1px_2px_rgb(8_8_16/0.7),0_2px_22px_rgb(8_8_16/0.55)]"
       >
-        Open source · self-hosted · end-to-end encrypted
+        <motion.h1
+          variants={item}
+          className="font-display text-foreground text-[1.75rem] leading-[1.1] font-bold tracking-tight sm:text-[3rem]"
+        >
+          Your whole digital life,{" "}
+          <span className="font-serif font-normal italic">private</span> and{" "}
+          <span className="text-primary">self-hosted</span>.
+        </motion.h1>
+
+        <motion.p
+          variants={item}
+          className="text-foreground/85 mx-auto mt-4 max-w-lg font-medium text-pretty sm:text-lg"
+        >
+          An open-source suite of Photos, Drive, Docs and Sheets that runs on your own server,
+          end-to-end encrypted. No subscriptions, no lock-in, no one mining your library.
+        </motion.p>
+
+        <motion.div variants={item} className="mt-6 flex flex-col items-center gap-3 sm:flex-row">
+          <Button
+            render={<a href={DOWNLOAD_URL} target="_blank" rel="noreferrer" />}
+            size="lg"
+            className="gap-2 rounded-xl px-6 text-base font-semibold"
+          >
+            <AppleLogo className="size-4" weight="fill" />
+            Download for desktop
+          </Button>
+          <Button
+            variant="outline"
+            render={<a href={REPO_URL} target="_blank" rel="noreferrer" />}
+            size="lg"
+            className="bg-background/60 gap-2 rounded-xl px-6 text-base font-semibold backdrop-blur"
+          >
+            <GithubLogo className="size-4" weight="fill" />
+            Star on GitHub
+          </Button>
+        </motion.div>
+
+        <motion.ul
+          variants={item}
+          className="text-foreground/85 bg-background/45 mx-auto mt-6 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-1 rounded-full px-4 py-1.5 text-xs font-medium backdrop-blur-sm"
+        >
+          {PROPS.map((prop) => (
+            <li key={prop} className="flex items-center gap-1.5">
+              <LockKey className="text-primary/70 size-3" weight="fill" />
+              {prop}
+            </li>
+          ))}
+        </motion.ul>
       </motion.div>
 
-      <motion.h1
-        variants={item}
-        className="font-display text-foreground mt-6 text-5xl leading-[1.04] font-bold tracking-tight sm:text-7xl"
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+        className="relative mt-12 sm:mt-24 sm:min-h-0 sm:flex-1"
       >
-        Your digital life,
-        <br />
-        under your <span className="text-primary">control</span>.
-      </motion.h1>
-
-      <motion.p
-        variants={item}
-        className="text-foreground/75 mx-auto mt-6 max-w-xl text-lg sm:text-xl"
-      >
-        A friendly home for your photos, files and documents — built around ownership, not lock-in.
-      </motion.p>
-
-      <motion.div variants={item} className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
-        <Button
-          render={<a href={DOWNLOAD_URL} target="_blank" rel="noreferrer" />}
-          size="lg"
-          className="gap-2 rounded-xl px-6 text-base font-semibold"
+        <motion.div
+          style={{ y: shotY }}
+          className="mx-auto w-full max-w-6xl overflow-hidden rounded-t-2xl shadow-[0_-16px_80px_-24px_rgba(0,0,0,0.4)]"
         >
-          <AppleLogo className="size-4" weight="fill" />
-          Download for desktop
-        </Button>
-        <Button
-          variant="outline"
-          render={<a href={REPO_URL} target="_blank" rel="noreferrer" />}
-          size="lg"
-          className="gap-2 rounded-xl px-6 text-base font-semibold"
-        >
-          <GithubLogo className="size-4" weight="fill" />
-          Star on GitHub
-        </Button>
+          <img
+            src="/shots/photos.jpg"
+            alt="The PolarHQ desktop app"
+            width={1800}
+            height={1170}
+            className="block w-full"
+          />
+        </motion.div>
       </motion.div>
-
-      <motion.div variants={item} className="text-foreground/50 mt-6 flex items-center gap-3 text-sm">
-        <span>Alpha v{VERSION}</span>
-        <span aria-hidden className="bg-foreground/25 h-3 w-px" />
-        <span>macOS · Windows · Linux</span>
-      </motion.div>
-
-      <motion.div variants={item} className="mt-7 flex items-center gap-6">
-        <a
-          href={DOWNLOAD_URL}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Download for macOS"
-          className="text-foreground/45 hover:text-foreground transition-colors"
-        >
-          <AppleLogo className="size-[18px]" />
-        </a>
-        <a
-          href={DOWNLOAD_URL}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Download for Windows"
-          className="text-foreground/45 hover:text-foreground transition-colors"
-        >
-          <WindowsLogo className="size-[18px]" />
-        </a>
-        <a
-          href={DOWNLOAD_URL}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Download for Linux"
-          className="text-foreground/45 hover:text-foreground transition-colors"
-        >
-          <LinuxLogo className="size-[18px]" />
-        </a>
-        <AndroidLogo className="text-foreground/25 size-[18px]" />
-        <Globe className="text-foreground/45 size-[18px]" />
-      </motion.div>
-    </motion.div>
-  </section>
-)
+    </section>
+  )
+}
 
 export default Hero

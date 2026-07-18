@@ -36,6 +36,11 @@ serde_json = "1"
 ignore = "0.4"
 notify = "6"
 blake3 = "1"
+# Friendly local device name (e.g. macOS ComputerName) for the "Devices" list.
+whoami = "1"
+# Image decode for the image->3D pipeline (monocular-depth point cloud). Pure-Rust JPEG/PNG/WebP
+# decoders — no native/Python/CUDA dependency, so splat generation runs fully offline.
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp"] }
 
 # Desktop-only: auto-update (the updater plugin isn't built for mobile targets).
 [target."cfg(any(target_os = \"macos\", target_os = \"windows\", target_os = \"linux\"))".dependencies]

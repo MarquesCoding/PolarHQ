@@ -26,6 +26,7 @@
   "forbidden": "K této akci nemáte oprávnění.",
   "generic": "Něco se pokazilo.",
   "invalidInput": "Neplatný vstup.",
+  "network": "Chyba sítě — zkontrolujte připojení a zkuste to znovu.",
   "notFound": "Nenalezeno.",
   "photos": {
     "fileRequired": "Soubor je povinný.",

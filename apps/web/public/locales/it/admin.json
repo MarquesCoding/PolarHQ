@@ -5,6 +5,10 @@
     "backup": "Backup",
     "branding": "Personalizzazione",
     "console": "Console",
+    "groupActivity": "Attività",
+    "groupAppsLimits": "App e limiti",
+    "groupInstance": "Istanza",
+    "groupPeople": "Persone",
     "groups": "Gruppi",
     "limits": "Limiti",
     "overview": "Panoramica",
@@ -70,15 +74,41 @@
     "saved": "Personalizzazione salvata",
     "title": "Personalizzazione"
   },
+  "close": "Chiudi",
+  "consoleTitle": "Console di amministrazione",
   "createRoleDialog": {
     "cancel": "Annulla",
     "createError": "Impossibile creare il ruolo",
     "createRole": "Crea ruolo",
     "created": "Ruolo creato",
+    "delete": "Elimina ruolo",
+    "deleteConfirm": "Eliminare questo ruolo? Chiunque lo abbia assegnato perde l'accesso concesso.",
+    "deleteError": "Impossibile eliminare il ruolo",
+    "deleted": "Ruolo eliminato",
     "description": "Descrizione",
+    "editRole": "Modifica ruolo",
     "name": "Nome",
     "newRole": "Nuovo ruolo",
-    "permissions": "Autorizzazioni"
+    "permissions": "Autorizzazioni",
+    "saveChanges": "Salva modifiche",
+    "updateError": "Impossibile aggiornare il ruolo",
+    "updated": "Ruolo aggiornato"
+  },
+  "createUserDialog": {
+    "cancel": "Annulla",
+    "create": "Crea utente",
+    "createError": "Impossibile creare l'utente",
+    "created": "Utente creato",
+    "email": "Email",
+    "makeAdmin": "Rendi questo utente un amministratore",
+    "name": "Nome",
+    "newUser": "Nuovo utente",
+    "password": "Password",
+    "passwordHint": "Almeno 8 caratteri.",
+    "title": "Crea utente"
+  },
+  "editor": {
+    "back": "Indietro"
   },
   "groupDetailSheet": {
     "add": "Aggiungi",
@@ -143,14 +173,30 @@
     "title": "Panoramica",
     "users": "Utenti"
   },
+  "roleEditor": {
+    "newRoleTitle": "Nuovo ruolo",
+    "noPermissions": "Nessun permesso corrisponde alla tua ricerca.",
+    "permissionCount_one": "{{count}} permesso",
+    "permissionCount_other": "{{count}} permessi",
+    "searchPermissions": "Cerca permessi…",
+    "tabDisplay": "Visualizzazione",
+    "tabPermissions": "Permessi",
+    "toggleAll": "Attiva/disattiva tutti i permessi di {{app}}"
+  },
   "roles": {
+    "delete": "Elimina",
     "description": "Set di autorizzazioni che puoi assegnare a utenti e gruppi.",
+    "edit": "Modifica",
+    "roleActions": "Azioni ruolo",
     "system": "Sistema",
     "title": "Ruoli"
   },
+  "searchSettings": "Cerca",
   "settings": {
     "allowedDomains": "Domini email consentiti",
     "configure": "Configura",
+    "demoMode": "Modalità demo (sola lettura)",
+    "demoModeHint": "Se attiva, solo gli amministratori possono caricare, modificare o eliminare. Tutti gli altri possono visualizzare ma non modificare nulla.",
     "description": "Registrazione e criteri per l'intera istanza.",
     "domainsHint": "Separati da virgola. Lascia vuoto per consentire qualsiasi dominio.",
     "domainsPlaceholder": "esempio.com, team.org",
@@ -187,7 +233,9 @@
     "roleAssigned": "Ruolo assegnato",
     "roleRemoved": "Ruolo rimosso",
     "roles": "Ruoli",
-    "unassignError": "Impossibile rimuovere il ruolo"
+    "unassignError": "Impossibile rimuovere il ruolo",
+    "unlimited": "Illimitato",
+    "usage": "Spazio utilizzato"
   },
   "users": {
     "admin": "Amministratore",

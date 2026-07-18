@@ -1,4 +1,4 @@
-import { type MouseEvent, useEffect, useRef, useState } from "react"
+import { type MouseEvent, memo, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import type { DriveNode } from "@workspace/core/drive"
 import { fetchDecryptedThumbnail } from "@workspace/core/driveE2e"
@@ -19,7 +19,7 @@ interface NodeCardProps {
   onOpen: (node: DriveNode) => void
   onSelect: (node: DriveNode, shiftKey: boolean, additive: boolean) => void
   onToggle: (node: DriveNode) => void
-  dragIds: string[]
+  getDragIds: (node: DriveNode) => string[]
   onDropNodes?: (folder: DriveNode, ids: string[]) => void
   onSpringInto?: (folder: DriveNode) => void
 }
@@ -30,7 +30,7 @@ const NodeCard = ({
   onOpen,
   onSelect,
   onToggle,
-  dragIds,
+  getDragIds,
   onDropNodes,
   onSpringInto,
 }: NodeCardProps) => {
@@ -80,7 +80,7 @@ const NodeCard = ({
       data-node-card={node.id}
       draggable={!node.special}
       onDragStart={(event) => {
-        event.dataTransfer.setData(DRIVE_NODES_MIME, JSON.stringify(dragIds))
+        event.dataTransfer.setData(DRIVE_NODES_MIME, JSON.stringify(getDragIds(node)))
         event.dataTransfer.effectAllowed = "move"
       }}
       onDragOver={
@@ -182,4 +182,4 @@ const NodeCard = ({
   )
 }
 
-export default NodeCard
+export default memo(NodeCard)

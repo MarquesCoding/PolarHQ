@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Администрација",
+    "authenticator": "Автентикатор",
+    "calendar": "Календар",
     "docs": "Документи",
     "drive": "Диск",
+    "meet": "Средби",
+    "passwords": "Лозинки",
     "photos": "Фотографии",
     "sheets": "Табели",
     "whiteboard": "Табла"
@@ -42,6 +46,20 @@
     "saving": "Се зачувува…",
     "share": "Сподели",
     "title": "Наслов"
+  },
+  "commandPalette": {
+    "albums": "Албуми",
+    "description": "Пребарајте страница или извршете команда.",
+    "empty": "Нема резултати.",
+    "favourites": "Омилени",
+    "groupActions": "Дејства",
+    "groupNavigate": "Оди на",
+    "map": "Мапа",
+    "placeholder": "Внесете команда или пребарувајте…",
+    "recent": "Неодамнешни",
+    "title": "Палета со команди",
+    "toggleTheme": "Смени светла/темна тема",
+    "trash": "Корпа"
   },
   "confirmButton": {
     "confirm": "Потврди"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Промени темна тема",
     "unlimited": "Неограничено"
   },
+  "flatTopBar": {
+    "search": "Пребарај…",
+    "toggleSidebar": "Смени странична лента"
+  },
   "importButton": {
     "import": "Увези",
     "importFailed": "Не можеше да се увезе оваа датотека"
@@ -180,6 +202,17 @@
     "loading": "Се вчитува…",
     "saving": "Се зачувува…"
   },
+  "storageDialog": {
+    "byApp": "Простор по апликација",
+    "files_one": "{{count}} датотека",
+    "files_other": "{{count}} датотеки",
+    "largest": "Најголеми датотеки",
+    "noFiles": "Сè уште нема зачувани датотеки",
+    "ofTotal": "{{used}} од {{total}}",
+    "open": "Детали за просторот",
+    "title": "Простор",
+    "usedOnly": "{{used}} искористени"
+  },
   "units": {
     "items_one": "{{count}} ставка",
     "items_other": "{{count}} ставки"
@@ -209,11 +242,15 @@
     "downloading": "Се презема…",
     "downloadingItems_one": "Се презема {{count}} ставка",
     "downloadingItems_other": "Се преземаат {{count}} ставки",
+    "etaMinutes": "уште {{minutes}} мин",
+    "etaSeconds": "уште {{seconds}} сек",
     "expand": "Прошири",
     "failed": "Не успеа",
+    "percentDone": "{{percent}}%",
     "processing": "Се обработува…",
     "processingItems_one": "Се обработува {{count}} ставка",
     "processingItems_other": "Се обработуваат {{count}} ставки",
+    "retry": "Обиди се повторно",
     "speed": "{{speed}}/с",
     "transcoding": "Се транскодира…",
     "uploading": "Се прикачува…",
@@ -228,6 +265,7 @@
     "uploaded_other": "Прикачени {{count}} фотографии"
   },
   "viewToggle": {
+    "columnsView": "Приказ во колони",
     "gridView": "Преглед во мрежа",
     "tableView": "Преглед во табела"
   }

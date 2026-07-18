@@ -3,6 +3,7 @@ import { setViewMode } from "@workspace/screens/store/uiSlice"
 import { Columns, GridFour, ListBullets } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
+import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 
 interface ViewToggleProps {
@@ -10,46 +11,45 @@ interface ViewToggleProps {
   columns?: boolean
 }
 
-/** Grid ↔ table (↔ columns) view switch for the app toolbar. */
+/** Grid ↔ table (↔ columns) view switch with a sliding highlight, matching the workspace mode pill. */
 const ViewToggle = ({ columns = false }: ViewToggleProps) => {
   const { t } = useTranslation("common")
   const dispatch = useAppDispatch()
   const view = useAppSelector((state) => state.ui.viewMode)
 
+  const items = [
+    { id: "grid" as const, icon: GridFour, label: t("viewToggle.gridView") },
+    { id: "table" as const, icon: ListBullets, label: t("viewToggle.tableView") },
+    ...(columns
+      ? [{ id: "columns" as const, icon: Columns, label: t("viewToggle.columnsView") }]
+      : []),
+  ]
+
   return (
-    <div className="bg-muted/60 flex items-center gap-0.5 rounded-lg p-0.5">
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label={t("viewToggle.gridView")}
-        aria-pressed={view === "grid"}
-        onClick={() => dispatch(setViewMode("grid"))}
-        className={cn("rounded-md", view === "grid" && "bg-background shadow-sm")}
-      >
-        <GridFour className="size-4" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label={t("viewToggle.tableView")}
-        aria-pressed={view === "table"}
-        onClick={() => dispatch(setViewMode("table"))}
-        className={cn("rounded-md", view === "table" && "bg-background shadow-sm")}
-      >
-        <ListBullets className="size-4" />
-      </Button>
-      {columns ? (
+    <div className="bg-muted/60 flex items-center rounded-full p-0.5">
+      {items.map(({ id, icon: Glyph, label }) => (
         <Button
+          key={id}
           variant="ghost"
           size="icon-sm"
-          aria-label={t("viewToggle.columnsView")}
-          aria-pressed={view === "columns"}
-          onClick={() => dispatch(setViewMode("columns"))}
-          className={cn("rounded-md", view === "columns" && "bg-background shadow-sm")}
+          aria-label={label}
+          aria-pressed={view === id}
+          onClick={() => dispatch(setViewMode(id))}
+          className={cn(
+            "relative rounded-full",
+            view === id ? "text-foreground hover:bg-transparent" : "text-muted-foreground",
+          )}
         >
-          <Columns className="size-4" />
+          {view === id ? (
+            <motion.span
+              layoutId="view-toggle-pill"
+              className="bg-background absolute inset-0 rounded-full shadow-sm"
+              transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
+            />
+          ) : null}
+          <Glyph className="relative size-4" />
         </Button>
-      ) : null}
+      ))}
     </div>
   )
 }

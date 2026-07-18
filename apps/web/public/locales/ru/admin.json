@@ -5,6 +5,10 @@
     "backup": "Резервное копирование",
     "branding": "Брендинг",
     "console": "Консоль",
+    "groupActivity": "Активность",
+    "groupAppsLimits": "Приложения и лимиты",
+    "groupInstance": "Экземпляр",
+    "groupPeople": "Пользователи",
     "groups": "Группы",
     "limits": "Лимиты",
     "overview": "Обзор",
@@ -70,15 +74,41 @@
     "saved": "Брендинг сохранён",
     "title": "Брендинг"
   },
+  "close": "Закрыть",
+  "consoleTitle": "Консоль администратора",
   "createRoleDialog": {
     "cancel": "Отмена",
     "createError": "Не удалось создать роль",
     "createRole": "Создать роль",
     "created": "Роль создана",
+    "delete": "Удалить роль",
+    "deleteConfirm": "Удалить эту роль? Все, кому она назначена, потеряют предоставленный ею доступ.",
+    "deleteError": "Не удалось удалить роль",
+    "deleted": "Роль удалена",
     "description": "Описание",
+    "editRole": "Изменить роль",
     "name": "Название",
     "newRole": "Новая роль",
-    "permissions": "Разрешения"
+    "permissions": "Разрешения",
+    "saveChanges": "Сохранить изменения",
+    "updateError": "Не удалось обновить роль",
+    "updated": "Роль обновлена"
+  },
+  "createUserDialog": {
+    "cancel": "Отмена",
+    "create": "Создать пользователя",
+    "createError": "Не удалось создать пользователя",
+    "created": "Пользователь создан",
+    "email": "Эл. почта",
+    "makeAdmin": "Сделать этого пользователя администратором",
+    "name": "Имя",
+    "newUser": "Новый пользователь",
+    "password": "Пароль",
+    "passwordHint": "Не менее 8 символов.",
+    "title": "Создание пользователя"
+  },
+  "editor": {
+    "back": "Назад"
   },
   "groupDetailSheet": {
     "add": "Добавить",
@@ -143,14 +173,32 @@
     "title": "Обзор",
     "users": "Пользователи"
   },
+  "roleEditor": {
+    "newRoleTitle": "Новая роль",
+    "noPermissions": "Нет прав, соответствующих запросу.",
+    "permissionCount_few": "{{count}} права",
+    "permissionCount_many": "{{count}} прав",
+    "permissionCount_one": "{{count}} право",
+    "permissionCount_other": "{{count}} прав",
+    "searchPermissions": "Поиск прав…",
+    "tabDisplay": "Отображение",
+    "tabPermissions": "Права доступа",
+    "toggleAll": "Переключить все права {{app}}"
+  },
   "roles": {
+    "delete": "Удалить",
     "description": "Наборы разрешений, которые можно назначать пользователям и группам.",
+    "edit": "Изменить",
+    "roleActions": "Действия с ролью",
     "system": "Системная",
     "title": "Роли"
   },
+  "searchSettings": "Поиск",
   "settings": {
     "allowedDomains": "Разрешённые почтовые домены",
     "configure": "Настроить",
+    "demoMode": "Демо-режим (только чтение)",
+    "demoModeHint": "Когда включено, загружать, изменять или удалять могут только администраторы. Остальные могут только просматривать.",
     "description": "Регистрация и политика для всего экземпляра.",
     "domainsHint": "Через запятую. Оставьте пустым, чтобы разрешить любой домен.",
     "domainsPlaceholder": "example.com, team.org",
@@ -187,7 +235,9 @@
     "roleAssigned": "Роль назначена",
     "roleRemoved": "Роль удалена",
     "roles": "Роли",
-    "unassignError": "Не удалось удалить роль"
+    "unassignError": "Не удалось удалить роль",
+    "unlimited": "Без ограничений",
+    "usage": "Использовано хранилища"
   },
   "users": {
     "admin": "Администратор",

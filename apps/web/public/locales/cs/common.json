@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Administrace",
+    "authenticator": "Autentizátor",
+    "calendar": "Kalendář",
     "docs": "Dokumenty",
     "drive": "Disk",
+    "meet": "Meet",
+    "passwords": "Hesla",
     "photos": "Fotky",
     "sheets": "Tabulky",
     "whiteboard": "Tabule"
@@ -42,6 +46,20 @@
     "saving": "Ukládání…",
     "share": "Sdílet",
     "title": "Název"
+  },
+  "commandPalette": {
+    "albums": "Alba",
+    "description": "Vyhledejte stránku nebo spusťte příkaz.",
+    "empty": "Žádné výsledky.",
+    "favourites": "Oblíbené",
+    "groupActions": "Akce",
+    "groupNavigate": "Přejít na",
+    "map": "Mapa",
+    "placeholder": "Napište příkaz nebo hledejte…",
+    "recent": "Nedávné",
+    "title": "Paleta příkazů",
+    "toggleTheme": "Přepnout světlý/tmavý režim",
+    "trash": "Koš"
   },
   "confirmButton": {
     "confirm": "Potvrdit"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Přepnout tmavý režim",
     "unlimited": "Neomezeno"
   },
+  "flatTopBar": {
+    "search": "Hledat…",
+    "toggleSidebar": "Přepnout postranní panel"
+  },
   "importButton": {
     "import": "Importovat",
     "importFailed": "Tento soubor se nepodařilo importovat"
@@ -180,6 +202,18 @@
     "loading": "Načítání…",
     "saving": "Ukládání…"
   },
+  "storageDialog": {
+    "byApp": "Úložiště podle aplikace",
+    "files_few": "{{count}} soubory",
+    "files_one": "{{count}} soubor",
+    "files_other": "{{count}} souborů",
+    "largest": "Největší soubory",
+    "noFiles": "Zatím nejsou uložené žádné soubory",
+    "ofTotal": "{{used}} z {{total}}",
+    "open": "Podrobnosti o úložišti",
+    "title": "Úložiště",
+    "usedOnly": "{{used}} využito"
+  },
   "units": {
     "items_few": "{{count}} položky",
     "items_many": "{{count}} položky",
@@ -215,13 +249,17 @@
     "downloadingItems_many": "Stahování {{count}} položek",
     "downloadingItems_one": "Stahování {{count}} položky",
     "downloadingItems_other": "Stahování {{count}} položek",
+    "etaMinutes": "zbývá {{minutes}} min",
+    "etaSeconds": "zbývá {{seconds}} s",
     "expand": "Rozbalit",
     "failed": "Selhalo",
+    "percentDone": "{{percent}} %",
     "processing": "Zpracování…",
     "processingItems_few": "Zpracování {{count}} položek",
     "processingItems_many": "Zpracování {{count}} položek",
     "processingItems_one": "Zpracování {{count}} položky",
     "processingItems_other": "Zpracování {{count}} položek",
+    "retry": "Zkusit znovu",
     "speed": "{{speed}}/s",
     "transcoding": "Překódování…",
     "uploading": "Nahrávání…",
@@ -242,6 +280,7 @@
     "uploaded_other": "Nahráno {{count}} fotek"
   },
   "viewToggle": {
+    "columnsView": "Zobrazení ve sloupcích",
     "gridView": "Zobrazení mřížky",
     "tableView": "Zobrazení tabulky"
   }

@@ -54,8 +54,6 @@ const MigrateGoogle = () => {
       toast.error(t("importError"))
       return
     }
-    // Web navigates to Google directly; desktop must use the system browser (Google blocks its consent
-    // flow inside webviews), then poll until the server-side callback links the account.
     if (!host.isDesktop) {
       window.location.href = url
       return

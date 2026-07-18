@@ -14,13 +14,14 @@ import { useArmedConfirm } from "@workspace/screens/useArmedConfirm"
 import { useSelectionHotkeys } from "@workspace/screens/useSelectionHotkeys"
 import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
-import PhotoGrid from "@pages/Photos/components/PhotoGrid/PhotoGrid"
+import PhotoWorkspace from "@pages/Photos/workspace/PhotoWorkspace"
 import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import { Icon } from "@workspace/screens/icons"
 import { ArrowLeft, MinusCircle } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "sonner"
+import { photoNotice } from "./workspace/notice"
 import { useTranslation } from "react-i18next"
 
 const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
@@ -52,6 +53,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
   const one = ids.length === 1 ? assets.find((asset) => asset.id === ids[0]) : undefined
   const selectedSet = new Set(ids)
   const selectedAssets = assets.filter((asset) => selectedSet.has(asset.id))
+  const allFavourited = selectedAssets.length > 0 && selectedAssets.every((asset) => asset.isFavorite)
   const downloadItems = selectedAssets.map(downloadItemFor)
   const burstFrames = selectedAssets.reduce(
     (total, asset) => total + (asset.stackId && asset.stackCount > 1 ? asset.stackCount : 1),
@@ -68,7 +70,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
   const run = async (action: () => Promise<unknown>, message: string) => {
     try {
       await action()
-      toast.success(message)
+      photoNotice(message)
       afterAction()
     } catch {
       toast.error(t("albumDetailInner.actionFailed"))
@@ -88,7 +90,7 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
   const removeAlbum = useMutation({
     mutationFn: () => deleteAlbum(albumId),
     onSuccess: () => {
-      toast.success(t("albumDetailInner.albumDeleted"))
+      photoNotice(t("albumDetailInner.albumDeleted"))
       void queryClient.invalidateQueries({ queryKey: ["photos", "albums"] })
       router.push("/photos/albums")
     },
@@ -127,10 +129,11 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
           {t("albumDetailInner.emptyAlbum")}
         </p>
       ) : (
-        <PhotoGrid assets={assets} />
+        <PhotoWorkspace assets={assets} showModes={false} onInvalidate={invalidate} />
       )}
 
       <SelectionBar
+        contentCentered
         downloadItems={downloadItems}
         downloadAllFrames={downloadAllFrames}
         shareAssetId={one?.id}
@@ -141,11 +144,18 @@ const AlbumDetailInner = ({ albumId }: { albumId: string }) => {
           variant="ghost"
           size="sm"
           onClick={() =>
-            run(() => favoriteAssets(ids, true), t("albumDetailInner.addedToFavourites"))
+            run(
+              () => favoriteAssets(ids, !allFavourited),
+              allFavourited
+                ? t("favourites.removed", { defaultValue: "Removed from favourites" })
+                : t("albumDetailInner.addedToFavourites"),
+            )
           }
         >
           <Icon name="favourites" className="size-4" />
-          {t("albumDetailInner.favourite")}
+          {allFavourited
+            ? t("albumDetailInner.unfavourite", { defaultValue: "Unfavourite" })
+            : t("albumDetailInner.favourite")}
         </Button>
         <Button
           variant="ghost"

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import { type ReactNode, useEffect } from "react"
 import type { TimelinePage } from "@workspace/core/photos"
 import { downloadItemFor, expandStacksToDownloadItems } from "@workspace/core/photosE2e"
 import { SelectionProvider, useSelection } from "@workspace/screens/selection"
@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next"
 import { useAppSelector } from "@workspace/screens/store/hooks"
 import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
-import PhotoGrid from "@pages/Photos/components/PhotoGrid/PhotoGrid"
+import PhotoWorkspace from "@pages/Photos/workspace/PhotoWorkspace"
 
 export interface CollectionViewProps {
   title: string
@@ -21,7 +21,12 @@ export interface CollectionViewProps {
   emptyState?: ReactNode
   /** Optional subtle banner shown above the grid (e.g. the trash auto-delete notice). */
   notice?: ReactNode
-  actions: (ids: string[], afterAction: () => void, deleteConfirm: ArmedConfirm) => ReactNode
+  actions: (
+    ids: string[],
+    afterAction: () => void,
+    deleteConfirm: ArmedConfirm,
+    allFavourited: boolean,
+  ) => ReactNode
   onDeleteSelected?: (ids: string[]) => Promise<unknown>
   deleteMessage?: string
 }
@@ -40,6 +45,9 @@ const CollectionInner = ({
   const selection = useSelection()
   const { query, assets, invalidate } = useAssetFeed(queryKey, fetcher)
   const search = useAppSelector((state) => state.ui.searchQuery).trim().toLowerCase()
+  useEffect(() => {
+    if (search && query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
+  }, [search, query.hasNextPage, query.isFetchingNextPage, query])
   const visible = search
     ? assets.filter((asset) => asset.originalFilename.toLowerCase().includes(search))
     : assets
@@ -47,6 +55,7 @@ const CollectionInner = ({
   const one = ids.length === 1 ? visible.find((asset) => asset.id === ids[0]) : undefined
   const selectedSet = new Set(ids)
   const selectedAssets = assets.filter((asset) => selectedSet.has(asset.id))
+  const allFavourited = selectedAssets.length > 0 && selectedAssets.every((asset) => asset.isFavorite)
   const downloadItems = selectedAssets.map(downloadItemFor)
   const burstFrames = selectedAssets.reduce(
     (total, asset) => total + (asset.stackId && asset.stackCount > 1 ? asset.stackCount : 1),
@@ -90,8 +99,10 @@ const CollectionInner = ({
           (emptyState ?? <p className="text-muted-foreground text-sm">{emptyText}</p>)
         )
       ) : (
-        <PhotoGrid
+        <PhotoWorkspace
           assets={visible}
+          showModes={false}
+          onInvalidate={invalidate}
           onReachEnd={
             search
               ? undefined
@@ -103,13 +114,14 @@ const CollectionInner = ({
       )}
 
       <SelectionBar
+        contentCentered
         downloadItems={downloadItems}
         downloadAllFrames={downloadAllFrames}
         shareAssetId={one?.id}
         shareName={one ? downloadItemFor(one).name : undefined}
         shareEncrypted={one?.encrypted}
       >
-        {actions(ids, afterAction, deleteConfirm)}
+        {actions(ids, afterAction, deleteConfirm, allFavourited)}
       </SelectionBar>
     </div>
   )

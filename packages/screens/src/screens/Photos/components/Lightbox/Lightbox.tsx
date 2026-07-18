@@ -1,4 +1,4 @@
-import { type ReactElement, useEffect, useRef, useState } from "react"
+import { type ReactElement, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { usePersistentNumber } from "@workspace/screens/persistentSetting"
 import { useZoomPan } from "@workspace/screens/useZoomPan"
 import {
@@ -46,7 +46,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 import { cn } from "@workspace/ui/lib/utils"
-import { AnimatePresence, motion } from "motion/react"
+import { AnimatePresence, motion, useAnimationControls, usePresence } from "motion/react"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 import type { ViewerController, ViewerItem } from "./viewer"
@@ -58,6 +58,8 @@ interface LightboxProps {
   index: number
   onIndexChange: (index: number) => void
   onClose: () => void
+  /** The clicked tile's screen rect, so the photo can zoom out of (and back into) its grid cell. */
+  originRect?: DOMRect | null
   /** Show a thumbnail strip of every item along the bottom — used for stack/burst viewing. */
   filmstrip?: boolean
 }
@@ -120,9 +122,56 @@ const FilmstripThumb = ({
  *  OOMing the tab — we offer a streaming download instead (true streaming playback is a later phase). */
 const PLAYABLE_ENCRYPTED_MAX = 1.5 * 1024 * 1024 * 1024
 
-const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: LightboxProps) => {
+const Lightbox = ({
+  controller,
+  index,
+  onIndexChange,
+  onClose,
+  originRect,
+  filmstrip,
+}: LightboxProps) => {
   const { t } = useTranslation("photos")
   const { items } = controller
+
+  const stageRef = useRef<HTMLDivElement>(null)
+  const flipControls = useAnimationControls()
+  const flipFrom = useRef<{ x: number; y: number; scale: number } | null>(null)
+  const flipEase = { duration: 0.42, ease: [0.32, 0.72, 0, 1] as const }
+  const didOpenRef = useRef(false)
+  const [isPresent, safeToRemove] = usePresence()
+
+  useLayoutEffect(() => {
+    if (didOpenRef.current) return
+    const stage = stageRef.current
+    const opened = items[index]
+    if (!stage || !originRect) return
+    const box = stage.getBoundingClientRect()
+    if (box.width === 0 || box.height === 0) return
+    didOpenRef.current = true
+    const aspect =
+      opened?.width && opened?.height ? opened.width / opened.height : box.width / box.height
+    let dispW = box.width
+    if (dispW / aspect > box.height) dispW = box.height * aspect
+    flipFrom.current = {
+      x: originRect.left + originRect.width / 2 - (box.left + box.width / 2),
+      y: originRect.top + originRect.height / 2 - (box.top + box.height / 2),
+      scale: originRect.width / dispW,
+    }
+    flipControls.set(flipFrom.current)
+    void flipControls.start({ x: 0, y: 0, scale: 1, transition: flipEase })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [originRect])
+
+  useEffect(() => {
+    if (isPresent) return
+    const from = flipFrom.current
+    if (!from) {
+      safeToRemove()
+      return
+    }
+    void flipControls.start({ ...from, transition: flipEase }).then(() => safeToRemove())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPresent])
   const [infoPref, setInfoPref] = usePersistentNumber("photos.lightboxDetails", 0)
   const info = infoPref === 1
   const toggleInfo = () => setInfoPref(info ? 0 : 1)
@@ -141,7 +190,6 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
   const activeThumbRef = useRef<HTMLButtonElement | null>(null)
   const stripRef = useRef<HTMLDivElement | null>(null)
 
-  // Lock the page behind the fullscreen viewer so the content underneath can't scroll.
   useEffect(() => {
     const previous = document.body.style.overflow
     document.body.style.overflow = "hidden"
@@ -271,10 +319,7 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
       return
     }
     let active = true
-    // Reset so the previous photo doesn't linger; the thumbnail shows while the original decrypts.
     setDecryptedSrc(null)
-    // The cache owns the object URL (revoked on LRU eviction), so we don't revoke it here — that's
-    // what made revisits re-download + re-decrypt the full original every time.
     void controller.fetchOriginal(item).then((result) => {
       if (active) setDecryptedSrc(result)
     })
@@ -284,7 +329,6 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item.id, item.encrypted, item.mimeType, tooLargeToPreview])
 
-  // Prefetch the neighbouring originals (into the same cache) so next/prev is instant.
   useEffect(() => {
     for (const neighbour of [items[index + 1], items[index - 1]]) {
       if (neighbour?.encrypted && neighbour.kind === "image") {
@@ -357,181 +401,166 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
   }
 
   return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.18 }}
+    <div
+      className="bg-background/45 fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur sm:p-10"
       onPointerDown={(event) => event.stopPropagation()}
+      onClick={editing ? undefined : onClose}
     >
-      <motion.div
-        className="bg-background border-border/50 relative flex h-full max-h-[88vh] w-full max-w-[1600px] overflow-hidden rounded-2xl border shadow-2xl"
-        initial={{ scale: 0.97 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.97 }}
-        transition={{ duration: 0.18, ease: "easeOut" }}
+      <div
+        className="relative flex h-full max-h-[92vh] w-full max-w-[1600px] overflow-visible"
+        onClick={(event) => event.stopPropagation()}
       >
-      {source ? (
-        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-          <img
-            key={item.id}
-            src={source}
-            alt=""
-            className="absolute inset-0 h-full w-full scale-125 object-cover opacity-40 blur-3xl"
-          />
-          <div className="bg-background/50 absolute inset-0" />
-        </div>
-      ) : null}
       <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
-        <div className="relative flex items-center justify-between gap-2 p-3">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={editing ? t("photoEditor.closeEditor") : t("lightbox.close")}
-            onClick={editing ? requestExitEditing : onClose}
-            className="rounded-full"
-          >
-            {editing ? <ArrowLeft className="size-5" /> : <X className="size-5" />}
-          </Button>
-          <span className="pointer-events-none absolute top-1/2 left-1/2 max-w-[40vw] -translate-x-1/2 -translate-y-1/2 truncate text-sm font-medium">
-            {item.name}
-          </span>
-
-        {!editing ? (
-        <div className="flex items-center gap-2">
-        {item.kind === "image" && source ? (
-          <div className="flex items-center gap-0.5">
+        {editing ? (
+          <div className="relative z-20 flex items-center gap-2 p-3">
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={t("lightbox.zoomOut")}
-              onClick={zoom.zoomOut}
+              aria-label={t("photoEditor.closeEditor")}
+              onClick={requestExitEditing}
               className="rounded-full"
             >
-              <MagnifyingGlassMinus className="size-4" />
+              <ArrowLeft className="size-5" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("lightbox.zoomIn")}
-              onClick={zoom.zoomIn}
-              className="rounded-full"
-            >
-              <MagnifyingGlassPlus className="size-4" />
-            </Button>
+            <span className="truncate text-sm font-medium">{item.name}</span>
           </div>
-        ) : null}
-        <div className="flex items-center gap-0.5">
-          {canPlayMotion && item.kind === "image" && motionSrc ? (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("lightbox.playMotion")}
-              onClick={() => setPlayMotion((value) => !value)}
-              className={cn("rounded-full", playMotion && "bg-muted")}
-            >
-              <Aperture className="size-5" />
-            </Button>
-          ) : null}
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
+        ) : (
+          <>
+            <span className="text-foreground/80 pointer-events-none absolute top-4 left-1/2 z-20 max-w-[40vw] -translate-x-1/2 truncate rounded-full border bg-background/50 px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md">
+              {item.name}
+            </span>
+            <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-0.5 rounded-full border bg-background/55 p-1 shadow-xl backdrop-blur-2xl">
+              {controller.toggleFavorite ? (
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={t("lightbox.more")}
+                  aria-label={t("lightbox.favourite")}
+                  onClick={toggleFavourite}
                   className="rounded-full"
                 >
-                  <DotsThree className="size-5" />
+                  <Heart
+                    weight={item.isFavorite ? "fill" : "regular"}
+                    className={cn("size-[18px]", item.isFavorite && "text-red-500")}
+                  />
                 </Button>
-              }
-            />
-            <DropdownMenuContent align="end">
-              {controller.toggleFavorite ? (
-                <DropdownMenuItem onClick={toggleFavourite}>
-                  <Heart weight={item.isFavorite ? "fill" : "regular"} />
-                  {t("lightbox.favourite")}
-                </DropdownMenuItem>
               ) : null}
-              {item.kind === "image" ? (
+              {item.kind === "image" && source ? (
                 <>
-                  {canEdit ? (
-                    <DropdownMenuItem
-                      onClick={() => {
-                        if (item.encrypted && !decryptedSrc) {
-                          toast(t("lightbox.decrypting"))
-                          return
-                        }
-                        setEditing(true)
-                      }}
-                    >
-                      <Sliders />
-                      {t("lightbox.edit")}
-                    </DropdownMenuItem>
-                  ) : null}
-                  <DropdownMenuItem onClick={copyImage}>
-                    <Copy />
-                    {t("lightbox.copy")}
-                  </DropdownMenuItem>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={t("lightbox.zoomOut")}
+                    onClick={zoom.zoomOut}
+                    className="rounded-full"
+                  >
+                    <MagnifyingGlassMinus className="size-[18px]" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={t("lightbox.zoomIn")}
+                    onClick={zoom.zoomIn}
+                    className="rounded-full"
+                  >
+                    <MagnifyingGlassPlus className="size-[18px]" />
+                  </Button>
                 </>
               ) : null}
-              {shareConfig ? (
-                <DropdownMenuItem onClick={() => setShareOpen(true)}>
-                  <ArrowSquareOut />
-                  {t("lightbox.share")}
-                </DropdownMenuItem>
+              {canPlayMotion && item.kind === "image" && motionSrc ? (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={t("lightbox.playMotion")}
+                  onClick={() => setPlayMotion((value) => !value)}
+                  className={cn("rounded-full", playMotion && "bg-muted")}
+                >
+                  <Aperture className="size-5" />
+                </Button>
               ) : null}
-              {controller.download ? (
-                <DropdownMenuItem onClick={download}>
-                  <DownloadSimple />
-                  {t("lightbox.download")}
-                </DropdownMenuItem>
-              ) : null}
-              {controller.trash ? (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem variant="destructive" onClick={moveToTrash}>
-                    <Trash />
-                    {t("lightbox.moveToTrash")}
-                  </DropdownMenuItem>
-                </>
-              ) : null}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {items.length > 1 ? (
-            <Tip label={t("lightbox.filmstrip")}>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={t("lightbox.filmstrip")}
-                onClick={toggleStrip}
-                className="rounded-full"
-              >
-                <Slideshow weight={showStrip ? "fill" : "regular"} className="size-5" />
-              </Button>
-            </Tip>
-          ) : null}
-          {controller.renderInfo ? (
-            <>
-              <span className="bg-border mx-0.5 h-5 w-px" />
-              <Tip label={t("lightbox.info")}>
+              {controller.renderInfo ? (
                 <Button
                   variant="ghost"
                   size="icon-sm"
                   aria-label={t("lightbox.info")}
                   onClick={toggleInfo}
-                  className="rounded-full"
+                  className={cn("rounded-full", infoOpen && "bg-muted")}
                 >
-                  <SidebarSimple weight={infoOpen ? "fill" : "regular"} className="size-5" />
+                  <SidebarSimple weight={infoOpen ? "fill" : "regular"} className="size-[18px]" />
                 </Button>
-              </Tip>
-            </>
-          ) : null}
-        </div>
-        </div>
-        ) : null}
-      </div>
+              ) : null}
+              {items.length > 1 ? (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={t("lightbox.filmstrip")}
+                  onClick={toggleStrip}
+                  className={cn("rounded-full", showStrip && "bg-muted")}
+                >
+                  <Slideshow weight={showStrip ? "fill" : "regular"} className="size-[18px]" />
+                </Button>
+              ) : null}
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label={t("lightbox.more")}
+                      className="rounded-full"
+                    >
+                      <DotsThree className="size-5" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end" side="top">
+                  {item.kind === "image" ? (
+                    <>
+                      {canEdit ? (
+                        <DropdownMenuItem
+                          onClick={() => {
+                            if (item.encrypted && !decryptedSrc) {
+                              toast(t("lightbox.decrypting"))
+                              return
+                            }
+                            setEditing(true)
+                          }}
+                        >
+                          <Sliders />
+                          {t("lightbox.edit")}
+                        </DropdownMenuItem>
+                      ) : null}
+                      <DropdownMenuItem onClick={copyImage}>
+                        <Copy />
+                        {t("lightbox.copy")}
+                      </DropdownMenuItem>
+                    </>
+                  ) : null}
+                  {shareConfig ? (
+                    <DropdownMenuItem onClick={() => setShareOpen(true)}>
+                      <ArrowSquareOut />
+                      {t("lightbox.share")}
+                    </DropdownMenuItem>
+                  ) : null}
+                  {controller.download ? (
+                    <DropdownMenuItem onClick={download}>
+                      <DownloadSimple />
+                      {t("lightbox.download")}
+                    </DropdownMenuItem>
+                  ) : null}
+                  {controller.trash ? (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem variant="destructive" onClick={moveToTrash}>
+                        <Trash />
+                        {t("lightbox.moveToTrash")}
+                      </DropdownMenuItem>
+                    </>
+                  ) : null}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </>
+        )}
 
         <PhotoContextMenu actions={menuActions}>
         <div
@@ -585,17 +614,19 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
             <EditStage controller={editor} />
           ) : source ? (
             <motion.div
+              ref={stageRef}
               className="flex h-full w-full items-center justify-center"
               animate={{ scale: zoom.scale, x: zoom.offset.x, y: zoom.offset.y }}
               transition={{ duration: 0.1, ease: "easeOut" }}
             >
               <motion.img
-                layoutId={`photo-${item.id}`}
+                animate={flipControls}
                 src={source}
                 alt={item.name}
                 draggable={false}
                 className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
                 style={{
+                  transformOrigin: "center",
                   backgroundImage:
                     !item.encrypted && item.thumbnailUrl
                       ? `url(${item.thumbnailUrl})`
@@ -604,7 +635,6 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
                 }}
-                transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
               />
             </motion.div>
           ) : (
@@ -719,7 +749,7 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
           </motion.aside>
         ) : null}
       </AnimatePresence>
-      </motion.div>
+      </div>
 
       {shareConfig ? (
         <ShareDialog
@@ -753,7 +783,7 @@ const Lightbox = ({ controller, index, onIndexChange, onClose, filmstrip }: Ligh
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </motion.div>
+    </div>
   )
 }
 

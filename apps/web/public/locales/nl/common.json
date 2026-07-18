@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Beheer",
+    "authenticator": "Authenticator",
+    "calendar": "Agenda",
     "docs": "Docs",
     "drive": "Drive",
+    "meet": "Meet",
+    "passwords": "Wachtwoorden",
     "photos": "Foto's",
     "sheets": "Sheets",
     "whiteboard": "Whiteboard"
@@ -42,6 +46,20 @@
     "saving": "Opslaan…",
     "share": "Delen",
     "title": "Titel"
+  },
+  "commandPalette": {
+    "albums": "Albums",
+    "description": "Zoek een pagina of voer een opdracht uit.",
+    "empty": "Geen resultaten.",
+    "favourites": "Favorieten",
+    "groupActions": "Acties",
+    "groupNavigate": "Ga naar",
+    "map": "Kaart",
+    "placeholder": "Typ een opdracht of zoek…",
+    "recent": "Recent",
+    "title": "Opdrachtenpalet",
+    "toggleTheme": "Licht/donker wisselen",
+    "trash": "Prullenbak"
   },
   "confirmButton": {
     "confirm": "Bevestigen"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Donkere modus wisselen",
     "unlimited": "Onbeperkt"
   },
+  "flatTopBar": {
+    "search": "Zoeken…",
+    "toggleSidebar": "Zijbalk wisselen"
+  },
   "importButton": {
     "import": "Importeren",
     "importFailed": "Kan dit bestand niet importeren"
@@ -180,6 +202,17 @@
     "loading": "Laden…",
     "saving": "Opslaan…"
   },
+  "storageDialog": {
+    "byApp": "Opslag per app",
+    "files_one": "{{count}} bestand",
+    "files_other": "{{count}} bestanden",
+    "largest": "Grootste bestanden",
+    "noFiles": "Nog geen bestanden opgeslagen",
+    "ofTotal": "{{used}} van {{total}}",
+    "open": "Opslagdetails",
+    "title": "Opslag",
+    "usedOnly": "{{used}} gebruikt"
+  },
   "units": {
     "items_one": "{{count}} item",
     "items_other": "{{count}} items"
@@ -209,11 +242,15 @@
     "downloading": "Downloaden…",
     "downloadingItems_one": "{{count}} item downloaden",
     "downloadingItems_other": "{{count}} items downloaden",
+    "etaMinutes": "nog {{minutes}} min",
+    "etaSeconds": "nog {{seconds}} s",
     "expand": "Uitklappen",
     "failed": "Mislukt",
+    "percentDone": "{{percent}}%",
     "processing": "Verwerken…",
     "processingItems_one": "{{count}} item verwerken",
     "processingItems_other": "{{count}} items verwerken",
+    "retry": "Opnieuw proberen",
     "speed": "{{speed}}/s",
     "transcoding": "Transcoderen…",
     "uploading": "Uploaden…",
@@ -228,6 +265,7 @@
     "uploaded_other": "{{count}} foto's geüpload"
   },
   "viewToggle": {
+    "columnsView": "Kolomweergave",
     "gridView": "Rasterweergave",
     "tableView": "Tabelweergave"
   }

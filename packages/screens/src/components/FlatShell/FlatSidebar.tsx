@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from "react"
+import { type ReactNode, useEffect, useRef, useState } from "react"
 import { usePathname, useNavigation } from "@workspace/screens/platform"
 import logo from "./logo.png"
 import { fetchApps } from "@workspace/core/apps"
@@ -10,14 +10,16 @@ import { fetchStorageStats } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
-import { setSearchQuery } from "@workspace/screens/store/uiSlice"
-import { CaretUpDown, MagnifyingGlass, ShieldCheck, SignOut } from "@phosphor-icons/react"
+import { openSettings, setSearchQuery } from "@workspace/screens/store/uiSlice"
+import { useContentLight } from "@components/adaptiveChrome"
+import { cn } from "@workspace/ui/lib/utils"
+import { CaretUpDown, MagnifyingGlass, ShieldCheck, SidebarSimple, SignOut } from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
-import { Sidebar } from "@workspace/ui/components/sidebar"
+import { Sidebar, useSidebar } from "@workspace/ui/components/sidebar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,6 +50,11 @@ interface FlatSidebarProps {
   searchPlaceholder: string
   /** Whether the search field dispatches into the shared `ui.searchQuery` (default true). */
   searchable?: boolean
+  /**
+   * Immersive chrome (Photos): the app-switcher + account move to the *bottom*, and the top becomes a
+   * floating traffic-light + collapse zone. Default keeps the classic top-anchored header.
+   */
+  immersive?: boolean
   /** The nav content — built with the shared `NavRow`/`SectionLabel` primitives. */
   children: ReactNode
 }
@@ -62,13 +69,17 @@ const FlatSidebar = ({
   beta,
   searchPlaceholder,
   searchable = true,
+  immersive = false,
   children,
 }: FlatSidebarProps) => {
   const { t } = useTranslation("common")
+  const { toggleSidebar } = useSidebar()
   const pathname = usePathname()
   const router = useNavigation()
   const dispatch = useAppDispatch()
   const query = useAppSelector((state) => state.ui.searchQuery)
+  const clusterRef = useRef<HTMLDivElement>(null)
+  const focusContentLight = useContentLight(clusterRef)
   const { data: session } = authClient.useSession()
 
   const { data: apps } = useQuery({ queryKey: ["apps"], queryFn: fetchApps })
@@ -102,9 +113,8 @@ const FlatSidebar = ({
     return () => cancelAnimationFrame(frame)
   }, [usage])
 
-  return (
-    <Sidebar collapsible="offcanvas">
-      <div className="flex h-14 shrink-0 items-center gap-2 px-3">
+  const chromeHeader = (
+    <div className="flex h-14 shrink-0 items-center gap-2 px-3">
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
@@ -187,7 +197,7 @@ const FlatSidebar = ({
               </span>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push("/account")}>
+            <DropdownMenuItem onClick={() => dispatch(openSettings({ scope: "account" }))}>
               {t("flatSidebar.account")}
             </DropdownMenuItem>
             {!readOnly ? (
@@ -196,7 +206,7 @@ const FlatSidebar = ({
               </DropdownMenuItem>
             ) : null}
             {isAdmin ? (
-              <DropdownMenuItem onClick={() => router.push("/admin")}>
+              <DropdownMenuItem onClick={() => dispatch(openSettings({ scope: "admin" }))}>
                 <ShieldCheck className="size-4" />
                 {t("apps.admin")}
               </DropdownMenuItem>
@@ -211,7 +221,38 @@ const FlatSidebar = ({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+    </div>
+  )
+
+  return (
+    <Sidebar collapsible="offcanvas">
+      {immersive ? (
+        <div ref={clusterRef} className="fixed left-[23px] top-[13px] z-[60] flex items-center gap-2">
+          <span
+            className={cn(
+              "pointer-events-none h-[26px] w-[79px] rounded-full backdrop-blur-2xl transition-colors duration-500 ease-out",
+              focusContentLight === true && "bg-black/35 shadow-sm",
+              focusContentLight === false && "bg-white/60 shadow-sm",
+            )}
+          />
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            aria-label={t("flatSidebar.toggleSidebar", { defaultValue: "Toggle sidebar" })}
+            className={cn(
+              "flex size-[26px] items-center justify-center rounded-full backdrop-blur-2xl transition-colors duration-500 ease-out",
+              focusContentLight === null &&
+                "text-muted-foreground hover:text-foreground hover:bg-black/14 dark:hover:bg-white/18",
+              focusContentLight === true && "bg-black/35 text-white shadow-sm hover:bg-black/45",
+              focusContentLight === false && "bg-white/60 text-black shadow-sm hover:bg-white/75",
+            )}
+          >
+            <SidebarSimple className="size-[18px]" />
+          </button>
+        </div>
+      ) : (
+        chromeHeader
+      )}
 
       {searchable ? (
         <div className="px-3 pt-3 pb-2">
@@ -251,6 +292,9 @@ const FlatSidebar = ({
       </motion.nav>
 
       <div className="flex flex-col gap-2 p-3 pt-2">
+        {immersive ? (
+          <div className="border-sidebar-border/60 -mx-1 border-t pt-1">{chromeHeader}</div>
+        ) : null}
         <Button
           variant="ghost"
           onClick={() => setStorageOpen(true)}
@@ -285,9 +329,11 @@ const FlatSidebar = ({
           </div>
         </Button>
 
-        <div className="px-1 pt-0.5 text-center">
-          <Changelog version={coreConfig().appVersion} build={coreConfig().appBuild} />
-        </div>
+        {coreConfig().dev ? null : (
+          <div className="px-1 pt-0.5 text-center">
+            <Changelog version={coreConfig().appVersion} build={coreConfig().appBuild} />
+          </div>
+        )}
       </div>
 
       <DevicesDialog open={devicesOpen} onOpenChange={setDevicesOpen} />

@@ -6,11 +6,14 @@ import { ArrowSquareOut } from "@phosphor-icons/react/ArrowSquareOut"
 import { Buildings } from "@phosphor-icons/react/Buildings"
 import { Calendar } from "@phosphor-icons/react/Calendar"
 import { Camera } from "@phosphor-icons/react/Camera"
+import { Cloud } from "@phosphor-icons/react/Cloud"
 import { CaretLeft } from "@phosphor-icons/react/CaretLeft"
 import { CaretRight } from "@phosphor-icons/react/CaretRight"
 import { CheckCircle } from "@phosphor-icons/react/CheckCircle"
 import { Copy } from "@phosphor-icons/react/Copy"
 import { Database } from "@phosphor-icons/react/Database"
+import { Desktop } from "@phosphor-icons/react/Desktop"
+import { DeviceMobile } from "@phosphor-icons/react/DeviceMobile"
 import { DownloadSimple } from "@phosphor-icons/react/DownloadSimple"
 import { File } from "@phosphor-icons/react/File"
 import { FilePdf } from "@phosphor-icons/react/FilePdf"
@@ -50,115 +53,23 @@ import { SpeakerHigh } from "@phosphor-icons/react/SpeakerHigh"
 import { SpeakerSimpleX } from "@phosphor-icons/react/SpeakerSimpleX"
 import { SquaresFour } from "@phosphor-icons/react/SquaresFour"
 import { Stack } from "@phosphor-icons/react/Stack"
+import { Laptop } from "@phosphor-icons/react/Laptop"
 import { Table } from "@phosphor-icons/react/Table"
 import { Tag } from "@phosphor-icons/react/Tag"
 import { Trash } from "@phosphor-icons/react/Trash"
+import { User } from "@phosphor-icons/react/User"
 import { Users } from "@phosphor-icons/react/Users"
 import { UsersThree } from "@phosphor-icons/react/UsersThree"
 import { VideoCamera } from "@phosphor-icons/react/VideoCamera"
 import { WarningCircle } from "@phosphor-icons/react/WarningCircle"
 import { X } from "@phosphor-icons/react/X"
-import * as coreFill24 from "nucleo-core-fill-24"
-import * as uiFillDuo18 from "nucleo-ui-fill-duo-18"
 
 export type IconProps = { className?: string }
 type IconComponent = ComponentType<IconProps>
 
 /**
- * Nucleo duo-tone icon packs. Every semantic key resolves Nucleo-first via {@link nucleoCandidates}
- * (preferring the duo-tone 18px set), falling back to the Phosphor map below for any key with no
- * Nucleo mapping or component.
- */
-const nucleoPack: Record<string, IconComponent | undefined> = {
-  ...(coreFill24 as Record<string, IconComponent | undefined>),
-  ...(uiFillDuo18 as Record<string, IconComponent | undefined>),
-}
-
-const nucleoCandidates: Record<string, string[]> = {
-  bolt: ["IconBoltFillDuo18", "IconBoltFill24"],
-  search: ["IconMagnifierFillDuo18", "IconMagnifier2FillDuo18"],
-  photo: ["IconImageFillDuo18", "IconImageFill24"],
-  folder: ["IconFolderFillDuo18", "IconFolderFill24"],
-  "folder-open": ["IconFolderOpenFillDuo18", "IconFolderOpenFill24"],
-  "folder-lock": ["IconFolderLockFillDuo18", "IconFolderLockFill24"],
-  "folder-key": ["IconFolderKeyFillDuo18"],
-  "folder-shield": ["IconFolderShieldFillDuo18"],
-  "file-text": ["IconFileFillDuo18", "IconFileFill24", "IconTextFill24"],
-  document: ["IconFileContentFillDuo18", "IconFileFillDuo18"],
-  "file-zip": ["IconFileZip2FillDuo18", "IconFileZipFillDuo18"],
-  "file-pdf": ["IconFilePdfFillDuo18", "IconFilePdf2FillDuo18"],
-  database: ["IconDatabaseFillDuo18", "IconDatabase2FillDuo18"],
-  table: ["IconTableFillDuo18", "IconTableFill24"],
-  presentation: ["IconPresentationFillDuo18", "IconPresentationFill24"],
-  calendar: ["IconCalendarFillDuo18", "IconCalendarFill24"],
-  video: ["IconVideoFillDuo18", "IconVideoFill24"],
-  key: ["IconKeyFillDuo18", "IconKeyFill24"],
-  "shield-lock": ["IconShieldLockFillDuo18", "IconShieldLockFill24"],
-  albums: ["IconAlbumFillDuo18", "IconAlbumFill24", "IconImagesFill24"],
-  favourites: ["IconHeartFillDuo18", "IconHeartFill24"],
-  trash: ["IconTrashFillDuo18", "IconTrashFill24"],
-  tag: ["IconTagFillDuo18", "IconTagFill24"],
-  "images-3": ["IconImages3FillDuo18"],
-  "album-3": ["IconAlbum3FillDuo18"],
-  "image-upscale": ["IconImageUpscaleFillDuo18"],
-  "image-scale": ["IconImageScaleFillDuo18"],
-  "window-left": ["IconWindowLeftFillDuo18"],
-  "layout-left": ["IconLayoutLeftFillDuo18"],
-  "tile-to-left": ["IconTileToLeftFillDuo18"],
-  "sidebar-left-2-show": ["IconSidebarLeft2ShowFillDuo18"],
-  "sidebar-left-2-hide": ["IconSidebarLeft2HideFillDuo18"],
-  "circle-check": ["IconCircleCheckFillDuo18"],
-  "circle-warning": ["IconCircleWarningFillDuo18"],
-  duplicate: ["IconDuplicateFillDuo18"],
-  "nav-back": ["IconChevronLeftFillDuo18"],
-  "nav-forward": ["IconChevronRightFillDuo18"],
-  info: ["IconCircleInfoFillDuo18"],
-  xmark: ["IconXmarkFillDuo18"],
-  download: ["IconDownloadFillDuo18", "IconDownload2FillDuo18"],
-  camera: ["IconCamera2FillDuo18"],
-  "map-pin": ["IconMapPinFillDuo18"],
-  plus: ["IconPlusFillDuo18"],
-  minus: ["IconMinusFillDuo18"],
-  "zoom-reset": ["IconArrowsReduceDiagonalFillDuo18"],
-  play: ["IconCirclePlayFillDuo18"],
-  music: ["IconMusicFillDuo18"],
-  "media-play": ["IconMediaPlayFillDuo18"],
-  "media-pause": ["IconMediaPauseFillDuo18"],
-  volume: ["IconVolumeFillDuo18"],
-  "volume-mute": ["IconVolumeXmarkFillDuo18"],
-  fullscreen: ["IconFullScreenFillDuo18"],
-  gauge: ["IconGaugeFillDuo18", "IconDashboardFillDuo18"],
-  users: ["IconUsersFillDuo18", "IconUsers2FillDuo18"],
-  "users-group": ["IconUsersGroupFillDuo18", "IconUsers3FillDuo18"],
-  "user-shield": ["IconUserShieldFillDuo18", "IconShieldCheckFillDuo18"],
-  sliders: ["IconSlidersFillDuo18", "IconAdjustmentsFillDuo18"],
-  settings: ["IconGearFillDuo18", "IconSettingsFillDuo18"],
-  apps: ["IconGrid2FillDuo18", "IconAppsFillDuo18"],
-  palette: ["IconPaletteFillDuo18", "IconSwatchFillDuo18"],
-  list: ["IconListFillDuo18", "IconList2FillDuo18"],
-  ban: ["IconBanFillDuo18", "IconCircleXmarkFillDuo18"],
-  buildings: ["IconBuildingsFillDuo18", "IconBuilding2FillDuo18"],
-  share: ["IconShareFillDuo18", "IconShare2FillDuo18", "IconForwardFillDuo18"],
-  "open-external": [
-    "IconOpenExternalOutlineDuo18",
-    "IconOpenExternalFillDuo18",
-    "IconExternalLinkFillDuo18",
-  ],
-}
-
-/** Resolve a semantic key to a Nucleo component, preferring the candidates in order. */
-const resolveNucleo = (name: string): IconComponent | undefined => {
-  for (const candidate of nucleoCandidates[name] ?? []) {
-    const Resolved = nucleoPack[candidate]
-    if (Resolved) return Resolved
-  }
-  return undefined
-}
-
-/**
- * Semantic icon key → @phosphor-icons/react component. Every key the Icon
- * previously supported (the union of the old Nucleo + Tabler maps) is kept
- * working; where Phosphor has no exact match the closest verified icon is used.
+ * Semantic icon key → @phosphor-icons/react component. Where Phosphor has no exact match the closest
+ * verified icon is used.
  */
 const icons: Record<string, IconComponent> = {
   bolt: Lightning,
@@ -214,6 +125,11 @@ const icons: Record<string, IconComponent> = {
   "volume-mute": SpeakerSimpleX,
   fullscreen: ArrowsIn,
   gauge: Gauge,
+  cloud: Cloud,
+  laptop: Laptop,
+  desktop: Desktop,
+  "device-mobile": DeviceMobile,
+  user: User,
   users: Users,
   "users-group": UsersThree,
   "user-shield": ShieldCheck,
@@ -230,6 +146,6 @@ const icons: Record<string, IconComponent> = {
 
 /** Resolve an icon by key, falling back to a generic apps grid for unknown keys. */
 export const Icon = ({ name, className }: { name: string; className?: string }) => {
-  const Resolved = resolveNucleo(name) ?? icons[name] ?? SquaresFour
+  const Resolved = icons[name] ?? SquaresFour
   return <Resolved className={className} />
 }

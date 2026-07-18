@@ -367,22 +367,27 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
     setSel({ anchor: { r: 0, c: 0 }, focus: { r: 0, c: 0 } })
   }
 
-  const cfScaleStats = condFormats.map((rule) => {
-    if (rule.type !== "scale") return null
-    const b = rule.range
-    if ((b.r1 - b.r0 + 1) * (b.c1 - b.c0 + 1) > 5000) return null
-    let min = Infinity
-    let max = -Infinity
-    for (let r = b.r0; r <= b.r1; r += 1)
-      for (let c = b.c0; c <= b.c1; c += 1) {
-        const v = valueAt(r, c)
-        if (typeof v === "number" && Number.isFinite(v)) {
-          min = Math.min(min, v)
-          max = Math.max(max, v)
-        }
-      }
-    return min <= max ? { min, max } : null
-  })
+  const cfScaleStats = useMemo(
+    () =>
+      condFormats.map((rule) => {
+        if (rule.type !== "scale") return null
+        const b = rule.range
+        if ((b.r1 - b.r0 + 1) * (b.c1 - b.c0 + 1) > 5000) return null
+        let min = Infinity
+        let max = -Infinity
+        for (let r = b.r0; r <= b.r1; r += 1)
+          for (let c = b.c0; c <= b.c1; c += 1) {
+            const v = valueAt(r, c)
+            if (typeof v === "number" && Number.isFinite(v)) {
+              min = Math.min(min, v)
+              max = Math.max(max, v)
+            }
+          }
+        return min <= max ? { min, max } : null
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [condFormats, sheetVersion, hf, sheet],
+  )
 
   const cfStyleAt = (r: number, c: number): Partial<CellFormat> | null => {
     let result: Partial<CellFormat> | null = null

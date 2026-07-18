@@ -1,5 +1,7 @@
+import type { ReactNode } from "react"
 import { Outlet } from "react-router"
 import { useTranslation } from "react-i18next"
+import { useSidebar } from "@workspace/ui/components/sidebar"
 import { FlatShell, FlatSidebar, FlatTopBar, type TopBarTitle } from "@components/FlatShell"
 import AdminNav from "@pages/Admin/components/AdminNav/AdminNav"
 import CollabNav from "@pages/Collab/CollabNav"
@@ -8,18 +10,66 @@ import DocsToolbar from "@pages/Docs/components/DocsToolbar/DocsToolbar"
 import DriveNav from "@pages/Drive/components/DriveNav/DriveNav"
 import DriveToolbar from "@pages/Drive/components/DriveToolbar/DriveToolbar"
 import PhotosNav from "@pages/Photos/components/PhotosNav/PhotosNav"
-import PhotosTopBar from "@pages/Photos/components/PhotosTopBar/PhotosTopBar"
+
+/** Offsets floating-layout content by the sidebar width (when open) so it isn't hidden under the
+ *  overlaid sidebar — the shell equivalent of the Photos grid's `sidebarInset`. */
+const FloatingContent = ({ children }: { children: ReactNode }) => {
+  const { open } = useSidebar()
+  return (
+    <div
+      className="flex min-h-full flex-1 transition-[padding] duration-200"
+      style={{ paddingLeft: open ? "var(--sidebar-width)" : undefined }}
+    >
+      {children}
+    </div>
+  )
+}
+
+/** The Photos-style immersive shell used by every list/browse app: no top bar, floating immersive
+ *  sidebar over full-window content (offset so it isn't hidden), and the app's toolbar in a floating
+ *  bottom-right pill. */
+const FloatingShell = ({
+  productName,
+  searchPlaceholder,
+  nav,
+  toolbar,
+}: {
+  productName: string
+  searchPlaceholder: string
+  nav: ReactNode
+  toolbar?: ReactNode
+}) => (
+  <FlatShell
+    sidebar={
+      <FlatSidebar productName={productName} beta searchPlaceholder={searchPlaceholder} immersive>
+        {nav}
+      </FlatSidebar>
+    }
+    topBar={null}
+    floatingSidebar
+  >
+    <FloatingContent>
+      <Outlet />
+    </FloatingContent>
+    {toolbar ? (
+      <div className="bg-background/70 pointer-events-auto fixed right-5 bottom-5 z-[60] flex items-center gap-1 rounded-full border p-1 shadow-lg backdrop-blur-xl">
+        {toolbar}
+      </div>
+    ) : null}
+  </FlatShell>
+)
 
 export const PhotosLayout = () => {
   const { t } = useTranslation("photos")
   return (
     <FlatShell
       sidebar={
-        <FlatSidebar productName={t("shell.product")} beta searchPlaceholder={t("shell.search")}>
+        <FlatSidebar productName={t("shell.product")} beta searchPlaceholder={t("shell.search")} immersive>
           <PhotosNav />
         </FlatSidebar>
       }
-      topBar={<PhotosTopBar />}
+      topBar={null}
+      floatingSidebar
     >
       <Outlet />
     </FlatShell>
@@ -28,37 +78,13 @@ export const PhotosLayout = () => {
 
 export const DriveLayout = () => {
   const { t } = useTranslation("drive")
-  const kindIcons: Record<string, string> = {
-    image: "photo",
-    video: "video",
-    audio: "music",
-    document: "document",
-    archive: "file-zip",
-    other: "file-text",
-  }
-  const titles: TopBarTitle[] = [
-    { match: (p) => p === "/drive/trash", label: t("driveNav.trash"), icon: "trash" },
-    { match: (p) => p === "/drive/recent", label: t("driveNav.recents"), icon: "calendar" },
-    { match: (p) => p === "/drive/favorites", label: t("driveNav.favorites"), icon: "favourites" },
-    ...Object.entries(kindIcons).map(([kind, icon]) => ({
-      match: (p: string) => p === `/drive/kind/${kind}`,
-      label: t(`overview.kinds.${kind}`),
-      icon,
-    })),
-    { match: (p) => p === "/drive", label: t("driveNav.overview"), icon: "gauge" },
-    { match: () => true, label: t("driveNav.myDrive"), icon: "folder" },
-  ]
   return (
-    <FlatShell
-      sidebar={
-        <FlatSidebar productName={t("driveNav.drive")} beta searchPlaceholder={t("shell.search")}>
-          <DriveNav />
-        </FlatSidebar>
-      }
-      topBar={<FlatTopBar titles={titles} extra={<DriveToolbar />} />}
-    >
-      <Outlet />
-    </FlatShell>
+    <FloatingShell
+      productName={t("driveNav.drive")}
+      searchPlaceholder={t("shell.search")}
+      nav={<DriveNav />}
+      toolbar={<DriveToolbar />}
+    />
   )
 }
 
@@ -92,79 +118,60 @@ export const AdminLayout = () => {
 
 export const DocsLayout = () => {
   const { t } = useTranslation("docs")
-  const titles: TopBarTitle[] = [{ match: () => true, label: t("shell.documents"), icon: "document" }]
   return (
-    <FlatShell
-      sidebar={
-        <FlatSidebar productName={t("shell.product")} beta searchPlaceholder={t("shell.search")}>
-          <CollabNav
-            type="doc"
-            route="/docs"
-            icon="document"
-            navLabel={t("shell.myDocuments")}
-            listLabel={t("shell.documents")}
-          />
-        </FlatSidebar>
+    <FloatingShell
+      productName={t("shell.product")}
+      searchPlaceholder={t("shell.search")}
+      nav={
+        <CollabNav
+          type="doc"
+          route="/docs"
+          icon="document"
+          navLabel={t("shell.myDocuments")}
+          listLabel={t("shell.documents")}
+        />
       }
-      topBar={<FlatTopBar titles={titles} extra={<DocsToolbar />} />}
-    >
-      <Outlet />
-    </FlatShell>
+      toolbar={<DocsToolbar />}
+    />
   )
 }
 
 export const SheetsLayout = () => {
   const { t } = useTranslation("sheets")
-  const titles: TopBarTitle[] = [{ match: () => true, label: t("shell.spreadsheets"), icon: "table" }]
   return (
-    <FlatShell
-      sidebar={
-        <FlatSidebar productName={t("shell.product")} beta searchPlaceholder={t("shell.search")}>
-          <CollabNav
-            type="sheet"
-            route="/sheets"
-            icon="table"
-            navLabel={t("shell.mySpreadsheets")}
-            listLabel={t("shell.spreadsheets")}
-          />
-        </FlatSidebar>
-      }
-      topBar={
-        <FlatTopBar
-          titles={titles}
-          extra={<CollabToolbar type="sheet" route="/sheets" createLabel={t("shell.newSpreadsheet")} />}
+    <FloatingShell
+      productName={t("shell.product")}
+      searchPlaceholder={t("shell.search")}
+      nav={
+        <CollabNav
+          type="sheet"
+          route="/sheets"
+          icon="table"
+          navLabel={t("shell.mySpreadsheets")}
+          listLabel={t("shell.spreadsheets")}
         />
       }
-    >
-      <Outlet />
-    </FlatShell>
+      toolbar={<CollabToolbar type="sheet" route="/sheets" createLabel={t("shell.newSpreadsheet")} />}
+    />
   )
 }
 
 export const WhiteboardsLayout = () => {
   const { t } = useTranslation("whiteboard")
-  const titles: TopBarTitle[] = [{ match: () => true, label: t("shell.whiteboards"), icon: "palette" }]
   return (
-    <FlatShell
-      sidebar={
-        <FlatSidebar productName={t("shell.product")} beta searchPlaceholder={t("shell.search")}>
-          <CollabNav
-            type="board"
-            route="/whiteboards"
-            icon="palette"
-            navLabel={t("shell.myWhiteboards")}
-            listLabel={t("shell.whiteboards")}
-          />
-        </FlatSidebar>
-      }
-      topBar={
-        <FlatTopBar
-          titles={titles}
-          extra={<CollabToolbar type="board" route="/whiteboards" createLabel={t("shell.newWhiteboard")} />}
+    <FloatingShell
+      productName={t("shell.product")}
+      searchPlaceholder={t("shell.search")}
+      nav={
+        <CollabNav
+          type="board"
+          route="/whiteboards"
+          icon="palette"
+          navLabel={t("shell.myWhiteboards")}
+          listLabel={t("shell.whiteboards")}
         />
       }
-    >
-      <Outlet />
-    </FlatShell>
+      toolbar={<CollabToolbar type="board" route="/whiteboards" createLabel={t("shell.newWhiteboard")} />}
+    />
   )
 }

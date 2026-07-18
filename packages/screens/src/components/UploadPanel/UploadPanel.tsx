@@ -38,7 +38,7 @@ const UploadPanel = () => {
       {items.length > 0 ? (
         <motion.div
           key="upload-panel"
-          className="panel text-card-foreground fixed right-4 bottom-4 z-40 w-80 overflow-hidden rounded-2xl shadow-xl"
+          className="bg-background/70 text-card-foreground fixed right-4 bottom-4 z-40 w-80 overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl"
           initial={{ y: 24, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 24, opacity: 0 }}

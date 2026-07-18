@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Admin",
+    "authenticator": "Authenticator",
+    "calendar": "Kalender",
     "docs": "Docs",
     "drive": "Ablage",
+    "meet": "Meet",
+    "passwords": "Passwörter",
     "photos": "Fotos",
     "sheets": "Sheets",
     "whiteboard": "Whiteboard"
@@ -42,6 +46,20 @@
     "saving": "Wird gespeichert…",
     "share": "Teilen",
     "title": "Titel"
+  },
+  "commandPalette": {
+    "albums": "Alben",
+    "description": "Suche nach einer Seite oder führe einen Befehl aus.",
+    "empty": "Keine Ergebnisse.",
+    "favourites": "Favoriten",
+    "groupActions": "Aktionen",
+    "groupNavigate": "Gehe zu",
+    "map": "Karte",
+    "placeholder": "Befehl eingeben oder suchen…",
+    "recent": "Zuletzt verwendet",
+    "title": "Befehlspalette",
+    "toggleTheme": "Hell/Dunkel umschalten",
+    "trash": "Papierkorb"
   },
   "confirmButton": {
     "confirm": "Bestätigen"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Dunkelmodus umschalten",
     "unlimited": "Unbegrenzt"
   },
+  "flatTopBar": {
+    "search": "Suchen…",
+    "toggleSidebar": "Seitenleiste umschalten"
+  },
   "importButton": {
     "import": "Importieren",
     "importFailed": "Diese Datei konnte nicht importiert werden"
@@ -180,6 +202,17 @@
     "loading": "Wird geladen…",
     "saving": "Wird gespeichert…"
   },
+  "storageDialog": {
+    "byApp": "Speicher nach App",
+    "files_one": "{{count}} Datei",
+    "files_other": "{{count}} Dateien",
+    "largest": "Größte Dateien",
+    "noFiles": "Noch keine Dateien gespeichert",
+    "ofTotal": "{{used}} von {{total}}",
+    "open": "Speicherdetails",
+    "title": "Speicher",
+    "usedOnly": "{{used}} verwendet"
+  },
   "units": {
     "items_one": "{{count}} Element",
     "items_other": "{{count}} Elemente"
@@ -209,11 +242,15 @@
     "downloading": "Wird heruntergeladen…",
     "downloadingItems_one": "{{count}} Element wird heruntergeladen",
     "downloadingItems_other": "{{count}} Elemente werden heruntergeladen",
+    "etaMinutes": "noch {{minutes}} Min.",
+    "etaSeconds": "noch {{seconds}} Sek.",
     "expand": "Ausklappen",
     "failed": "Fehlgeschlagen",
+    "percentDone": "{{percent}} %",
     "processing": "Wird verarbeitet…",
     "processingItems_one": "{{count}} Element wird verarbeitet",
     "processingItems_other": "{{count}} Elemente werden verarbeitet",
+    "retry": "Erneut versuchen",
     "speed": "{{speed}}/s",
     "transcoding": "Wird transkodiert…",
     "uploading": "Wird hochgeladen…",
@@ -228,6 +265,7 @@
     "uploaded_other": "{{count}} Fotos hochgeladen"
   },
   "viewToggle": {
+    "columnsView": "Spaltenansicht",
     "gridView": "Rasteransicht",
     "tableView": "Tabellenansicht"
   }

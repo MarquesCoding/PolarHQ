@@ -53,7 +53,7 @@ export const waitForGoogleConnected = async (
     try {
       await sleep(intervalMs, signal)
     } catch {
-      return false // aborted during the wait
+      return false
     }
   }
   return false
@@ -180,7 +180,6 @@ export const importGooglePhotos = async (
   onPickerUrl(session.pickerUri)
   onProgress({ total: 0, done: 0, failed: 0, current: null })
 
-  // Wait for the user to finish picking in Google Photos.
   let picked = session.mediaItemsSet
   while (!picked) {
     if (signal?.aborted) {
@@ -201,7 +200,6 @@ export const importGooglePhotos = async (
     pageToken = page.nextPageToken
   } while (pageToken)
 
-  // Skip anything already imported in a previous run (resumability).
   const imported = new Set((await fetchImported("photos")).items.map((i) => i.googleId))
   const pending = items.filter((item) => !imported.has(item.id))
 
@@ -271,24 +269,20 @@ export const importGoogleDrive = async (
     pageToken = page.nextPageToken
   } while (pageToken)
 
-  // Resumability: what we've imported before. Folder entries carry their created PolarHQ node id, so a
-  // resumed run reuses the existing tree instead of duplicating it; files are simply skipped.
   const imported = (await fetchImported("drive")).items
   const importedFiles = new Set(imported.map((entry) => entry.googleId))
 
-  // Recreate the folder tree, parent before child. A Google parent that isn't itself one of the
-  // folders we're importing (e.g. the "My Drive" root) maps to PolarHQ's root (null).
   const isOurFolder = new Set(folders.map((f) => f.id))
-  const folderMap = new Map<string, string>() // Google folder id → PolarHQ node id
+  const folderMap = new Map<string, string>()
   for (const entry of imported) {
     if (entry.polarId && isOurFolder.has(entry.googleId)) folderMap.set(entry.googleId, entry.polarId)
   }
   const polarParent = (parents: string[]): string | null | undefined => {
     const inSet = parents.find((p) => isOurFolder.has(p))
-    if (!inSet) return null // top-level / outside the import
-    if (!folderMap.has(inSet)) return undefined // parent not made yet
+    if (!inSet) return null
+    if (!folderMap.has(inSet)) return undefined
     const mapped = folderMap.get(inSet)!
-    return mapped === "" ? null : mapped // "" = a folder we gave up on → fall back to root
+    return mapped === "" ? null : mapped
   }
 
   let guard = 0
@@ -298,13 +292,13 @@ export const importGoogleDrive = async (
       if (signal?.aborted) return
       if (folderMap.has(folder.id)) continue
       const parent = polarParent(folder.parents)
-      if (parent === undefined) continue // wait until its parent exists
+      if (parent === undefined) continue
       try {
         const { node } = await createDriveFolder(parent, folder.name)
         folderMap.set(folder.id, node.id)
         await markImported("drive", folder.id, node.id)
       } catch {
-        folderMap.set(folder.id, "") // give up on this folder; its children fall back to root
+        folderMap.set(folder.id, "")
       }
     }
   }

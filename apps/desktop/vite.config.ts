@@ -4,7 +4,6 @@ import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
 import tsconfigPaths from "vite-tsconfig-paths"
-import { phosphorNucleo } from "./phosphorNucleo"
 
 const host = process.env.TAURI_DEV_HOST
 
@@ -26,7 +25,7 @@ const publicDir = fileURLToPath(new URL("../web/public", import.meta.url))
  * Otherwise identical to the web shell — both consume the same `@workspace/*` packages.
  */
 export default defineConfig({
-  plugins: [phosphorNucleo(), react(), tailwindcss(), tsconfigPaths()],
+  plugins: [react(), tailwindcss(), tsconfigPaths()],
   publicDir,
   clearScreen: false,
   server: {

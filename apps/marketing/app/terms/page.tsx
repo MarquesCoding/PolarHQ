@@ -6,7 +6,7 @@ import { TERMS, LEGAL_UPDATED } from "@lib/legal"
 import { formatDate } from "@lib/format"
 
 export const metadata: Metadata = {
-  title: "Terms of Service — PolarHQ",
+  title: "Terms of Service · PolarHQ",
   description: "The terms that govern use of PolarHQ and its website.",
 }
 

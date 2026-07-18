@@ -2,12 +2,16 @@ import { type PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 export type ViewMode = "grid" | "table" | "columns"
 
+export type SettingsScope = "admin" | "account"
+
 export interface UiState {
   activeAppId: string | null
   searchQuery: string
   sidebarCollapsed: boolean
   viewMode: ViewMode
   driveDetailsOpen: boolean
+  settingsScope: SettingsScope | null
+  settingsSection: string | null
 }
 
 const initialState: UiState = {
@@ -16,6 +20,8 @@ const initialState: UiState = {
   sidebarCollapsed: false,
   viewMode: "grid",
   driveDetailsOpen: false,
+  settingsScope: null,
+  settingsSection: null,
 }
 
 const uiSlice = createSlice({
@@ -40,6 +46,20 @@ const uiSlice = createSlice({
     setDriveDetailsOpen: (state, action: PayloadAction<boolean>) => {
       state.driveDetailsOpen = action.payload
     },
+    openSettings: (
+      state,
+      action: PayloadAction<{ scope: SettingsScope; section?: string }>,
+    ) => {
+      state.settingsScope = action.payload.scope
+      state.settingsSection = action.payload.section ?? null
+    },
+    setSettingsSection: (state, action: PayloadAction<string>) => {
+      state.settingsSection = action.payload
+    },
+    closeSettings: (state) => {
+      state.settingsScope = null
+      state.settingsSection = null
+    },
   },
 })
 
@@ -50,6 +70,9 @@ export const {
   setSidebarCollapsed,
   setViewMode,
   setDriveDetailsOpen,
+  openSettings,
+  setSettingsSection,
+  closeSettings,
 } = uiSlice.actions
 
 export default uiSlice.reducer

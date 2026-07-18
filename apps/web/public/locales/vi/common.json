@@ -24,8 +24,12 @@
   },
   "apps": {
     "admin": "Quản trị",
+    "authenticator": "Xác thực",
+    "calendar": "Lịch",
     "docs": "Docs",
     "drive": "Drive",
+    "meet": "Meet",
+    "passwords": "Mật khẩu",
     "photos": "Ảnh",
     "sheets": "Sheets",
     "whiteboard": "Bảng trắng"
@@ -42,6 +46,20 @@
     "saving": "Đang lưu…",
     "share": "Chia sẻ",
     "title": "Tiêu đề"
+  },
+  "commandPalette": {
+    "albums": "Album",
+    "description": "Tìm trang hoặc chạy một lệnh.",
+    "empty": "Không có kết quả.",
+    "favourites": "Yêu thích",
+    "groupActions": "Thao tác",
+    "groupNavigate": "Đi tới",
+    "map": "Bản đồ",
+    "placeholder": "Nhập lệnh hoặc tìm kiếm…",
+    "recent": "Gần đây",
+    "title": "Bảng lệnh",
+    "toggleTheme": "Chuyển sáng / tối",
+    "trash": "Thùng rác"
   },
   "confirmButton": {
     "confirm": "Xác nhận"
@@ -115,6 +133,10 @@
     "toggleDarkMode": "Bật/tắt chế độ tối",
     "unlimited": "Không giới hạn"
   },
+  "flatTopBar": {
+    "search": "Tìm kiếm…",
+    "toggleSidebar": "Ẩn/hiện thanh bên"
+  },
   "importButton": {
     "import": "Nhập",
     "importFailed": "Không thể nhập tệp này"
@@ -180,6 +202,16 @@
     "loading": "Đang tải…",
     "saving": "Đang lưu…"
   },
+  "storageDialog": {
+    "byApp": "Dung lượng theo ứng dụng",
+    "files_other": "{{count}} tệp",
+    "largest": "Tệp lớn nhất",
+    "noFiles": "Chưa có tệp nào được lưu",
+    "ofTotal": "{{used}} trên {{total}}",
+    "open": "Chi tiết dung lượng",
+    "title": "Dung lượng",
+    "usedOnly": "Đã dùng {{used}}"
+  },
   "units": {
     "items_one": "{{count}} mục",
     "items_other": "{{count}} mục"
@@ -209,11 +241,15 @@
     "downloading": "Đang tải xuống…",
     "downloadingItems_one": "Đang tải xuống {{count}} mục",
     "downloadingItems_other": "Đang tải xuống {{count}} mục",
+    "etaMinutes": "còn {{minutes}} phút",
+    "etaSeconds": "còn {{seconds}} giây",
     "expand": "Mở rộng",
     "failed": "Thất bại",
+    "percentDone": "{{percent}}%",
     "processing": "Đang xử lý…",
     "processingItems_one": "Đang xử lý {{count}} mục",
     "processingItems_other": "Đang xử lý {{count}} mục",
+    "retry": "Thử lại",
     "speed": "{{speed}}/giây",
     "transcoding": "Đang chuyển mã…",
     "uploading": "Đang tải lên…",
@@ -228,6 +264,7 @@
     "uploaded_other": "Đã tải lên {{count}} ảnh"
   },
   "viewToggle": {
+    "columnsView": "Xem dạng cột",
     "gridView": "Xem dạng lưới",
     "tableView": "Xem dạng bảng"
   }

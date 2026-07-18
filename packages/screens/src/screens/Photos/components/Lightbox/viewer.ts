@@ -24,6 +24,10 @@ export interface ViewerItem {
   /** Whether the item carries a paired motion video (Live Photo). */
   motion?: boolean
   isFavorite?: boolean
+  /** Intrinsic pixel dimensions, when known — lets the viewer compute the displayed rect (and its
+   *  open/close zoom) geometrically, without waiting for the (async-decrypted) image to load. */
+  width?: number | null
+  height?: number | null
 }
 
 export interface ShareConfig {

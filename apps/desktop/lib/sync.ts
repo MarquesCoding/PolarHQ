@@ -1,6 +1,13 @@
-import { open } from "@tauri-apps/plugin-dialog"
+import { listen } from "@tauri-apps/api/event"
 import { type Store, load } from "@tauri-apps/plugin-store"
-import { type SyncEntry, syncIndex, syncReadFile } from "@lib/native"
+import {
+  type SyncEntry,
+  pickFolder,
+  syncIndex,
+  syncReadFile,
+  syncStartWatch,
+  syncStopWatch,
+} from "@lib/native"
 import { createDriveFolder } from "@workspace/core/drive"
 import {
   CHUNKED_UPLOAD_THRESHOLD,
@@ -82,14 +89,15 @@ const toInfo = (record: FolderRecord): SyncedFolderInfo => ({
   localPath: record.localPath,
   name: record.name,
   fileCount: Object.values(record.manifest).filter((entry) => !entry.dir).length,
+  driveNodeId: record.driveNodeId,
   lastSyncedAt: record.lastSyncedAt,
 })
 
 const list = async (): Promise<SyncedFolderInfo[]> => (await readRecords()).map(toInfo)
 
 const add = async (): Promise<SyncedFolderInfo | null> => {
-  const picked = await open({ directory: true, multiple: false })
-  if (!picked || typeof picked !== "string") return null
+  const picked = await pickFolder()
+  if (!picked) return null
   const records = await readRecords()
   const existing = records.find((record) => record.localPath === picked)
   if (existing) return toInfo(existing)
@@ -105,12 +113,15 @@ const add = async (): Promise<SyncedFolderInfo | null> => {
     lastSyncedAt: null,
   }
   await writeRecords([...records, record])
+  void syncStartWatch(picked).catch(() => undefined)
   return toInfo(record)
 }
 
 const remove = async (id: string): Promise<void> => {
   const records = await readRecords()
-  await writeRecords(records.filter((record) => record.id !== id))
+  const record = records.find((entry) => entry.id === id)
+  if (record) void syncStopWatch(record.localPath).catch(() => undefined)
+  await writeRecords(records.filter((entry) => entry.id !== id))
 }
 
 const sync = async (
@@ -177,9 +188,52 @@ const sync = async (
   return { uploaded, failed }
 }
 
+const syncing = new Set<string>()
+const debouncers = new Map<string, ReturnType<typeof setTimeout>>()
+
+/** Sync a folder unless one is already in flight for it — auto-sync fires can overlap a manual sync. */
+const safeSync = async (id: string): Promise<void> => {
+  if (syncing.has(id)) return
+  syncing.add(id)
+  try {
+    await sync(id)
+  } catch {
+    // best-effort; a manual "Sync now" surfaces errors
+  } finally {
+    syncing.delete(id)
+  }
+}
+
+let started = false
+/**
+ * Watch every synced folder and auto-push changes to Drive (debounced). The Rust watcher emits
+ * `sync://change` with the folder's root path on any filesystem change; we coalesce a burst into one
+ * background sync. Idempotent — safe to call once at startup.
+ */
+const start = async (): Promise<void> => {
+  if (started) return
+  started = true
+  const records = await readRecords()
+  await Promise.all(records.map((record) => syncStartWatch(record.localPath).catch(() => undefined)))
+  await listen<string>("sync://change", (event) => {
+    const path = event.payload
+    clearTimeout(debouncers.get(path))
+    debouncers.set(
+      path,
+      setTimeout(() => {
+        void readRecords().then((current) => {
+          const record = current.find((entry) => entry.localPath === path)
+          if (record) void safeSync(record.id)
+        })
+      }, 2000),
+    )
+  })
+}
+
 const syncBridge: SyncBridge = { list, add, remove, sync }
 
-/** Register the bridge on `window.__polarSync` so the shared Account UI can drive it. */
+/** Register the bridge on `window.__polarSync` and begin watching synced folders for live auto-upload. */
 export const registerSyncBridge = (): void => {
   window.__polarSync = syncBridge
+  void start()
 }

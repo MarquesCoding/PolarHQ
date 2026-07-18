@@ -1,4 +1,5 @@
-import { Suspense, lazy, useReducer, useRef, useState } from "react"
+import { Suspense, lazy, useCallback, useMemo, useReducer, useRef, useState } from "react"
+import { getSyncBridge } from "@workspace/screens/syncBridge"
 import { useTranslation } from "react-i18next"
 import { useNavigation } from "@workspace/screens/platform"
 import {
@@ -17,7 +18,9 @@ import {
   trashDriveNode,
 } from "@workspace/core/drive"
 import { type DocType, docTypeOf, openEditor } from "@workspace/core/docs"
-import { downloadDriveFile } from "@workspace/core/driveE2e"
+import { downloadDriveFile, fetchDecryptedFile } from "@workspace/core/driveE2e"
+import { coreConfig } from "@workspace/core/config"
+import { getHost } from "@workspace/core/host"
 import { importDriveFile, officeTypeForName } from "@workspace/screens/importFlow"
 import { createEncryptedDoc } from "@workspace/core/e2e"
 import { Icon } from "@workspace/screens/icons"
@@ -88,6 +91,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const [shareNode, setShareNode] = useState<DriveNode | null>(null)
   const [viewingNode, setViewingNode] = useState<DriveNode | null>(null)
   const [viewingModel, setViewingModel] = useState<DriveNode | null>(null)
+  const [splatSrc, setSplatSrc] = useState<{ url: string; name: string } | null>(null)
   const [lockDialog, setLockDialog] = useState<{ node: DriveNode; mode: "lock" | "remove" } | null>(
     null,
   )
@@ -120,20 +124,40 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const parentId = parent?.id ?? null
   const parentLocked = Boolean(parent?.locked) && !isFolderUnlocked(parentId ?? "")
   const children = data?.children ?? []
-  const filtered = search
-    ? children.filter((node) => node.name.toLowerCase().includes(search))
-    : children
-  const visible = source
-    ? filtered
-    : filtered.slice().sort((a, b) => {
-        if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
-        const rank = (node: DriveNode) => (node.special ? 0 : node.locked ? 1 : 2)
-        if (rank(a) !== rank(b)) return rank(a) - rank(b)
-        return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
-      })
-  const byId = new Map(children.map((node) => [node.id, node]))
+  const syncBridge = getSyncBridge()
+  const { data: syncedFolders } = useQuery({
+    queryKey: ["sync", "folders"],
+    queryFn: () => syncBridge!.list(),
+    enabled: Boolean(syncBridge),
+  })
+  const syncedIds = useMemo(
+    () => new Set((syncedFolders ?? []).map((folder) => folder.driveNodeId)),
+    [syncedFolders],
+  )
+  const atRoot = !folderId && !source
+  const filtered = useMemo(() => {
+    let list = atRoot && syncedIds.size > 0 ? children.filter((node) => !syncedIds.has(node.id)) : children
+    if (search) list = list.filter((node) => node.name.toLowerCase().includes(search))
+    return list
+  }, [children, search, atRoot, syncedIds])
+  const visible = useMemo(
+    () =>
+      source
+        ? filtered
+        : filtered.slice().sort((a, b) => {
+            if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
+            const rank = (node: DriveNode) => (node.special ? 0 : node.locked ? 1 : 2)
+            if (rank(a) !== rank(b)) return rank(a) - rank(b)
+            return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
+          }),
+    [filtered, source],
+  )
+  const byId = useMemo(() => new Map(children.map((node) => [node.id, node])), [children])
 
-  const imageNodes = visible.filter((node) => node.mimeType?.startsWith("image/"))
+  const imageNodes = useMemo(
+    () => visible.filter((node) => node.mimeType?.startsWith("image/")),
+    [visible],
+  )
   const driveController = useDriveViewer(imageNodes)
   const viewingIndex = viewingNode
     ? imageNodes.findIndex((node) => node.id === viewingNode.id)
@@ -173,6 +197,38 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     } else if (node.mimeType?.startsWith("image/")) setViewingNode(node)
     else if (is3DModelName(node.name)) setViewingModel(node)
     else downloadIds([node.id])
+  }
+
+  const imageBytes = async (node: DriveNode): Promise<Uint8Array> => {
+    if (node.encrypted && node.downloadUrl) {
+      const url = await fetchDecryptedFile(node.id, node.downloadUrl, node.mimeType)
+      if (!url) throw new Error("decrypt")
+      try {
+        const buffer: ArrayBuffer = await (await fetch(url)).arrayBuffer()
+        return new Uint8Array(buffer)
+      } finally {
+        URL.revokeObjectURL(url)
+      }
+    }
+    const href =
+      node.downloadUrl ?? `${coreConfig().apiUrl}/api/v1/drive/nodes/${node.id}/download`
+    const buffer: ArrayBuffer = await (await fetch(href, { credentials: "include" })).arrayBuffer()
+    return new Uint8Array(buffer)
+  }
+
+  const generate3d = async (node: DriveNode) => {
+    const host = getHost()
+    if (!host.generateSplat) return
+    const toastId = toast.loading(t("browser.generating3d"))
+    try {
+      const bytes = await imageBytes(node)
+      const url = await host.generateSplat(bytes, node.mimeType ?? "image/jpeg")
+      toast.dismiss(toastId)
+      setSplatSrc({ url, name: `${node.name.replace(/\.[^.]+$/, "")}.ply` })
+    } catch {
+      toast.dismiss(toastId)
+      toast.error(t("browser.generate3dFailed"))
+    }
   }
 
   const newDoc = async (type: DocType) => {
@@ -269,9 +325,10 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const single = ids.length === 1 ? byId.get(ids[0]!) : undefined
   const canExtract = single?.kind === "file" && isArchiveName(single.name)
 
-  const actions: DriveNodeActions = {
+  const actionsImpl: DriveNodeActions = {
     open: (node) => open(node),
     view: (node) => (is3DModelName(node.name) ? setViewingModel(node) : setViewingNode(node)),
+    generate3d: (node) => void generate3d(node),
     download: (node) => downloadIds([node.id]),
     copyLink: (node) => {
       if (!node.downloadUrl) return
@@ -293,6 +350,40 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     versions: (node) => setVersionsNode(node),
     trash: (node) => void trash([node.id]),
   }
+  const actionsRef = useRef(actionsImpl)
+  actionsRef.current = actionsImpl
+  const actions = useMemo<DriveNodeActions>(
+    () => ({
+      open: (n) => actionsRef.current.open(n),
+      view: (n) => actionsRef.current.view(n),
+      download: (n) => actionsRef.current.download(n),
+      copyLink: (n) => actionsRef.current.copyLink(n),
+      share: (n) => actionsRef.current.share(n),
+      move: (n) => actionsRef.current.move(n),
+      copy: (n) => actionsRef.current.copy(n),
+      extract: (n) => actionsRef.current.extract(n),
+      lock: (n) => actionsRef.current.lock(n),
+      removeLock: (n) => actionsRef.current.removeLock(n),
+      favorite: (n) => actionsRef.current.favorite(n),
+      rename: (n) => actionsRef.current.rename(n),
+      details: (n) => actionsRef.current.details(n),
+      versions: (n) => actionsRef.current.versions(n),
+      trash: (n) => actionsRef.current.trash(n),
+    }),
+    [],
+  )
+
+  const gridRef = useRef({ open, moveInto, router })
+  gridRef.current = { open, moveInto, router }
+  const onGridOpen = useCallback((node: DriveNode) => gridRef.current.open(node), [])
+  const onGridDrop = useCallback(
+    (folder: DriveNode, dragged: string[]) => void gridRef.current.moveInto(folder, dragged),
+    [],
+  )
+  const onGridSpringInto = useCallback(
+    (folder: DriveNode) => gridRef.current.router.push(`/drive/${folder.id}`),
+    [],
+  )
 
   const selectedNodes = ids
     .map((id) => byId.get(id))
@@ -378,9 +469,9 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
           <NodeGrid
             nodes={visible}
             selection={selection}
-            onOpen={open}
-            onDropNodes={(folder, dragged) => void moveInto(folder, dragged)}
-            onSpringInto={(folder) => router.push(`/drive/${folder.id}`)}
+            onOpen={onGridOpen}
+            onDropNodes={onGridDrop}
+            onSpringInto={onGridSpringInto}
             onParentOpen={parentHref ? () => router.push(parentHref) : undefined}
             onParentDrop={
               parentFolder ? (dragged) => void moveInto(parentFolder, dragged) : undefined
@@ -402,7 +493,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
         }}
       />
 
-      <SelectionBar>
+      <SelectionBar contentCentered>
         {single && docTypeOf(single.mimeType) ? (
           <Button variant="ghost" size="sm" onClick={() => open(single)}>
             <ArrowSquareOut className="size-4" />
@@ -523,6 +614,11 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
       {viewingModel ? (
         <Suspense fallback={null}>
           <ModelViewer key="model" node={viewingModel} onClose={() => setViewingModel(null)} />
+        </Suspense>
+      ) : null}
+      {splatSrc ? (
+        <Suspense fallback={null}>
+          <ModelViewer key="splat" src={splatSrc} onClose={() => setSplatSrc(null)} />
         </Suspense>
       ) : null}
     </AnimatePresence>

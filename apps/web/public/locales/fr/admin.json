@@ -5,6 +5,10 @@
     "backup": "Sauvegarde",
     "branding": "Personnalisation",
     "console": "Console",
+    "groupActivity": "Activité",
+    "groupAppsLimits": "Applications et limites",
+    "groupInstance": "Instance",
+    "groupPeople": "Personnes",
     "groups": "Groupes",
     "limits": "Limites",
     "overview": "Vue d'ensemble",
@@ -70,15 +74,41 @@
     "saved": "Personnalisation enregistrée",
     "title": "Personnalisation"
   },
+  "close": "Fermer",
+  "consoleTitle": "Console d'administration",
   "createRoleDialog": {
     "cancel": "Annuler",
     "createError": "Impossible de créer le rôle",
     "createRole": "Créer le rôle",
     "created": "Rôle créé",
+    "delete": "Supprimer le rôle",
+    "deleteConfirm": "Supprimer ce rôle ? Toute personne à qui il est assigné perd l'accès qu'il accordait.",
+    "deleteError": "Impossible de supprimer le rôle",
+    "deleted": "Rôle supprimé",
     "description": "Description",
+    "editRole": "Modifier le rôle",
     "name": "Nom",
     "newRole": "Nouveau rôle",
-    "permissions": "Autorisations"
+    "permissions": "Autorisations",
+    "saveChanges": "Enregistrer les modifications",
+    "updateError": "Impossible de mettre à jour le rôle",
+    "updated": "Rôle mis à jour"
+  },
+  "createUserDialog": {
+    "cancel": "Annuler",
+    "create": "Créer l'utilisateur",
+    "createError": "Impossible de créer l'utilisateur",
+    "created": "Utilisateur créé",
+    "email": "E-mail",
+    "makeAdmin": "Faire de cet utilisateur un administrateur",
+    "name": "Nom",
+    "newUser": "Nouvel utilisateur",
+    "password": "Mot de passe",
+    "passwordHint": "Au moins 8 caractères.",
+    "title": "Créer un utilisateur"
+  },
+  "editor": {
+    "back": "Retour"
   },
   "groupDetailSheet": {
     "add": "Ajouter",
@@ -143,14 +173,30 @@
     "title": "Vue d'ensemble",
     "users": "Utilisateurs"
   },
+  "roleEditor": {
+    "newRoleTitle": "Nouveau rôle",
+    "noPermissions": "Aucune permission ne correspond à votre recherche.",
+    "permissionCount_one": "{{count}} permission",
+    "permissionCount_other": "{{count}} permissions",
+    "searchPermissions": "Rechercher des permissions…",
+    "tabDisplay": "Affichage",
+    "tabPermissions": "Permissions",
+    "toggleAll": "Activer/désactiver toutes les permissions {{app}}"
+  },
   "roles": {
+    "delete": "Supprimer",
     "description": "Ensembles d'autorisations que vous pouvez attribuer aux utilisateurs et aux groupes.",
+    "edit": "Modifier",
+    "roleActions": "Actions sur le rôle",
     "system": "Système",
     "title": "Rôles"
   },
+  "searchSettings": "Rechercher",
   "settings": {
     "allowedDomains": "Domaines de messagerie autorisés",
     "configure": "Configurer",
+    "demoMode": "Mode démo (lecture seule)",
+    "demoModeHint": "Lorsqu'il est activé, seuls les administrateurs peuvent envoyer, modifier ou supprimer. Les autres peuvent seulement consulter.",
     "description": "Inscription et règles à l'échelle de l'instance.",
     "domainsHint": "Séparés par des virgules. Laissez vide pour autoriser tous les domaines.",
     "domainsPlaceholder": "exemple.com, equipe.org",
@@ -187,7 +233,9 @@
     "roleAssigned": "Rôle attribué",
     "roleRemoved": "Rôle retiré",
     "roles": "Rôles",
-    "unassignError": "Impossible de retirer le rôle"
+    "unassignError": "Impossible de retirer le rôle",
+    "unlimited": "Illimité",
+    "usage": "Stockage utilisé"
   },
   "users": {
     "admin": "Administrateur",

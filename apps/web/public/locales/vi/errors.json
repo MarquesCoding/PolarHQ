@@ -26,6 +26,7 @@
   "forbidden": "Bạn không có quyền thực hiện thao tác này.",
   "generic": "Đã xảy ra lỗi.",
   "invalidInput": "Dữ liệu nhập không hợp lệ.",
+  "network": "Lỗi mạng — kiểm tra kết nối của bạn và thử lại.",
   "notFound": "Không tìm thấy.",
   "photos": {
     "fileRequired": "Cần có một tệp.",

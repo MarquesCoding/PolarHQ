@@ -26,6 +26,7 @@
   "forbidden": "Je hebt geen toestemming om dat te doen.",
   "generic": "Er is iets misgegaan.",
   "invalidInput": "Ongeldige invoer.",
+  "network": "Netwerkfout — controleer je verbinding en probeer het opnieuw.",
   "notFound": "Niet gevonden.",
   "photos": {
     "fileRequired": "Een bestand is verplicht.",
