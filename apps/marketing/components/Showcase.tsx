@@ -22,7 +22,7 @@ const FEATURES: Feature[] = [
     eyebrow: "Photos",
     title: "Your memories, decrypted only for you",
     description:
-      "A fast, Apple-Photos-grade gallery that finds faces, places and things — entirely on device. Thumbnails and originals are decrypted in your browser, never on the server.",
+      "A fast, Apple-Photos-grade gallery that finds faces, places and things, entirely on device. Thumbnails and originals are decrypted in your browser, never on the server.",
     points: ["On-device search & albums", "Live photos and video", "Stacks, favourites and a map"],
     shot: "/shots/photos.jpg",
     video: "/demos/photos.mp4",
@@ -33,7 +33,7 @@ const FEATURES: Feature[] = [
     eyebrow: "Drive",
     title: "Every file in one encrypted home",
     description:
-      "Upload, organise and share anything. Sync a local folder like Dropbox, browse it as a device, and open Office files in a click — with everything end-to-end encrypted at rest.",
+      "Upload, organise and share anything. Sync a local folder like Dropbox, browse it as a device, and open Office files in a click, with everything end-to-end encrypted at rest.",
     points: ["Folder sync across devices", "Share links you control", "Versions, trash and locked folders"],
     shot: "/shots/drive-files.jpg",
     video: "/demos/drive.mp4",
@@ -44,7 +44,7 @@ const FEATURES: Feature[] = [
     eyebrow: "Self-hosted",
     title: "Runs on hardware you own",
     description:
-      "Deploy the whole suite with a single command. An admin console gives you users, roles, per-user limits and off-site backups — and no telemetry, ever.",
+      "Deploy the whole suite with a single command. An admin console gives you users, roles, per-user limits and off-site backups, with no telemetry, ever.",
     points: ["One-command deploy", "Roles, groups & limits", "Automatic S3 / Drive backups"],
     shot: "/shots/drive-overview.jpg",
     sticker: "/stickers/bear-hide.png",

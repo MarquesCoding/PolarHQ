@@ -9,7 +9,7 @@ import { RELEASES } from "@lib/changelog"
 import { formatDate } from "@lib/format"
 
 export const metadata: Metadata = {
-  title: "Changelog — PolarHQ",
+  title: "Changelog · PolarHQ",
   description: "Every release of PolarHQ, newest first.",
 }
 

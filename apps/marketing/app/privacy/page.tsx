@@ -6,8 +6,8 @@ import { PRIVACY, LEGAL_UPDATED } from "@lib/legal"
 import { formatDate } from "@lib/format"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — PolarHQ",
-  description: "How PolarHQ handles your data — short version: it can't read it.",
+  title: "Privacy Policy · PolarHQ",
+  description: "How PolarHQ handles your data. Short version: it can't read it.",
 }
 
 const PrivacyPage = () => (

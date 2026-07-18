@@ -47,7 +47,7 @@ const InstallCommand = () => {
       </h2>
       <p className="text-foreground/70 mx-auto mt-5 max-w-xl text-lg text-pretty">
         One script pulls the whole suite, sets up Docker and Caddy, and hands you HTTPS on your own
-        domain — nothing else to install.
+        domain. Nothing else to install.
       </p>
 
       <div className="border-foreground/10 bg-foreground/[0.04] mx-auto mt-9 inline-flex gap-1 rounded-full border p-1">
