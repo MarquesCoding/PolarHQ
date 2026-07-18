@@ -124,7 +124,6 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const parentId = parent?.id ?? null
   const parentLocked = Boolean(parent?.locked) && !isFolderUnlocked(parentId ?? "")
   const children = data?.children ?? []
-  // Synced folders live under "Devices → This Mac", so hide their Drive mirror from the My Drive root.
   const syncBridge = getSyncBridge()
   const { data: syncedFolders } = useQuery({
     queryKey: ["sync", "folders"],
@@ -351,8 +350,6 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     versions: (node) => setVersionsNode(node),
     trash: (node) => void trash([node.id]),
   }
-  // Stable `actions` identity (delegates to the latest impl via a ref) so it doesn't defeat the memo
-  // on every grid/table/miller row.
   const actionsRef = useRef(actionsImpl)
   actionsRef.current = actionsImpl
   const actions = useMemo<DriveNodeActions>(
@@ -376,8 +373,6 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     [],
   )
 
-  // Stable identities for the callbacks that reach the memoized NodeCard (delegate to the latest impl
-  // via a ref) so selection changes don't re-render every card.
   const gridRef = useRef({ open, moveInto, router })
   gridRef.current = { open, moveInto, router }
   const onGridOpen = useCallback((node: DriveNode) => gridRef.current.open(node), [])

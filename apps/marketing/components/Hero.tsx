@@ -25,10 +25,6 @@ const item: Variants = {
 
 const PROPS = ["End-to-end encrypted", "Self-hosted", "Open source", "Photos · Drive · Docs · Sheets"]
 
-// Back → front. `close` is pinned to the bottom and never moves; `mid`/`distant` sit progressively
-// higher at rest (base) and slide back down on scroll (drift), collapsing toward the ridge line.
-// Offsets are `%` of each layer's own height and the scroll is section-progress (0→1), so the ridge
-// holds its proportions across screen sizes and browser-zoom levels instead of drifting in pixels.
 const MOUNTAINS = [
   { src: "/parallax/distant_mountains.png", base: -18, drift: 18 },
   { src: "/parallax/mid_mountains.png", base: -8, drift: 12 },
@@ -76,9 +72,6 @@ const Hero = () => {
       ref={sectionRef}
       className="relative isolate flex flex-col overflow-hidden px-5 pt-28 pb-12 sm:h-svh sm:min-h-[780px] sm:px-6 sm:pt-40 sm:pb-0"
     >
-      {/* Layered mountain parallax over a plain background. The ridge is framed to the first viewport
-          (h-svh) so it sits at the fold no matter how tall the hero grows on mobile; the sink is small
-          on phones (short, width-driven mountains) and deeper on desktop. Only mid/distant drift. */}
       <div aria-hidden className="bg-background absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-x-0 top-0 h-svh overflow-hidden">
           <div className="absolute inset-x-0 bottom-[-6%] sm:bottom-[-34%]">
@@ -87,7 +80,6 @@ const Hero = () => {
             ))}
           </div>
         </div>
-        {/* Subtle violet top-glow, matching the ContentHeroBackdrop on the other pages. */}
         <div className="from-primary/10 absolute inset-x-0 top-0 h-[420px] bg-gradient-to-b to-transparent" />
       </div>
 
@@ -147,7 +139,6 @@ const Hero = () => {
         </motion.ul>
       </motion.div>
 
-      {/* App screenshot, centered over the scene, cut off at the fold. */}
       <motion.div
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}

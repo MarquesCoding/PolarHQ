@@ -76,9 +76,6 @@ export const analyzeVideo = (file: File, maxDimension = MAX_DIMENSION): Promise<
     video.preload = "metadata"
     video.muted = true
     let meta = { width: 0, height: 0, durationMs: 0 }
-    // Guarded resolve: some webviews (notably Tauri's macOS WKWebView with HEVC/.mov) never fire
-    // loadedmetadata/seeked/error, which would hang the whole upload. A timeout resolves with no
-    // poster so the upload still completes; the timer + revoke run exactly once.
     let settled = false
     const finish = (result: VideoAnalysis) => {
       if (settled) return

@@ -2,9 +2,6 @@ import { useEffect, useState } from "react"
 import { fetchDecryptedPhotoThumbnail } from "@workspace/core/photosE2e"
 import type { GridAsset } from "./types"
 
-// Shared decrypted-thumbnail store: each asset's thumbnail is decrypted at most once for the whole
-// app (grid, filmstrip, anywhere), concurrent requests for the same id share a single decrypt, and
-// the cache only changes when an action does (see invalidateThumbnail on delete/replace).
 const cache = new Map<string, string>()
 const inflight = new Map<string, Promise<string | null>>()
 

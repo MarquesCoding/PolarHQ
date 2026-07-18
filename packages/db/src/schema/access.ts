@@ -137,7 +137,6 @@ export const instanceSettings = core.table("instance_settings", {
   registrationMode: registrationMode("registration_mode").notNull().default("invite_only"),
   allowedEmailDomains: jsonb("allowed_email_domains"),
   setupCompleted: boolean("setup_completed").notNull().default(false),
-  // Read-only/demo mode: when on, non-admins can't mutate content (uploads, edits, deletes).
   demoMode: boolean("demo_mode").notNull().default(false),
   instanceName: text("instance_name"),
   logoUrl: text("logo_url"),

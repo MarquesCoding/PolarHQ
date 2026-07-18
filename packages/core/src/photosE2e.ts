@@ -413,8 +413,6 @@ export const fetchDecryptedPhotoOriginal = async (
   try {
     const bytes = new Uint8Array(await response.arrayBuffer())
     const plain = await decryptBlobAsync(bytes, key)
-    // On desktop, route video through a real temp file so WKWebView decodes it with macOS's native
-    // codecs (HEVC/.mov), which it can't do from a blob: URL. Images stay as blob URLs everywhere.
     const native = getHost().nativeMediaUrl
     if (native && mimeType.startsWith("video/")) {
       return native(plain, mimeType)

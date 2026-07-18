@@ -385,7 +385,6 @@ export const useSheet = (ydoc: Y.Doc): SheetController => {
           }
         return min <= max ? { min, max } : null
       }),
-    // valueAt reads live from hf/sheet/cells; sheetVersion bumps on every data change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [condFormats, sheetVersion, hf, sheet],
   )

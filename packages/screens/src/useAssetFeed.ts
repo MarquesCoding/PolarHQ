@@ -76,8 +76,6 @@ export const useAssetFeed = (
     [queryClient, queryKey],
   )
 
-  // Coalesce WebSocket-driven refetches: a burst of asset events (including echoes of our own
-  // optimistic mutations) collapses into a single reconciling refetch instead of one per event.
   const debounce = useRef<number | undefined>(undefined)
   const onEvent = useCallback(
     (event: LiveEvent) => {

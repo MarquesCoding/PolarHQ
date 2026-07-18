@@ -78,8 +78,6 @@ const AssetEntity = ({
       return
     }
     let active = true
-    // Defer the (main-thread) decrypt until after the open animation so it doesn't block/jank it —
-    // the thumbnail is shown meanwhile, then the original swaps in and sharpens.
     const timer = setTimeout(() => {
       void fetchCachedOriginal(asset.id, asset.mimeType).then((url) => {
         if (active && url) setOriginal(url)
@@ -128,8 +126,6 @@ const AssetEntity = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focused, canPlay])
 
-  // Publish the on-screen focused image so each floating chrome element can sample the region behind
-  // it and contrast that in real time.
   useEffect(() => {
     if (!focused) return
     setFocusedImage(imgRef.current)
