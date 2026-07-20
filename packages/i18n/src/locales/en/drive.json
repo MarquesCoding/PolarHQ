@@ -300,6 +300,11 @@
       "kind": "Kind",
       "asc": "Ascending",
       "desc": "Descending"
+    },
+    "filter": {
+      "label": "Filter",
+      "favorites": "Favorites only",
+      "reset": "Clear filters"
     }
   }
 }

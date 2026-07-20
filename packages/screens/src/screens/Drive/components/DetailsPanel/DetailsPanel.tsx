@@ -4,6 +4,7 @@ import { type DriveNode, fetchVersions } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Calendar, ClockCounterClockwise, File, Info, X } from "@phosphor-icons/react"
 import { FileIcon } from "../../fileIcon"
+import { storageKind } from "@pages/Drive/nodeKind"
 import NumberFlow from "@number-flow/react"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
@@ -21,23 +22,6 @@ interface DetailsPanelProps {
 
 const ARCHIVE = /\.(zip|tar|gz|tgz|rar|7z|bz2|xz|dmg)$/i
 const DATABASE = /\.(db|sqlite|sqlite3|sql)$/i
-
-/** Map a node to one of the overview storage-kind keys, so the panel can show a friendly label
- *  (Images / Videos / …) reusing the existing `overview.kinds.*` strings. */
-const storageKindKey = (node: DriveNode): string => {
-  const mime = node.mimeType ?? ""
-  const name = node.name.toLowerCase()
-  if (mime.startsWith("image/")) return "image"
-  if (mime.startsWith("video/")) return "video"
-  if (mime.startsWith("audio/")) return "audio"
-  if (
-    mime === "application/pdf" ||
-    /(word|presentation|spreadsheet|^text\/|vnd\.orbit|officedocument|oasis|msword|json)/.test(mime)
-  )
-    return "document"
-  if (ARCHIVE.test(name) || /(zip|tar|gzip|x-7z|x-rar|x-bzip)/.test(mime)) return "archive"
-  return "other"
-}
 
 /** Uppercase file extension for display, or undefined when the name has none. */
 const extensionOf = (name: string): string | undefined => {
@@ -114,7 +98,7 @@ const SingleDetails = ({ node }: { node: DriveNode }) => {
           value={
             node.kind === "folder"
               ? t("detailsPanel.folder")
-              : t(`overview.kinds.${storageKindKey(node)}`)
+              : t(`overview.kinds.${storageKind(node)}`)
           }
         />
         <Row
