@@ -5,10 +5,9 @@ import { useTranslation } from "react-i18next"
 import { driveFolderIdFromPath, fetchNodes } from "@workspace/core/drive"
 import { usePersistentNumber } from "@workspace/screens/persistentSetting"
 import { useAppSelector } from "@workspace/screens/store/hooks"
-import { useSidebar } from "@workspace/ui/components/sidebar"
 import { Button } from "@workspace/ui/components/button"
 import { Slider } from "@workspace/ui/components/slider"
-import { ArrowLeft, ArrowRight, MagnifyingGlass, SidebarSimple } from "@phosphor-icons/react"
+import { ArrowLeft, ArrowRight, MagnifyingGlass } from "@phosphor-icons/react"
 import { cn } from "@workspace/ui/lib/utils"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
 import Breadcrumbs from "@pages/Drive/components/Breadcrumbs/Breadcrumbs"
@@ -30,14 +29,13 @@ const Bubble = ({ className, children }: { className?: string; children: ReactNo
 )
 
 /**
- * Spacedrive-style floating top toolbar for Drive — a row of separate bubbles: sidebar toggle,
- * back/forward, the folder breadcrumb, then the view/size/details/create controls.
+ * Spacedrive-style floating top toolbar for Drive — a row of separate bubbles: back/forward, the
+ * folder breadcrumb, then the view/size, filter/sort, and details/create controls.
  */
 const DriveTopToolbar = () => {
   const { t } = useTranslation("drive")
   const pathname = usePathname()
   const router = useNavigation()
-  const { toggleSidebar } = useSidebar()
   const viewMode = useAppSelector((state) => state.ui.viewMode)
   const detailsOpen = useAppSelector((state) => state.ui.driveDetailsOpen)
   const [tileSize, setTileSize] = usePersistentNumber("drive.tileSize", 150)
@@ -61,18 +59,6 @@ const DriveTopToolbar = () => {
       className="flex items-center gap-2 transition-[padding] duration-200"
       style={{ paddingRight: detailsOpen ? "19.5rem" : undefined }}
     >
-      <Bubble>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label={t("breadcrumbs.toggleSidebar")}
-          onClick={toggleSidebar}
-          className="rounded-full"
-        >
-          <SidebarSimple className="size-4" />
-        </Button>
-      </Bubble>
-
       <Bubble>
         <Button
           variant="ghost"
