@@ -9,10 +9,10 @@ import {
   useTransform,
 } from "motion/react"
 import { Button } from "@workspace/ui/components/button"
-import { AppleLogo, GithubLogo, LockKey } from "@phosphor-icons/react"
+import { GithubLogo, LockKey } from "@phosphor-icons/react"
+import DownloadButton from "@components/DownloadButton"
 
 const REPO_URL = "https://github.com/MarquesCoding/PolarHQ"
-const DOWNLOAD_URL = `${REPO_URL}/releases/latest`
 
 const container: Variants = {
   hidden: {},
@@ -26,12 +26,13 @@ const item: Variants = {
 const PROPS = ["End-to-end encrypted", "Self-hosted", "Open source", "Photos · Drive · Docs · Sheets"]
 
 // Back → front. Each layer covers the ridge band (object-cover) so it frames identically at any
-// width — no upscaling-taller as the screen grows. On scroll the back layers drift down while the
-// front holds, for parallax depth.
+// width — no upscaling-taller as the screen grows. On scroll every layer drifts down at its own
+// speed (the closer, the faster) for real parallax depth; `scale` gives headroom so the drift
+// never exposes a transparent edge.
 const MOUNTAINS = [
-  { src: "/parallax/distant_mountains.png", drift: 9 },
-  { src: "/parallax/mid_mountains.png", drift: 5 },
-  { src: "/parallax/close_mountains.png", drift: 0 },
+  { src: "/parallax/distant_mountains.png", drift: 6 },
+  { src: "/parallax/mid_mountains.png", drift: 13 },
+  { src: "/parallax/close_mountains.png", drift: 22 },
 ]
 
 const MountainLayer = ({
@@ -45,7 +46,7 @@ const MountainLayer = ({
   index: number
   progress: MotionValue<number>
 }) => {
-  const y = useTransform(progress, [0, 1], ["0%", `${drift}%`])
+  const y = useTransform(progress, [0, 1], [`${-drift}%`, `${drift}%`])
   return (
     <motion.img
       src={src}
@@ -56,7 +57,7 @@ const MountainLayer = ({
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-10% 0px" }}
       transition={{ duration: 0.9, delay: index * 0.12, ease: [0.22, 0.61, 0.36, 1] }}
-      className="pointer-events-none absolute inset-0 h-full w-full scale-[1.06] object-cover object-[50%_38%] select-none"
+      className="pointer-events-none absolute inset-0 h-full w-full scale-[1.5] object-cover object-[50%_38%] select-none"
     />
   )
 }
@@ -99,14 +100,7 @@ const Hero = () => {
         </motion.p>
 
         <motion.div variants={item} className="mt-6 flex flex-col items-center gap-3 sm:flex-row">
-          <Button
-            render={<a href={DOWNLOAD_URL} target="_blank" rel="noreferrer" />}
-            size="lg"
-            className="gap-2 rounded-xl px-6 text-base font-semibold"
-          >
-            <AppleLogo className="size-4" weight="fill" />
-            Download for desktop
-          </Button>
+          <DownloadButton className="gap-2 rounded-xl px-6 text-base font-semibold" />
           <Button
             variant="outline"
             render={<a href={REPO_URL} target="_blank" rel="noreferrer" />}
