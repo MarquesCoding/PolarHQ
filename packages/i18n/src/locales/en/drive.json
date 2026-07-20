@@ -2,7 +2,8 @@
   "breadcrumbs": {
     "back": "Back",
     "forward": "Forward",
-    "myDrive": "My Drive"
+    "myDrive": "My Drive",
+    "toggleSidebar": "Toggle sidebar"
   },
   "browser": {
     "archive": "Archive",
