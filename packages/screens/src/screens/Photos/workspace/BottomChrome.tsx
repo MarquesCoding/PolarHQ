@@ -55,6 +55,30 @@ const SORTS: { id: SortKey; label: string }[] = [
 
 const PILL =
   "bg-background/70 pointer-events-auto flex items-center rounded-full border p-1 shadow-lg backdrop-blur-xl"
+
+/** Average perceived brightness of an image blob (downsampled), for the splat viewer's adaptive
+ *  chrome — `true` when the photo is bright (so the viewer uses dark pills, and vice-versa). */
+const averageLight = async (blob: Blob): Promise<boolean> => {
+  try {
+    const bitmap = await createImageBitmap(blob)
+    const canvas = document.createElement("canvas")
+    canvas.width = canvas.height = 10
+    const ctx = canvas.getContext("2d", { willReadFrequently: true })
+    if (!ctx) {
+      bitmap.close()
+      return true
+    }
+    ctx.drawImage(bitmap, 0, 0, 10, 10)
+    bitmap.close()
+    const { data } = ctx.getImageData(0, 0, 10, 10)
+    let sum = 0
+    for (let i = 0; i < data.length; i += 4)
+      sum += (0.299 * data[i]! + 0.587 * data[i + 1]! + 0.114 * data[i + 2]!) / 255
+    return sum / (data.length / 4) > 0.6
+  } catch {
+    return true
+  }
+}
 const FADE = { duration: 0.16, ease: [0.32, 0.72, 0, 1] as const }
 const MORPH = { layout: { duration: 0.35, ease: [0.32, 0.72, 0, 1] as const } }
 const REVEAL = { duration: 0.16, delay: 0.22, ease: [0.32, 0.72, 0, 1] as const }
@@ -196,7 +220,9 @@ const BottomChrome = ({
 
   const { open: sidebarOpen, setOpen: setSidebarOpen } = useSidebar()
   const sidebarBeforeSplat = useRef(false)
-  const [splatSrc, setSplatSrc] = useState<{ url: string; name: string } | null>(null)
+  const [splatSrc, setSplatSrc] = useState<{ url: string; name: string; light?: boolean } | null>(
+    null,
+  )
   const [generating, setGenerating] = useState(false)
   const splatActive = generating || Boolean(splatSrc)
   useEffect(() => {
@@ -221,9 +247,10 @@ const BottomChrome = ({
       const url = await fetchCachedOriginal(focused.id, focused.mimeType)
       if (!url) throw new Error("no source")
       const blob = await fetch(url).then((response) => response.blob())
+      const light = await averageLight(blob)
       const bytes = new Uint8Array(await blob.arrayBuffer())
       const splat = await host.generateSplat(bytes, blob.type || focused.mimeType || "image/jpeg")
-      setSplatSrc({ url: splat, name: `${name.replace(/\.[^.]+$/, "")}.ply` })
+      setSplatSrc({ url: splat, name: `${name.replace(/\.[^.]+$/, "")}.ply`, light })
     } catch {
       toast.error(t("lightbox.generate3dFailed"))
     } finally {

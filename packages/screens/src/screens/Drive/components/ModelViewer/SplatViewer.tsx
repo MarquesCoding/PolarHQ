@@ -7,9 +7,12 @@ import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
+import { adaptiveChrome } from "@components/adaptiveChrome"
 
 interface SplatViewerProps {
-  src: { url: string; name: string }
+  /** `light` is the source photo's average brightness — the chrome contrasts it (dark pill over a
+   *  bright splat, light pill over a dark one), approximating the photo viewer's adaptive chrome. */
+  src: { url: string; name: string; light?: boolean }
   onClose: () => void
 }
 
@@ -100,11 +103,21 @@ const SplatViewer = ({ src, onClose }: SplatViewerProps) => {
     >
       <div ref={containerRef} className="absolute inset-0" />
 
-      <span className="panel pointer-events-none absolute top-3 left-1/2 z-10 max-w-[40vw] -translate-x-1/2 truncate rounded-full px-3 py-1 text-xs font-medium shadow-lg">
+      <span
+        className={cn(
+          "pointer-events-none absolute top-3 left-1/2 z-10 max-w-[40vw] -translate-x-1/2 truncate rounded-full border px-3 py-1 text-xs font-medium shadow-lg",
+          adaptiveChrome(src.light ?? null),
+        )}
+      >
         {src.name}
       </span>
 
-      <div className="panel absolute top-3 right-3 z-10 flex items-center gap-0.5 rounded-full p-1 shadow-lg">
+      <div
+        className={cn(
+          "absolute top-3 right-3 z-10 flex items-center gap-0.5 rounded-full border p-1 shadow-lg",
+          adaptiveChrome(src.light ?? null),
+        )}
+      >
         <Button
           variant="ghost"
           size="icon-sm"

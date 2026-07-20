@@ -4,7 +4,7 @@ const SplatViewer = lazy(() => import("./SplatViewer"))
 const ModelViewer = lazy(() => import("./ModelViewer"))
 
 interface SplatResultProps {
-  splat: { url: string; name: string }
+  splat: { url: string; name: string; light?: boolean }
   onClose: () => void
 }
 
