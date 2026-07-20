@@ -241,7 +241,7 @@ const DetailsPanel = ({ open, nodes }: DetailsPanelProps) => {
     >
       {/* Floating rounded card (matches the Photos viewer's details panel), pinned so it doesn't
           scroll with the file grid. Closed via the toolbar's info toggle, so no header/close here. */}
-      <div className="border-border/60 bg-card/80 mt-2 mr-3 mb-3 flex h-[calc(100%-1.25rem)] w-72 flex-col overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl">
+      <div className="border-sidebar-border bg-sidebar mt-2 mr-3 mb-3 flex h-[calc(100%-1.25rem)] w-72 flex-col overflow-hidden rounded-2xl border shadow-sm">
         <div className="min-h-0 flex-1">
           {nodes.length === 0 ? (
             <p className="text-muted-foreground p-5 text-sm">{t("detailsPanel.empty")}</p>
