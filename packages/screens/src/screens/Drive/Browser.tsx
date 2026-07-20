@@ -390,7 +390,10 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
 
   return (
     <div className="flex flex-1">
-    <DropZone className="relative flex min-w-0 flex-1 flex-col gap-4 p-6" onFiles={uploadFiles}>
+    <DropZone
+      className={`relative flex min-w-0 flex-1 flex-col gap-4 py-6 pl-6 transition-[padding] duration-200 ${detailsOpen ? "pr-[19.5rem]" : "pr-6"}`}
+      onFiles={uploadFiles}
+    >
       <DriveBackgroundMenu
         onUpload={() => fileInput.current?.click()}
         onNewFolder={() => setNewFolderOpen(true)}

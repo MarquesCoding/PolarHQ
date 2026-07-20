@@ -229,20 +229,22 @@ const StackedDetails = ({ nodes }: { nodes: DriveNode[] }) => {
   )
 }
 
-/** Right-side details panel: follows the selection (single item, or a stacked summary). */
+/** Right-side details panel: follows the selection (single item, or a stacked summary). Positioned
+ *  like the sidebar — a fixed, window-inset card — so it matches its height/padding/radius and stays
+ *  pinned while the grid scrolls. */
 const DetailsPanel = ({ open, nodes }: DetailsPanelProps) => {
   const { t } = useTranslation("drive")
   return (
     <motion.aside
       initial={false}
-      animate={{ width: open ? 312 : 0, opacity: open ? 1 : 0 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      className="sticky top-0 z-30 h-[calc(100svh-1.5rem)] shrink-0 self-start overflow-hidden"
+      animate={{ x: open ? "0%" : "110%", opacity: open ? 1 : 0 }}
+      transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+      aria-hidden={!open}
+      style={{ pointerEvents: open ? "auto" : "none" }}
+      className="fixed top-2 right-2 bottom-2 z-30 w-72"
     >
-      {/* Floating rounded card (matches the Photos viewer's details panel), pinned so it doesn't
-          scroll with the file grid. Closed via the toolbar's info toggle, so no header/close here. */}
-      <div className="border-sidebar-border bg-sidebar mt-2 mr-3 mb-3 flex h-[calc(100%-1.25rem)] w-72 flex-col overflow-hidden rounded-2xl border shadow-sm">
-        <div className="min-h-0 flex-1">
+      <div className="border-sidebar-border bg-sidebar flex h-full w-full flex-col overflow-hidden rounded-[1.25rem] border shadow-sm">
+        <div className="min-h-0 flex-1 overflow-hidden">
           {nodes.length === 0 ? (
             <p className="text-muted-foreground p-5 text-sm">{t("detailsPanel.empty")}</p>
           ) : nodes.length === 1 ? (
