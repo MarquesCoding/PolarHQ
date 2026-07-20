@@ -6,6 +6,7 @@ export interface Navigation {
   push: (href: string) => void
   replace: (href: string) => void
   back: () => void
+  forward: () => void
 }
 
 export type LinkProps = { href: string } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href">

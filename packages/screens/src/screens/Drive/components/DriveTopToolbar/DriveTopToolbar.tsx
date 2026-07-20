@@ -6,7 +6,7 @@ import { usePersistentNumber } from "@workspace/screens/persistentSetting"
 import { useAppSelector } from "@workspace/screens/store/hooks"
 import { Button } from "@workspace/ui/components/button"
 import { Slider } from "@workspace/ui/components/slider"
-import { ArrowLeft, MagnifyingGlass } from "@phosphor-icons/react"
+import { ArrowLeft, ArrowRight, MagnifyingGlass } from "@phosphor-icons/react"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
 import Breadcrumbs from "@pages/Drive/components/Breadcrumbs/Breadcrumbs"
 import DriveTopActions from "@pages/Drive/components/DriveTopActions/DriveTopActions"
@@ -37,15 +37,26 @@ const DriveTopToolbar = () => {
 
   return (
     <div className="bg-background/70 flex h-11 items-center gap-1 rounded-2xl border pr-1.5 pl-1 shadow-lg backdrop-blur-xl">
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label={t("breadcrumbs.back", { defaultValue: "Back" })}
-        onClick={() => router.back()}
-        className="rounded-xl"
-      >
-        <ArrowLeft className="size-4" />
-      </Button>
+      <div className="flex items-center">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={t("breadcrumbs.back", { defaultValue: "Back" })}
+          onClick={() => router.back()}
+          className="rounded-xl"
+        >
+          <ArrowLeft className="size-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={t("breadcrumbs.forward", { defaultValue: "Forward" })}
+          onClick={() => router.forward()}
+          className="rounded-xl"
+        >
+          <ArrowRight className="size-4" />
+        </Button>
+      </div>
 
       <div className="flex min-w-0 flex-1 items-center pl-1">
         {trail.length > 0 ? (
