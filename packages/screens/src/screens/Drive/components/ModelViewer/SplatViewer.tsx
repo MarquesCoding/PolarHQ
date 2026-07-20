@@ -8,6 +8,7 @@ import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { adaptiveChrome } from "@components/adaptiveChrome"
+import { useTheme } from "@components/theme-provider"
 
 interface SplatViewerProps {
   /** `light` is the source photo's average brightness — the chrome contrasts it (dark pill over a
@@ -24,6 +25,7 @@ interface SplatViewerProps {
  */
 const SplatViewer = ({ src, onClose }: SplatViewerProps) => {
   const { t } = useTranslation("drive")
+  const { resolvedTheme } = useTheme()
   const containerRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading")
   const [orbit, setOrbit] = useState(false)
@@ -93,9 +95,19 @@ const SplatViewer = ({ src, onClose }: SplatViewerProps) => {
     controls.autoRotateSpeed = 1.5
   }, [orbit, status])
 
+  useEffect(() => {
+    const renderer = (
+      viewerRef.current as unknown as {
+        renderer?: { setClearColor: (color: number, alpha: number) => void }
+      } | null
+    )?.renderer
+    if (!renderer) return
+    renderer.setClearColor(resolvedTheme === "light" ? 0xffffff : 0x000000, 1)
+  }, [resolvedTheme, status])
+
   return (
     <motion.div
-      className="fixed inset-0 z-[80] bg-black"
+      className="bg-background fixed inset-0 z-[80]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
