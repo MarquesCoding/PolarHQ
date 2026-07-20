@@ -1201,3 +1201,113 @@ export const deleteSavedSearch = async (ownerId: string, id: string): Promise<vo
     .delete(schema.savedSearches)
     .where(and(eq(schema.savedSearches.ownerId, ownerId), eq(schema.savedSearches.id, id)))
 }
+
+export type DriveTag = typeof schema.driveTags.$inferSelect
+
+export const listTags = (ownerId: string): Promise<DriveTag[]> =>
+  db
+    .select()
+    .from(schema.driveTags)
+    .where(eq(schema.driveTags.ownerId, ownerId))
+    .orderBy(desc(schema.driveTags.createdAt))
+
+export const createTag = async (
+  ownerId: string,
+  name: string,
+  encryptedName: string | null,
+  color: string,
+): Promise<DriveTag> => {
+  const [row] = await db
+    .insert(schema.driveTags)
+    .values({ ownerId, name, encryptedName, color })
+    .returning()
+  return row!
+}
+
+export const updateTag = async (
+  ownerId: string,
+  id: string,
+  patch: { name?: string; encryptedName?: string | null; color?: string },
+): Promise<DriveTag | null> => {
+  const [row] = await db
+    .update(schema.driveTags)
+    .set(patch)
+    .where(and(eq(schema.driveTags.ownerId, ownerId), eq(schema.driveTags.id, id)))
+    .returning()
+  return row ?? null
+}
+
+export const deleteTag = async (ownerId: string, id: string): Promise<void> => {
+  await db
+    .delete(schema.driveTags)
+    .where(and(eq(schema.driveTags.ownerId, ownerId), eq(schema.driveTags.id, id)))
+}
+
+export const applyTag = async (
+  ownerId: string,
+  nodeId: string,
+  tagId: string,
+): Promise<boolean> => {
+  const [node] = await db
+    .select({ id: schema.nodes.id })
+    .from(schema.nodes)
+    .where(and(eq(schema.nodes.ownerId, ownerId), eq(schema.nodes.id, nodeId)))
+  const [tag] = await db
+    .select({ id: schema.driveTags.id })
+    .from(schema.driveTags)
+    .where(and(eq(schema.driveTags.ownerId, ownerId), eq(schema.driveTags.id, tagId)))
+  if (!node || !tag) return false
+  await db.insert(schema.nodeTags).values({ nodeId, tagId }).onConflictDoNothing()
+  return true
+}
+
+export const removeTag = async (
+  ownerId: string,
+  nodeId: string,
+  tagId: string,
+): Promise<boolean> => {
+  const [node] = await db
+    .select({ id: schema.nodes.id })
+    .from(schema.nodes)
+    .where(and(eq(schema.nodes.ownerId, ownerId), eq(schema.nodes.id, nodeId)))
+  if (!node) return false
+  await db
+    .delete(schema.nodeTags)
+    .where(and(eq(schema.nodeTags.nodeId, nodeId), eq(schema.nodeTags.tagId, tagId)))
+  return true
+}
+
+/** Tags applied to each of the given nodes (owner-scoped), keyed by nodeId. */
+export const tagsForNodes = async (
+  ownerId: string,
+  nodeIds: string[],
+): Promise<Map<string, DriveTag[]>> => {
+  const map = new Map<string, DriveTag[]>()
+  if (nodeIds.length === 0) return map
+  const rows = await db
+    .select({ nodeId: schema.nodeTags.nodeId, tag: schema.driveTags })
+    .from(schema.nodeTags)
+    .innerJoin(schema.driveTags, eq(schema.nodeTags.tagId, schema.driveTags.id))
+    .where(and(eq(schema.driveTags.ownerId, ownerId), inArray(schema.nodeTags.nodeId, nodeIds)))
+  for (const row of rows) {
+    const list = map.get(row.nodeId) ?? []
+    list.push(row.tag)
+    map.set(row.nodeId, list)
+  }
+  return map
+}
+
+/** Non-trashed nodes carrying a given tag (for the tag filter view). */
+export const listNodesByTag = (ownerId: string, tagId: string): Promise<DriveNode[]> =>
+  db
+    .select({ node: schema.nodes })
+    .from(schema.nodeTags)
+    .innerJoin(schema.nodes, eq(schema.nodeTags.nodeId, schema.nodes.id))
+    .where(
+      and(
+        eq(schema.nodeTags.tagId, tagId),
+        eq(schema.nodes.ownerId, ownerId),
+        isNull(schema.nodes.trashedAt),
+      ),
+    )
+    .then((rows) => rows.map((row) => row.node))
