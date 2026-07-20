@@ -12,6 +12,7 @@ import { ArrowLeft, ArrowRight, MagnifyingGlass, SidebarSimple } from "@phosphor
 import { cn } from "@workspace/ui/lib/utils"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
 import Breadcrumbs from "@pages/Drive/components/Breadcrumbs/Breadcrumbs"
+import DriveFilterMenu from "@pages/Drive/components/DriveFilterMenu/DriveFilterMenu"
 import DriveSortMenu from "@pages/Drive/components/DriveSortMenu/DriveSortMenu"
 import DriveTopActions from "@pages/Drive/components/DriveTopActions/DriveTopActions"
 
@@ -125,6 +126,7 @@ const DriveTopToolbar = () => {
 
       {!isOverview ? (
         <Bubble>
+          <DriveFilterMenu />
           <DriveSortMenu />
         </Bubble>
       ) : null}

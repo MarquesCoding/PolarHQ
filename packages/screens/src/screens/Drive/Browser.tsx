@@ -57,6 +57,7 @@ import FolderLockGate from "@pages/Drive/components/FolderLockGate/FolderLockGat
 import Lightbox from "@pages/Photos/components/Lightbox/Lightbox"
 import { useDriveViewer } from "@pages/Drive/useDriveViewer"
 import { compareNodes } from "@pages/Drive/sortNodes"
+import { storageKind } from "@pages/Drive/nodeKind"
 import MillerView from "@pages/Drive/components/MillerView/MillerView"
 import MoveDialog from "@pages/Drive/components/MoveDialog/MoveDialog"
 import NewFolderDialog from "@pages/Drive/components/NewFolderDialog/NewFolderDialog"
@@ -83,6 +84,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const dispatch = useAppDispatch()
   const viewMode = useAppSelector((state) => state.ui.viewMode)
   const driveSort = useAppSelector((state) => state.ui.driveSort)
+  const driveFilter = useAppSelector((state) => state.ui.driveFilter)
   const detailsOpen = useAppSelector((state) => state.ui.driveDetailsOpen)
   const searchRaw = useAppSelector((state) => state.ui.searchQuery).trim()
   const search = searchRaw.toLowerCase()
@@ -140,8 +142,13 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const filtered = useMemo(() => {
     let list = atRoot && syncedIds.size > 0 ? children.filter((node) => !syncedIds.has(node.id)) : children
     if (search) list = list.filter((node) => node.name.toLowerCase().includes(search))
+    if (driveFilter.favoritesOnly) list = list.filter((node) => node.favorite)
+    if (driveFilter.kinds.length > 0) {
+      const wanted = new Set(driveFilter.kinds)
+      list = list.filter((node) => node.kind === "file" && wanted.has(storageKind(node)))
+    }
     return list
-  }, [children, search, atRoot, syncedIds])
+  }, [children, search, atRoot, syncedIds, driveFilter])
   const visible = useMemo(
     () => (source ? filtered : filtered.slice().sort(compareNodes(driveSort))),
     [filtered, source, driveSort],

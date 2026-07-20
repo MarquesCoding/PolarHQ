@@ -27,13 +27,7 @@ const FloatingContent = ({
       className="flex min-h-full flex-1 flex-col transition-[padding] duration-200"
       style={{ paddingLeft: open ? "var(--sidebar-width)" : undefined }}
     >
-      {/* Offset by the desktop titlebar strip (traffic-light row) so the toolbar's top lines up with
-          the sidebar's content top; `--titlebar-h` is undefined on web, falling back to 0. */}
-      {topToolbar ? (
-        <div className="shrink-0 px-4 pb-1" style={{ paddingTop: "var(--titlebar-h, 0px)" }}>
-          {topToolbar}
-        </div>
-      ) : null}
+      {topToolbar ? <div className="shrink-0 px-4 pt-2 pb-1">{topToolbar}</div> : null}
       <div className="flex min-h-0 flex-1">{children}</div>
     </div>
   )
