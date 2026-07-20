@@ -7,6 +7,7 @@ import { authClient } from "@workspace/core/authClient"
 import { setAuthToken } from "@workspace/core/authToken"
 import { lockKeys } from "@workspace/core/e2e"
 import { fetchStorageStats } from "@workspace/core/drive"
+import { getHost } from "@workspace/core/host"
 import { bytesParts, formatBytes } from "@workspace/core/format"
 import { Icon } from "@workspace/screens/icons"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
@@ -74,6 +75,7 @@ const FlatSidebar = ({
 }: FlatSidebarProps) => {
   const { t } = useTranslation("common")
   const { toggleSidebar } = useSidebar()
+  const desktop = getHost().isDesktop
   const pathname = usePathname()
   const router = useNavigation()
   const dispatch = useAppDispatch()
@@ -226,7 +228,9 @@ const FlatSidebar = ({
 
   return (
     <Sidebar collapsible="offcanvas">
-      {immersive ? (
+      {immersive && desktop ? (
+        // Desktop: a floating cluster aligned with the macOS traffic lights, whose backdrop adapts
+        // to the luminance of the content behind it. Web has no window controls, so this is gated.
         <div ref={clusterRef} className="fixed left-[23px] top-[13px] z-[60] flex items-center gap-2">
           <span
             className={cn(
@@ -246,6 +250,19 @@ const FlatSidebar = ({
               focusContentLight === true && "bg-black/35 text-white shadow-sm hover:bg-black/45",
               focusContentLight === false && "bg-white/60 text-black shadow-sm hover:bg-white/75",
             )}
+          >
+            <SidebarSimple className="size-[18px]" />
+          </button>
+        </div>
+      ) : immersive ? (
+        // Web: no traffic lights to align with, so a normal in-flow toggle row that reserves the
+        // same top space the search field expects.
+        <div className="flex h-14 shrink-0 items-center px-3">
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            aria-label={t("flatSidebar.toggleSidebar", { defaultValue: "Toggle sidebar" })}
+            className="text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 flex size-8 items-center justify-center rounded-lg transition"
           >
             <SidebarSimple className="size-[18px]" />
           </button>
