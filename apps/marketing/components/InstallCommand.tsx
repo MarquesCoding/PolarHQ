@@ -1,10 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { type ReactNode, useState } from "react"
 import { motion } from "motion/react"
-import { AppleLogo, Check, Copy, Terminal, WindowsLogo } from "@phosphor-icons/react"
+import {
+  AppleLogo,
+  Check,
+  Copy,
+  StackSimple,
+  Terminal,
+  WindowsLogo,
+} from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
-import { cn } from "@workspace/ui/lib/utils"
+import { DOCKER_COMPOSE } from "@lib/dockerCompose"
 
 const REPO_URL = "https://github.com/MarquesCoding/PolarHQ"
 const COMMANDS = {
@@ -14,9 +21,53 @@ const COMMANDS = {
 
 type OS = keyof typeof COMMANDS
 
+const VALUE = "text-emerald-600 dark:text-emerald-400"
+
+// Lightweight, dependency-free YAML colouriser for the compose block: comments muted,
+// keys in the brand violet, values in green. Good enough for a static, well-formed file.
+const yamlLine = (raw: string, i: number): ReactNode => {
+  const indent = raw.match(/^\s*/)?.[0] ?? ""
+  const body = raw.slice(indent.length)
+  let inner: ReactNode = null
+  if (body.startsWith("#")) {
+    inner = <span className="text-foreground/40">{body}</span>
+  } else if (body.startsWith("- ")) {
+    inner = (
+      <>
+        <span className="text-foreground/50">- </span>
+        <span className={VALUE}>{body.slice(2)}</span>
+      </>
+    )
+  } else {
+    const m = body.match(/^([\w.-]+)(:)(\s*)(.*)$/)
+    inner = m ? (
+      <>
+        <span className="text-primary">{m[1]}</span>
+        <span className="text-foreground/50">{m[2]}</span>
+        {m[3]}
+        {m[4] ? <span className={VALUE}>{m[4]}</span> : null}
+      </>
+    ) : (
+      <span className="text-foreground/80">{body}</span>
+    )
+  }
+  return (
+    <span key={i}>
+      {indent}
+      {inner}
+      {"\n"}
+    </span>
+  )
+}
+
+const highlightCompose = (yaml: string): ReactNode =>
+  yaml.replace(/\n$/, "").split("\n").map(yamlLine)
+
 const InstallCommand = () => {
   const [os, setOs] = useState<OS>("unix")
   const [copied, setCopied] = useState(false)
+  const [showCompose, setShowCompose] = useState(false)
+  const [copiedCompose, setCopiedCompose] = useState(false)
   const command = COMMANDS[os]
 
   const select = (next: OS) => {
@@ -24,16 +75,14 @@ const InstallCommand = () => {
     setCopied(false)
   }
 
-  const copy = () => {
+  const copyText = (text: string, mark: (value: boolean) => void) => {
     navigator.clipboard
-      .writeText(command)
+      .writeText(text)
       .then(() => {
-        setCopied(true)
-        window.setTimeout(() => setCopied(false), 2000)
+        mark(true)
+        window.setTimeout(() => mark(false), 2000)
       })
-      .catch(() => {
-        /* clipboard blocked — nothing to do */
-      })
+      .catch(() => {})
   }
 
   return (
@@ -81,17 +130,12 @@ const InstallCommand = () => {
         <span aria-hidden className="text-primary shrink-0 font-mono text-sm select-none">
           {os === "windows" ? ">" : "$"}
         </span>
-        <code
-          key={os}
-          className={cn(
-            "text-foreground flex-1 overflow-x-auto font-mono text-sm whitespace-nowrap sm:text-[15px]",
-          )}
-        >
+        <code className="text-foreground flex-1 overflow-x-auto font-mono text-sm whitespace-nowrap sm:text-[15px]">
           {command}
         </code>
         <Button
           size="sm"
-          onClick={copy}
+          onClick={() => copyText(command, setCopied)}
           aria-label="Copy install command"
           className="shrink-0 gap-2 rounded-xl font-semibold"
         >
@@ -112,6 +156,54 @@ const InstallCommand = () => {
         </a>
         .
       </p>
+
+      <div className="mt-8">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowCompose((value) => !value)}
+          className="text-foreground/70 gap-2 rounded-full"
+        >
+          <StackSimple className="size-4" weight="fill" />
+          {showCompose ? "Hide docker-compose.yml" : "Prefer Docker Compose? Copy the file"}
+        </Button>
+
+        {showCompose ? (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+            className="mt-4"
+          >
+            <div className="border-foreground/10 bg-foreground/[0.03] overflow-hidden rounded-2xl border text-left">
+              <div className="border-foreground/10 flex items-center justify-between border-b px-4 py-2">
+                <span className="text-foreground/55 font-mono text-xs">docker-compose.yml</span>
+                <Button
+                  size="sm"
+                  onClick={() => copyText(DOCKER_COMPOSE, setCopiedCompose)}
+                  aria-label="Copy docker-compose.yml"
+                  className="h-7 gap-1.5 rounded-lg text-xs font-semibold"
+                >
+                  {copiedCompose ? (
+                    <Check className="size-3.5" weight="bold" />
+                  ) : (
+                    <Copy className="size-3.5" weight="bold" />
+                  )}
+                  {copiedCompose ? "Copied" : "Copy"}
+                </Button>
+              </div>
+              <pre className="max-h-[420px] overflow-auto px-4 py-3 text-left font-mono text-[12px] leading-relaxed">
+                <code>{highlightCompose(DOCKER_COMPOSE)}</code>
+              </pre>
+            </div>
+            <p className="text-foreground/45 mt-3 text-xs">
+              Paste into Dockge / Portainer or run{" "}
+              <code className="text-foreground/70 font-mono">docker compose up -d</code>. Change{" "}
+              <code className="text-foreground/70 font-mono">AUTH_SECRET</code> and the URLs first.
+            </p>
+          </motion.div>
+        ) : null}
+      </div>
     </section>
   )
 }
