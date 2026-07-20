@@ -1,9 +1,11 @@
 import { decryptName } from "@workspace/core/e2e"
+import { getHost } from "@workspace/core/host"
 import { favoriteAssets, trashAssets } from "@workspace/core/photos"
 import { downloadItemFor } from "@workspace/core/photosE2e"
 import { useSelection } from "@workspace/screens/selection"
 import { useUploadManager } from "@workspace/screens/uploadManager"
 import { adaptiveChrome, useContentLight } from "@components/adaptiveChrome"
+import { fetchCachedOriginal } from "@pages/Photos/components/Lightbox/originalCache"
 import { onPhotoNotice } from "./notice"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -19,6 +21,7 @@ import {
   CalendarBlank,
   Check,
   CircleNotch,
+  Cube,
   DotsThree,
   DownloadSimple,
   FilmStrip,
@@ -29,10 +32,13 @@ import {
   Trash,
 } from "@phosphor-icons/react"
 import { AnimatePresence, motion } from "motion/react"
-import { useEffect, useRef, useState } from "react"
+import { Suspense, lazy, useEffect, useRef, useState } from "react"
+import { toast } from "sonner"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import type { GridAsset, Mode, SortKey } from "./types"
+
+const ModelViewer = lazy(() => import("@pages/Drive/components/ModelViewer/ModelViewer"))
 
 const MODES: { id: Mode; label: string }[] = [
   { id: "grid", label: "Grid" },
@@ -185,6 +191,29 @@ const BottomChrome = ({
     if (!focused) return
     onClose()
     void trashAssets([focused.id]).then(() => onInvalidate?.())
+  }
+
+  const [splatSrc, setSplatSrc] = useState<{ url: string; name: string } | null>(null)
+  const canGenerate3d =
+    Boolean(focused?.mimeType?.startsWith("image/")) &&
+    getHost().isDesktop &&
+    Boolean(getHost().generateSplat)
+  const generate3d = async () => {
+    const host = getHost()
+    if (!focused || !host.generateSplat) return
+    const toastId = toast.loading(t("lightbox.generating3d"))
+    try {
+      const url = await fetchCachedOriginal(focused.id, focused.mimeType)
+      if (!url) throw new Error("no source")
+      const blob = await fetch(url).then((response) => response.blob())
+      const bytes = new Uint8Array(await blob.arrayBuffer())
+      const splat = await host.generateSplat(bytes, blob.type || focused.mimeType || "image/jpeg")
+      toast.dismiss(toastId)
+      setSplatSrc({ url: splat, name: `${name.replace(/\.[^.]+$/, "")}.ply` })
+    } catch {
+      toast.dismiss(toastId)
+      toast.error(t("lightbox.generate3dFailed"))
+    }
   }
 
   return (
@@ -449,6 +478,15 @@ const BottomChrome = ({
                       style={{ width: pillW }}
                       className={cn("rounded-full border p-1 shadow-lg", chrome)}
                     >
+                      {canGenerate3d ? (
+                        <DropdownMenuItem
+                          onClick={() => void generate3d()}
+                          className="h-8 justify-center gap-1.5 rounded-full whitespace-nowrap focus:bg-white/10"
+                        >
+                          <Cube className="size-[18px]" />
+                          {t("lightbox.generate3d")}
+                        </DropdownMenuItem>
+                      ) : null}
                       <DropdownMenuItem
                         onClick={trash}
                         className="h-8 justify-center gap-1.5 rounded-full whitespace-nowrap focus:bg-white/10"
@@ -560,6 +598,12 @@ const BottomChrome = ({
           </motion.div>
         ) : null}
       </AnimatePresence>
+
+      {splatSrc ? (
+        <Suspense fallback={null}>
+          <ModelViewer key="splat" src={splatSrc} onClose={() => setSplatSrc(null)} />
+        </Suspense>
+      ) : null}
     </>
   )
 }
