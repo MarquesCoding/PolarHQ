@@ -29,7 +29,7 @@ pub struct IndexEntry {
     pub hash: String,
 }
 
-// Content-hash sampling, adopted from Spacedrive's cas_id strategy: small files are hashed whole;
+// Content-hash sampling: small files are hashed whole;
 // large files are identified by a header + evenly-spaced samples + footer + size, so we read ~tens of
 // KB instead of the whole file. Different content overwhelmingly produces a different hash.
 const FULL_HASH_MAX: u64 = 100 * 1024; // ≤100KB: hash the whole file

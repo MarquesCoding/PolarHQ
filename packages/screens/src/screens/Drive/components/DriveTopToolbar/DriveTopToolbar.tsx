@@ -15,8 +15,8 @@ import DriveFilterMenu from "@pages/Drive/components/DriveFilterMenu/DriveFilter
 import DriveSortMenu from "@pages/Drive/components/DriveSortMenu/DriveSortMenu"
 import DriveTopActions from "@pages/Drive/components/DriveTopActions/DriveTopActions"
 
-/** A floating pill that holds one logical group of controls, matching Spacedrive's toolbar where
- *  each cluster is its own bubble rather than a single continuous bar. */
+/** A floating pill that holds one logical group of controls, where each cluster is its own bubble
+ *  rather than a single continuous bar. */
 const Bubble = ({ className, children }: { className?: string; children: ReactNode }) => (
   <div
     className={cn(
@@ -29,7 +29,7 @@ const Bubble = ({ className, children }: { className?: string; children: ReactNo
 )
 
 /**
- * Spacedrive-style floating top toolbar for Drive — a row of separate bubbles: back/forward, the
+ * Floating top toolbar for Drive — a row of separate bubbles: back/forward, the
  * folder breadcrumb, then the view/size, filter/sort, and details/create controls.
  */
 const DriveTopToolbar = () => {
