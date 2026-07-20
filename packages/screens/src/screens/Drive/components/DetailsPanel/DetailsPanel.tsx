@@ -246,12 +246,13 @@ const DetailsPanel = ({ open, nodes, onClose }: DetailsPanelProps) => {
   return (
     <motion.aside
       initial={false}
-      animate={{ width: open ? 288 : 0, opacity: open ? 1 : 0 }}
+      animate={{ width: open ? 312 : 0, opacity: open ? 1 : 0 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      style={{ borderLeftWidth: open ? undefined : 0 }}
-      className="border-border/60 sticky top-0 h-[calc(100svh-4.5rem)] shrink-0 self-start overflow-hidden border-l"
+      className="relative shrink-0 self-stretch overflow-hidden"
     >
-      <div className="flex h-full w-72 flex-col">
+      {/* Floating rounded card (matches the Photos viewer's details panel) rather than a flat
+          edge-attached column. */}
+      <div className="border-border/60 bg-card/80 my-3 mr-3 flex h-[calc(100%-1.5rem)] w-72 flex-col overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl">
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <h2 className="text-sm font-medium">{t("detailsPanel.title")}</h2>
           <Button
