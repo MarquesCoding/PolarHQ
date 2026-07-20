@@ -8,6 +8,30 @@ commits; you may polish the wording in the Release PR before merging.
 Format: each release is `## [version] - date — Title`, an optional `<!-- tags: a, b -->` line,
 then Markdown notes.
 
+## [0.7.0] - 2026-07-20 — A Spacedrive-style Drive, and devices that see each other
+<!-- tags: Release, Drive, Devices -->
+
+This release reimagines the Drive interface around a floating, Spacedrive-inspired chrome and finally makes your devices aware of each other — sign in on the web and your desktop app shows up, and vice-versa. Plus a polished marketing site with one-command and copy-paste install.
+
+### Added
+- **Your devices, all in one place** — every client signed into your account (the desktop app, other browsers, your phone) now appears in Drive's **Devices** section on both the sidebar and the Overview, each with a platform icon and a live online/offline dot. Clients register themselves on sign-in and heartbeat to stay current, so the web app sees your desktop and the desktop sees the web — through the Cloud, with no setup.
+- **A floating, Spacedrive-style Drive toolbar** — the bottom pill is gone; browsing controls now live in a row of floating pills at the top: back/forward navigation, the folder breadcrumb, view switcher, thumbnail size, and a **create** menu.
+- **Sort and filter** — order files by name, size, date modified or kind (ascending or descending), and filter the view down to specific file kinds or just your favourites.
+- **A redesigned details panel** — the inspector is now a floating, rounded card that matches the Photos viewer and pins itself in place as the grid scrolls behind it.
+- **One-command and copy-paste self-hosting on the site** — the marketing page now offers a `curl … | sh` installer (with a Windows PowerShell option) *and* a copy-paste `docker-compose.yml` for Dockge/Portainer users, with syntax highlighting.
+
+### Improved
+- **Folder sync is clearer and self-updating** — adding a synced folder now refreshes the sidebar and Overview immediately, progress shows an honest count instead of sitting at 0/0, and the indexer no longer skips your files because of a stray `.gitignore`.
+- **A sharper marketing hero** — a real multi-layer parallax mountain scene, a platform-aware **Download** button that links straight to the right installer for your OS, and a cleaner, more readable landing page.
+
+### Fixed
+- The **web** app no longer reserves empty space for the macOS traffic lights it doesn't have, so its sidebar sits flush at the top.
+- **macOS desktop builds** no longer fail on a misconfigured signing certificate — code-signing is now opt-in, so the build always succeeds (un-notarized until real Apple credentials are set).
+
+### Notes
+- Still moving fast. Keep your **recovery code** safe — without your password, encrypted data can't be recovered.
+- Real peer-to-peer device *transfer* is still a future layer; this release makes devices *visible* to each other through the Cloud.
+
 ## [0.6.0] - 2026-07-18 — PolarHQ Mobile, a reimagined Photos & Drive, and one-command self-hosting
 <!-- tags: Release, Mobile, Photos, Drive -->
 
