@@ -349,6 +349,35 @@ export const setMotionVideo = async (
   return true
 }
 
+/** Store a client-encrypted 3D Gaussian-splat (.ply) derivative for an asset. */
+export const setSplat = async (
+  ownerId: string,
+  assetId: string,
+  bytes: Buffer,
+): Promise<boolean> => {
+  const asset = await getAsset(ownerId, assetId)
+  if (!asset) return false
+  const key = assetObjectKeys(ownerId, assetId, ".bin").splat
+  await storage().put({ key, body: bytes, contentType: "application/octet-stream" })
+  await db
+    .update(schema.assets)
+    .set({ splatKey: key, updatedAt: new Date() })
+    .where(eq(schema.assets.id, assetId))
+  return true
+}
+
+/** Delete an asset's stored splat derivative (object + column). */
+export const removeSplat = async (ownerId: string, assetId: string): Promise<boolean> => {
+  const asset = await getAsset(ownerId, assetId)
+  if (!asset?.splatKey) return false
+  await storage().delete(asset.splatKey).catch(() => undefined)
+  await db
+    .update(schema.assets)
+    .set({ splatKey: null, updatedAt: new Date() })
+    .where(eq(schema.assets.id, assetId))
+  return true
+}
+
 /** Store a client-encrypted thumbnail for an asset and mark it displayable. */
 export const setEncryptedThumbnail = async (
   ownerId: string,
@@ -522,6 +551,7 @@ export const purgeAssets = async (ownerId: string, assetIds: string[]) => {
     await driver.delete(asset.storageKey).catch(() => undefined)
     if (asset.thumbnailKey) await driver.delete(asset.thumbnailKey).catch(() => undefined)
     if (asset.previewKey) await driver.delete(asset.previewKey).catch(() => undefined)
+    if (asset.splatKey) await driver.delete(asset.splatKey).catch(() => undefined)
   }
   await db.delete(schema.assets).where(
     ownerScoped(

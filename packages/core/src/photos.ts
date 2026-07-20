@@ -56,6 +56,7 @@ export interface Asset {
   previewUrl: string | null
   videoUrl: string | null
   motion: boolean
+  splat: boolean
 }
 
 /** Lightweight asset for the grid/timeline (the heavy detail fields live on the full Asset). */
@@ -78,6 +79,7 @@ export interface GridAsset {
   previewUrl: string | null
   videoUrl: string | null
   motion: boolean
+  splat: boolean
   stackId: string | null
   stackCount: number
 }

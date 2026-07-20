@@ -1,0 +1,1 @@
+ALTER TABLE "photos"."assets" ADD COLUMN "splat_key" text;

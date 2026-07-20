@@ -48,6 +48,8 @@ import {
   setEncryptedThumbnail,
   setMotionVideo,
   setFavorite,
+  setSplat,
+  removeSplat,
   setStackCover,
   stackAssets,
   trashAsset,
@@ -543,6 +545,27 @@ photosRoutes.put("/assets/:id/motion", async (c) => {
   const bytes = Buffer.from(await c.req.arrayBuffer())
   const ok = await setMotionVideo(c.get("userId"), c.req.param("id"), bytes)
   if (!ok) return c.json({ error: "notFound" }, 404)
+  return c.json({ ok: true })
+})
+
+photosRoutes.get("/assets/:id/splat", async (c) => {
+  const asset = await getAsset(c.get("userId"), c.req.param("id"))
+  if (!asset?.splatKey) return c.json({ error: "notFound" }, 404)
+  return streamObject(asset.splatKey, "application/octet-stream")
+})
+
+photosRoutes.put("/assets/:id/splat", async (c) => {
+  const bytes = Buffer.from(await c.req.arrayBuffer())
+  const ok = await setSplat(c.get("userId"), c.req.param("id"), bytes)
+  if (!ok) return c.json({ error: "notFound" }, 404)
+  await notify(c.get("userId"))
+  return c.json({ ok: true })
+})
+
+photosRoutes.delete("/assets/:id/splat", async (c) => {
+  const ok = await removeSplat(c.get("userId"), c.req.param("id"))
+  if (!ok) return c.json({ error: "notFound" }, 404)
+  await notify(c.get("userId"))
   return c.json({ ok: true })
 })
 

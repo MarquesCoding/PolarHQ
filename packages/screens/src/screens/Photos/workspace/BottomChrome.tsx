@@ -1,7 +1,12 @@
 import { decryptName } from "@workspace/core/e2e"
 import { getHost } from "@workspace/core/host"
 import { favoriteAssets, trashAssets } from "@workspace/core/photos"
-import { downloadItemFor } from "@workspace/core/photosE2e"
+import {
+  downloadItemFor,
+  fetchDecryptedSplat,
+  removeSplat,
+  uploadSplat,
+} from "@workspace/core/photosE2e"
 import { useSelection } from "@workspace/screens/selection"
 import { useUploadManager } from "@workspace/screens/uploadManager"
 import { useSidebar } from "@workspace/ui/components/sidebar"
@@ -223,8 +228,8 @@ const BottomChrome = ({
   const [splatSrc, setSplatSrc] = useState<{ url: string; name: string; light?: boolean } | null>(
     null,
   )
-  const [generating, setGenerating] = useState(false)
-  const splatActive = generating || Boolean(splatSrc)
+  const [splatBusy, setSplatBusy] = useState<null | "generate" | "load">(null)
+  const splatActive = splatBusy !== null || Boolean(splatSrc)
   useEffect(() => {
     if (splatActive) {
       setSidebarOpen(false)
@@ -234,27 +239,68 @@ const BottomChrome = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [splatActive])
+  const hasSplat = Boolean(focused?.splat)
   const canGenerate3d =
     Boolean(focused?.mimeType?.startsWith("image/")) &&
     getHost().isDesktop &&
     Boolean(getHost().generateSplat)
+  const splatName = () => `${name.replace(/\.[^.]+$/, "")}.ply`
+
   const generate3d = async () => {
     const host = getHost()
-    if (!focused || !host.generateSplat || generating) return
+    if (!focused || !host.generateSplat || splatBusy) return
+    const assetId = focused.id
+    const mimeType = focused.mimeType
+    const outName = splatName()
     sidebarBeforeSplat.current = sidebarOpen
-    setGenerating(true)
+    setSplatBusy("generate")
     try {
-      const url = await fetchCachedOriginal(focused.id, focused.mimeType)
+      const url = await fetchCachedOriginal(assetId, mimeType)
       if (!url) throw new Error("no source")
       const blob = await fetch(url).then((response) => response.blob())
       const light = await averageLight(blob)
       const bytes = new Uint8Array(await blob.arrayBuffer())
-      const splat = await host.generateSplat(bytes, blob.type || focused.mimeType || "image/jpeg")
-      setSplatSrc({ url: splat, name: `${name.replace(/\.[^.]+$/, "")}.ply`, light })
+      const splat = await host.generateSplat(bytes, blob.type || mimeType || "image/jpeg")
+      setSplatSrc({ url: splat, name: outName, light })
+      const plyBuffer = await fetch(splat).then((response) => response.arrayBuffer())
+      void uploadSplat(assetId, new Uint8Array(plyBuffer)).then((ok) => ok && onInvalidate?.())
     } catch {
       toast.error(t("lightbox.generate3dFailed"))
     } finally {
-      setGenerating(false)
+      setSplatBusy(null)
+    }
+  }
+
+  const viewStoredSplat = async () => {
+    if (!focused || splatBusy) return
+    const assetId = focused.id
+    const mimeType = focused.mimeType
+    const outName = splatName()
+    sidebarBeforeSplat.current = sidebarOpen
+    setSplatBusy("load")
+    try {
+      const [url, sourceUrl] = await Promise.all([
+        fetchDecryptedSplat(assetId),
+        fetchCachedOriginal(assetId, mimeType),
+      ])
+      if (!url) throw new Error("no splat")
+      const light = sourceUrl
+        ? await averageLight(await fetch(sourceUrl).then((response) => response.blob()))
+        : undefined
+      setSplatSrc({ url, name: outName, light })
+    } catch {
+      toast.error(t("lightbox.generate3dFailed"))
+    } finally {
+      setSplatBusy(null)
+    }
+  }
+
+  const removeStoredSplat = async () => {
+    if (!focused) return
+    const ok = await removeSplat(focused.id)
+    if (ok) {
+      toast(t("lightbox.splatRemoved", { defaultValue: "3D removed" }))
+      onInvalidate?.()
     }
   }
 
@@ -520,7 +566,24 @@ const BottomChrome = ({
                       style={{ width: pillW }}
                       className={cn("rounded-full border p-1 shadow-lg", chrome)}
                     >
-                      {canGenerate3d ? (
+                      {hasSplat ? (
+                        <>
+                          <DropdownMenuItem
+                            onClick={() => void viewStoredSplat()}
+                            className="h-8 justify-center gap-1.5 rounded-full whitespace-nowrap focus:bg-white/10"
+                          >
+                            <Cube className="size-[18px]" />
+                            {t("lightbox.viewSplat", { defaultValue: "View 3D splat" })}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => void removeStoredSplat()}
+                            className="h-8 justify-center gap-1.5 rounded-full whitespace-nowrap focus:bg-white/10"
+                          >
+                            <Trash className="size-[18px]" />
+                            {t("lightbox.removeSplat", { defaultValue: "Remove 3D" })}
+                          </DropdownMenuItem>
+                        </>
+                      ) : canGenerate3d ? (
                         <DropdownMenuItem
                           onClick={() => void generate3d()}
                           className="h-8 justify-center gap-1.5 rounded-full whitespace-nowrap focus:bg-white/10"
@@ -641,11 +704,15 @@ const BottomChrome = ({
         ) : null}
       </AnimatePresence>
 
-      {generating ? (
+      {splatBusy ? (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-background/60 backdrop-blur-sm">
           <div className="panel flex items-center gap-2.5 rounded-full px-4 py-2.5 shadow-xl">
             <CircleNotch className="size-[18px] animate-spin" />
-            <span className="text-sm font-medium">{t("lightbox.generating3d")}</span>
+            <span className="text-sm font-medium">
+              {splatBusy === "generate"
+                ? t("lightbox.generating3d")
+                : t("lightbox.loading3d", { defaultValue: "Loading 3D…" })}
+            </span>
           </div>
         </div>
       ) : null}
