@@ -27,7 +27,10 @@ const FloatingContent = ({
       className="flex min-h-full flex-1 flex-col transition-[padding] duration-200"
       style={{ paddingLeft: open ? "var(--sidebar-width)" : undefined }}
     >
-      {topToolbar ? <div className="shrink-0 px-4 pt-2 pb-1">{topToolbar}</div> : null}
+      {/* Sticky so the toolbar stays put while the file grid scrolls under it. */}
+      {topToolbar ? (
+        <div className="sticky top-0 z-40 shrink-0 px-4 pt-2 pb-1">{topToolbar}</div>
+      ) : null}
       <div className="flex min-h-0 flex-1">{children}</div>
     </div>
   )
