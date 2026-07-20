@@ -11,6 +11,7 @@ import { cn } from "@workspace/ui/lib/utils"
 import ThemeToggle from "@components/ThemeToggle"
 
 const LINKS = [
+  { label: "Security", href: "/security" },
   { label: "Blog", href: "/blog" },
   { label: "Changelog", href: "/changelog" },
   { label: "Roadmap", href: "/roadmap" },
