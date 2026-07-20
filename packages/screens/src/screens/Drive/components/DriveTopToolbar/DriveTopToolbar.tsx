@@ -39,6 +39,7 @@ const DriveTopToolbar = () => {
   const router = useNavigation()
   const { toggleSidebar } = useSidebar()
   const viewMode = useAppSelector((state) => state.ui.viewMode)
+  const detailsOpen = useAppSelector((state) => state.ui.driveDetailsOpen)
   const [tileSize, setTileSize] = usePersistentNumber("drive.tileSize", 150)
 
   const folderId = driveFolderIdFromPath(pathname)
@@ -56,7 +57,10 @@ const DriveTopToolbar = () => {
   const heading = isOverview ? t("driveNav.overview") : null
 
   return (
-    <div className="flex items-center gap-2">
+    <div
+      className="flex items-center gap-2 transition-[padding] duration-200"
+      style={{ paddingRight: detailsOpen ? "19.5rem" : undefined }}
+    >
       <Bubble>
         <Button
           variant="ghost"
