@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import { getHost } from "@workspace/core/host"
+import {
+  type RegisteredDevice,
+  fetchRegisteredDevices,
+  getDeviceId,
+} from "@workspace/core/devices"
 import { formatBytes } from "@workspace/core/format"
 import { AppLink as Link } from "@workspace/screens/platform"
 import { getSyncBridge } from "@workspace/screens/syncBridge"
@@ -149,6 +154,11 @@ const OverviewDevices = ({ cloudBytes, cloudFiles }: { cloudBytes: number; cloud
     queryFn: () => bridge!.list(),
     enabled: Boolean(bridge),
   })
+  const { data: registered } = useQuery({
+    queryKey: ["devices", "registered"],
+    queryFn: () => fetchRegisteredDevices().then((r) => r.devices),
+  })
+  const otherDevices = (registered ?? []).filter((device) => device.deviceId !== getDeviceId())
   const peers: P2pDevice[] = []
 
   return (
@@ -198,14 +208,33 @@ const OverviewDevices = ({ cloudBytes, cloudFiles }: { cloudBytes: number; cloud
         </DeviceCard>
       ) : null}
 
-      {peers.length > 0 ? (
-        peers.map((device) => <PeerCard key={device.id} device={device} />)
-      ) : (
+      {otherDevices.map((device) => {
+        const online = Date.now() - new Date(device.lastSeenAt).getTime() < 6 * 60 * 1000
+        const icon =
+          device.kind === "mobile" ? "device-mobile" : device.kind === "web" ? "desktop" : "laptop"
+        return (
+          <DeviceCard
+            key={device.id}
+            icon={icon}
+            accent="peer"
+            name={device.name}
+            badge={t(`overview.deviceKind.${device.kind}`)}
+            meta={device.platform}
+            status={online ? "online" : "offline"}
+          />
+        )
+      })}
+
+      {peers.map((device) => (
+        <PeerCard key={device.id} device={device} />
+      ))}
+
+      {otherDevices.length === 0 && peers.length === 0 ? (
         <div className="border-border/70 text-muted-foreground flex items-center gap-3 rounded-2xl border border-dashed p-4 text-xs sm:col-span-2">
           <Icon name="users-group" className="size-4 shrink-0" />
           <span>{desktop ? t("overview.discovering") : t("overview.webDeviceHint")}</span>
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

@@ -21,6 +21,7 @@
     "./chunkedUpload": "./src/chunkedUpload.ts",
     "./e2e": "./src/e2e.ts",
     "./docs": "./src/docs.ts",
+    "./devices": "./src/devices.ts",
     "./drive": "./src/drive.ts",
     "./driveE2e": "./src/driveE2e.ts",
     "./photos": "./src/photos.ts",

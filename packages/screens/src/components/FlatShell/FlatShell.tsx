@@ -3,6 +3,7 @@ import { usePathname, useNavigation } from "@workspace/screens/platform"
 import { authClient } from "@workspace/core/authClient"
 import { e2eReady, markUnlockPrompted, shouldPromptUnlock } from "@workspace/core/e2e"
 import { SidebarProvider, useSidebar } from "@workspace/ui/components/sidebar"
+import { useDeviceRegistration } from "@workspace/screens/useDeviceRegistration"
 import OnboardingCard from "@components/OnboardingCard/OnboardingCard"
 import Spinner from "@components/Spinner/Spinner"
 import UnlockDialog from "@pages/Docs/components/UnlockDialog/UnlockDialog"
@@ -42,6 +43,7 @@ const FlatShell = ({ sidebar, topBar, floatingSidebar, children }: FlatShellProp
   const { data: session, isPending } = authClient.useSession()
   const [embedded, setEmbedded] = useState(false)
   const [unlockOpen, setUnlockOpen] = useState(false)
+  useDeviceRegistration()
 
   useEffect(() => {
     try {
