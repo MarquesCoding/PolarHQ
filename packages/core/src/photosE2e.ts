@@ -351,6 +351,43 @@ export const fetchDecryptedMotionVideo = async (assetId: string): Promise<string
   }
 }
 
+/** Encrypt a generated 3D splat (.ply) under the asset's existing content key and store it as a
+ *  derivative, so it syncs and decrypts on any of the user's devices. */
+export const uploadSplat = async (assetId: string, plyBytes: Uint8Array): Promise<boolean> => {
+  const key = await getDocContentKey(assetId)
+  if (!key) return false
+  const response = await putThumbnail(
+    `${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/splat`,
+    secretboxSeal(plyBytes, key),
+  )
+  return response.ok
+}
+
+/** Fetch + decrypt an asset's stored splat (.ply) into an object URL (or null). */
+export const fetchDecryptedSplat = async (assetId: string): Promise<string | null> => {
+  const key = await getDocContentKey(assetId)
+  if (!key) return null
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/splat`, {
+    credentials: "include",
+  })
+  if (!response.ok) return null
+  try {
+    const plain = await decryptBlobAsync(new Uint8Array(await response.arrayBuffer()), key)
+    return URL.createObjectURL(new Blob([plain as BlobPart], { type: "application/octet-stream" }))
+  } catch {
+    return null
+  }
+}
+
+/** Delete an asset's stored splat derivative. */
+export const removeSplat = async (assetId: string): Promise<boolean> => {
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/splat`, {
+    method: "DELETE",
+    credentials: "include",
+  })
+  return response.ok
+}
+
 /** @deprecated use uploadEncryptedMedia */
 export const uploadEncryptedPhoto = uploadEncryptedMedia
 

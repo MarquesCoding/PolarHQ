@@ -60,6 +60,7 @@
   "dependencies": {
     "@glideapps/glide-data-grid": "^6.0.3",
     "@huggingface/transformers": "^4.2.0",
+    "@mkkellogg/gaussian-splats-3d": "0.4.7",
     "@number-flow/react": "^0.6.0",
     "@phosphor-icons/react": "^2.1.10",
     "@react-three/drei": "^10.7.7",

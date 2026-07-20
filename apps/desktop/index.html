@@ -11,6 +11,10 @@
         var dark = t === "dark" || (t === "system" && matchMedia("(prefers-color-scheme: dark)").matches)
         document.documentElement.classList.toggle("dark", dark)
         document.documentElement.style.colorScheme = dark ? "dark" : "light"
+        var a = localStorage.getItem("accent")
+        if (a && a !== "violet") document.documentElement.setAttribute("data-accent", a)
+        var p = localStorage.getItem("palette")
+        if (p && p !== "default") document.documentElement.setAttribute("data-palette", p)
       } catch (e) {}
       // Mark the Tauri runtime so the overlay-titlebar inset only applies in the native window
       // (not in browser `pnpm dev`). Tauri injects its IPC before page scripts, so this is set early.

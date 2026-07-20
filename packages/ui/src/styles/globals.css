@@ -119,6 +119,158 @@
     --sidebar-ring: #8b6cfb;
 }
 
+/* Accent themes — recolor the primary/accent hue, composing with light/dark. Applied via a
+   `data-accent` attribute on <html> (absent = the default violet). */
+[data-accent="blue"]:not(.dark) {
+    --primary: #3b6cf6;
+    --ring: #3b6cf6;
+    --sidebar-primary: #3b6cf6;
+    --sidebar-ring: #3b6cf6;
+    --chart-1: #3b6cf6;
+}
+.dark[data-accent="blue"] {
+    --primary: #5b8cff;
+    --ring: #5b8cff;
+    --sidebar-primary: #5b8cff;
+    --sidebar-ring: #5b8cff;
+    --chart-1: #5b8cff;
+}
+
+[data-accent="emerald"]:not(.dark) {
+    --primary: #059669;
+    --ring: #059669;
+    --sidebar-primary: #059669;
+    --sidebar-ring: #059669;
+    --chart-1: #059669;
+}
+.dark[data-accent="emerald"] {
+    --primary: #10b981;
+    --ring: #10b981;
+    --sidebar-primary: #10b981;
+    --sidebar-ring: #10b981;
+    --chart-1: #10b981;
+}
+
+[data-accent="rose"]:not(.dark) {
+    --primary: #e11d48;
+    --ring: #e11d48;
+    --sidebar-primary: #e11d48;
+    --sidebar-ring: #e11d48;
+    --chart-1: #e11d48;
+}
+.dark[data-accent="rose"] {
+    --primary: #fb7185;
+    --ring: #fb7185;
+    --sidebar-primary: #fb7185;
+    --sidebar-ring: #fb7185;
+    --chart-1: #fb7185;
+}
+
+[data-accent="amber"]:not(.dark) {
+    --primary: #f59e0b;
+    --primary-foreground: #1a1a2a;
+    --ring: #f59e0b;
+    --sidebar-primary: #f59e0b;
+    --sidebar-ring: #f59e0b;
+    --chart-1: #f59e0b;
+}
+.dark[data-accent="amber"] {
+    --primary: #fbbf24;
+    --primary-foreground: #1a1a2a;
+    --ring: #fbbf24;
+    --sidebar-primary: #fbbf24;
+    --sidebar-ring: #fbbf24;
+    --chart-1: #fbbf24;
+}
+
+/* Full palette themes — restyle the neutral background/surface hue (composes with the accent, which
+   keeps owning the primary colour). Applied via a `data-palette` attribute on <html>. */
+[data-palette="sand"]:not(.dark) {
+    --background: #f5f0e6;
+    --foreground: #2a2419;
+    --card: #fffdf7;
+    --card-foreground: #2a2419;
+    --popover: #fffdf7;
+    --popover-foreground: #2a2419;
+    --secondary: #ece4d3;
+    --secondary-foreground: #2a2419;
+    --muted: #efe8da;
+    --muted-foreground: #6f6656;
+    --accent: #ebe2cf;
+    --accent-foreground: #2a2419;
+    --border: #e4dac6;
+    --input: #e0d6c0;
+    --sidebar: #fffdf7;
+    --sidebar-foreground: #2a2419;
+    --sidebar-accent: #ece4d3;
+    --sidebar-accent-foreground: #2a2419;
+    --sidebar-border: #e4dac6;
+}
+.dark[data-palette="sand"] {
+    --background: #17130d;
+    --foreground: #f2ede2;
+    --card: #201a12;
+    --card-foreground: #f2ede2;
+    --popover: #241d14;
+    --popover-foreground: #f2ede2;
+    --secondary: #2c2419;
+    --secondary-foreground: #f2ede2;
+    --muted: #241d14;
+    --muted-foreground: #a89c86;
+    --accent: #2f2617;
+    --accent-foreground: #f2ede2;
+    --border: #2e2618;
+    --input: #241d14;
+    --sidebar: #1b160e;
+    --sidebar-foreground: #f2ede2;
+    --sidebar-accent: #2c2419;
+    --sidebar-accent-foreground: #f2ede2;
+    --sidebar-border: #2b2317;
+}
+
+[data-palette="slate"]:not(.dark) {
+    --background: #f1f3f6;
+    --foreground: #1a2028;
+    --card: #ffffff;
+    --card-foreground: #1a2028;
+    --popover: #ffffff;
+    --popover-foreground: #1a2028;
+    --secondary: #e7ebf0;
+    --secondary-foreground: #1a2028;
+    --muted: #eaeef2;
+    --muted-foreground: #5c6672;
+    --accent: #e2e8ef;
+    --accent-foreground: #1a2028;
+    --border: #dde3ea;
+    --input: #d9e0e8;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #1a2028;
+    --sidebar-accent: #e7ebf0;
+    --sidebar-accent-foreground: #1a2028;
+    --sidebar-border: #dde3ea;
+}
+.dark[data-palette="slate"] {
+    --background: #0c1017;
+    --foreground: #eef2f7;
+    --card: #141a22;
+    --card-foreground: #eef2f7;
+    --popover: #161d26;
+    --popover-foreground: #eef2f7;
+    --secondary: #1f2731;
+    --secondary-foreground: #eef2f7;
+    --muted: #182029;
+    --muted-foreground: #93a0b0;
+    --accent: #212a35;
+    --accent-foreground: #eef2f7;
+    --border: #232c37;
+    --input: #182029;
+    --sidebar: #10161d;
+    --sidebar-foreground: #eef2f7;
+    --sidebar-accent: #1f2731;
+    --sidebar-accent-foreground: #eef2f7;
+    --sidebar-border: #202932;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

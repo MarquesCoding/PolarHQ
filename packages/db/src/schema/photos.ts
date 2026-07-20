@@ -49,6 +49,7 @@ export const assets = photos.table(
     thumbnailKey: text("thumbnail_key"),
     previewKey: text("preview_key"),
     motionKey: text("motion_key"),
+    splatKey: text("splat_key"),
     takenAt: timestamp("taken_at"),
     latitude: doublePrecision("latitude"),
     longitude: doublePrecision("longitude"),

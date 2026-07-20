@@ -11,6 +11,7 @@ import {
 import { Button } from "@workspace/ui/components/button"
 import { GithubLogo, LockKey } from "@phosphor-icons/react"
 import DownloadButton from "@components/DownloadButton"
+import PlatformDownloads from "@components/PlatformDownloads"
 
 const REPO_URL = "https://github.com/MarquesCoding/PolarHQ"
 
@@ -110,6 +111,10 @@ const Hero = () => {
             <GithubLogo className="size-4" weight="fill" />
             Star on GitHub
           </Button>
+        </motion.div>
+
+        <motion.div variants={item} className="mt-4">
+          <PlatformDownloads />
         </motion.div>
 
         <motion.ul

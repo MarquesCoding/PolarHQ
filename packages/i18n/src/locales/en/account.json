@@ -21,6 +21,15 @@
   "languageHint": "Choose the language used across the interface.",
   "appearance": "Appearance",
   "appearanceHint": "Switch between light and dark mode.",
+  "accent": "Accent",
+  "accentHint": "The app's highlight colour.",
+  "palette": "Theme",
+  "paletteHint": "The overall colour palette.",
+  "palettes": {
+    "default": "Default",
+    "sand": "Sand",
+    "slate": "Slate"
+  },
   "light": "Light",
   "dark": "Dark",
   "system": "System",

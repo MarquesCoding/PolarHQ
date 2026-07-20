@@ -1,7 +1,9 @@
-import type { ReactNode } from "react"
+import { type ReactNode, useState } from "react"
 import { useNavigation } from "@workspace/screens/platform"
 import { useTranslation } from "react-i18next"
 import { type DriveNode, isArchiveName } from "@workspace/core/drive"
+import { useNodeTags } from "@pages/Drive/components/tags/useNodeTags"
+import TagCreateDialog from "@pages/Drive/components/tags/TagCreateDialog"
 import { getHost } from "@workspace/core/host"
 import { docTypeOf } from "@workspace/core/docs"
 import { officeTypeForName } from "@workspace/screens/importFlow"
@@ -16,12 +18,15 @@ import {
   Export,
   Eye,
   Image as ImageIcon,
+  Check,
   Info,
   Link,
   Lock,
   LockOpen,
   PencilSimple,
+  Plus,
   Star,
+  Tag,
   Trash,
   UserPlus,
 } from "@phosphor-icons/react"
@@ -30,6 +35,9 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@workspace/ui/components/context-menu"
 
@@ -61,6 +69,8 @@ interface NodeContextMenuProps {
 const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
   const router = useNavigation()
   const { t } = useTranslation("drive")
+  const [tagDialog, setTagDialog] = useState(false)
+  const tagCtl = useNodeTags(node)
   const isFile = node.kind === "file"
   const isImage = isFile && Boolean(node.mimeType?.startsWith("image/"))
   const is3D = isFile && is3DModelName(node.name)
@@ -68,6 +78,7 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
     isImage && Boolean(actions.generate3d) && getHost().isDesktop && Boolean(getHost().generateSplat)
 
   return (
+    <>
     <ContextMenu>
       <ContextMenuTrigger
         className="contents"
@@ -130,6 +141,33 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
               {node.favorite ? <Star weight="fill" /> : <Star />}
               {node.favorite ? t("nodeContextMenu.unfavorite") : t("nodeContextMenu.favorite")}
             </ContextMenuItem>
+            <ContextMenuSub>
+              <ContextMenuSubTrigger>
+                <Tag />
+                {t("nodeContextMenu.tags", { defaultValue: "Tags" })}
+              </ContextMenuSubTrigger>
+              <ContextMenuSubContent>
+                {tagCtl.allTags.map((tag) => (
+                  <ContextMenuItem
+                    key={tag.id}
+                    closeOnClick={false}
+                    onClick={() => void tagCtl.toggle(tag)}
+                  >
+                    <span
+                      className="size-2.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: tag.color }}
+                    />
+                    <span className="flex-1 truncate">{tag.name}</span>
+                    {tagCtl.applied.has(tag.id) ? <Check className="size-3.5" /> : null}
+                  </ContextMenuItem>
+                ))}
+                {tagCtl.allTags.length > 0 ? <ContextMenuSeparator /> : null}
+                <ContextMenuItem onClick={() => setTagDialog(true)}>
+                  <Plus />
+                  {t("nodeContextMenu.newTag", { defaultValue: "New tag…" })}
+                </ContextMenuItem>
+              </ContextMenuSubContent>
+            </ContextMenuSub>
             <ContextMenuItem onClick={() => actions.move(node)}>
               <ArrowsOutCardinal />
               {t("nodeContextMenu.moveToFolder")}
@@ -183,6 +221,8 @@ const NodeContextMenu = ({ node, actions, children }: NodeContextMenuProps) => {
         )}
       </ContextMenuContent>
     </ContextMenu>
+    <TagCreateDialog open={tagDialog} onOpenChange={setTagDialog} onCreate={tagCtl.create} />
+    </>
   )
 }
 

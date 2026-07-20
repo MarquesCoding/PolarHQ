@@ -6,6 +6,7 @@ export interface AssetDto extends Asset {
   previewUrl: string | null
   videoUrl: string | null
   motion: boolean
+  splat: boolean
 }
 
 const base = `${config.api.url}/api/v1/photos/assets`
@@ -22,6 +23,7 @@ export const serializeAsset = async (asset: Asset): Promise<AssetDto> => ({
   previewUrl: asset.previewKey ? `${base}/${asset.id}/preview` : null,
   videoUrl: asset.type === "video" ? `${base}/${asset.id}/video` : null,
   motion: Boolean(asset.motionKey),
+  splat: Boolean(asset.splatKey),
 })
 
 export const serializeAssets = (assets: Asset[]): Promise<AssetDto[]> =>
@@ -52,6 +54,7 @@ export interface GridAssetDto {
   previewUrl: string | null
   videoUrl: string | null
   motion: boolean
+  splat: boolean
   stackId: string | null
   stackCount: number
 }
@@ -75,6 +78,7 @@ export const serializeGridAsset = (asset: Asset, stackCount = 0): GridAssetDto =
   previewUrl: asset.previewKey ? `${base}/${asset.id}/preview` : null,
   videoUrl: asset.type === "video" ? `${base}/${asset.id}/video` : null,
   motion: Boolean(asset.motionKey),
+  splat: Boolean(asset.splatKey),
   stackId: asset.stackId,
   stackCount,
 })

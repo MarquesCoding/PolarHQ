@@ -1,11 +1,24 @@
 import { decryptName } from "@workspace/core/e2e"
+import { getHost } from "@workspace/core/host"
 import { favoriteAssets, trashAssets } from "@workspace/core/photos"
-import { downloadItemFor } from "@workspace/core/photosE2e"
+import { downloadItemFor, removeSplat, uploadSplat } from "@workspace/core/photosE2e"
 import { useSelection } from "@workspace/screens/selection"
 import { useUploadManager } from "@workspace/screens/uploadManager"
+import { useSidebar } from "@workspace/ui/components/sidebar"
 import { adaptiveChrome, useContentLight } from "@components/adaptiveChrome"
+import { fetchCachedOriginal } from "@pages/Photos/components/Lightbox/originalCache"
+import { averageLight, loadStoredSplat } from "@pages/Photos/splatViewing"
 import { onPhotoNotice } from "./notice"
 import { Button } from "@workspace/ui/components/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +32,7 @@ import {
   CalendarBlank,
   Check,
   CircleNotch,
+  Cube,
   DotsThree,
   DownloadSimple,
   FilmStrip,
@@ -29,10 +43,13 @@ import {
   Trash,
 } from "@phosphor-icons/react"
 import { AnimatePresence, motion } from "motion/react"
-import { useEffect, useRef, useState } from "react"
+import { Suspense, lazy, useEffect, useRef, useState } from "react"
+import { toast } from "sonner"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import type { GridAsset, Mode, SortKey } from "./types"
+
+const SplatResult = lazy(() => import("@pages/Drive/components/ModelViewer/SplatResult"))
 
 const MODES: { id: Mode; label: string }[] = [
   { id: "grid", label: "Grid" },
@@ -185,6 +202,99 @@ const BottomChrome = ({
     if (!focused) return
     onClose()
     void trashAssets([focused.id]).then(() => onInvalidate?.())
+  }
+
+  const { open: sidebarOpen, setOpen: setSidebarOpen } = useSidebar()
+  const sidebarBeforeSplat = useRef(false)
+  const [splatSrc, setSplatSrc] = useState<{ url: string; name: string; light?: boolean } | null>(
+    null,
+  )
+  const [splatBusy, setSplatBusy] = useState<null | "generate" | "load">(null)
+  const [setupPhase, setSetupPhase] = useState<string | null>(null)
+  const splatActive = splatBusy !== null || Boolean(splatSrc)
+  useEffect(() => {
+    if (splatActive) {
+      setSidebarOpen(false)
+    } else if (sidebarBeforeSplat.current) {
+      setSidebarOpen(true)
+      sidebarBeforeSplat.current = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [splatActive])
+  const hasSplat = Boolean(focused?.splat)
+  const canGenerate3d =
+    Boolean(focused?.mimeType?.startsWith("image/")) &&
+    getHost().isDesktop &&
+    Boolean(getHost().generateSplat)
+  const splatName = () => `${name.replace(/\.[^.]+$/, "")}.ply`
+
+  const runSharpSetup = async () => {
+    const host = getHost()
+    if (!host.sharpSetup) return
+    try {
+      await host.sharpSetup((phase) => setSetupPhase(phase))
+      setSetupPhase(null)
+      void generate3d()
+    } catch {
+      setSetupPhase(null)
+      toast.error(t("lightbox.generate3dFailed"))
+    }
+  }
+
+  const generate3d = async () => {
+    const host = getHost()
+    if (!focused || !host.generateSplat || splatBusy) return
+    if (host.sharpAvailable && !(await host.sharpAvailable())) {
+      setSetupPhase("prompt")
+      return
+    }
+    const assetId = focused.id
+    const mimeType = focused.mimeType
+    const outName = splatName()
+    sidebarBeforeSplat.current = sidebarOpen
+    setSplatBusy("generate")
+    try {
+      const url = await fetchCachedOriginal(assetId, mimeType)
+      if (!url) throw new Error("no source")
+      const blob = await fetch(url).then((response) => response.blob())
+      const light = await averageLight(blob)
+      const bytes = new Uint8Array(await blob.arrayBuffer())
+      const splat = await host.generateSplat(bytes, blob.type || mimeType || "image/jpeg")
+      setSplatSrc({ url: splat, name: outName, light })
+      const plyBuffer = await fetch(splat).then((response) => response.arrayBuffer())
+      void uploadSplat(assetId, new Uint8Array(plyBuffer)).then((ok) => ok && onInvalidate?.())
+    } catch {
+      toast.error(t("lightbox.generate3dFailed"))
+    } finally {
+      setSplatBusy(null)
+    }
+  }
+
+  const viewStoredSplat = async () => {
+    if (!focused || splatBusy) return
+    const assetId = focused.id
+    const mimeType = focused.mimeType
+    const outName = splatName()
+    sidebarBeforeSplat.current = sidebarOpen
+    setSplatBusy("load")
+    try {
+      const source = await loadStoredSplat(assetId, mimeType, outName)
+      if (!source) throw new Error("no splat")
+      setSplatSrc(source)
+    } catch {
+      toast.error(t("lightbox.generate3dFailed"))
+    } finally {
+      setSplatBusy(null)
+    }
+  }
+
+  const removeStoredSplat = async () => {
+    if (!focused) return
+    const ok = await removeSplat(focused.id)
+    if (ok) {
+      toast(t("lightbox.splatRemoved", { defaultValue: "3D removed" }))
+      onInvalidate?.()
+    }
   }
 
   return (
@@ -449,6 +559,32 @@ const BottomChrome = ({
                       style={{ width: pillW }}
                       className={cn("rounded-full border p-1 shadow-lg", chrome)}
                     >
+                      {hasSplat ? (
+                        <>
+                          <DropdownMenuItem
+                            onClick={() => void viewStoredSplat()}
+                            className="h-8 justify-center gap-1.5 rounded-full whitespace-nowrap focus:bg-white/10"
+                          >
+                            <Cube className="size-[18px]" />
+                            {t("lightbox.viewSplat", { defaultValue: "View 3D splat" })}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => void removeStoredSplat()}
+                            className="h-8 justify-center gap-1.5 rounded-full whitespace-nowrap focus:bg-white/10"
+                          >
+                            <Trash className="size-[18px]" />
+                            {t("lightbox.removeSplat", { defaultValue: "Remove 3D" })}
+                          </DropdownMenuItem>
+                        </>
+                      ) : canGenerate3d ? (
+                        <DropdownMenuItem
+                          onClick={() => void generate3d()}
+                          className="h-8 justify-center gap-1.5 rounded-full whitespace-nowrap focus:bg-white/10"
+                        >
+                          <Cube className="size-[18px]" />
+                          {t("lightbox.generate3d")}
+                        </DropdownMenuItem>
+                      ) : null}
                       <DropdownMenuItem
                         onClick={trash}
                         className="h-8 justify-center gap-1.5 rounded-full whitespace-nowrap focus:bg-white/10"
@@ -558,6 +694,80 @@ const BottomChrome = ({
               ))}
             </div>
           </motion.div>
+        ) : null}
+      </AnimatePresence>
+
+      <Dialog
+        open={setupPhase !== null}
+        onOpenChange={(open) => {
+          if (!open && setupPhase === "prompt") setSetupPhase(null)
+        }}
+      >
+        <DialogContent showCloseButton={setupPhase === "prompt"} className="sm:max-w-sm">
+          {setupPhase === "prompt" ? (
+            <>
+              <DialogHeader>
+                <DialogTitle>{t("lightbox.setup3dTitle", { defaultValue: "Set up 3D" })}</DialogTitle>
+                <DialogDescription>
+                  {t("lightbox.setup3dBody", {
+                    defaultValue:
+                      "Generating 3D uses Apple SHARP — a one-time ~5 GB setup (runtime + model) that runs entirely on your device.",
+                  })}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose render={<Button variant="outline" />}>
+                  {t("common:cancel", { defaultValue: "Cancel" })}
+                </DialogClose>
+                <Button onClick={() => void runSharpSetup()}>
+                  {t("lightbox.setup3dConfirm", { defaultValue: "Set up 3D" })}
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <div className="flex flex-col items-center gap-3 py-6 text-center">
+              <CircleNotch className="size-6 animate-spin" />
+              <span className="text-sm font-medium">
+                {setupPhase === "installing-uv"
+                  ? t("lightbox.setup3dUv", { defaultValue: "Installing tools…" })
+                  : setupPhase === "downloading-sharp"
+                    ? t("lightbox.setup3dSharp", { defaultValue: "Downloading SHARP…" })
+                    : setupPhase === "creating-env"
+                      ? t("lightbox.setup3dEnv", { defaultValue: "Preparing environment…" })
+                      : setupPhase === "installing-deps"
+                        ? t("lightbox.setup3dDeps", { defaultValue: "Installing dependencies…" })
+                        : setupPhase === "downloading-model"
+                          ? t("lightbox.setup3dModel", {
+                              defaultValue: "Downloading model (~2.6 GB)…",
+                            })
+                          : t("lightbox.generating3d")}
+              </span>
+              <span className="text-muted-foreground text-xs">
+                {t("lightbox.setup3dHint", { defaultValue: "This can take a few minutes." })}
+              </span>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {splatBusy ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-background/60 backdrop-blur-sm">
+          <div className="panel flex items-center gap-2.5 rounded-full px-4 py-2.5 shadow-xl">
+            <CircleNotch className="size-[18px] animate-spin" />
+            <span className="text-sm font-medium">
+              {splatBusy === "generate"
+                ? t("lightbox.generating3d")
+                : t("lightbox.loading3d", { defaultValue: "Loading 3D…" })}
+            </span>
+          </div>
+        </div>
+      ) : null}
+
+      <AnimatePresence>
+        {splatSrc ? (
+          <Suspense key="splat" fallback={null}>
+            <SplatResult splat={splatSrc} onClose={() => setSplatSrc(null)} />
+          </Suspense>
         ) : null}
       </AnimatePresence>
     </>

@@ -1,5 +1,14 @@
 import { createId } from "@paralleldrive/cuid2"
-import { bigint, index, integer, pgSchema, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core"
+import {
+  bigint,
+  index,
+  integer,
+  pgSchema,
+  primaryKey,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core"
 import { user } from "./auth"
 
 /** `drive` schema — the Drive product (files + folders, shared storage with Photos). */
@@ -124,5 +133,41 @@ export const devices = drive.table(
   (t) => [
     uniqueIndex("drive_devices_owner_device_uq").on(t.ownerId, t.deviceId),
     index("drive_devices_owner_idx").on(t.ownerId, t.lastSeenAt),
+  ],
+)
+
+/** Drive tags — Spacedrive-style coloured labels applied to files/folders. Names are E2E-encrypted
+ *  like node names (the plaintext `name` holds a placeholder; the real value is in `encryptedName`);
+ *  `color` is plaintext (not sensitive). */
+export const driveTags = drive.table(
+  "tags",
+  {
+    id: id(),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    encryptedName: text("encrypted_name"),
+    color: text("color").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("drive_tags_owner_idx").on(t.ownerId, t.createdAt)],
+)
+
+/** Applies a tag to a node (many-to-many). */
+export const nodeTags = drive.table(
+  "node_tags",
+  {
+    nodeId: text("node_id")
+      .notNull()
+      .references(() => nodes.id, { onDelete: "cascade" }),
+    tagId: text("tag_id")
+      .notNull()
+      .references(() => driveTags.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.nodeId, t.tagId] }),
+    index("drive_node_tags_tag_idx").on(t.tagId),
   ],
 )

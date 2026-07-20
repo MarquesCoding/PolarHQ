@@ -40,6 +40,7 @@ const sample = (id: string, thumb: string, extra: Partial<GridAsset> = {}): Grid
   previewUrl: thumb,
   videoUrl: null,
   motion: false,
+  splat: false,
   stackId: null,
   stackCount: 1,
   ...extra,

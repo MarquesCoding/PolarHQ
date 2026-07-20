@@ -1,4 +1,5 @@
-import { type ReactElement, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { type ReactElement, Suspense, lazy, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { getHost } from "@workspace/core/host"
 import { usePersistentNumber } from "@workspace/screens/persistentSetting"
 import { useZoomPan } from "@workspace/screens/useZoomPan"
 import {
@@ -8,6 +9,7 @@ import {
   CaretLeft,
   CaretRight,
   Copy,
+  Cube,
   DotsThree,
   DownloadSimple,
   Heart,
@@ -63,6 +65,8 @@ interface LightboxProps {
   /** Show a thumbnail strip of every item along the bottom — used for stack/burst viewing. */
   filmstrip?: boolean
 }
+
+const SplatResult = lazy(() => import("@pages/Drive/components/ModelViewer/SplatResult"))
 
 /** A toolbar button with a hover tooltip (the buttons are icon-only and otherwise ambiguous). */
 const Tip = ({ label, children }: { label: string; children: ReactElement }) => (
@@ -183,6 +187,7 @@ const Lightbox = ({
   const [confirmDiscard, setConfirmDiscard] = useState(false)
   const exitEditingRef = useRef<() => void>(() => {})
   const [shareOpen, setShareOpen] = useState(false)
+  const [splatSrc, setSplatSrc] = useState<{ url: string; name: string } | null>(null)
   const item = items[index]
   const tooLargeToPreview =
     !!item?.encrypted && item.kind === "video" && item.sizeBytes > PLAYABLE_ENCRYPTED_MAX
@@ -312,6 +317,26 @@ const Lightbox = ({
     }
   }
 
+  const generate3d = async () => {
+    const host = getHost()
+    if (!host.generateSplat || item.kind !== "image") return
+    const toastId = toast.loading(t("lightbox.generating3d"))
+    try {
+      const url = item.encrypted
+        ? (decryptedSrc ?? (await controller.fetchOriginal(item)))
+        : (item.originalUrl ?? item.previewUrl ?? null)
+      if (!url) throw new Error("no source")
+      const blob = await fetch(url, { credentials: "include" }).then((response) => response.blob())
+      const bytes = new Uint8Array(await blob.arrayBuffer())
+      const splat = await host.generateSplat(bytes, blob.type || item.mimeType || "image/jpeg")
+      toast.dismiss(toastId)
+      setSplatSrc({ url: splat, name: `${item.name.replace(/\.[^.]+$/, "")}.ply` })
+    } catch {
+      toast.dismiss(toastId)
+      toast.error(t("lightbox.generate3dFailed"))
+    }
+  }
+
   const [decryptedSrc, setDecryptedSrc] = useState<string | null>(null)
   useEffect(() => {
     if (!item.encrypted || tooLargeToPreview) {
@@ -387,6 +412,8 @@ const Lightbox = ({
 
   const shareConfig = controller.share?.(item)
   const infoOpen = controller.renderInfo ? info : false
+  const canGenerate3d =
+    item.kind === "image" && getHost().isDesktop && Boolean(getHost().generateSplat)
 
   const menuActions: PhotoMenuActions = {
     favorite: controller.toggleFavorite
@@ -396,6 +423,7 @@ const Lightbox = ({
     share: shareConfig ? () => setShareOpen(true) : undefined,
     download: controller.download ? download : undefined,
     copy: item.kind === "image" ? () => void copyImage() : undefined,
+    generate3d: canGenerate3d ? () => void generate3d() : undefined,
     info: controller.renderInfo ? toggleInfo : undefined,
     trash: controller.trash ? () => void moveToTrash() : undefined,
   }
@@ -533,6 +561,12 @@ const Lightbox = ({
                         <Copy />
                         {t("lightbox.copy")}
                       </DropdownMenuItem>
+                      {canGenerate3d ? (
+                        <DropdownMenuItem onClick={() => void generate3d()}>
+                          <Cube />
+                          {t("lightbox.generate3d")}
+                        </DropdownMenuItem>
+                      ) : null}
                     </>
                   ) : null}
                   {shareConfig ? (
@@ -759,6 +793,12 @@ const Lightbox = ({
           createLink={shareConfig.createLink}
           encryptKeyId={shareConfig.encryptKeyId}
         />
+      ) : null}
+
+      {splatSrc ? (
+        <Suspense fallback={null}>
+          <SplatResult key="splat" splat={splatSrc} onClose={() => setSplatSrc(null)} />
+        </Suspense>
       ) : null}
 
       <Dialog open={confirmDiscard} onOpenChange={setConfirmDiscard}>

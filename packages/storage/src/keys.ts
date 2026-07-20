@@ -4,6 +4,7 @@ export interface AssetObjectKeys {
   preview: string
   video: string
   motion: string
+  splat: string
 }
 
 /** Deterministic object keys for a photo asset's original + derivatives. */
@@ -20,5 +21,6 @@ export const assetObjectKeys = (
     preview: `${base}/preview.webp`,
     video: `${base}/playback.mp4`,
     motion: `${base}/motion.bin`,
+    splat: `${base}/splat.bin`,
   }
 }

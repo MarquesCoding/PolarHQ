@@ -2,6 +2,7 @@ import { AppLink as Link, usePathname } from "@workspace/screens/platform"
 import {
   deleteSavedSearch,
   driveFolderIdFromPath,
+  fetchDriveTags,
   fetchNodes,
   fetchSavedSearches,
 } from "@workspace/core/drive"
@@ -29,6 +30,10 @@ const DriveNav = () => {
     queryKey: ["drive", "searches"],
     queryFn: fetchSavedSearches,
   })
+  const { data: tags = [] } = useQuery({
+    queryKey: ["drive", "tags"],
+    queryFn: fetchDriveTags,
+  })
 
   const removeSearch = async (id: string) => {
     await deleteSavedSearch(id)
@@ -40,6 +45,33 @@ const DriveNav = () => {
       <NavRow href="/drive" icon="gauge" label={t("driveNav.overview")} active={pathname === "/drive"} />
 
       <DevicesNav />
+
+      {tags.length > 0 ? (
+        <>
+          <SectionLabel>{t("driveNav.tags", { defaultValue: "Tags" })}</SectionLabel>
+          {tags.map((tag) => {
+            const active = pathname === `/drive/tag/${tag.id}`
+            return (
+              <motion.div key={tag.id} variants={navItemVariants} className="relative flex items-center">
+                <Link
+                  href={`/drive/tag/${tag.id}`}
+                  className={cn(
+                    navRowClass(active, true),
+                    "min-w-0 flex-1",
+                    active && "bg-sidebar-accent/60",
+                  )}
+                >
+                  <span
+                    className="relative size-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: tag.color }}
+                  />
+                  <span className="relative truncate">{tag.name}</span>
+                </Link>
+              </motion.div>
+            )
+          })}
+        </>
+      ) : null}
 
       {searches.length > 0 ? (
         <>

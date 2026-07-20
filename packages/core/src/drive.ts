@@ -23,8 +23,17 @@ export interface DriveNode {
   trashedAt: string | null
   createdAt: string
   updatedAt: string
+  tags?: DriveTag[]
   downloadUrl: string | null
   thumbnailUrl: string | null
+}
+
+/** A Spacedrive-style coloured tag. `name` is E2E (placeholder + `encryptedName`); `color` is plain. */
+export interface DriveTag {
+  id: string
+  name: string
+  encryptedName?: string | null
+  color: string
 }
 
 /** Replace a node's placeholder name with its decrypted name, when we hold the metadata key. */
@@ -33,6 +42,18 @@ export const decryptNodeName = <T extends Pick<DriveNode, "name" | "encryptedNam
 ): T => {
   const name = decryptName(node.encryptedName)
   return name ? { ...node, name } : node
+}
+
+/** Decrypt a tag's placeholder name with the metadata key, when available. */
+export const decryptTag = (tag: DriveTag): DriveTag => {
+  const name = decryptName(tag.encryptedName)
+  return name ? { ...tag, name } : tag
+}
+
+/** Decrypt a node's name and each of its tags' names. */
+export const decryptNode = (node: DriveNode): DriveNode => {
+  const named = decryptNodeName(node)
+  return node.tags?.length ? { ...named, tags: node.tags.map(decryptTag) } : named
 }
 
 /** Build the request fields for a node name — encrypted when keys are available, else plaintext. */
@@ -90,6 +111,7 @@ export type LibrarySource =
   | { view: "favorites" }
   | { view: "kind"; kind: StorageKind }
   | { view: "search"; query: string }
+  | { view: "tag"; tagId: string }
 
 /** Star or unstar a node; favorites surface in the cross-folder Favorites smart view. */
 export const setNodeFavorite = (id: string, favorite: boolean): Promise<{ node: DriveNode }> =>
@@ -101,9 +123,12 @@ export const setNodeFavorite = (id: string, favorite: boolean): Promise<{ node: 
 /** Fetch a flat smart-view listing. Recents/Favorites/Kind filter server-side; Search pulls the
  *  full file set and filters by decrypted name in the browser (names never reach the server). */
 export const fetchLibrary = async (source: LibrarySource): Promise<{ children: DriveNode[] }> => {
+  if (source.view === "tag") {
+    return { children: await fetchNodesByTag(source.tagId) }
+  }
   if (source.view === "search") {
     const listing = await apiFetch<{ children: DriveNode[] }>("/api/v1/drive/library?view=all")
-    const decrypted = listing.children.map(decryptNodeName)
+    const decrypted = listing.children.map(decryptNode)
     const query = source.query.trim().toLowerCase()
     return {
       children: query
@@ -114,7 +139,7 @@ export const fetchLibrary = async (source: LibrarySource): Promise<{ children: D
   const params = new URLSearchParams({ view: source.view })
   if (source.view === "kind") params.set("kind", source.kind)
   const listing = await apiFetch<{ children: DriveNode[] }>(`/api/v1/drive/library?${params}`)
-  return { children: listing.children.map(decryptNodeName) }
+  return { children: listing.children.map(decryptNode) }
 }
 
 /** A search query pinned to the sidebar; `name` is the (decryptable) query text. */
@@ -152,8 +177,55 @@ export const fetchNodes = async (parent?: string | null): Promise<DriveListing> 
   return {
     parent: decryptNodeName(listing.parent),
     breadcrumb: listing.breadcrumb.map(decryptNodeName),
-    children: listing.children.map(decryptNodeName),
+    children: listing.children.map(decryptNode),
   }
+}
+
+/** All of the owner's Drive tags (names decrypted). */
+export const fetchDriveTags = async (): Promise<DriveTag[]> => {
+  const { tags } = await apiFetch<{ tags: DriveTag[] }>("/api/v1/drive/tags")
+  return tags.map(decryptTag)
+}
+
+/** Create a tag with an E2E-encrypted name and a plaintext colour. */
+export const createDriveTag = (name: string, color: string): Promise<{ tag: DriveTag }> =>
+  apiFetch<{ tag: DriveTag }>("/api/v1/drive/tags", {
+    method: "POST",
+    body: JSON.stringify({ ...nameFields(name), color }),
+  }).then((result) => ({ tag: decryptTag(result.tag) }))
+
+/** Rename and/or recolour a tag. */
+export const updateDriveTag = (
+  id: string,
+  patch: { name?: string; color?: string },
+): Promise<{ tag: DriveTag }> => {
+  const body: Record<string, unknown> = {}
+  if (patch.name !== undefined) Object.assign(body, nameFields(patch.name))
+  if (patch.color !== undefined) body.color = patch.color
+  return apiFetch<{ tag: DriveTag }>(`/api/v1/drive/tags/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  }).then((result) => ({ tag: decryptTag(result.tag) }))
+}
+
+export const deleteDriveTag = (id: string): Promise<{ ok: boolean }> =>
+  apiFetch<{ ok: boolean }>(`/api/v1/drive/tags/${id}`, { method: "DELETE" })
+
+export const applyDriveTag = (nodeId: string, tagId: string): Promise<{ ok: boolean }> =>
+  apiFetch<{ ok: boolean }>(`/api/v1/drive/nodes/${nodeId}/tags`, {
+    method: "POST",
+    body: JSON.stringify({ tagId }),
+  })
+
+export const removeDriveTag = (nodeId: string, tagId: string): Promise<{ ok: boolean }> =>
+  apiFetch<{ ok: boolean }>(`/api/v1/drive/nodes/${nodeId}/tags/${tagId}`, { method: "DELETE" })
+
+/** Non-trashed nodes carrying a given tag (the tag filter view). */
+export const fetchNodesByTag = async (tagId: string): Promise<DriveNode[]> => {
+  const { children } = await apiFetch<{ children: DriveNode[] }>(
+    `/api/v1/drive/tags/${tagId}/nodes`,
+  )
+  return children.map(decryptNode)
 }
 
 /**
@@ -162,9 +234,14 @@ export const fetchNodes = async (parent?: string | null): Promise<DriveListing> 
  */
 export const driveFolderIdFromPath = (pathname: string): string | undefined | null => {
   if (pathname === "/drive/files") return undefined
-  if (pathname.startsWith("/drive/kind/") || pathname.startsWith("/drive/search/")) return null
+  if (
+    pathname.startsWith("/drive/kind/") ||
+    pathname.startsWith("/drive/search/") ||
+    pathname.startsWith("/drive/tag/")
+  )
+    return null
   const match = pathname.match(/^\/drive\/([^/]+)$/)
-  const reserved = ["trash", "overview", "files", "recent", "favorites", "kind", "search"]
+  const reserved = ["trash", "overview", "files", "recent", "favorites", "kind", "search", "tag"]
   if (!match || reserved.includes(match[1]!)) return null
   return match[1]
 }

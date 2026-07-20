@@ -59,6 +59,15 @@ import {
   setFavorite,
   trashNodeTree,
   upsertDriveFile,
+  type DriveTag,
+  listTags,
+  createTag,
+  updateTag,
+  deleteTag,
+  applyTag,
+  removeTag,
+  tagsForNodes,
+  listNodesByTag,
 } from "./service"
 
 type Variables = { userId: string }
@@ -88,7 +97,14 @@ const pushSync = (userId: string) =>
 const driveBase = `${config.api.url}/api/v1/drive/nodes`
 const photosBase = `${config.api.url}/api/v1/photos/assets`
 
-const serializeNode = (node: DriveNode, encryptedIds?: Set<string>) => {
+const serializeTag = (tag: DriveTag) => ({
+  id: tag.id,
+  name: tag.name,
+  encryptedName: tag.encryptedName,
+  color: tag.color,
+})
+
+const serializeNode = (node: DriveNode, encryptedIds?: Set<string>, tags: DriveTag[] = []) => {
   const encrypted = encryptedIds?.has(node.id) ?? false
   return {
     id: node.id,
@@ -107,6 +123,7 @@ const serializeNode = (node: DriveNode, encryptedIds?: Set<string>) => {
     trashedAt: node.trashedAt,
     createdAt: node.createdAt,
     updatedAt: node.updatedAt,
+    tags: tags.map(serializeTag),
     downloadUrl: node.kind === "file" ? `${driveBase}/${node.id}/download` : null,
     thumbnailUrl:
       node.photoAssetId && !encrypted
@@ -154,10 +171,11 @@ driveRoutes.get("/nodes", async (c) => {
   const { parent, children } = await listChildren(userId, c.req.query("parent") ?? null)
   const trail = await breadcrumb(userId, parent.id)
   const encrypted = await nodesWithKeys(userId, children.map((n) => n.id))
+  const tagMap = await tagsForNodes(userId, children.map((n) => n.id))
   return c.json({
     parent: serializeNode(parent),
     breadcrumb: trail.map((n) => serializeNode(n)),
-    children: children.map((n) => serializeNode(n, encrypted)),
+    children: children.map((n) => serializeNode(n, encrypted, tagMap.get(n.id) ?? [])),
   })
 })
 
@@ -176,7 +194,13 @@ driveRoutes.get("/library", async (c) => {
     userId,
     nodes.map((n) => n.id),
   )
-  return c.json({ children: nodes.map((n) => serializeNode(n, encrypted)) })
+  const tagMap = await tagsForNodes(
+    userId,
+    nodes.map((n) => n.id),
+  )
+  return c.json({
+    children: nodes.map((n) => serializeNode(n, encrypted, tagMap.get(n.id) ?? [])),
+  })
 })
 
 driveRoutes.get("/searches", async (c) => {
@@ -200,6 +224,90 @@ driveRoutes.post("/searches", async (c) => {
 
 driveRoutes.delete("/searches/:id", async (c) => {
   await deleteSavedSearch(c.get("userId"), c.req.param("id"))
+  return c.json({ ok: true })
+})
+
+driveRoutes.get("/tags", async (c) => {
+  const tags = await listTags(c.get("userId"))
+  return c.json({ tags: tags.map(serializeTag) })
+})
+
+driveRoutes.post("/tags", async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({
+      name: z.string().min(1),
+      encryptedName: z.string().nullish(),
+      color: z.string().min(1),
+    }),
+  )
+  if (!parsed.success) return c.json({ error: "drive.tag.invalid" }, 400)
+  const userId = c.get("userId")
+  const tag = await createTag(
+    userId,
+    parsed.data.name,
+    parsed.data.encryptedName ?? null,
+    parsed.data.color,
+  )
+  notify(userId)
+  return c.json({ tag: serializeTag(tag) }, 201)
+})
+
+driveRoutes.patch("/tags/:id", async (c) => {
+  const parsed = await parse(
+    c,
+    z.object({
+      name: z.string().min(1).optional(),
+      encryptedName: z.string().nullish(),
+      color: z.string().min(1).optional(),
+    }),
+  )
+  if (!parsed.success) return c.json({ error: "drive.tag.invalid" }, 400)
+  const userId = c.get("userId")
+  const tag = await updateTag(userId, c.req.param("id"), parsed.data)
+  if (!tag) return c.json({ error: "notFound" }, 404)
+  notify(userId)
+  return c.json({ tag: serializeTag(tag) })
+})
+
+driveRoutes.delete("/tags/:id", async (c) => {
+  const userId = c.get("userId")
+  await deleteTag(userId, c.req.param("id"))
+  notify(userId)
+  return c.json({ ok: true })
+})
+
+driveRoutes.get("/tags/:id/nodes", async (c) => {
+  const userId = c.get("userId")
+  const nodes = await listNodesByTag(userId, c.req.param("id"))
+  const encrypted = await nodesWithKeys(
+    userId,
+    nodes.map((n) => n.id),
+  )
+  const tagMap = await tagsForNodes(
+    userId,
+    nodes.map((n) => n.id),
+  )
+  return c.json({
+    children: nodes.map((n) => serializeNode(n, encrypted, tagMap.get(n.id) ?? [])),
+  })
+})
+
+driveRoutes.post("/nodes/:id/tags", async (c) => {
+  const parsed = await parse(c, z.object({ tagId: z.string().min(1) }))
+  if (!parsed.success) return c.json({ error: "drive.tag.invalid" }, 400)
+  const userId = c.get("userId")
+  const ok = await applyTag(userId, c.req.param("id"), parsed.data.tagId)
+  if (!ok) return c.json({ error: "notFound" }, 404)
+  notify(userId)
+  return c.json({ ok: true })
+})
+
+driveRoutes.delete("/nodes/:id/tags/:tagId", async (c) => {
+  const userId = c.get("userId")
+  const ok = await removeTag(userId, c.req.param("id"), c.req.param("tagId"))
+  if (!ok) return c.json({ error: "notFound" }, 404)
+  notify(userId)
   return c.json({ ok: true })
 })
 

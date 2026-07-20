@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import {
   Copy,
+  Cube,
   DownloadSimple,
   Info,
   PencilSimple,
@@ -29,6 +30,7 @@ export interface PhotoMenuActions {
   share?: () => void
   download?: () => void
   copy?: () => void
+  generate3d?: () => void
   info?: () => void
   trash?: () => void
 }
@@ -41,7 +43,9 @@ interface PhotoContextMenuProps {
 const PhotoContextMenu = ({ actions, children }: PhotoContextMenuProps) => {
   const { t } = useTranslation("photos")
   const hasPrimary = Boolean(actions.favorite || actions.edit)
-  const hasSecondary = Boolean(actions.share || actions.download || actions.copy || actions.info)
+  const hasSecondary = Boolean(
+    actions.share || actions.download || actions.copy || actions.generate3d || actions.info,
+  )
 
   return (
     <ContextMenu>
@@ -78,6 +82,12 @@ const PhotoContextMenu = ({ actions, children }: PhotoContextMenuProps) => {
           <ContextMenuItem onClick={actions.copy}>
             <Copy />
             {t("lightbox.copy")}
+          </ContextMenuItem>
+        ) : null}
+        {actions.generate3d ? (
+          <ContextMenuItem onClick={actions.generate3d}>
+            <Cube />
+            {t("lightbox.generate3d")}
           </ContextMenuItem>
         ) : null}
         {actions.info ? (

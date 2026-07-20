@@ -22,6 +22,12 @@ export interface HostCapabilities {
    * pipeline natively (no ML runtime, network, or Python/CUDA). Absent on web.
    */
   generateSplat?: (bytes: Uint8Array, mimeType: string) => Promise<string>
+  /** Whether Apple SHARP is provisioned (real 3DGS) vs. the heuristic fallback. Desktop only. */
+  sharpAvailable?: () => Promise<boolean>
+  /** Provision SHARP on demand (uv + Python env + ml-sharp + checkpoint), reporting progress phases
+   *  ("installing-uv" | "downloading-sharp" | "creating-env" | "installing-deps" |
+   *  "downloading-model" | "ready"). Desktop only. */
+  sharpSetup?: (onPhase?: (phase: string) => void) => Promise<void>
 }
 
 let host: HostCapabilities = { isDesktop: false }

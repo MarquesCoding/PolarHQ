@@ -3,13 +3,27 @@ import { type ReactNode, createContext, useCallback, useContext, useEffect, useS
 type Theme = "light" | "dark" | "system"
 type Resolved = "light" | "dark"
 
+/** Accent colour themes — the default violet plus alternates (see globals.css `[data-accent]`). */
+export type Accent = "violet" | "blue" | "emerald" | "rose" | "amber"
+export const ACCENTS: Accent[] = ["violet", "blue", "emerald", "rose", "amber"]
+
+/** Full neutral palettes — the default plus warm/cool alternates (see globals.css `[data-palette]`). */
+export type Palette = "default" | "sand" | "slate"
+export const PALETTES: Palette[] = ["default", "sand", "slate"]
+
 interface ThemeState {
   theme: Theme
   resolvedTheme: Resolved
   setTheme: (theme: Theme) => void
+  accent: Accent
+  setAccent: (accent: Accent) => void
+  palette: Palette
+  setPalette: (palette: Palette) => void
 }
 
 const STORAGE_KEY = "theme"
+const ACCENT_KEY = "accent"
+const PALETTE_KEY = "palette"
 const ThemeContext = createContext<ThemeState | null>(null)
 
 const systemTheme = (): Resolved =>
@@ -19,6 +33,18 @@ const apply = (resolved: Resolved): void => {
   const root = document.documentElement
   root.classList.toggle("dark", resolved === "dark")
   root.style.colorScheme = resolved
+}
+
+const applyAccent = (accent: Accent): void => {
+  const root = document.documentElement
+  if (accent === "violet") root.removeAttribute("data-accent")
+  else root.setAttribute("data-accent", accent)
+}
+
+const applyPalette = (palette: Palette): void => {
+  const root = document.documentElement
+  if (palette === "default") root.removeAttribute("data-palette")
+  else root.setAttribute("data-palette", palette)
 }
 
 /**
@@ -57,8 +83,34 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     setThemeState(next)
   }, [])
 
+  const [accent, setAccentState] = useState<Accent>(
+    () => (localStorage.getItem(ACCENT_KEY) as Accent | null) ?? "violet",
+  )
+  useEffect(() => {
+    applyAccent(accent)
+  }, [accent])
+  const setAccent = useCallback((next: Accent) => {
+    localStorage.setItem(ACCENT_KEY, next)
+    setAccentState(next)
+  }, [])
+
+  const [palette, setPaletteState] = useState<Palette>(
+    () => (localStorage.getItem(PALETTE_KEY) as Palette | null) ?? "default",
+  )
+  useEffect(() => {
+    applyPalette(palette)
+  }, [palette])
+  const setPalette = useCallback((next: Palette) => {
+    localStorage.setItem(PALETTE_KEY, next)
+    setPaletteState(next)
+  }, [])
+
   return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider
+      value={{ theme, resolvedTheme, setTheme, accent, setAccent, palette, setPalette }}
+    >
+      {children}
+    </ThemeContext.Provider>
   )
 }
 

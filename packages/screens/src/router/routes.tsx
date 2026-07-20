@@ -60,6 +60,12 @@ const DriveSearch = () => {
   return <Browser source={{ view: "search", query: search.name }} />
 }
 
+const DriveTagView = () => {
+  const { id } = useParams()
+  if (!id) return null
+  return <Browser source={{ view: "tag", tagId: id }} />
+}
+
 const AlbumDetailRoute = () => {
   const { id } = useParams()
   return <AlbumDetail albumId={id ?? ""} />
@@ -177,6 +183,7 @@ export const AppRoutes = () => (
       <Route path="/drive/trash" element={<DriveTrash />} />
       <Route path="/drive/kind/:kind" element={<DriveKind />} />
       <Route path="/drive/search/:id" element={<DriveSearch />} />
+      <Route path="/drive/tag/:id" element={<DriveTagView />} />
       <Route path="/drive/:id" element={<DriveFolder />} />
     </Route>
 
