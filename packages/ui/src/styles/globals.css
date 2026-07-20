@@ -119,6 +119,70 @@
     --sidebar-ring: #8b6cfb;
 }
 
+/* Accent themes — recolor the primary/accent hue, composing with light/dark. Applied via a
+   `data-accent` attribute on <html> (absent = the default violet). */
+[data-accent="blue"]:not(.dark) {
+    --primary: #3b6cf6;
+    --ring: #3b6cf6;
+    --sidebar-primary: #3b6cf6;
+    --sidebar-ring: #3b6cf6;
+    --chart-1: #3b6cf6;
+}
+.dark[data-accent="blue"] {
+    --primary: #5b8cff;
+    --ring: #5b8cff;
+    --sidebar-primary: #5b8cff;
+    --sidebar-ring: #5b8cff;
+    --chart-1: #5b8cff;
+}
+
+[data-accent="emerald"]:not(.dark) {
+    --primary: #059669;
+    --ring: #059669;
+    --sidebar-primary: #059669;
+    --sidebar-ring: #059669;
+    --chart-1: #059669;
+}
+.dark[data-accent="emerald"] {
+    --primary: #10b981;
+    --ring: #10b981;
+    --sidebar-primary: #10b981;
+    --sidebar-ring: #10b981;
+    --chart-1: #10b981;
+}
+
+[data-accent="rose"]:not(.dark) {
+    --primary: #e11d48;
+    --ring: #e11d48;
+    --sidebar-primary: #e11d48;
+    --sidebar-ring: #e11d48;
+    --chart-1: #e11d48;
+}
+.dark[data-accent="rose"] {
+    --primary: #fb7185;
+    --ring: #fb7185;
+    --sidebar-primary: #fb7185;
+    --sidebar-ring: #fb7185;
+    --chart-1: #fb7185;
+}
+
+[data-accent="amber"]:not(.dark) {
+    --primary: #f59e0b;
+    --primary-foreground: #1a1a2a;
+    --ring: #f59e0b;
+    --sidebar-primary: #f59e0b;
+    --sidebar-ring: #f59e0b;
+    --chart-1: #f59e0b;
+}
+.dark[data-accent="amber"] {
+    --primary: #fbbf24;
+    --primary-foreground: #1a1a2a;
+    --ring: #fbbf24;
+    --sidebar-primary: #fbbf24;
+    --sidebar-ring: #fbbf24;
+    --chart-1: #fbbf24;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

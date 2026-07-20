@@ -17,9 +17,17 @@ import { Pane, PaneSection, Row } from "@components/SettingsModal/pane"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
-import { useTheme } from "@components/theme-provider"
-import { SignOut } from "@phosphor-icons/react"
+import { type Accent, ACCENTS, useTheme } from "@components/theme-provider"
+import { Check, SignOut } from "@phosphor-icons/react"
 import { useTranslation } from "react-i18next"
+
+const ACCENT_SWATCH: Record<Accent, string> = {
+  violet: "#7c5cfc",
+  blue: "#3b6cf6",
+  emerald: "#059669",
+  rose: "#e11d48",
+  amber: "#f59e0b",
+}
 
 const avatarUrl = (seed: string) =>
   `https://api.dicebear.com/10.x/notionists-neutral/svg?seed=${encodeURIComponent(seed)}`
@@ -52,7 +60,7 @@ const ProfilePane = ({ name, email }: { name: string; email: string }) => {
 
 const AppearancePane = () => {
   const { t } = useTranslation("account")
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, accent, setAccent } = useTheme()
   const themes = [
     { value: "light", label: t("light") },
     { value: "dark", label: t("dark") },
@@ -76,6 +84,30 @@ const AppearancePane = () => {
                 )}
               >
                 {option.label}
+              </button>
+            ))}
+          </div>
+        </Row>
+        <Row
+          label={t("accent", { defaultValue: "Accent" })}
+          hint={t("accentHint", { defaultValue: "The app's highlight colour." })}
+        >
+          <div className="flex items-center gap-1.5">
+            {ACCENTS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                aria-label={option}
+                onClick={() => setAccent(option)}
+                style={{ backgroundColor: ACCENT_SWATCH[option] }}
+                className={cn(
+                  "ring-offset-background flex size-6 items-center justify-center rounded-full ring-offset-2 transition",
+                  accent === option ? "ring-foreground ring-2" : "hover:scale-110",
+                )}
+              >
+                {accent === option ? (
+                  <Check weight="bold" className="size-3.5 text-white" />
+                ) : null}
               </button>
             ))}
           </div>
