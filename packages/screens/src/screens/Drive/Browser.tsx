@@ -56,6 +56,7 @@ import FolderLockDialog from "@pages/Drive/components/FolderLockDialog/FolderLoc
 import FolderLockGate from "@pages/Drive/components/FolderLockGate/FolderLockGate"
 import Lightbox from "@pages/Photos/components/Lightbox/Lightbox"
 import { useDriveViewer } from "@pages/Drive/useDriveViewer"
+import { compareNodes } from "@pages/Drive/sortNodes"
 import MillerView from "@pages/Drive/components/MillerView/MillerView"
 import MoveDialog from "@pages/Drive/components/MoveDialog/MoveDialog"
 import NewFolderDialog from "@pages/Drive/components/NewFolderDialog/NewFolderDialog"
@@ -81,6 +82,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const upload = useUploadManager()
   const dispatch = useAppDispatch()
   const viewMode = useAppSelector((state) => state.ui.viewMode)
+  const driveSort = useAppSelector((state) => state.ui.driveSort)
   const detailsOpen = useAppSelector((state) => state.ui.driveDetailsOpen)
   const searchRaw = useAppSelector((state) => state.ui.searchQuery).trim()
   const search = searchRaw.toLowerCase()
@@ -141,16 +143,8 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
     return list
   }, [children, search, atRoot, syncedIds])
   const visible = useMemo(
-    () =>
-      source
-        ? filtered
-        : filtered.slice().sort((a, b) => {
-            if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
-            const rank = (node: DriveNode) => (node.special ? 0 : node.locked ? 1 : 2)
-            if (rank(a) !== rank(b)) return rank(a) - rank(b)
-            return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
-          }),
-    [filtered, source],
+    () => (source ? filtered : filtered.slice().sort(compareNodes(driveSort))),
+    [filtered, source, driveSort],
   )
   const byId = useMemo(() => new Map(children.map((node) => [node.id, node])), [children])
 
