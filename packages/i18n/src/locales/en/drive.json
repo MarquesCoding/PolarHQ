@@ -147,6 +147,11 @@
       "document": "Documents",
       "archive": "Archives",
       "other": "Other"
+    },
+    "deviceKind": {
+      "desktop": "Desktop",
+      "web": "Web",
+      "mobile": "Mobile"
     }
   },
   "driveTopActions": {

@@ -11,6 +11,7 @@ import { storage } from "@workspace/storage"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { accountRoutes } from "./account/routes"
+import { deviceRoutes } from "./devices/routes"
 import { adminRoutes } from "./admin/routes"
 import { registerAdminModule } from "./admin/module"
 import { appsRoutes } from "./apps/routes"
@@ -117,6 +118,7 @@ app.post("/api/auth/sign-up/email", async (c, next) => {
 app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw))
 
 app.route("/api/v1/account", accountRoutes)
+app.route("/api/v1/devices", deviceRoutes)
 app.route("/api/v1/admin", adminRoutes)
 app.route("/api/v1/apps", appsRoutes)
 

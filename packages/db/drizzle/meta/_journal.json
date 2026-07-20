@@ -78,6 +78,13 @@
       "when": 1782593243299,
       "tag": "0010_soft_switch",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1784567280068,
+      "tag": "0011_futuristic_thunderbolts",
+      "breakpoints": true
     }
   ]
 }

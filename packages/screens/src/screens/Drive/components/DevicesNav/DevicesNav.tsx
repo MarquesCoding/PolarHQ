@@ -2,6 +2,11 @@ import { useEffect, useRef, useState } from "react"
 import { AppLink as Link, usePathname } from "@workspace/screens/platform"
 import { getHost } from "@workspace/core/host"
 import { fetchSetupStatus } from "@workspace/core/setup"
+import {
+  type RegisteredDevice,
+  fetchRegisteredDevices,
+  getDeviceId,
+} from "@workspace/core/devices"
 import { getSyncBridge } from "@workspace/screens/syncBridge"
 import { Icon } from "@workspace/screens/icons"
 import { SectionLabel, navRowClass } from "@components/FlatShell"
@@ -9,6 +14,25 @@ import Spinner from "@components/Spinner/Spinner"
 import { cn } from "@workspace/ui/lib/utils"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
+
+/** A device counts as online if it's heartbeated within this window (heartbeat runs every 5 min). */
+const ONLINE_WINDOW_MS = 6 * 60 * 1000
+const deviceIcon = (kind: string): string =>
+  kind === "mobile" ? "device-mobile" : kind === "web" ? "desktop" : "laptop"
+
+/** A registered device on the account (this desktop, another browser, a phone…) with an online dot. */
+const RegisteredDeviceRow = ({ device }: { device: RegisteredDevice }) => {
+  const online = Date.now() - new Date(device.lastSeenAt).getTime() < ONLINE_WINDOW_MS
+  return (
+    <div className="text-foreground flex items-center gap-2.5 px-2.5 py-1.5 text-sm font-medium">
+      <Icon name={deviceIcon(device.kind)} className="size-[18px] shrink-0" />
+      <span className="min-w-0 flex-1 truncate">{device.name}</span>
+      <span
+        className={cn("size-1.5 shrink-0 rounded-full", online ? "bg-emerald-500" : "bg-muted-foreground/40")}
+      />
+    </div>
+  )
+}
 
 interface P2pDevice {
   id: string
@@ -100,6 +124,14 @@ const DevicesNav = () => {
   const { data: setup } = useQuery({ queryKey: ["setup-status"], queryFn: fetchSetupStatus })
   const cloudName = setup?.instanceName || t("driveNav.cloud")
   const syncedPaths = new Set(synced.map((folder) => `/drive/${folder.driveNodeId}`))
+
+  // Every other device signed into this account (so web sees the desktop app and vice-versa). The
+  // current client is excluded — it's already represented (as "This device" on desktop).
+  const { data: registered } = useQuery({
+    queryKey: ["devices", "registered"],
+    queryFn: () => fetchRegisteredDevices().then((r) => r.devices),
+  })
+  const otherDevices = (registered ?? []).filter((device) => device.deviceId !== getDeviceId())
   const peers: P2pDevice[] = []
 
   return (
@@ -152,6 +184,10 @@ const DevicesNav = () => {
           )}
         </>
       ) : null}
+
+      {otherDevices.map((device) => (
+        <RegisteredDeviceRow key={device.id} device={device} />
+      ))}
 
       {peers.map((device) => (
         <P2pDeviceRow key={device.id} device={device} />
