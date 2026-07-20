@@ -27,7 +27,7 @@ const SplatSection = () => (
           Turn a single photo into 3D
         </h2>
         <p className="text-foreground/65 mx-auto mt-5 max-w-xl text-lg text-pretty">
-          Generate a real 3D Gaussian splat from any photo — powered by Apple's SHARP model running on
+          Generate a real 3D Gaussian splat from any photo, powered by Apple's SHARP model running on
           your own hardware, fully offline. Orbit it, and it saves encrypted alongside the original.
         </p>
         <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">

@@ -15,17 +15,17 @@ const PILLARS = [
   {
     icon: ShieldCheck,
     title: "End-to-end encrypted",
-    body: "Every photo, file and document — plus its thumbnails, filenames and metadata — is encrypted on your device with libsodium before it leaves. The server only ever stores ciphertext.",
+    body: "Every photo, file and document, along with its thumbnails, filenames and metadata, is encrypted on your device with libsodium before it leaves. The server only ever stores ciphertext.",
   },
   {
     icon: Eye,
     title: "Zero-knowledge",
-    body: "Your master key is derived from your password and never touches the server. Content keys are wrapped to it, so no one but you can decrypt your library — not a host, not us, not an attacker with the database.",
+    body: "Your master key is derived from your password and never touches the server. Content keys are wrapped to it, so no one but you can decrypt your library: not a host, not us, not an attacker with the database.",
   },
   {
     icon: HardDrives,
     title: "Self-hosted, your keys",
-    body: "PolarHQ runs on hardware you own, with no third-party cloud, no telemetry and no lock-in. Your keys, your server, your data — exportable at any time.",
+    body: "PolarHQ runs on hardware you own, with no third-party cloud, no telemetry and no lock-in. Your keys, your server, your data, exportable at any time.",
   },
 ]
 
@@ -33,7 +33,7 @@ const STEPS = [
   {
     icon: Key,
     title: "Your key never leaves your device",
-    body: "Your password derives a master key in your browser via a memory-hard KDF. The server stores only a verifier — never your key or password.",
+    body: "Your password derives a master key in your browser via a memory-hard KDF. The server stores only a verifier, never your key or password.",
   },
   {
     icon: LockKey,
@@ -43,7 +43,7 @@ const STEPS = [
   {
     icon: CloudSlash,
     title: "The server only serves ciphertext",
-    body: "Media is delivered through authenticated, ownership-checked routes — never public presigned links — and decrypted only in your app. Thumbnails, EXIF, locations and derivatives are encrypted too.",
+    body: "Media is delivered through authenticated, ownership-checked routes (never public presigned links) and decrypted only in your app. Thumbnails, EXIF, locations and derivatives are encrypted too.",
   },
 ]
 
@@ -54,7 +54,7 @@ const SecurityPage = () => (
       <PageHero
         eyebrow="Security"
         title="Encrypted by default. Yours by design."
-        subtitle="Every photo, file and document is end-to-end encrypted on your device — and runs on a server you control."
+        subtitle="Every photo, file and document is end-to-end encrypted on your device, and runs on a server you control."
       />
     }
   >
@@ -100,7 +100,7 @@ const SecurityPage = () => (
       <Reveal delay={0.1}>
         <p className="text-muted-foreground mx-auto mt-6 max-w-2xl text-center text-sm">
           The tradeoff of real end-to-end encryption: without your password or recovery code, no one
-          — including us — can recover encrypted data. Keep your recovery code safe.
+          (including us) can recover encrypted data. Keep your recovery code safe.
         </p>
       </Reveal>
     </div>

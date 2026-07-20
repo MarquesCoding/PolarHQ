@@ -7,24 +7,24 @@ import { cn } from "@workspace/ui/lib/utils"
 
 const FAQS: { q: string; a: string }[] = [
   {
-    q: "Can the server — or PolarHQ — read my files?",
-    a: "No. Every photo, file and document is encrypted on your device before upload, with a key derived from your password. The server only ever stores ciphertext and never has your key, so it can't read your library or even the file names — including if the database or storage is breached.",
+    q: "Can the server (or PolarHQ) read my files?",
+    a: "No. Every photo, file and document is encrypted on your device before upload, with a key derived from your password. The server only ever stores ciphertext and never has your key, so it can't read your library or even the file names, including if the database or storage is breached.",
   },
   {
     q: "What happens if I forget my password?",
-    a: "Your password protects your keys, so it can't be reset for you without breaking end-to-end encryption. When you sign up you get a one-time recovery code — keep it somewhere safe. With your password or that recovery code you can regain access; without either, encrypted data cannot be recovered by anyone.",
+    a: "Your password protects your keys, so it can't be reset for you without breaking end-to-end encryption. When you sign up you get a one-time recovery code; keep it somewhere safe. With your password or that recovery code you can regain access. Without either, encrypted data cannot be recovered by anyone.",
   },
   {
     q: "What encryption do you actually use?",
-    a: "libsodium — XSalsa20-Poly1305 (secretbox) for most data and secretstream for large files — with your master key derived from your password via a memory-hard KDF. Every item gets its own random content key that's sealed to your master key, the same key-hierarchy model established E2E apps use.",
+    a: "libsodium: XSalsa20-Poly1305 (secretbox) for most data, and secretstream for large files, with your master key derived from your password via a memory-hard KDF. Every item gets its own random content key that's sealed to your master key, the same key-hierarchy model established E2E apps use.",
   },
   {
     q: "If everything's encrypted, how do thumbnails and search work?",
-    a: "On your device. Thumbnails are generated and encrypted in your browser, and photo search runs locally over encrypted embeddings — the server never sees a plaintext image, filename or search query.",
+    a: "On your device. Thumbnails are generated and encrypted in your browser, and photo search runs locally over encrypted embeddings, so the server never sees a plaintext image, filename or search query.",
   },
   {
     q: "Can I still share files with other people?",
-    a: "Yes. Sharing hands over only the single content key for that one item, through a link you control, so a recipient can decrypt exactly what you shared — and you can revoke it — without exposing anything else in your library.",
+    a: "Yes. Sharing hands over only the single content key for that one item, through a link you control, so a recipient can decrypt exactly what you shared (and you can revoke it) without exposing anything else in your library.",
   },
   {
     q: "Is it open source and auditable?",
