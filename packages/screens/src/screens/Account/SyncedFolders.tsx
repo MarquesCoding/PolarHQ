@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { useQueryClient } from "@tanstack/react-query"
 import {
   type SyncProgress,
   type SyncedFolderInfo,
@@ -18,6 +19,7 @@ import { toast } from "sonner"
 const SyncedFolders = () => {
   const { t } = useTranslation("account")
   const bridge = getSyncBridge()
+  const queryClient = useQueryClient()
   const [folders, setFolders] = useState<SyncedFolderInfo[] | null>(null)
   const [busyId, setBusyId] = useState<string | null>(null)
   const [progress, setProgress] = useState<SyncProgress | null>(null)
@@ -28,6 +30,8 @@ const SyncedFolders = () => {
       ?.list()
       .then(setFolders)
       .catch(() => setFolders([]))
+    // The Drive sidebar/overview read the same list via react-query; keep them in sync.
+    void queryClient.invalidateQueries({ queryKey: ["sync", "folders"] })
   }
 
   useEffect(() => {

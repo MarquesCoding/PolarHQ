@@ -1,14 +1,31 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit"
+import type { StorageKind } from "@workspace/core/drive"
 
 export type ViewMode = "grid" | "table" | "columns"
 
 export type SettingsScope = "admin" | "account"
+
+export type DriveSortKey = "name" | "size" | "modified" | "kind"
+export type SortDir = "asc" | "desc"
+export interface DriveSort {
+  key: DriveSortKey
+  dir: SortDir
+}
+
+export interface DriveFilter {
+  /** Storage kinds to keep; empty means all kinds. */
+  kinds: StorageKind[]
+  /** When true, keep only favourited items. */
+  favoritesOnly: boolean
+}
 
 export interface UiState {
   activeAppId: string | null
   searchQuery: string
   sidebarCollapsed: boolean
   viewMode: ViewMode
+  driveSort: DriveSort
+  driveFilter: DriveFilter
   driveDetailsOpen: boolean
   settingsScope: SettingsScope | null
   settingsSection: string | null
@@ -19,6 +36,8 @@ const initialState: UiState = {
   searchQuery: "",
   sidebarCollapsed: false,
   viewMode: "grid",
+  driveSort: { key: "name", dir: "asc" },
+  driveFilter: { kinds: [], favoritesOnly: false },
   driveDetailsOpen: false,
   settingsScope: null,
   settingsSection: null,
@@ -42,6 +61,12 @@ const uiSlice = createSlice({
     },
     setViewMode: (state, action: PayloadAction<ViewMode>) => {
       state.viewMode = action.payload
+    },
+    setDriveSort: (state, action: PayloadAction<DriveSort>) => {
+      state.driveSort = action.payload
+    },
+    setDriveFilter: (state, action: PayloadAction<DriveFilter>) => {
+      state.driveFilter = action.payload
     },
     setDriveDetailsOpen: (state, action: PayloadAction<boolean>) => {
       state.driveDetailsOpen = action.payload
@@ -69,6 +94,8 @@ export const {
   toggleSidebar,
   setSidebarCollapsed,
   setViewMode,
+  setDriveSort,
+  setDriveFilter,
   setDriveDetailsOpen,
   openSettings,
   setSettingsSection,

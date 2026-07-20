@@ -6,24 +6,7 @@ import { ArrowSquareOut, Calendar, File, HeartIcon } from "@phosphor-icons/react
 import NumberFlow from "@number-flow/react"
 import { Button } from "@workspace/ui/components/button"
 import { useTranslation } from "react-i18next"
-
-const ARCHIVE = /\.(zip|tar|gz|tgz|rar|7z|bz2|xz|dmg)$/i
-
-/** Map a node to one of the overview storage-kind keys for a friendly label (Images / Videos / …). */
-const storageKindKey = (node: DriveNode): string => {
-  const mime = node.mimeType ?? ""
-  const name = node.name.toLowerCase()
-  if (mime.startsWith("image/")) return "image"
-  if (mime.startsWith("video/")) return "video"
-  if (mime.startsWith("audio/")) return "audio"
-  if (
-    mime === "application/pdf" ||
-    /(word|presentation|spreadsheet|^text\/|vnd\.orbit|officedocument|oasis|msword|json)/.test(mime)
-  )
-    return "document"
-  if (ARCHIVE.test(name) || /(zip|tar|gzip|x-7z|x-rar|x-bzip)/.test(mime)) return "archive"
-  return "other"
-}
+import { storageKind } from "@pages/Drive/nodeKind"
 
 const extensionOf = (name: string): string | undefined => {
   const dot = name.lastIndexOf(".")
@@ -66,7 +49,7 @@ interface DriveInfoPanelProps {
 /** Drive file details for the Lightbox side panel — mirrors the Photos InfoPanel layout. */
 const DriveInfoPanel = ({ node, onFavorite, onShare }: DriveInfoPanelProps) => {
   const { t } = useTranslation("drive")
-  const kindLabel = t(`overview.kinds.${storageKindKey(node)}`)
+  const kindLabel = t(`overview.kinds.${storageKind(node)}`)
   const sizeParts = bytesParts(node.sizeBytes ?? 0)
   const extension = extensionOf(node.name)
 

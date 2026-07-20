@@ -7,17 +7,11 @@ import { useQuery } from "@tanstack/react-query"
 import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import Spinner from "@components/Spinner/Spinner"
+import { useAppSelector } from "@workspace/screens/store/hooks"
+import { compareNodes } from "@pages/Drive/sortNodes"
 import NodeContextMenu, {
   type DriveNodeActions,
 } from "@pages/Drive/components/NodeContextMenu/NodeContextMenu"
-
-const sortNodes = (nodes: DriveNode[]): DriveNode[] =>
-  [...nodes].sort((a, b) => {
-    if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
-    const rank = (node: DriveNode) => (node.special ? 0 : node.locked ? 1 : 2)
-    if (rank(a) !== rank(b)) return rank(a) - rank(b)
-    return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
-  })
 
 interface MillerColumnProps {
   folderId?: string
@@ -38,11 +32,12 @@ const MillerColumn = ({
   actions,
 }: MillerColumnProps) => {
   const { t } = useTranslation("drive")
+  const driveSort = useAppSelector((state) => state.ui.driveSort)
   const { data, isLoading } = useQuery({
     queryKey: ["drive", "nodes", folderId ?? "root"],
     queryFn: () => fetchNodes(folderId),
   })
-  const nodes = sortNodes(data?.children ?? [])
+  const nodes = [...(data?.children ?? [])].sort(compareNodes(driveSort))
 
   return (
     <div className="border-border/60 flex w-60 shrink-0 flex-col border-r">
