@@ -86,9 +86,15 @@ const SingleDetails = ({ node }: { node: DriveNode }) => {
   return (
     <>
       <div className="flex flex-col items-center gap-3 text-center">
-        <div className="aspect-square w-full overflow-hidden rounded-xl">
-          <Preview node={node} />
-        </div>
+        {node.thumbnailUrl ? (
+          <div className="aspect-square w-full overflow-hidden rounded-xl">
+            <Preview node={node} />
+          </div>
+        ) : (
+          <div className="flex h-28 w-full items-center justify-center">
+            <FileIcon node={node} className="size-20" />
+          </div>
+        )}
         <p className="text-sm font-medium break-words">{node.name}</p>
       </div>
       <Section icon={File} title={t("detailsPanel.file")}>
@@ -236,7 +242,7 @@ const DetailsPanel = ({ open, nodes }: DetailsPanelProps) => {
       {/* Floating rounded card (matches the Photos viewer's details panel), pinned so it doesn't
           scroll with the file grid. Closed via the toolbar's info toggle, so no header/close here. */}
       <div className="border-border/60 bg-card/80 mt-2 mr-3 mb-3 flex h-[calc(100%-1.25rem)] w-72 flex-col overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl">
-        <div className="min-h-0 flex-1 pt-2">
+        <div className="min-h-0 flex-1">
           {nodes.length === 0 ? (
             <p className="text-muted-foreground p-5 text-sm">{t("detailsPanel.empty")}</p>
           ) : nodes.length === 1 ? (
