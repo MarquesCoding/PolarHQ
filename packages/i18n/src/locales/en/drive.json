@@ -65,7 +65,8 @@
     "size": "Size",
     "title": "Details",
     "totalSize": "Total size",
-    "type": "Type"
+    "type": "Type",
+    "tags": "Tags"
   },
   "driveBackgroundMenu": {
     "newDocument": "New document",
@@ -90,7 +91,8 @@
     "savedSearches": "Saved searches",
     "tagCloud": "Cloud",
     "tagLocal": "Local",
-    "trash": "Trash"
+    "trash": "Trash",
+    "tags": "Tags"
   },
   "overview": {
     "title": "Library overview",
@@ -252,7 +254,9 @@
     "share": "Share",
     "versionHistory": "See version history",
     "view": "View",
-    "viewIn3d": "View in 3D"
+    "viewIn3d": "View in 3D",
+    "tags": "Tags",
+    "newTag": "New tag…"
   },
   "nodeTable": {
     "deselect": "Deselect",
@@ -311,5 +315,13 @@
       "favorites": "Favorites only",
       "reset": "Clear filters"
     }
+  },
+  "tags": {
+    "newTag": "New tag",
+    "namePlaceholder": "Tag name",
+    "cancel": "Cancel",
+    "create": "Create",
+    "add": "Add",
+    "remove": "Remove"
   }
 }

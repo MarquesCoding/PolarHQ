@@ -100,7 +100,9 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
       ? source.kind
       : source.view === "search"
         ? source.query
-        : ""
+        : source.view === "tag"
+          ? source.tagId
+          : ""
   const queryKey = source
     ? ["drive", "library", source.view, sourceKey]
     : ["drive", "nodes", folderId ?? "root"]

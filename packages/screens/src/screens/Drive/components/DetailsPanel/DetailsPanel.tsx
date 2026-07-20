@@ -2,8 +2,9 @@ import { dateLocale } from "@workspace/i18n/format"
 import type { ComponentType, ReactNode } from "react"
 import { type DriveNode, fetchVersions } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
-import { Calendar, ClockCounterClockwise, File, Info } from "@phosphor-icons/react"
+import { Calendar, ClockCounterClockwise, File, Info, Tag } from "@phosphor-icons/react"
 import { FileIcon } from "../../fileIcon"
+import NodeTagsSection from "@pages/Drive/components/tags/NodeTagsSection"
 import { storageKind } from "@pages/Drive/nodeKind"
 import NumberFlow from "@number-flow/react"
 import { useQuery } from "@tanstack/react-query"
@@ -128,6 +129,13 @@ const SingleDetails = ({ node }: { node: DriveNode }) => {
         <Row label={t("detailsPanel.created")} value={new Date(node.createdAt).toLocaleString(dateLocale())} />
         <Row label={t("detailsPanel.modified")} value={new Date(node.updatedAt).toLocaleString(dateLocale())} />
       </Section>
+      {!node.special ? (
+        <Section icon={Tag} title={t("detailsPanel.tags", { defaultValue: "Tags" })}>
+          <div className="pt-1.5">
+            <NodeTagsSection node={node} />
+          </div>
+        </Section>
+      ) : null}
     </>
   )
 }

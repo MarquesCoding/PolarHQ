@@ -111,6 +111,7 @@ export type LibrarySource =
   | { view: "favorites" }
   | { view: "kind"; kind: StorageKind }
   | { view: "search"; query: string }
+  | { view: "tag"; tagId: string }
 
 /** Star or unstar a node; favorites surface in the cross-folder Favorites smart view. */
 export const setNodeFavorite = (id: string, favorite: boolean): Promise<{ node: DriveNode }> =>
@@ -122,6 +123,9 @@ export const setNodeFavorite = (id: string, favorite: boolean): Promise<{ node: 
 /** Fetch a flat smart-view listing. Recents/Favorites/Kind filter server-side; Search pulls the
  *  full file set and filters by decrypted name in the browser (names never reach the server). */
 export const fetchLibrary = async (source: LibrarySource): Promise<{ children: DriveNode[] }> => {
+  if (source.view === "tag") {
+    return { children: await fetchNodesByTag(source.tagId) }
+  }
   if (source.view === "search") {
     const listing = await apiFetch<{ children: DriveNode[] }>("/api/v1/drive/library?view=all")
     const decrypted = listing.children.map(decryptNode)
@@ -230,9 +234,14 @@ export const fetchNodesByTag = async (tagId: string): Promise<DriveNode[]> => {
  */
 export const driveFolderIdFromPath = (pathname: string): string | undefined | null => {
   if (pathname === "/drive/files") return undefined
-  if (pathname.startsWith("/drive/kind/") || pathname.startsWith("/drive/search/")) return null
+  if (
+    pathname.startsWith("/drive/kind/") ||
+    pathname.startsWith("/drive/search/") ||
+    pathname.startsWith("/drive/tag/")
+  )
+    return null
   const match = pathname.match(/^\/drive\/([^/]+)$/)
-  const reserved = ["trash", "overview", "files", "recent", "favorites", "kind", "search"]
+  const reserved = ["trash", "overview", "files", "recent", "favorites", "kind", "search", "tag"]
   if (!match || reserved.includes(match[1]!)) return null
   return match[1]
 }
