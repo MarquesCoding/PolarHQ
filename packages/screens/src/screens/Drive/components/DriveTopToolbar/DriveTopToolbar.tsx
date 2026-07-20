@@ -20,7 +20,7 @@ import DriveTopActions from "@pages/Drive/components/DriveTopActions/DriveTopAct
 const Bubble = ({ className, children }: { className?: string; children: ReactNode }) => (
   <div
     className={cn(
-      "border-sidebar-border bg-sidebar flex items-center gap-0.5 rounded-full border p-1 shadow-sm",
+      "border-sidebar-border bg-sidebar flex items-center gap-0.5 rounded-full border p-0.5 shadow-sm",
       className,
     )}
   >
@@ -90,7 +90,7 @@ const DriveTopToolbar = () => {
       </Bubble>
 
       {trail.length > 0 || heading ? (
-        <Bubble className="min-w-0 px-2.5 py-2">
+        <Bubble className="min-w-0 px-3 py-1.5">
           {trail.length > 0 ? (
             <Breadcrumbs trail={trail} />
           ) : (
