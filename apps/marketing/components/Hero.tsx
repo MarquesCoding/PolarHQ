@@ -9,10 +9,10 @@ import {
   useTransform,
 } from "motion/react"
 import { Button } from "@workspace/ui/components/button"
-import { AppleLogo, GithubLogo, LockKey } from "@phosphor-icons/react"
+import { GithubLogo, LockKey } from "@phosphor-icons/react"
+import DownloadButton from "@components/DownloadButton"
 
 const REPO_URL = "https://github.com/MarquesCoding/PolarHQ"
-const DOWNLOAD_URL = `${REPO_URL}/releases/latest`
 
 const container: Variants = {
   hidden: {},
@@ -25,26 +25,28 @@ const item: Variants = {
 
 const PROPS = ["End-to-end encrypted", "Self-hosted", "Open source", "Photos · Drive · Docs · Sheets"]
 
+// Back → front. Each layer covers the ridge band (object-cover) so it frames identically at any
+// width — no upscaling-taller as the screen grows. On scroll every layer drifts down at its own
+// speed (the closer, the faster) for real parallax depth; `scale` gives headroom so the drift
+// never exposes a transparent edge.
 const MOUNTAINS = [
-  { src: "/parallax/distant_mountains.png", base: -18, drift: 18 },
-  { src: "/parallax/mid_mountains.png", base: -8, drift: 12 },
-  { src: "/parallax/close_mountains.png", base: 5, drift: 0 },
+  { src: "/parallax/distant_mountains.png", drift: 6 },
+  { src: "/parallax/mid_mountains.png", drift: 13 },
+  { src: "/parallax/close_mountains.png", drift: 22 },
 ]
 
 const MountainLayer = ({
   src,
-  base,
   drift,
   index,
   progress,
 }: {
   src: string
-  base: number
   drift: number
   index: number
   progress: MotionValue<number>
 }) => {
-  const y = useTransform(progress, [0, 1], [`${base}%`, `${base + drift}%`])
+  const y = useTransform(progress, [0, 1], [`${-drift}%`, `${drift}%`])
   return (
     <motion.img
       src={src}
@@ -52,42 +54,33 @@ const MountainLayer = ({
       aria-hidden
       style={{ y }}
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.9, delay: 0.25 + index * 0.15, ease: [0.22, 0.61, 0.36, 1] }}
-      className="pointer-events-none absolute bottom-0 left-0 w-full select-none"
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: "-10% 0px" }}
+      transition={{ duration: 0.9, delay: index * 0.12, ease: [0.22, 0.61, 0.36, 1] }}
+      className="pointer-events-none absolute inset-0 h-full w-full scale-[1.5] object-cover object-[50%_38%] select-none"
     />
   )
 }
 
 const Hero = () => {
-  const sectionRef = useRef<HTMLElement>(null)
+  const ridgeRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
+    target: ridgeRef,
+    offset: ["start end", "end start"],
   })
-  const shotY = useTransform(scrollYProgress, [0, 1], ["0%", "-5%"])
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative isolate flex flex-col overflow-hidden px-5 pt-28 pb-12 sm:h-svh sm:min-h-[780px] sm:px-6 sm:pt-40 sm:pb-0"
-    >
-      <div aria-hidden className="bg-background absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-svh overflow-hidden">
-          <div className="absolute inset-x-0 bottom-[-6%] sm:bottom-[-34%]">
-            {MOUNTAINS.map((m, i) => (
-              <MountainLayer key={m.src} {...m} index={i} progress={scrollYProgress} />
-            ))}
-          </div>
-        </div>
-        <div className="from-primary/10 absolute inset-x-0 top-0 h-[420px] bg-gradient-to-b to-transparent" />
-      </div>
+    <section className="relative isolate flex flex-col overflow-hidden px-5 pt-28 pb-0 sm:px-6 sm:pt-40">
+      <div
+        aria-hidden
+        className="from-primary/10 pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-gradient-to-b to-transparent"
+      />
 
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="mx-auto flex w-full max-w-3xl flex-col items-center text-center dark:[text-shadow:0_1px_2px_rgb(8_8_16/0.7),0_2px_22px_rgb(8_8_16/0.55)]"
+        className="mx-auto flex w-full max-w-3xl flex-col items-center text-center"
       >
         <motion.h1
           variants={item}
@@ -107,14 +100,7 @@ const Hero = () => {
         </motion.p>
 
         <motion.div variants={item} className="mt-6 flex flex-col items-center gap-3 sm:flex-row">
-          <Button
-            render={<a href={DOWNLOAD_URL} target="_blank" rel="noreferrer" />}
-            size="lg"
-            className="gap-2 rounded-xl px-6 text-base font-semibold"
-          >
-            <AppleLogo className="size-4" weight="fill" />
-            Download for desktop
-          </Button>
+          <DownloadButton className="gap-2 rounded-xl px-6 text-base font-semibold" />
           <Button
             variant="outline"
             render={<a href={REPO_URL} target="_blank" rel="noreferrer" />}
@@ -128,7 +114,7 @@ const Hero = () => {
 
         <motion.ul
           variants={item}
-          className="text-foreground/85 bg-background/45 mx-auto mt-6 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-1 rounded-full px-4 py-1.5 text-xs font-medium backdrop-blur-sm"
+          className="text-foreground/70 mt-6 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-medium"
         >
           {PROPS.map((prop) => (
             <li key={prop} className="flex items-center gap-1.5">
@@ -139,16 +125,14 @@ const Hero = () => {
         </motion.ul>
       </motion.div>
 
+      {/* App screenshot — the full window, entirely visible, sitting above the ridge. */}
       <motion.div
-        initial={{ opacity: 0, y: 60 }}
+        initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
-        className="relative mt-12 sm:mt-24 sm:min-h-0 sm:flex-1"
+        className="relative z-10 mx-auto mt-10 w-full max-w-5xl sm:mt-14"
       >
-        <motion.div
-          style={{ y: shotY }}
-          className="mx-auto w-full max-w-6xl overflow-hidden rounded-t-2xl shadow-[0_-16px_80px_-24px_rgba(0,0,0,0.4)]"
-        >
+        <div className="overflow-hidden rounded-2xl shadow-[0_40px_120px_-30px_rgba(0,0,0,0.45)]">
           <img
             src="/shots/photos.jpg"
             alt="The PolarHQ desktop app"
@@ -156,8 +140,20 @@ const Hero = () => {
             height={1170}
             className="block w-full"
           />
-        </motion.div>
+        </div>
       </motion.div>
+
+      {/* Full-bleed parallax ridge below the app — one continuous horizon band, edge to edge on any
+          width. object-cover keeps the framing constant; the band bleeds past the section padding. */}
+      <div
+        ref={ridgeRef}
+        aria-hidden
+        className="relative -mx-5 -mt-[8%] h-[40vh] max-h-[420px] min-h-[220px] overflow-hidden sm:-mx-6"
+      >
+        {MOUNTAINS.map((m, i) => (
+          <MountainLayer key={m.src} {...m} index={i} progress={scrollYProgress} />
+        ))}
+      </div>
     </section>
   )
 }
