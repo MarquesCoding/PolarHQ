@@ -290,5 +290,16 @@
     "restored": "Version restored",
     "title": "Version history",
     "versionLabel": "Version {{number}}"
+  },
+  "toolbar": {
+    "sort": {
+      "label": "Sort",
+      "name": "Name",
+      "size": "Size",
+      "modified": "Date modified",
+      "kind": "Kind",
+      "asc": "Ascending",
+      "desc": "Descending"
+    }
   }
 }

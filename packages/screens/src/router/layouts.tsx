@@ -30,10 +30,7 @@ const FloatingContent = ({
       {/* Offset by the desktop titlebar strip (traffic-light row) so the toolbar's top lines up with
           the sidebar's content top; `--titlebar-h` is undefined on web, falling back to 0. */}
       {topToolbar ? (
-        <div
-          className="shrink-0 px-4 pb-1"
-          style={{ paddingTop: "calc(var(--titlebar-h, 0px) + 0.75rem)" }}
-        >
+        <div className="shrink-0 px-4 pb-1" style={{ paddingTop: "var(--titlebar-h, 0px)" }}>
           {topToolbar}
         </div>
       ) : null}

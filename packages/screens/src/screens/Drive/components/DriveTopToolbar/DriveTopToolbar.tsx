@@ -12,6 +12,7 @@ import { ArrowLeft, ArrowRight, MagnifyingGlass, SidebarSimple } from "@phosphor
 import { cn } from "@workspace/ui/lib/utils"
 import ViewToggle from "@components/ViewToggle/ViewToggle"
 import Breadcrumbs from "@pages/Drive/components/Breadcrumbs/Breadcrumbs"
+import DriveSortMenu from "@pages/Drive/components/DriveSortMenu/DriveSortMenu"
 import DriveTopActions from "@pages/Drive/components/DriveTopActions/DriveTopActions"
 
 /** A floating pill that holds one logical group of controls, matching Spacedrive's toolbar where
@@ -19,7 +20,7 @@ import DriveTopActions from "@pages/Drive/components/DriveTopActions/DriveTopAct
 const Bubble = ({ className, children }: { className?: string; children: ReactNode }) => (
   <div
     className={cn(
-      "border-border/60 bg-background/70 flex items-center gap-0.5 rounded-full border p-1 shadow-sm backdrop-blur-xl",
+      "border-sidebar-border bg-sidebar flex items-center gap-0.5 rounded-full border p-1 shadow-sm",
       className,
     )}
   >
@@ -119,6 +120,12 @@ const DriveTopToolbar = () => {
               </div>
             </div>
           ) : null}
+        </Bubble>
+      ) : null}
+
+      {!isOverview ? (
+        <Bubble>
+          <DriveSortMenu />
         </Bubble>
       ) : null}
 
