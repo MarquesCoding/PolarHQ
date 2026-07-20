@@ -10,6 +10,11 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build & publish to (e.g. v0.7.0). Leave blank to use the dispatch ref."
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -35,6 +40,8 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Install Linux dependencies
         if: matrix.platform == 'ubuntu-22.04'
@@ -62,28 +69,22 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Build, sign, and publish
+      - name: Build and publish
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Updater signing (all platforms).
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          # Apple code-signing + notarization (macOS), OFF by default. A malformed/partial
-          # APPLE_CERTIFICATE secret makes `security import` fail and breaks the whole macOS build,
-          # so signing is gated behind the `ENABLE_APPLE_SIGNING` repo variable: leave it unset and
-          # macOS builds succeed un-notarized (Gatekeeper warns); set it to `true` only once every
-          # APPLE_* secret holds a valid value. See apps/desktop/README.md for how to get them.
-          APPLE_CERTIFICATE: ${{ vars.ENABLE_APPLE_SIGNING == 'true' && secrets.APPLE_CERTIFICATE || '' }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ vars.ENABLE_APPLE_SIGNING == 'true' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
-          APPLE_SIGNING_IDENTITY: ${{ vars.ENABLE_APPLE_SIGNING == 'true' && secrets.APPLE_SIGNING_IDENTITY || '' }}
-          APPLE_ID: ${{ vars.ENABLE_APPLE_SIGNING == 'true' && secrets.APPLE_ID || '' }}
-          APPLE_PASSWORD: ${{ vars.ENABLE_APPLE_SIGNING == 'true' && secrets.APPLE_PASSWORD || '' }}
-          APPLE_TEAM_ID: ${{ vars.ENABLE_APPLE_SIGNING == 'true' && secrets.APPLE_TEAM_ID || '' }}
+          # NOTE: macOS Apple code-signing/notarization is intentionally NOT wired here. Passing an
+          # APPLE_CERTIFICATE env var (even empty) makes tauri-action run `security import`, which
+          # fails without a valid cert and breaks the whole macOS build. So builds ship un-notarized
+          # (Gatekeeper warns on first open). To enable signing later, add the APPLE_* env back here
+          # only when every APPLE_* secret holds a valid value.
         with:
           projectPath: apps/desktop
-          tagName: ${{ github.ref_name }}
-          releaseName: "PolarHQ Desktop ${{ github.ref_name }}"
+          tagName: ${{ inputs.tag || github.ref_name }}
+          releaseName: "PolarHQ Desktop ${{ inputs.tag || github.ref_name }}"
           releaseBody: "Download the installer for your platform below. See the in-app changelog for what's new."
           releaseDraft: false
           prerelease: true
