@@ -231,11 +231,11 @@ const DetailsPanel = ({ open, nodes }: DetailsPanelProps) => {
       initial={false}
       animate={{ width: open ? 312 : 0, opacity: open ? 1 : 0 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="relative shrink-0 self-stretch overflow-hidden"
+      className="sticky top-0 z-30 h-[calc(100svh-1.5rem)] shrink-0 self-start overflow-hidden"
     >
-      {/* Floating rounded card (matches the Photos viewer's details panel) rather than a flat
-          edge-attached column. Closed via the toolbar's info toggle, so no header/close here. */}
-      <div className="border-border/60 bg-card/80 my-3 mr-3 flex h-[calc(100%-1.5rem)] w-72 flex-col overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl">
+      {/* Floating rounded card (matches the Photos viewer's details panel), pinned so it doesn't
+          scroll with the file grid. Closed via the toolbar's info toggle, so no header/close here. */}
+      <div className="border-border/60 bg-card/80 mt-2 mr-3 mb-3 flex h-[calc(100%-1.25rem)] w-72 flex-col overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl">
         <div className="min-h-0 flex-1 pt-2">
           {nodes.length === 0 ? (
             <p className="text-muted-foreground p-5 text-sm">{t("detailsPanel.empty")}</p>
