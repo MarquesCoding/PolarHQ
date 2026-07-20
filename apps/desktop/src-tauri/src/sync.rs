@@ -83,10 +83,14 @@ fn content_hash(path: &Path, size: u64) -> String {
 /// skipping hidden entries. Pure + stateless, so it also backs ephemeral browsing later.
 pub fn index_folder(root: &Path) -> Vec<IndexEntry> {
     let mut entries = Vec::new();
+    // Skip hidden entries (.DS_Store, .git, …) but do NOT honour .gitignore/.ignore files — this is a
+    // Dropbox-style folder sync, so a stray ignore file must not silently drop the user's real files.
     let walker = WalkBuilder::new(root)
         .hidden(true)
-        .git_ignore(true)
+        .ignore(false)
+        .git_ignore(false)
         .git_global(false)
+        .git_exclude(false)
         .parents(false)
         .require_git(false)
         .build();

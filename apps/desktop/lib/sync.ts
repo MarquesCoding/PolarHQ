@@ -138,6 +138,10 @@ const sync = async (
     .sort((a, b) => a.relPath.split("/").length - b.relPath.split("/").length)
   const files = entries.filter((entry) => !entry.isDir)
 
+  // Publish the real total up front so the UI shows "0/N" (or an honest 0/0 for an empty folder)
+  // immediately, instead of sitting at the seeded 0/0 until the first file is processed.
+  onProgress?.({ total: files.length, done: 0, current: null })
+
   // Recreate the folder tree, parent before child. Seed from the manifest so a re-sync reuses folders
   // it already made instead of duplicating them.
   const folderMap = new Map<string, string>([["", record.driveNodeId]])

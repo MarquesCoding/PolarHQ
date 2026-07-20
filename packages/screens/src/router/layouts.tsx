@@ -8,19 +8,32 @@ import CollabNav from "@pages/Collab/CollabNav"
 import CollabToolbar from "@pages/Collab/CollabToolbar"
 import DocsToolbar from "@pages/Docs/components/DocsToolbar/DocsToolbar"
 import DriveNav from "@pages/Drive/components/DriveNav/DriveNav"
-import DriveToolbar from "@pages/Drive/components/DriveToolbar/DriveToolbar"
+import DriveTopToolbar from "@pages/Drive/components/DriveTopToolbar/DriveTopToolbar"
 import PhotosNav from "@pages/Photos/components/PhotosNav/PhotosNav"
 
 /** Offsets floating-layout content by the sidebar width (when open) so it isn't hidden under the
- *  overlaid sidebar — the shell equivalent of the Photos grid's `sidebarInset`. */
-const FloatingContent = ({ children }: { children: ReactNode }) => {
+ *  overlaid sidebar — the shell equivalent of the Photos grid's `sidebarInset`. An optional floating
+ *  top toolbar sits above the content, within the same offset. */
+const FloatingContent = ({
+  topToolbar,
+  children,
+}: {
+  topToolbar?: ReactNode
+  children: ReactNode
+}) => {
   const { open } = useSidebar()
   return (
     <div
-      className="flex min-h-full flex-1 transition-[padding] duration-200"
+      className="flex min-h-full flex-1 flex-col transition-[padding] duration-200"
       style={{ paddingLeft: open ? "var(--sidebar-width)" : undefined }}
     >
-      {children}
+      {/* Sticky so the toolbar stays put while the grid scrolls under it. The negative margin
+          counteracts flat-main's top padding so the toolbar rises into the traffic-light row
+          (Finder-style); the matching sticky top keeps it there with no scroll jump. */}
+      {topToolbar ? (
+        <div className="sticky top-[-0.5rem] z-40 -mt-3 shrink-0 pt-1 pr-6 pb-1 pl-1">{topToolbar}</div>
+      ) : null}
+      <div className="flex min-h-0 flex-1">{children}</div>
     </div>
   )
 }
@@ -33,11 +46,15 @@ const FloatingShell = ({
   searchPlaceholder,
   nav,
   toolbar,
+  topToolbar,
 }: {
   productName: string
   searchPlaceholder: string
   nav: ReactNode
+  /** Controls in a floating bottom-right pill (Docs/Sheets/Whiteboards). */
   toolbar?: ReactNode
+  /** A floating top toolbar above the content (Drive). */
+  topToolbar?: ReactNode
 }) => (
   <FlatShell
     sidebar={
@@ -48,7 +65,7 @@ const FloatingShell = ({
     topBar={null}
     floatingSidebar
   >
-    <FloatingContent>
+    <FloatingContent topToolbar={topToolbar}>
       <Outlet />
     </FloatingContent>
     {toolbar ? (
@@ -83,7 +100,7 @@ export const DriveLayout = () => {
       productName={t("driveNav.drive")}
       searchPlaceholder={t("shell.search")}
       nav={<DriveNav />}
-      toolbar={<DriveToolbar />}
+      topToolbar={<DriveTopToolbar />}
     />
   )
 }

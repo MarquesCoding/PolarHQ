@@ -1,6 +1,9 @@
 {
   "breadcrumbs": {
-    "myDrive": "My Drive"
+    "back": "Back",
+    "forward": "Forward",
+    "myDrive": "My Drive",
+    "toggleSidebar": "Toggle sidebar"
   },
   "browser": {
     "archive": "Archive",
@@ -287,5 +290,21 @@
     "restored": "Version restored",
     "title": "Version history",
     "versionLabel": "Version {{number}}"
+  },
+  "toolbar": {
+    "sort": {
+      "label": "Sort",
+      "name": "Name",
+      "size": "Size",
+      "modified": "Date modified",
+      "kind": "Kind",
+      "asc": "Ascending",
+      "desc": "Descending"
+    },
+    "filter": {
+      "label": "Filter",
+      "favorites": "Favorites only",
+      "reset": "Clear filters"
+    }
   }
 }

@@ -17,6 +17,7 @@ export const PlatformAdapter = ({ children }: { children: ReactNode }) => {
       push: (href) => void navigate(href),
       replace: (href) => void navigate(href, { replace: true }),
       back: () => void navigate(-1),
+      forward: () => void navigate(1),
     },
     pathname,
     Link,

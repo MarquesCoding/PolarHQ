@@ -2,11 +2,11 @@ import { dateLocale } from "@workspace/i18n/format"
 import type { ComponentType, ReactNode } from "react"
 import { type DriveNode, fetchVersions } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
-import { Calendar, ClockCounterClockwise, File, Info, X } from "@phosphor-icons/react"
+import { Calendar, ClockCounterClockwise, File, Info } from "@phosphor-icons/react"
 import { FileIcon } from "../../fileIcon"
+import { storageKind } from "@pages/Drive/nodeKind"
 import NumberFlow from "@number-flow/react"
 import { useQuery } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
@@ -21,23 +21,6 @@ interface DetailsPanelProps {
 
 const ARCHIVE = /\.(zip|tar|gz|tgz|rar|7z|bz2|xz|dmg)$/i
 const DATABASE = /\.(db|sqlite|sqlite3|sql)$/i
-
-/** Map a node to one of the overview storage-kind keys, so the panel can show a friendly label
- *  (Images / Videos / …) reusing the existing `overview.kinds.*` strings. */
-const storageKindKey = (node: DriveNode): string => {
-  const mime = node.mimeType ?? ""
-  const name = node.name.toLowerCase()
-  if (mime.startsWith("image/")) return "image"
-  if (mime.startsWith("video/")) return "video"
-  if (mime.startsWith("audio/")) return "audio"
-  if (
-    mime === "application/pdf" ||
-    /(word|presentation|spreadsheet|^text\/|vnd\.orbit|officedocument|oasis|msword|json)/.test(mime)
-  )
-    return "document"
-  if (ARCHIVE.test(name) || /(zip|tar|gzip|x-7z|x-rar|x-bzip)/.test(mime)) return "archive"
-  return "other"
-}
 
 /** Uppercase file extension for display, or undefined when the name has none. */
 const extensionOf = (name: string): string | undefined => {
@@ -103,9 +86,15 @@ const SingleDetails = ({ node }: { node: DriveNode }) => {
   return (
     <>
       <div className="flex flex-col items-center gap-3 text-center">
-        <div className="aspect-square w-full overflow-hidden rounded-xl">
-          <Preview node={node} />
-        </div>
+        {node.thumbnailUrl ? (
+          <div className="aspect-square w-full overflow-hidden rounded-xl">
+            <Preview node={node} />
+          </div>
+        ) : (
+          <div className="flex h-28 w-full items-center justify-center">
+            <FileIcon node={node} className="size-20" />
+          </div>
+        )}
         <p className="text-sm font-medium break-words">{node.name}</p>
       </div>
       <Section icon={File} title={t("detailsPanel.file")}>
@@ -114,7 +103,7 @@ const SingleDetails = ({ node }: { node: DriveNode }) => {
           value={
             node.kind === "folder"
               ? t("detailsPanel.folder")
-              : t(`overview.kinds.${storageKindKey(node)}`)
+              : t(`overview.kinds.${storageKind(node)}`)
           }
         />
         <Row
@@ -240,31 +229,22 @@ const StackedDetails = ({ nodes }: { nodes: DriveNode[] }) => {
   )
 }
 
-/** Right-side details panel: follows the selection (single item, or a stacked summary). */
-const DetailsPanel = ({ open, nodes, onClose }: DetailsPanelProps) => {
+/** Right-side details panel: follows the selection (single item, or a stacked summary). Positioned
+ *  like the sidebar — a fixed, window-inset card — so it matches its height/padding/radius and stays
+ *  pinned while the grid scrolls. */
+const DetailsPanel = ({ open, nodes }: DetailsPanelProps) => {
   const { t } = useTranslation("drive")
   return (
     <motion.aside
       initial={false}
-      animate={{ width: open ? 288 : 0, opacity: open ? 1 : 0 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      style={{ borderLeftWidth: open ? undefined : 0 }}
-      className="border-border/60 sticky top-0 h-[calc(100svh-4.5rem)] shrink-0 self-start overflow-hidden border-l"
+      animate={{ x: open ? "0%" : "110%", opacity: open ? 1 : 0 }}
+      transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+      aria-hidden={!open}
+      style={{ pointerEvents: open ? "auto" : "none" }}
+      className="fixed top-2 right-2 bottom-2 z-30 w-72"
     >
-      <div className="flex h-full w-72 flex-col">
-        <div className="flex items-center justify-between px-5 pt-5 pb-3">
-          <h2 className="text-sm font-medium">{t("detailsPanel.title")}</h2>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={t("detailsPanel.closeDetails")}
-            onClick={onClose}
-          >
-            <X className="size-4" />
-          </Button>
-        </div>
-
-        <div className="min-h-0 flex-1">
+      <div className="border-sidebar-border bg-sidebar flex h-full w-full flex-col overflow-hidden rounded-[1.25rem] border shadow-sm">
+        <div className="min-h-0 flex-1 overflow-hidden">
           {nodes.length === 0 ? (
             <p className="text-muted-foreground p-5 text-sm">{t("detailsPanel.empty")}</p>
           ) : nodes.length === 1 ? (

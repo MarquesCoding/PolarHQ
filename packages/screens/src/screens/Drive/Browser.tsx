@@ -30,22 +30,12 @@ import { useSelectionHotkeys } from "@workspace/screens/useSelectionHotkeys"
 import { useUploadManager } from "@workspace/screens/uploadManager"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setDriveDetailsOpen } from "@workspace/screens/store/uiSlice"
-import {
-  Archive,
-  ArrowSquareOut,
-  Bookmark,
-  Export,
-  PencilSimple,
-  Star,
-  UserPlus,
-} from "@phosphor-icons/react"
+import { Bookmark } from "@phosphor-icons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { AnimatePresence } from "motion/react"
 import { toast } from "sonner"
-import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import DropZone from "@components/DropZone/DropZone"
-import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 import DetailsPanel from "@pages/Drive/components/DetailsPanel/DetailsPanel"
@@ -56,6 +46,8 @@ import FolderLockDialog from "@pages/Drive/components/FolderLockDialog/FolderLoc
 import FolderLockGate from "@pages/Drive/components/FolderLockGate/FolderLockGate"
 import Lightbox from "@pages/Photos/components/Lightbox/Lightbox"
 import { useDriveViewer } from "@pages/Drive/useDriveViewer"
+import { compareNodes } from "@pages/Drive/sortNodes"
+import { storageKind } from "@pages/Drive/nodeKind"
 import MillerView from "@pages/Drive/components/MillerView/MillerView"
 import MoveDialog from "@pages/Drive/components/MoveDialog/MoveDialog"
 import NewFolderDialog from "@pages/Drive/components/NewFolderDialog/NewFolderDialog"
@@ -81,6 +73,8 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const upload = useUploadManager()
   const dispatch = useAppDispatch()
   const viewMode = useAppSelector((state) => state.ui.viewMode)
+  const driveSort = useAppSelector((state) => state.ui.driveSort)
+  const driveFilter = useAppSelector((state) => state.ui.driveFilter)
   const detailsOpen = useAppSelector((state) => state.ui.driveDetailsOpen)
   const searchRaw = useAppSelector((state) => state.ui.searchQuery).trim()
   const search = searchRaw.toLowerCase()
@@ -138,19 +132,16 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
   const filtered = useMemo(() => {
     let list = atRoot && syncedIds.size > 0 ? children.filter((node) => !syncedIds.has(node.id)) : children
     if (search) list = list.filter((node) => node.name.toLowerCase().includes(search))
+    if (driveFilter.favoritesOnly) list = list.filter((node) => node.favorite)
+    if (driveFilter.kinds.length > 0) {
+      const wanted = new Set(driveFilter.kinds)
+      list = list.filter((node) => node.kind === "file" && wanted.has(storageKind(node)))
+    }
     return list
-  }, [children, search, atRoot, syncedIds])
+  }, [children, search, atRoot, syncedIds, driveFilter])
   const visible = useMemo(
-    () =>
-      source
-        ? filtered
-        : filtered.slice().sort((a, b) => {
-            if (a.kind !== b.kind) return a.kind === "folder" ? -1 : 1
-            const rank = (node: DriveNode) => (node.special ? 0 : node.locked ? 1 : 2)
-            if (rank(a) !== rank(b)) return rank(a) - rank(b)
-            return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
-          }),
-    [filtered, source],
+    () => (source ? filtered : filtered.slice().sort(compareNodes(driveSort))),
+    [filtered, source, driveSort],
   )
   const byId = useMemo(() => new Map(children.map((node) => [node.id, node])), [children])
 
@@ -399,7 +390,10 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
 
   return (
     <div className="flex flex-1">
-    <DropZone className="relative flex min-w-0 flex-1 flex-col gap-4 p-6" onFiles={uploadFiles}>
+    <DropZone
+      className={`relative flex min-w-0 flex-1 flex-col gap-4 py-6 pl-6 transition-[padding] duration-200 ${detailsOpen ? "pr-[19.5rem]" : "pr-6"}`}
+      onFiles={uploadFiles}
+    >
       <DriveBackgroundMenu
         onUpload={() => fileInput.current?.click()}
         onNewFolder={() => setNewFolderOpen(true)}
@@ -493,65 +487,6 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
         }}
       />
 
-      <SelectionBar contentCentered>
-        {single && docTypeOf(single.mimeType) ? (
-          <Button variant="ghost" size="sm" onClick={() => open(single)}>
-            <ArrowSquareOut className="size-4" />
-            {t("browser.open")}
-          </Button>
-        ) : null}
-        <Button variant="ghost" size="sm" onClick={() => downloadIds(ids)}>
-          <Icon name="download" className="size-4" />
-          {t("browser.download")}
-        </Button>
-        {single && !single.special ? (
-          <Button variant="ghost" size="sm" onClick={() => void toggleFavorite(single)}>
-            {single.favorite ? (
-              <Star weight="fill" className="size-4" />
-            ) : (
-              <Star className="size-4" />
-            )}
-            {single.favorite ? t("browser.unfavorite") : t("browser.favorite")}
-          </Button>
-        ) : null}
-        {single && !single.special ? (
-          <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
-            <PencilSimple className="size-4" />
-            {t("browser.rename")}
-          </Button>
-        ) : null}
-        {single?.kind === "file" ? (
-          <Button variant="ghost" size="sm" onClick={() => setShareNode(single)}>
-            <UserPlus className="size-4" />
-            {t("browser.share")}
-          </Button>
-        ) : null}
-        {hasSpecial ? null : (
-          <Button variant="ghost" size="sm" onClick={() => setMoving(ids)}>
-            <Icon name="folder" className="size-4" />
-            {t("browser.move")}
-          </Button>
-        )}
-        {canExtract ? (
-          <Button variant="ghost" size="sm" onClick={() => void extract(single!.id)}>
-            <Export className="size-4" />
-            {t("browser.extract")}
-          </Button>
-        ) : null}
-        <Button variant="ghost" size="sm" onClick={() => archive(ids)}>
-          <Archive className="size-4" />
-          {t("browser.archive")}
-        </Button>
-        {hasSpecial ? null : (
-          <ConfirmButton
-            icon={<Icon name="trash" className="size-4" />}
-            armed={trashConfirm.armed}
-            onTrigger={trashConfirm.trigger}
-          >
-            {t("browser.trash")}
-          </ConfirmButton>
-        )}
-      </SelectionBar>
 
       {parentId ? (
         <NewFolderDialog
