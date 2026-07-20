@@ -15,6 +15,15 @@ import { fetchCachedOriginal } from "@pages/Photos/components/Lightbox/originalC
 import { onPhotoNotice } from "./notice"
 import { Button } from "@workspace/ui/components/button"
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -229,6 +238,7 @@ const BottomChrome = ({
     null,
   )
   const [splatBusy, setSplatBusy] = useState<null | "generate" | "load">(null)
+  const [setupPhase, setSetupPhase] = useState<string | null>(null)
   const splatActive = splatBusy !== null || Boolean(splatSrc)
   useEffect(() => {
     if (splatActive) {
@@ -246,9 +256,26 @@ const BottomChrome = ({
     Boolean(getHost().generateSplat)
   const splatName = () => `${name.replace(/\.[^.]+$/, "")}.ply`
 
+  const runSharpSetup = async () => {
+    const host = getHost()
+    if (!host.sharpSetup) return
+    try {
+      await host.sharpSetup((phase) => setSetupPhase(phase))
+      setSetupPhase(null)
+      void generate3d()
+    } catch {
+      setSetupPhase(null)
+      toast.error(t("lightbox.generate3dFailed"))
+    }
+  }
+
   const generate3d = async () => {
     const host = getHost()
     if (!focused || !host.generateSplat || splatBusy) return
+    if (host.sharpAvailable && !(await host.sharpAvailable())) {
+      setSetupPhase("prompt")
+      return
+    }
     const assetId = focused.id
     const mimeType = focused.mimeType
     const outName = splatName()
@@ -703,6 +730,59 @@ const BottomChrome = ({
           </motion.div>
         ) : null}
       </AnimatePresence>
+
+      <Dialog
+        open={setupPhase !== null}
+        onOpenChange={(open) => {
+          if (!open && setupPhase === "prompt") setSetupPhase(null)
+        }}
+      >
+        <DialogContent showCloseButton={setupPhase === "prompt"} className="sm:max-w-sm">
+          {setupPhase === "prompt" ? (
+            <>
+              <DialogHeader>
+                <DialogTitle>{t("lightbox.setup3dTitle", { defaultValue: "Set up 3D" })}</DialogTitle>
+                <DialogDescription>
+                  {t("lightbox.setup3dBody", {
+                    defaultValue:
+                      "Generating 3D uses Apple SHARP — a one-time ~5 GB setup (runtime + model) that runs entirely on your device.",
+                  })}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose render={<Button variant="outline" />}>
+                  {t("common:cancel", { defaultValue: "Cancel" })}
+                </DialogClose>
+                <Button onClick={() => void runSharpSetup()}>
+                  {t("lightbox.setup3dConfirm", { defaultValue: "Set up 3D" })}
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <div className="flex flex-col items-center gap-3 py-6 text-center">
+              <CircleNotch className="size-6 animate-spin" />
+              <span className="text-sm font-medium">
+                {setupPhase === "installing-uv"
+                  ? t("lightbox.setup3dUv", { defaultValue: "Installing tools…" })
+                  : setupPhase === "downloading-sharp"
+                    ? t("lightbox.setup3dSharp", { defaultValue: "Downloading SHARP…" })
+                    : setupPhase === "creating-env"
+                      ? t("lightbox.setup3dEnv", { defaultValue: "Preparing environment…" })
+                      : setupPhase === "installing-deps"
+                        ? t("lightbox.setup3dDeps", { defaultValue: "Installing dependencies…" })
+                        : setupPhase === "downloading-model"
+                          ? t("lightbox.setup3dModel", {
+                              defaultValue: "Downloading model (~2.6 GB)…",
+                            })
+                          : t("lightbox.generating3d")}
+              </span>
+              <span className="text-muted-foreground text-xs">
+                {t("lightbox.setup3dHint", { defaultValue: "This can take a few minutes." })}
+              </span>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {splatBusy ? (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-background/60 backdrop-blur-sm">

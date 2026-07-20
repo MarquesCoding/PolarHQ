@@ -45,6 +45,21 @@ pub async fn generate_splat(app: tauri::AppHandle, input_path: String) -> Result
     .map_err(|e| e.to_string())?
 }
 
+/// Whether Apple SHARP is provisioned (real 3DGS available) vs. the offline heuristic fallback.
+#[tauri::command]
+pub fn sharp_available() -> bool {
+    crate::sharp::is_available()
+}
+
+/// Provision SHARP on demand (install uv + Python env + ml-sharp + checkpoint). Emits `sharp-setup`
+/// progress phases; runs off the UI thread.
+#[tauri::command]
+pub async fn sharp_setup(app: tauri::AppHandle) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || crate::sharp::setup(&app))
+        .await
+        .map_err(|e| e.to_string())?
+}
+
 /// Report peer-to-peer device-link status. Stub: always reports offline until the p2p stack lands.
 #[tauri::command]
 pub async fn p2p_status() -> Result<String, String> {

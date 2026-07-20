@@ -1,4 +1,5 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core"
+import { listen } from "@tauri-apps/api/event"
 
 /**
  * Write decrypted media bytes to a temp file and return an asset-protocol URL the webview can load.
@@ -41,6 +42,22 @@ export const generateSplat = async (bytes: Uint8Array, mimeType: string): Promis
   })
   const plyPath = await invoke<string>("generate_splat", { inputPath })
   return convertFileSrc(plyPath)
+}
+
+/** Whether Apple SHARP is provisioned (real 3D Gaussian splats) vs. the heuristic fallback. */
+export const sharpAvailable = (): Promise<boolean> => invoke<boolean>("sharp_available")
+
+/** Provision SHARP on demand (uv + Python env + ml-sharp + checkpoint). Reports progress phases via
+ *  `onPhase`; resolves once ready or rejects on failure. */
+export const sharpSetup = async (onPhase?: (phase: string) => void): Promise<void> => {
+  const unlisten = onPhase
+    ? await listen<string>("sharp-setup", (event) => onPhase(event.payload))
+    : undefined
+  try {
+    await invoke("sharp_setup")
+  } finally {
+    unlisten?.()
+  }
 }
 
 /** Current peer-to-peer device-link status (e.g. `"offline"`). */
