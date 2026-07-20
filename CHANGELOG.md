@@ -8,6 +8,49 @@ commits; you may polish the wording in the Release PR before merging.
 Format: each release is `## [version] - date — Title`, an optional `<!-- tags: a, b -->` line,
 then Markdown notes.
 
+## [0.7.0](https://github.com/MarquesCoding/PolarHQ/compare/v0.6.0...v0.7.0) (2026-07-20)
+
+
+### Added
+
+* **devices:** client registers itself on login + heartbeats ([f4c8a94](https://github.com/MarquesCoding/PolarHQ/commit/f4c8a94616bf3949a3c3938ba83a736ebc144fd2))
+* **devices:** device registry — web ↔ desktop visibility ([58ccb4a](https://github.com/MarquesCoding/PolarHQ/commit/58ccb4aa00c6db424132bc339eb9c58b7a26d577))
+* **devices:** device-registry backend — table, migration, API ([d7889cd](https://github.com/MarquesCoding/PolarHQ/commit/d7889cd0e68d4770d8456eade483453058b03c9c))
+* **devices:** show registered devices on the Drive Overview too ([8614205](https://github.com/MarquesCoding/PolarHQ/commit/86142050b464763c8493fac5d2726df9c326d390))
+* **devices:** show the account's other devices in the Drive sidebar ([f13d697](https://github.com/MarquesCoding/PolarHQ/commit/f13d69739ce33ea01ba8d7553cdce998af247581))
+* **drive:** drop the Details header + close button from the details panel ([c6f7502](https://github.com/MarquesCoding/PolarHQ/commit/c6f75026119bf9e91bc0315786cb99c374b01835))
+* **drive:** filter control + shared kind classifier; toolbar cleanup ([62829cd](https://github.com/MarquesCoding/PolarHQ/commit/62829cd08606bd3e904785c0ea678f4335d43b24))
+* **drive:** floating rounded details panel (matches the Photos viewer) ([ba8923b](https://github.com/MarquesCoding/PolarHQ/commit/ba8923bdfdcb39b8b313c2daefba0f8cd75c985e))
+* **drive:** floating top toolbar, remove the bottom pill (Spacedrive-style) ([35f2abf](https://github.com/MarquesCoding/PolarHQ/commit/35f2abf60ba6bc2dd9d4ac76fafd97211ee50500))
+* **drive:** forward navigation in the toolbar ([afaddf3](https://github.com/MarquesCoding/PolarHQ/commit/afaddf3383ce598f068b84bd98fe7025af84d17e))
+* **drive:** global sort control + sidebar-matched toolbar bubbles ([6b836f3](https://github.com/MarquesCoding/PolarHQ/commit/6b836f385c2d188d432ab1980a77c83c448f88fa))
+* **drive:** pin the toolbar and details panel while the grid scrolls ([9e7bd5f](https://github.com/MarquesCoding/PolarHQ/commit/9e7bd5fb97b5a17f07651759d3e114903949eab5))
+* **drive:** remove the LOCATION breadcrumb section from the sidebar ([ec3aba1](https://github.com/MarquesCoding/PolarHQ/commit/ec3aba1167045d545b7c4b89e54486cd6d7f1772))
+* **drive:** remove the selection quick-actions bar; tidy the details panel ([5c1ed0a](https://github.com/MarquesCoding/PolarHQ/commit/5c1ed0a469bebb2c3aa6f8514d2c3f4ef47717e9))
+* **drive:** remove toolbar sidebar button; solid details-panel card; toolbar top-align ([d428b8e](https://github.com/MarquesCoding/PolarHQ/commit/d428b8e298ee2ae7eeeba6136ea7e473b3465cfe))
+* **drive:** shift the toolbar's right controls left when the details panel opens ([c20427c](https://github.com/MarquesCoding/PolarHQ/commit/c20427ce0af104443605e0b82ae02ee853834f1b))
+* **drive:** Spacedrive-style chrome — top toolbar, floating details, sync + web fixes ([ece1d77](https://github.com/MarquesCoding/PolarHQ/commit/ece1d77ee22eec30466f67b6677185c679db74f3))
+* **drive:** split the top toolbar into separate bubbles (Spacedrive-style) ([e73930d](https://github.com/MarquesCoding/PolarHQ/commit/e73930ddab4cc9455f80c9ee5c697dd23afd0eb5))
+* **marketing:** add a copy-paste docker-compose.yml to the install section ([01506ea](https://github.com/MarquesCoding/PolarHQ/commit/01506ea48ae91d4bce5ba5a15ff0e110ec2fc3b0))
+* **marketing:** copy-paste docker-compose.yml on the install section ([e575f45](https://github.com/MarquesCoding/PolarHQ/commit/e575f4507b8dd03c1e042168c84e8c3b9fed2273))
+* **marketing:** direct platform download + visible ridge parallax ([561372d](https://github.com/MarquesCoding/PolarHQ/commit/561372df038bcb5fd3ab9d1d7370918f30a7c56a))
+* **marketing:** syntax-highlight the docker-compose.yml block ([7bc3d2a](https://github.com/MarquesCoding/PolarHQ/commit/7bc3d2aed5f369069bcea9839acb8c51de82f329))
+
+
+### Fixed
+
+* **ci:** gate macOS code-signing so desktop builds don't fail on a bad cert ([670d6c8](https://github.com/MarquesCoding/PolarHQ/commit/670d6c8cec9a6b2002544309602ca8ab7443799f))
+* **ci:** unbreak macOS desktop builds (gate Apple signing) ([c020500](https://github.com/MarquesCoding/PolarHQ/commit/c02050095c9226432c02bba0ae8d1053400c8ab1))
+* **desktop:** folder-sync auto-updates the sidebar + honest progress count ([03da09a](https://github.com/MarquesCoding/PolarHQ/commit/03da09adb756274a6cdbb40bd384f704a5adedf3))
+* **drive:** add right padding to the top toolbar so the last bubble clears the window edge ([1240f01](https://github.com/MarquesCoding/PolarHQ/commit/1240f013a278135d5a262b09f15af66870d4ea6b))
+* **drive:** align the top toolbar with the sidebar content top ([9190c30](https://github.com/MarquesCoding/PolarHQ/commit/9190c306cdbd3241f6634dd77591c32c9207ca5f))
+* **drive:** details panel matches the sidebar; align toolbar to the sidebar top ([f2a5f16](https://github.com/MarquesCoding/PolarHQ/commit/f2a5f16d25df8c23263f465d30f1a95dcbbe64d9))
+* **drive:** slim the toolbar bubble padding to match the sidebar search height ([30fdd02](https://github.com/MarquesCoding/PolarHQ/commit/30fdd0210ca2fd79a37a16a14e4e2a2017743d1a))
+* **marketing:** back out the ridge width-cap + edge-fade ([af48cd8](https://github.com/MarquesCoding/PolarHQ/commit/af48cd82303ac70dc8771ae6435b9ede4778c030))
+* **marketing:** cap the parallax ridge width so it scales on large screens ([cc3ee0d](https://github.com/MarquesCoding/PolarHQ/commit/cc3ee0d0d7e2cacc9cb4e4cd6e3ab8cc9cece05f))
+* **marketing:** ridge as a full-bleed horizon below the app screenshot ([fc44f02](https://github.com/MarquesCoding/PolarHQ/commit/fc44f02373c7ccadf6dd399e8d64d34ef05fd181))
+* **web:** don't reserve macOS traffic-light space in the web sidebar ([45d6c0d](https://github.com/MarquesCoding/PolarHQ/commit/45d6c0ddba1e68cb12e9ea85c0008f63beea600c))
+
 ## [0.6.0] - 2026-07-18 — PolarHQ Mobile, a reimagined Photos & Drive, and one-command self-hosting
 <!-- tags: Release, Mobile, Photos, Drive -->
 
