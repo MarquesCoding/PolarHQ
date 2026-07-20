@@ -31,7 +31,7 @@ const FloatingContent = ({
           counteracts flat-main's top padding so the toolbar rises into the traffic-light row
           (Finder-style); the matching sticky top keeps it there with no scroll jump. */}
       {topToolbar ? (
-        <div className="sticky top-[-0.5rem] z-40 -mt-3 shrink-0 px-1 pt-1 pb-1">{topToolbar}</div>
+        <div className="sticky top-[-0.5rem] z-40 -mt-3 shrink-0 pt-1 pr-6 pb-1 pl-1">{topToolbar}</div>
       ) : null}
       <div className="flex min-h-0 flex-1">{children}</div>
     </div>
