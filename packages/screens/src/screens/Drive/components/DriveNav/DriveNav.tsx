@@ -14,13 +14,13 @@ import { NavRow, SectionLabel, navItemVariants, navRowClass } from "@components/
 import DevicesNav from "@pages/Drive/components/DevicesNav/DevicesNav"
 
 /** Device-first Drive nav: Overview on top, then the Devices section (cloud views + this computer's
- *  synced folders + P2P), saved searches, and the current folder's location trail. */
+ *  synced folders + P2P) and saved searches. The current-folder trail lives in the top toolbar. */
 const DriveNav = () => {
   const { t } = useTranslation("drive")
   const pathname = usePathname()
   const queryClient = useQueryClient()
   const folderId = driveFolderIdFromPath(pathname)
-  const { data } = useQuery({
+  useQuery({
     queryKey: ["drive", "nodes", folderId ?? "root"],
     queryFn: () => fetchNodes(folderId ?? undefined),
     enabled: folderId !== null,
@@ -29,8 +29,6 @@ const DriveNav = () => {
     queryKey: ["drive", "searches"],
     queryFn: fetchSavedSearches,
   })
-  const trail = data?.breadcrumb ?? []
-  const showLocation = folderId !== null && trail.length > 1
 
   const removeSearch = async (id: string) => {
     await deleteSavedSearch(id)
@@ -72,29 +70,6 @@ const DriveNav = () => {
               </motion.div>
             )
           })}
-        </>
-      ) : null}
-
-      {showLocation ? (
-        <>
-          <SectionLabel>{t("driveNav.location")}</SectionLabel>
-          {trail.map((node, index) => (
-            <motion.div key={node.id} variants={navItemVariants}>
-              <Link
-                href={index === 0 ? "/drive/files" : `/drive/${node.id}`}
-                style={{ paddingLeft: `${0.625 + index * 0.85}rem` }}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-md py-1 pr-2 text-[13px] transition",
-                  index === trail.length - 1
-                    ? "bg-sidebar-accent/60 font-medium"
-                    : "text-muted-foreground hover:bg-sidebar-accent/40",
-                )}
-              >
-                <Icon name="folder" className="size-3.5 shrink-0" />
-                <span className="truncate">{index === 0 ? t("driveNav.myDrive") : node.name}</span>
-              </Link>
-            </motion.div>
-          ))}
         </>
       ) : null}
     </>
