@@ -1,19 +1,30 @@
 import type { ComponentType, ReactNode } from "react"
 import { formatMediumDateTime } from "@workspace/i18n/format"
-import { Suspense, lazy } from "react"
+import { Suspense, lazy, useState } from "react"
 import { decryptName, decryptWithMetaKey } from "@workspace/core/e2e"
 import { bytesParts } from "@workspace/core/format"
-import { ArrowSquareOut, Calendar, Camera, File, HeartIcon, MapPin } from "@phosphor-icons/react"
+import {
+  ArrowSquareOut,
+  Calendar,
+  Camera,
+  CircleNotch,
+  Cube,
+  File,
+  HeartIcon,
+  MapPin,
+} from "@phosphor-icons/react"
 import NumberFlow from "@number-flow/react"
 import { type AssetExif, fetchAsset } from "@workspace/core/photos"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
+import { type SplatSource, loadStoredSplat } from "@pages/Photos/splatViewing"
 
 const PhotoLocationMap = lazy(
   () => import("@pages/Photos/components/PhotoLocationMap/PhotoLocationMap"),
 )
+const SplatResult = lazy(() => import("@pages/Drive/components/ModelViewer/SplatResult"))
 
 const decoder = new TextDecoder()
 
@@ -89,6 +100,16 @@ const InfoPanel = ({ assetId, isFavorite, onFavorite, onShare }: InfoPanelProps)
     queryFn: () => fetchAsset(assetId),
   })
   const asset = data?.asset
+  const [splatSrc, setSplatSrc] = useState<SplatSource | null>(null)
+  const [splatLoading, setSplatLoading] = useState(false)
+  const viewSplat = async () => {
+    if (!asset || splatLoading) return
+    setSplatLoading(true)
+    const name = (asset.encrypted && decryptName(asset.encryptedName)) || asset.originalFilename
+    const source = await loadStoredSplat(assetId, asset.mimeType, name).catch(() => null)
+    setSplatLoading(false)
+    if (source) setSplatSrc(source)
+  }
 
   if (!asset) {
     return (
@@ -217,6 +238,27 @@ const InfoPanel = ({ assetId, isFavorite, onFavorite, onShare }: InfoPanelProps)
           <Row label={t("infoPanel.added")} value={added} />
         </Section>
 
+        {asset.splat ? (
+          <Section icon={Cube} title={t("infoPanel.threeD", { defaultValue: "3D" })}>
+            <div className="pt-1.5">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void viewSplat()}
+                disabled={splatLoading}
+                className="w-full gap-1.5"
+              >
+                {splatLoading ? (
+                  <CircleNotch className="size-4 animate-spin" />
+                ) : (
+                  <Cube className="size-4" />
+                )}
+                {t("lightbox.viewSplat", { defaultValue: "View 3D splat" })}
+              </Button>
+            </div>
+          </Section>
+        ) : null}
+
         {hasCamera ? (
           <Section icon={Camera} title={t("infoPanel.camera")}>
             <Row label={t("infoPanel.camera")} value={camera || undefined} />
@@ -256,6 +298,12 @@ const InfoPanel = ({ assetId, isFavorite, onFavorite, onShare }: InfoPanelProps)
           </Section>
         ) : null}
       </div>
+
+      {splatSrc ? (
+        <Suspense fallback={null}>
+          <SplatResult splat={splatSrc} onClose={() => setSplatSrc(null)} />
+        </Suspense>
+      ) : null}
     </div>
   )
 }

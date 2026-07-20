@@ -1,17 +1,13 @@
 import { decryptName } from "@workspace/core/e2e"
 import { getHost } from "@workspace/core/host"
 import { favoriteAssets, trashAssets } from "@workspace/core/photos"
-import {
-  downloadItemFor,
-  fetchDecryptedSplat,
-  removeSplat,
-  uploadSplat,
-} from "@workspace/core/photosE2e"
+import { downloadItemFor, removeSplat, uploadSplat } from "@workspace/core/photosE2e"
 import { useSelection } from "@workspace/screens/selection"
 import { useUploadManager } from "@workspace/screens/uploadManager"
 import { useSidebar } from "@workspace/ui/components/sidebar"
 import { adaptiveChrome, useContentLight } from "@components/adaptiveChrome"
 import { fetchCachedOriginal } from "@pages/Photos/components/Lightbox/originalCache"
+import { averageLight, loadStoredSplat } from "@pages/Photos/splatViewing"
 import { onPhotoNotice } from "./notice"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -69,30 +65,6 @@ const SORTS: { id: SortKey; label: string }[] = [
 
 const PILL =
   "bg-background/70 pointer-events-auto flex items-center rounded-full border p-1 shadow-lg backdrop-blur-xl"
-
-/** Average perceived brightness of an image blob (downsampled), for the splat viewer's adaptive
- *  chrome — `true` when the photo is bright (so the viewer uses dark pills, and vice-versa). */
-const averageLight = async (blob: Blob): Promise<boolean> => {
-  try {
-    const bitmap = await createImageBitmap(blob)
-    const canvas = document.createElement("canvas")
-    canvas.width = canvas.height = 10
-    const ctx = canvas.getContext("2d", { willReadFrequently: true })
-    if (!ctx) {
-      bitmap.close()
-      return true
-    }
-    ctx.drawImage(bitmap, 0, 0, 10, 10)
-    bitmap.close()
-    const { data } = ctx.getImageData(0, 0, 10, 10)
-    let sum = 0
-    for (let i = 0; i < data.length; i += 4)
-      sum += (0.299 * data[i]! + 0.587 * data[i + 1]! + 0.114 * data[i + 2]!) / 255
-    return sum / (data.length / 4) > 0.6
-  } catch {
-    return true
-  }
-}
 const FADE = { duration: 0.16, ease: [0.32, 0.72, 0, 1] as const }
 const MORPH = { layout: { duration: 0.35, ease: [0.32, 0.72, 0, 1] as const } }
 const REVEAL = { duration: 0.16, delay: 0.22, ease: [0.32, 0.72, 0, 1] as const }
@@ -306,15 +278,9 @@ const BottomChrome = ({
     sidebarBeforeSplat.current = sidebarOpen
     setSplatBusy("load")
     try {
-      const [url, sourceUrl] = await Promise.all([
-        fetchDecryptedSplat(assetId),
-        fetchCachedOriginal(assetId, mimeType),
-      ])
-      if (!url) throw new Error("no splat")
-      const light = sourceUrl
-        ? await averageLight(await fetch(sourceUrl).then((response) => response.blob()))
-        : undefined
-      setSplatSrc({ url, name: outName, light })
+      const source = await loadStoredSplat(assetId, mimeType, outName)
+      if (!source) throw new Error("no splat")
+      setSplatSrc(source)
     } catch {
       toast.error(t("lightbox.generate3dFailed"))
     } finally {
