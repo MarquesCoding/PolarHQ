@@ -54,7 +54,7 @@ const MountainLayer = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.9, delay: 0.25 + index * 0.15, ease: [0.22, 0.61, 0.36, 1] }}
-      className="pointer-events-none absolute bottom-0 left-0 w-full select-none [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]"
+      className="pointer-events-none absolute bottom-0 left-0 w-full select-none"
     />
   )
 }
@@ -74,7 +74,7 @@ const Hero = () => {
     >
       <div aria-hidden className="bg-background absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-x-0 top-0 h-svh overflow-hidden">
-          <div className="absolute bottom-[-6%] left-1/2 w-full max-w-[1600px] -translate-x-1/2 sm:bottom-[-34%]">
+          <div className="absolute inset-x-0 bottom-[-6%] sm:bottom-[-34%]">
             {MOUNTAINS.map((m, i) => (
               <MountainLayer key={m.src} {...m} index={i} progress={scrollYProgress} />
             ))}
