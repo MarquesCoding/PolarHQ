@@ -30,22 +30,12 @@ import { useSelectionHotkeys } from "@workspace/screens/useSelectionHotkeys"
 import { useUploadManager } from "@workspace/screens/uploadManager"
 import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { setDriveDetailsOpen } from "@workspace/screens/store/uiSlice"
-import {
-  Archive,
-  ArrowSquareOut,
-  Bookmark,
-  Export,
-  PencilSimple,
-  Star,
-  UserPlus,
-} from "@phosphor-icons/react"
+import { Bookmark } from "@phosphor-icons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { AnimatePresence } from "motion/react"
 import { toast } from "sonner"
-import ConfirmButton from "@components/ConfirmButton/ConfirmButton"
 import DropZone from "@components/DropZone/DropZone"
-import SelectionBar from "@components/SelectionBar/SelectionBar"
 import { PageSpinner } from "@components/Spinner/Spinner"
 import ShareDialog from "@components/ShareDialog/ShareDialog"
 import DetailsPanel from "@pages/Drive/components/DetailsPanel/DetailsPanel"
@@ -494,65 +484,6 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
         }}
       />
 
-      <SelectionBar contentCentered>
-        {single && docTypeOf(single.mimeType) ? (
-          <Button variant="ghost" size="sm" onClick={() => open(single)}>
-            <ArrowSquareOut className="size-4" />
-            {t("browser.open")}
-          </Button>
-        ) : null}
-        <Button variant="ghost" size="sm" onClick={() => downloadIds(ids)}>
-          <Icon name="download" className="size-4" />
-          {t("browser.download")}
-        </Button>
-        {single && !single.special ? (
-          <Button variant="ghost" size="sm" onClick={() => void toggleFavorite(single)}>
-            {single.favorite ? (
-              <Star weight="fill" className="size-4" />
-            ) : (
-              <Star className="size-4" />
-            )}
-            {single.favorite ? t("browser.unfavorite") : t("browser.favorite")}
-          </Button>
-        ) : null}
-        {single && !single.special ? (
-          <Button variant="ghost" size="sm" onClick={() => setRenaming(single)}>
-            <PencilSimple className="size-4" />
-            {t("browser.rename")}
-          </Button>
-        ) : null}
-        {single?.kind === "file" ? (
-          <Button variant="ghost" size="sm" onClick={() => setShareNode(single)}>
-            <UserPlus className="size-4" />
-            {t("browser.share")}
-          </Button>
-        ) : null}
-        {hasSpecial ? null : (
-          <Button variant="ghost" size="sm" onClick={() => setMoving(ids)}>
-            <Icon name="folder" className="size-4" />
-            {t("browser.move")}
-          </Button>
-        )}
-        {canExtract ? (
-          <Button variant="ghost" size="sm" onClick={() => void extract(single!.id)}>
-            <Export className="size-4" />
-            {t("browser.extract")}
-          </Button>
-        ) : null}
-        <Button variant="ghost" size="sm" onClick={() => archive(ids)}>
-          <Archive className="size-4" />
-          {t("browser.archive")}
-        </Button>
-        {hasSpecial ? null : (
-          <ConfirmButton
-            icon={<Icon name="trash" className="size-4" />}
-            armed={trashConfirm.armed}
-            onTrigger={trashConfirm.trigger}
-          >
-            {t("browser.trash")}
-          </ConfirmButton>
-        )}
-      </SelectionBar>
 
       {parentId ? (
         <NewFolderDialog
