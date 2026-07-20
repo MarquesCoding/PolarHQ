@@ -2,12 +2,11 @@ import { dateLocale } from "@workspace/i18n/format"
 import type { ComponentType, ReactNode } from "react"
 import { type DriveNode, fetchVersions } from "@workspace/core/drive"
 import { bytesParts, formatBytes } from "@workspace/core/format"
-import { Calendar, ClockCounterClockwise, File, Info, X } from "@phosphor-icons/react"
+import { Calendar, ClockCounterClockwise, File, Info } from "@phosphor-icons/react"
 import { FileIcon } from "../../fileIcon"
 import { storageKind } from "@pages/Drive/nodeKind"
 import NumberFlow from "@number-flow/react"
 import { useQuery } from "@tanstack/react-query"
-import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
@@ -225,7 +224,7 @@ const StackedDetails = ({ nodes }: { nodes: DriveNode[] }) => {
 }
 
 /** Right-side details panel: follows the selection (single item, or a stacked summary). */
-const DetailsPanel = ({ open, nodes, onClose }: DetailsPanelProps) => {
+const DetailsPanel = ({ open, nodes }: DetailsPanelProps) => {
   const { t } = useTranslation("drive")
   return (
     <motion.aside
@@ -235,21 +234,9 @@ const DetailsPanel = ({ open, nodes, onClose }: DetailsPanelProps) => {
       className="relative shrink-0 self-stretch overflow-hidden"
     >
       {/* Floating rounded card (matches the Photos viewer's details panel) rather than a flat
-          edge-attached column. */}
+          edge-attached column. Closed via the toolbar's info toggle, so no header/close here. */}
       <div className="border-border/60 bg-card/80 my-3 mr-3 flex h-[calc(100%-1.5rem)] w-72 flex-col overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl">
-        <div className="flex items-center justify-between px-5 pt-5 pb-3">
-          <h2 className="text-sm font-medium">{t("detailsPanel.title")}</h2>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={t("detailsPanel.closeDetails")}
-            onClick={onClose}
-          >
-            <X className="size-4" />
-          </Button>
-        </div>
-
-        <div className="min-h-0 flex-1">
+        <div className="min-h-0 flex-1 pt-2">
           {nodes.length === 0 ? (
             <p className="text-muted-foreground p-5 text-sm">{t("detailsPanel.empty")}</p>
           ) : nodes.length === 1 ? (
