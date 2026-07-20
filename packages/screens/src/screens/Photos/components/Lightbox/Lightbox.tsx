@@ -66,7 +66,7 @@ interface LightboxProps {
   filmstrip?: boolean
 }
 
-const ModelViewer = lazy(() => import("@pages/Drive/components/ModelViewer/ModelViewer"))
+const SplatResult = lazy(() => import("@pages/Drive/components/ModelViewer/SplatResult"))
 
 /** A toolbar button with a hover tooltip (the buttons are icon-only and otherwise ambiguous). */
 const Tip = ({ label, children }: { label: string; children: ReactElement }) => (
@@ -797,7 +797,7 @@ const Lightbox = ({
 
       {splatSrc ? (
         <Suspense fallback={null}>
-          <ModelViewer key="splat" src={splatSrc} onClose={() => setSplatSrc(null)} />
+          <SplatResult key="splat" splat={splatSrc} onClose={() => setSplatSrc(null)} />
         </Suspense>
       ) : null}
 

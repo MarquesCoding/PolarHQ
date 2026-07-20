@@ -4,6 +4,7 @@ import { favoriteAssets, trashAssets } from "@workspace/core/photos"
 import { downloadItemFor } from "@workspace/core/photosE2e"
 import { useSelection } from "@workspace/screens/selection"
 import { useUploadManager } from "@workspace/screens/uploadManager"
+import { useSidebar } from "@workspace/ui/components/sidebar"
 import { adaptiveChrome, useContentLight } from "@components/adaptiveChrome"
 import { fetchCachedOriginal } from "@pages/Photos/components/Lightbox/originalCache"
 import { onPhotoNotice } from "./notice"
@@ -38,7 +39,7 @@ import { cn } from "@workspace/ui/lib/utils"
 import { useTranslation } from "react-i18next"
 import type { GridAsset, Mode, SortKey } from "./types"
 
-const ModelViewer = lazy(() => import("@pages/Drive/components/ModelViewer/ModelViewer"))
+const SplatResult = lazy(() => import("@pages/Drive/components/ModelViewer/SplatResult"))
 
 const MODES: { id: Mode; label: string }[] = [
   { id: "grid", label: "Grid" },
@@ -193,26 +194,40 @@ const BottomChrome = ({
     void trashAssets([focused.id]).then(() => onInvalidate?.())
   }
 
+  const { open: sidebarOpen, setOpen: setSidebarOpen } = useSidebar()
+  const sidebarBeforeSplat = useRef(false)
   const [splatSrc, setSplatSrc] = useState<{ url: string; name: string } | null>(null)
+  const [generating, setGenerating] = useState(false)
+  const splatActive = generating || Boolean(splatSrc)
+  useEffect(() => {
+    if (splatActive) {
+      setSidebarOpen(false)
+    } else if (sidebarBeforeSplat.current) {
+      setSidebarOpen(true)
+      sidebarBeforeSplat.current = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [splatActive])
   const canGenerate3d =
     Boolean(focused?.mimeType?.startsWith("image/")) &&
     getHost().isDesktop &&
     Boolean(getHost().generateSplat)
   const generate3d = async () => {
     const host = getHost()
-    if (!focused || !host.generateSplat) return
-    const toastId = toast.loading(t("lightbox.generating3d"))
+    if (!focused || !host.generateSplat || generating) return
+    sidebarBeforeSplat.current = sidebarOpen
+    setGenerating(true)
     try {
       const url = await fetchCachedOriginal(focused.id, focused.mimeType)
       if (!url) throw new Error("no source")
       const blob = await fetch(url).then((response) => response.blob())
       const bytes = new Uint8Array(await blob.arrayBuffer())
       const splat = await host.generateSplat(bytes, blob.type || focused.mimeType || "image/jpeg")
-      toast.dismiss(toastId)
       setSplatSrc({ url: splat, name: `${name.replace(/\.[^.]+$/, "")}.ply` })
     } catch {
-      toast.dismiss(toastId)
       toast.error(t("lightbox.generate3dFailed"))
+    } finally {
+      setGenerating(false)
     }
   }
 
@@ -599,11 +614,22 @@ const BottomChrome = ({
         ) : null}
       </AnimatePresence>
 
-      {splatSrc ? (
-        <Suspense fallback={null}>
-          <ModelViewer key="splat" src={splatSrc} onClose={() => setSplatSrc(null)} />
-        </Suspense>
+      {generating ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-background/60 backdrop-blur-sm">
+          <div className="panel flex items-center gap-2.5 rounded-full px-4 py-2.5 shadow-xl">
+            <CircleNotch className="size-[18px] animate-spin" />
+            <span className="text-sm font-medium">{t("lightbox.generating3d")}</span>
+          </div>
+        </div>
       ) : null}
+
+      <AnimatePresence>
+        {splatSrc ? (
+          <Suspense key="splat" fallback={null}>
+            <SplatResult splat={splatSrc} onClose={() => setSplatSrc(null)} />
+          </Suspense>
+        ) : null}
+      </AnimatePresence>
     </>
   )
 }

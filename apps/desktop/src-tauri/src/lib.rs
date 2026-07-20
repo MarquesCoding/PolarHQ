@@ -1,4 +1,5 @@
 mod commands;
+mod sharp;
 mod splat;
 mod sync;
 

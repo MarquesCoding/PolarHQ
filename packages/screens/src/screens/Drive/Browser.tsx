@@ -59,6 +59,7 @@ import RenameDialog from "@pages/Drive/components/RenameDialog/RenameDialog"
 import VersionHistoryDialog from "@pages/Drive/components/VersionHistoryDialog/VersionHistoryDialog"
 
 const ModelViewer = lazy(() => import("@pages/Drive/components/ModelViewer/ModelViewer"))
+const SplatResult = lazy(() => import("@pages/Drive/components/ModelViewer/SplatResult"))
 
 interface BrowserProps {
   folderId?: string
@@ -553,7 +554,7 @@ const BrowserInner = ({ folderId, source }: BrowserProps) => {
       ) : null}
       {splatSrc ? (
         <Suspense fallback={null}>
-          <ModelViewer key="splat" src={splatSrc} onClose={() => setSplatSrc(null)} />
+          <SplatResult key="splat" splat={splatSrc} onClose={() => setSplatSrc(null)} />
         </Suspense>
       ) : null}
     </AnimatePresence>
