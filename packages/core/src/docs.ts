@@ -1,4 +1,4 @@
-import { apiFetch } from "./apiClient"
+import { apiFetch, mediaFetchInit } from "./apiClient"
 import type { DriveNode } from "./drive"
 import { decryptName, decryptSharedName } from "./e2e"
 import { coreConfig } from "./config"
@@ -140,20 +140,23 @@ export const createDoc = (
 
 /** Fetch a document's raw content bytes (a Yjs snapshot). */
 export const fetchDocContent = async (id: string): Promise<ArrayBuffer> => {
-  const response = await fetch(`${coreConfig().apiUrl}/api/v1/docs/documents/${id}/content`, {
-    credentials: "include",
-  })
+  const response = await fetch(
+    `${coreConfig().apiUrl}/api/v1/docs/documents/${id}/content`,
+    mediaFetchInit(),
+  )
   if (!response.ok) throw new Error(`Could not load document (${response.status})`)
   return response.arrayBuffer()
 }
 
 /** Persist a document's content (a Yjs snapshot) by overwriting the Drive file body. */
 export const saveDocContent = async (id: string, bytes: Uint8Array): Promise<void> => {
-  const response = await fetch(`${coreConfig().apiUrl}/api/v1/docs/documents/${id}/content`, {
-    method: "PUT",
-    credentials: "include",
-    headers: { "content-type": "application/octet-stream" },
-    body: bytes as BodyInit,
-  })
+  const response = await fetch(
+    `${coreConfig().apiUrl}/api/v1/docs/documents/${id}/content`,
+    mediaFetchInit({
+      method: "PUT",
+      headers: { "content-type": "application/octet-stream" },
+      body: bytes as BodyInit,
+    }),
+  )
   if (!response.ok) throw new Error(`Could not save document (${response.status})`)
 }

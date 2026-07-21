@@ -6,6 +6,7 @@ import {
   streamPrefixSize,
 } from "./crypto"
 import type { UploadProgress } from "./xhrUpload"
+import { mediaFetchInit } from "./apiClient"
 
 interface SaveWritable {
   write: (data: Uint8Array) => Promise<void>
@@ -50,7 +51,7 @@ export const streamDecryptToDisk = async (
   }
 
   try {
-    const response = await fetch(url, { credentials: "include" })
+    const response = await fetch(url, mediaFetchInit())
     if (!response.ok || !response.body) {
       await writable.abort?.()
       return false

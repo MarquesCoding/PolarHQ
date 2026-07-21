@@ -1,4 +1,4 @@
-import { apiFetch } from "./apiClient"
+import { apiFetch, mediaFetchInit } from "./apiClient"
 import type { ShareLink, ShareOptions } from "./drive"
 import { coreConfig } from "./config"
 
@@ -119,11 +119,10 @@ export interface UploadResult {
 export const uploadAsset = async (file: File): Promise<UploadResult> => {
   const body = new FormData()
   body.set("file", file)
-  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets`, {
-    method: "POST",
-    credentials: "include",
-    body,
-  })
+  const response = await fetch(
+    `${coreConfig().apiUrl}/api/v1/photos/assets`,
+    mediaFetchInit({ method: "POST", body }),
+  )
   if (!response.ok) throw new Error(`Upload failed (${response.status})`)
   return response.json() as Promise<UploadResult>
 }

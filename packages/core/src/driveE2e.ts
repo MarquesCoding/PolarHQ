@@ -1,4 +1,4 @@
-import { apiFetch } from "./apiClient"
+import { apiFetch, mediaFetchInit } from "./apiClient"
 import { uploadStreamingParts } from "./chunkedUpload"
 import {
   isStreamBlob,
@@ -58,12 +58,14 @@ export const uploadEncryptedDriveFile = async (
   if (file.type.startsWith("image/")) {
     const thumbnail = await generateImageThumbnail(file).catch(() => null)
     if (thumbnail) {
-      await fetch(`${coreConfig().apiUrl}/api/v1/drive/nodes/${node.id}/thumbnail`, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "content-type": "application/octet-stream" },
-        body: secretboxSeal(thumbnail, key) as BodyInit,
-      })
+      await fetch(
+        `${coreConfig().apiUrl}/api/v1/drive/nodes/${node.id}/thumbnail`,
+        mediaFetchInit({
+          method: "PUT",
+          headers: { "content-type": "application/octet-stream" },
+          body: secretboxSeal(thumbnail, key) as BodyInit,
+        }),
+      )
     }
   }
 
@@ -128,9 +130,10 @@ const thumbInflight = new Map<string, Promise<string | null>>()
 const decryptThumbnail = async (nodeId: string): Promise<string | null> => {
   const key = await getDocContentKey(nodeId)
   if (!key) return null
-  const response = await fetch(`${coreConfig().apiUrl}/api/v1/drive/nodes/${nodeId}/thumbnail`, {
-    credentials: "include",
-  })
+  const response = await fetch(
+    `${coreConfig().apiUrl}/api/v1/drive/nodes/${nodeId}/thumbnail`,
+    mediaFetchInit(),
+  )
   if (!response.ok) return null
   try {
     const plain = secretboxOpen(new Uint8Array(await response.arrayBuffer()), key)
@@ -211,7 +214,7 @@ export const fetchDecryptedFile = async (
 ): Promise<string | null> => {
   const key = await getDocContentKey(nodeId)
   if (!key) return null
-  const response = await fetch(downloadUrl, { credentials: "include" })
+  const response = await fetch(downloadUrl, mediaFetchInit())
   if (!response.ok) return null
   try {
     const bytes = new Uint8Array(await response.arrayBuffer())
