@@ -8,6 +8,46 @@ commits; you may polish the wording in the Release PR before merging.
 Format: each release is `## [version] - date — Title`, an optional `<!-- tags: a, b -->` line,
 then Markdown notes.
 
+## [0.8.0](https://github.com/MarquesCoding/PolarHQ/compare/v0.7.0...v0.8.0) (2026-07-21)
+
+
+### Added
+
+* **api:** Drive tags CRUD + apply/remove + tags on node DTOs ([6e1eb66](https://github.com/MarquesCoding/PolarHQ/commit/6e1eb665168a890d5d3c96ad800a1d513aeee322))
+* **app:** accent color themes + picker in Appearance ([0d2d33f](https://github.com/MarquesCoding/PolarHQ/commit/0d2d33f0f07d7841d23864833defbcc5fd4200e2))
+* **app:** full palette themes (Sand, Slate) alongside the accent ([fb334bd](https://github.com/MarquesCoding/PolarHQ/commit/fb334bd55feb29b2a06688ef94a3c11dee01e76c))
+* **core:** Drive tag client (fetch/create/update/delete/apply/remove) ([23d8fca](https://github.com/MarquesCoding/PolarHQ/commit/23d8fca6291f536494be21664a4db4c4b6fff26f))
+* **db:** drive.tags + node_tags tables (E2E tag names, colours) ([e5fd6cd](https://github.com/MarquesCoding/PolarHQ/commit/e5fd6cdb0dc44f3ec51d49ae99c6c7d886c12cfd))
+* **desktop:** in-app SHARP setup instead of bundling ~5GB ([0c56c67](https://github.com/MarquesCoding/PolarHQ/commit/0c56c675ace7d44225053ed3274217040dd62e80))
+* **drive:** tag chips in details panel + /drive/tag/:id filter view ([9e289e9](https://github.com/MarquesCoding/PolarHQ/commit/9e289e92da26d9d933af2727c00772395b7d5298))
+* **drive:** tags sidebar section + right-click Tags submenu ([2108fbc](https://github.com/MarquesCoding/PolarHQ/commit/2108fbc1511e577bf8d34e494ed9dfd72e19f354))
+* image→3D (Apple SHARP), Drive tags, app themes, marketing security + scroll ([7e347f6](https://github.com/MarquesCoding/PolarHQ/commit/7e347f6d96c1cb04e6fbfcdcc5b6ed998f49b0ef))
+* **marketing:** 3D splat spotlight section ([36c5a6e](https://github.com/MarquesCoding/PolarHQ/commit/36c5a6ee59540cdeb83a59b4120923091fc10449))
+* **marketing:** dedicated /security page ([816c770](https://github.com/MarquesCoding/PolarHQ/commit/816c7703aa0ff21f97defda05aa82da77720f72a))
+* **marketing:** per-platform download links under the hero CTA ([76d96b5](https://github.com/MarquesCoding/PolarHQ/commit/76d96b58048837804ea6c0e300a68f72cecc7543))
+* **marketing:** scroll-pinned feature showcase ([af0e981](https://github.com/MarquesCoding/PolarHQ/commit/af0e9813d28c834333b686a67aa7b4e54a9c5d5a))
+* **photos:** adaptive splat-viewer chrome from source-photo brightness ([183ea8c](https://github.com/MarquesCoding/PolarHQ/commit/183ea8c171f4c3a677a3dc64facd3e53e829aa1f))
+* **photos:** generate a 3D splat from the photo viewer (desktop) ([63a7992](https://github.com/MarquesCoding/PolarHQ/commit/63a7992d7506f60b5f918ca95ca748d1f529f322))
+* **photos:** persist splats as synced encrypted derivatives ([9f0132e](https://github.com/MarquesCoding/PolarHQ/commit/9f0132e6dd8b0d8668e153fed6029b5e0454ac27))
+* **photos:** real image-&gt;3D via Apple SHARP + Gaussian-splat viewer ([57bd376](https://github.com/MarquesCoding/PolarHQ/commit/57bd3765257c95b23b3bb20bb5fbaf7f61254411))
+* **photos:** show stored 3D splat in the details panel ([4fa4251](https://github.com/MarquesCoding/PolarHQ/commit/4fa42518bc96061499d0e35649b18b66d54c288c))
+
+
+### Fixed
+
+* **core:** authenticate media fetches with the bearer token ([796170c](https://github.com/MarquesCoding/PolarHQ/commit/796170c71334d3218b796bf40e9ab0e50636ec5e))
+* **core:** authenticate media fetches with the bearer token (desktop against remote) ([f3679f2](https://github.com/MarquesCoding/PolarHQ/commit/f3679f22bc5f13dfc4d3bffa6d509b5c4694ec6e))
+* **devices:** only native apps are devices; hide offline + browsers ([e2ad84d](https://github.com/MarquesCoding/PolarHQ/commit/e2ad84d8a686d608ebef33f844f0f83b28efd373))
+* **devices:** only native apps are devices; hide offline + browsers ([f08f22d](https://github.com/MarquesCoding/PolarHQ/commit/f08f22dd283360c97ccc075953969eb8063d759d))
+* **marketing:** drop em-dashes from new copy; remove Terms/Privacy nav links ([ac8e9a9](https://github.com/MarquesCoding/PolarHQ/commit/ac8e9a9ec4c03d7180084551d31e2c7db3debb4d))
+* **photos:** show Generate 3D splat in the workspace viewer pill ([7ded4f0](https://github.com/MarquesCoding/PolarHQ/commit/7ded4f08f684c385f8926b9f1fcf27007c315b19))
+* **photos:** splat viewer follows the app theme (light/dark) ([fc7770a](https://github.com/MarquesCoding/PolarHQ/commit/fc7770ac617c2e3f1bad158b1edd5a19ba0b9255))
+
+
+### Improved
+
+* **drive:** replace raster file-type icons with Phosphor glyphs ([e41a565](https://github.com/MarquesCoding/PolarHQ/commit/e41a5656fbc6ce208e05c4fe9a8094414f712b5f))
+
 ## [0.7.0] - 2026-07-20 — A reimagined Drive, and devices that see each other
 <!-- tags: Release, Drive, Devices -->
 
