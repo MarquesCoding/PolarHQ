@@ -8,7 +8,7 @@ import { auth } from "@workspace/auth"
 import { config } from "@workspace/config"
 import { publishDocSync, subscribeDocRoom, subscribeUserEvents } from "@workspace/jobs"
 import { storage } from "@workspace/storage"
-import { Hono } from "hono"
+import { type Context, Hono } from "hono"
 import { cors } from "hono/cors"
 import { accountRoutes } from "./account/routes"
 import { deviceRoutes } from "./devices/routes"
@@ -131,13 +131,26 @@ app.route("/api/v1/drive", driveRoutes)
 app.route("/api/v1/docs", docsRoutes)
 app.route("/api/v1/migrate", migrateRoutes)
 
+/**
+ * Authenticate a WebSocket handshake. A WebSocket can't send an `Authorization` header, so the
+ * desktop/mobile shells (which auth with a bearer token, not a cookie) pass it as a `?token=` query
+ * param; we fold it into the headers so better-auth's bearer plugin validates it. Browsers keep using
+ * their session cookie.
+ */
+const getWsUser = (c: Context) => {
+  const token = c.req.query("token")
+  const headers = new Headers(c.req.raw.headers)
+  if (token) headers.set("authorization", `Bearer ${token}`)
+  return getSessionUser(headers)
+}
+
 app.get(
   "/ws",
   upgradeWebSocket((c) => {
     let unsubscribe: (() => Promise<void>) | undefined
     return {
       onOpen: async (_event, ws) => {
-        const user = await getSessionUser(c.req.raw.headers)
+        const user = await getWsUser(c)
         if (!user) {
           ws.close(1008, "unauthorized")
           return
@@ -171,7 +184,7 @@ app.get(
           ws.close(1008, "missing doc")
           return
         }
-        const user = await getSessionUser(c.req.raw.headers)
+        const user = await getWsUser(c)
         if (!user) {
           ws.close(1008, "unauthorized")
           return
