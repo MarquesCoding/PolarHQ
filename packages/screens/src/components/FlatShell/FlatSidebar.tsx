@@ -14,7 +14,15 @@ import { useAppDispatch, useAppSelector } from "@workspace/screens/store/hooks"
 import { openSettings, setSearchQuery } from "@workspace/screens/store/uiSlice"
 import { useContentLight } from "@components/adaptiveChrome"
 import { cn } from "@workspace/ui/lib/utils"
-import { CaretUpDown, MagnifyingGlass, ShieldCheck, SidebarSimple, SignOut } from "@phosphor-icons/react"
+import {
+  ArrowsClockwise,
+  CaretUpDown,
+  ListBullets,
+  MagnifyingGlass,
+  ShieldCheck,
+  SidebarSimple,
+  SignOut,
+} from "@phosphor-icons/react"
 import { useQuery } from "@tanstack/react-query"
 import NumberFlow from "@number-flow/react"
 import { motion } from "motion/react"
@@ -30,6 +38,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 import { useTranslation } from "react-i18next"
 import Changelog from "@components/Changelog/Changelog"
+import JobsPopover from "@workspace/screens/jobs/JobsPopover"
 import DevicesDialog from "@components/DevicesDialog/DevicesDialog"
 import StorageDialog from "@components/StorageDialog/StorageDialog"
 import { replayOnboarding } from "@components/OnboardingCard/OnboardingCard"
@@ -345,6 +354,24 @@ const FlatSidebar = ({
             />
           </div>
         </Button>
+
+        {desktop ? (
+          <div className="border-sidebar-border/60 -mx-1 flex items-center gap-1 border-t px-1 pt-2">
+            <JobsPopover
+              trigger={<ArrowsClockwise className="size-[18px]" />}
+              triggerLabel={t("jobs.syncMonitor", { defaultValue: "Sync Monitor" })}
+              title={t("jobs.syncMonitor", { defaultValue: "Sync Monitor" })}
+              emptyLabel={t("jobs.noSyncs", { defaultValue: "No active syncs" })}
+              filter={(job) => job.kind === "sync"}
+            />
+            <JobsPopover
+              trigger={<ListBullets className="size-[18px]" />}
+              triggerLabel={t("jobs.jobManager", { defaultValue: "Job Manager" })}
+              title={t("jobs.jobManager", { defaultValue: "Job Manager" })}
+              emptyLabel={t("jobs.noJobs", { defaultValue: "No active jobs" })}
+            />
+          </div>
+        ) : null}
 
         {coreConfig().dev ? null : (
           <div className="px-1 pt-0.5 text-center">

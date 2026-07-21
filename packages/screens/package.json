@@ -19,6 +19,7 @@
     "./icons": "./src/icons.tsx",
     "./uploadManager": "./src/uploadManager.tsx",
     "./jobs/JobProvider": "./src/jobs/JobProvider.tsx",
+    "./jobs/JobsPopover": "./src/jobs/JobsPopover.tsx",
     "./useLiveEvents": "./src/useLiveEvents.ts",
     "./useDeviceRegistration": "./src/useDeviceRegistration.ts",
     "./syncBridge": "./src/syncBridge.ts",
