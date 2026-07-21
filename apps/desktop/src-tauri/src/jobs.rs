@@ -132,11 +132,13 @@ impl JobManager {
         id
     }
 
-    /// Apply a partial update to a job and re-emit it.
+    /// Apply a partial update to a job and re-emit it. Persists only on a state transition, so
+    /// per-file progress ticks stay in-memory (no disk write per file during a big sync).
     pub fn apply(&self, app: &AppHandle, id: &str, patch: JobPatch) {
-        let updated = {
+        let (updated, state_changed) = {
             let mut jobs = self.jobs.lock().unwrap();
             let Some(job) = jobs.get_mut(id) else { return };
+            let previous_state = job.state;
             if let Some(state) = patch.state {
                 job.state = state;
             }
@@ -156,10 +158,12 @@ impl JobManager {
                 job.name = name;
             }
             job.updated_at = now_ms();
-            job.clone()
+            (job.clone(), job.state != previous_state)
         };
         JobManager::emit(app, &updated);
-        self.persist(app);
+        if state_changed {
+            self.persist(app);
+        }
     }
 
     /// Convenience for Rust-native actions: set progress.
