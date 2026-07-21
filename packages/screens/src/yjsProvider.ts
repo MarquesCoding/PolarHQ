@@ -1,5 +1,6 @@
 import { secretboxOpen, secretboxSeal } from "@workspace/core/crypto"
 import { coreConfig } from "@workspace/core/config"
+import { getAuthToken } from "@workspace/core/authToken"
 import * as decoding from "lib0/decoding"
 import * as encoding from "lib0/encoding"
 import {
@@ -15,8 +16,11 @@ const MESSAGE_SYNC = 0
 const MESSAGE_AWARENESS = 1
 const RECONNECT_DELAY = 1500
 
-const wsUrl = (nodeId: string): string =>
-  `${coreConfig().apiUrl.replace(/^http/, "ws")}/ws/doc?doc=${encodeURIComponent(nodeId)}`
+const wsUrl = (nodeId: string): string => {
+  const base = `${coreConfig().apiUrl.replace(/^http/, "ws")}/ws/doc?doc=${encodeURIComponent(nodeId)}`
+  const token = getAuthToken()
+  return token ? `${base}&token=${encodeURIComponent(token)}` : base
+}
 
 interface AwarenessChange {
   added: number[]

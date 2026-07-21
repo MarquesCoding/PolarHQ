@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { coreConfig } from "@workspace/core/config"
+import { getAuthToken } from "@workspace/core/authToken"
 
 export interface LiveEvent {
   type: string
@@ -28,7 +29,9 @@ export const useLiveEvents = (onEvent: (event: LiveEvent) => void, enabled = tru
 
   useEffect(() => {
     if (!enabled) return
-    const url = `${coreConfig().apiUrl.replace(/^http/, "ws")}/ws`
+    const token = getAuthToken()
+    const base = `${coreConfig().apiUrl.replace(/^http/, "ws")}/ws`
+    const url = token ? `${base}?token=${encodeURIComponent(token)}` : base
     let socket: WebSocket | null = null
     let closed = false
     let retry: ReturnType<typeof setTimeout> | undefined
