@@ -131,7 +131,12 @@ const DevicesNav = () => {
     queryKey: ["devices", "registered"],
     queryFn: () => fetchRegisteredDevices().then((r) => r.devices),
   })
-  const otherDevices = (registered ?? []).filter((device) => device.deviceId !== getDeviceId())
+  const otherDevices = (registered ?? []).filter(
+    (device) =>
+      device.deviceId !== getDeviceId() &&
+      device.kind !== "web" &&
+      Date.now() - new Date(device.lastSeenAt).getTime() < ONLINE_WINDOW_MS,
+  )
   const peers: P2pDevice[] = []
 
   return (

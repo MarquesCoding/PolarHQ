@@ -158,7 +158,12 @@ const OverviewDevices = ({ cloudBytes, cloudFiles }: { cloudBytes: number; cloud
     queryKey: ["devices", "registered"],
     queryFn: () => fetchRegisteredDevices().then((r) => r.devices),
   })
-  const otherDevices = (registered ?? []).filter((device) => device.deviceId !== getDeviceId())
+  const otherDevices = (registered ?? []).filter(
+    (device) =>
+      device.deviceId !== getDeviceId() &&
+      device.kind !== "web" &&
+      Date.now() - new Date(device.lastSeenAt).getTime() < 6 * 60 * 1000,
+  )
   const peers: P2pDevice[] = []
 
   return (

@@ -1,19 +1,19 @@
 import { useEffect } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { authClient } from "@workspace/core/authClient"
-import { heartbeatDevice, registerDevice } from "@workspace/core/devices"
+import { heartbeatDevice, isNativeApp, registerDevice } from "@workspace/core/devices"
 import { useLiveEvents } from "./useLiveEvents"
 
 const HEARTBEAT_MS = 5 * 60 * 1000
 
 /**
  * Registers this client in the account's device registry once a session exists, then heartbeats so
- * its online state stays fresh, and refreshes the device list when another client changes it. Mounted
- * once in the app shell so web and desktop both appear in the Drive "Devices" section.
+ * its online state stays fresh, and refreshes the device list when another client changes it. Only
+ * native apps register (desktop + mobile app) — a browser tab is not a device.
  */
 export const useDeviceRegistration = (): void => {
   const { data: session } = authClient.useSession()
-  const authed = Boolean(session?.user)
+  const authed = Boolean(session?.user) && isNativeApp()
   const queryClient = useQueryClient()
 
   useEffect(() => {
