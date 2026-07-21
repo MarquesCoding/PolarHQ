@@ -1,4 +1,4 @@
-import { apiFetch } from "./apiClient"
+import { apiFetch, mediaFetchInit } from "./apiClient"
 import { coreConfig } from "./config"
 import { createDriveFolder } from "./drive"
 import {
@@ -130,9 +130,10 @@ const markImported = (
 
 /** Stream an item's original bytes back from Google via the server proxy. */
 const downloadProxy = async (query: string): Promise<Blob> => {
-  const response = await fetch(`${coreConfig().apiUrl}/api/v1/migrate/google/download?${query}`, {
-    credentials: "include",
-  })
+  const response = await fetch(
+    `${coreConfig().apiUrl}/api/v1/migrate/google/download?${query}`,
+    mediaFetchInit(),
+  )
   if (!response.ok) throw new Error("migrate.downloadFailed")
   return response.blob()
 }

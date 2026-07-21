@@ -1,4 +1,4 @@
-import { apiFetch } from "./apiClient"
+import { apiFetch, mediaFetchInit } from "./apiClient"
 import { uploadStreamingParts } from "./chunkedUpload"
 import {
   isStreamBlob,
@@ -164,12 +164,14 @@ export const expandStacksToDownloadItems = async (
 }
 
 const putThumbnail = (url: string, body: Uint8Array): Promise<Response> =>
-  fetch(url, {
-    method: "PUT",
-    credentials: "include",
-    headers: { "content-type": "application/octet-stream" },
-    body: body as BodyInit,
-  })
+  fetch(
+    url,
+    mediaFetchInit({
+      method: "PUT",
+      headers: { "content-type": "application/octet-stream" },
+      body: body as BodyInit,
+    }),
+  )
 
 /**
  * Upload media (image/video/audio) end-to-end encrypted, mirroring the Drive model: encrypt
@@ -339,9 +341,7 @@ export const uploadEncryptedMediaChunked = async (
 export const fetchDecryptedMotionVideo = async (assetId: string): Promise<string | null> => {
   const key = await getDocContentKey(assetId)
   if (!key) return null
-  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/motion`, {
-    credentials: "include",
-  })
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/motion`, mediaFetchInit())
   if (!response.ok) return null
   try {
     const plain = await decryptBlobAsync(new Uint8Array(await response.arrayBuffer()), key)
@@ -367,9 +367,7 @@ export const uploadSplat = async (assetId: string, plyBytes: Uint8Array): Promis
 export const fetchDecryptedSplat = async (assetId: string): Promise<string | null> => {
   const key = await getDocContentKey(assetId)
   if (!key) return null
-  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/splat`, {
-    credentials: "include",
-  })
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/splat`, mediaFetchInit())
   if (!response.ok) return null
   try {
     const plain = await decryptBlobAsync(new Uint8Array(await response.arrayBuffer()), key)
@@ -381,10 +379,10 @@ export const fetchDecryptedSplat = async (assetId: string): Promise<string | nul
 
 /** Delete an asset's stored splat derivative. */
 export const removeSplat = async (assetId: string): Promise<boolean> => {
-  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/splat`, {
-    method: "DELETE",
-    credentials: "include",
-  })
+  const response = await fetch(
+    `${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/splat`,
+    mediaFetchInit({ method: "DELETE" }),
+  )
   return response.ok
 }
 
@@ -395,9 +393,7 @@ export const uploadEncryptedPhoto = uploadEncryptedMedia
 export const fetchDecryptedPhotoThumbnail = async (assetId: string): Promise<string | null> => {
   const key = await getDocContentKey(assetId)
   if (!key) return null
-  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/thumbnail`, {
-    credentials: "include",
-  })
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/thumbnail`, mediaFetchInit())
   if (!response.ok) return null
   try {
     const plain = secretboxOpen(new Uint8Array(await response.arrayBuffer()), key)
@@ -443,9 +439,7 @@ export const fetchDecryptedPhotoOriginal = async (
 ): Promise<string | null> => {
   const key = await getDocContentKey(assetId)
   if (!key) return null
-  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`, {
-    credentials: "include",
-  })
+  const response = await fetch(`${coreConfig().apiUrl}/api/v1/photos/assets/${assetId}/original`, mediaFetchInit())
   if (!response.ok) return null
   try {
     const bytes = new Uint8Array(await response.arrayBuffer())

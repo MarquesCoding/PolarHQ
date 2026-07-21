@@ -1,4 +1,5 @@
 import { coreConfig } from "./config"
+import { mediaFetchInit } from "./apiClient"
 
 const PHOTOS = `${coreConfig().apiUrl}/api/v1/photos`
 
@@ -32,7 +33,7 @@ const fetchAndSave = async (
   fallback: string,
   onProgress?: (progress: DownloadProgress) => void,
 ): Promise<void> => {
-  const response = await fetch(input, { credentials: "include", ...init })
+  const response = await fetch(input, mediaFetchInit(init))
   if (!response.ok) throw new Error(`Download failed (${response.status})`)
 
   let blob: Blob

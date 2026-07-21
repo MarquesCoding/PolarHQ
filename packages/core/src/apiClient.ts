@@ -25,6 +25,25 @@ export const configureApiAuth = (provider: () => Record<string, string> | undefi
   authHeaders = provider
 }
 
+/**
+ * `RequestInit` for raw media fetches (thumbnails, originals, motion, splats) that stream binary
+ * bodies instead of JSON. Attaches the same auth as {@link apiFetch}: cookies for the browser shells,
+ * plus the bearer token / injected headers the desktop and mobile shells use against a remote server
+ * (a browser cookie isn't sent cross-origin from the Tauri/RN webview, so bearer auth is required).
+ */
+export const mediaFetchInit = (extra?: RequestInit): RequestInit => {
+  const token = getAuthToken()
+  return {
+    credentials: "include",
+    ...extra,
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...authHeaders?.(),
+      ...extra?.headers,
+    },
+  }
+}
+
 /** Call an Orbit API endpoint with cookies, JSON in/out, and typed errors. */
 export const apiFetch = async <T>(path: string, init?: RequestInit): Promise<T> => {
   const token = getAuthToken()
