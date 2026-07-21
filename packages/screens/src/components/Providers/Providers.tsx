@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import { useRef } from "react"
 import { ThemeProvider } from "@components/theme-provider"
 import { UploadProvider } from "@workspace/screens/uploadManager"
+import { JobProvider } from "@workspace/screens/jobs/JobProvider"
 import I18nProvider from "@workspace/i18n/provider"
 import { makeQueryClient } from "@workspace/core/queryClient"
 import { setMediaIndexer } from "@workspace/core/photosE2e"
@@ -36,11 +37,13 @@ const Providers = ({ children }: { children: ReactNode }) => {
           <ThemeProvider>
             <TooltipProvider>
               <UploadProvider>
-                <PlatformAdapter>
-                  {children}
-                  <UploadPanel />
-                  <CommandPalette />
-                </PlatformAdapter>
+                <JobProvider>
+                  <PlatformAdapter>
+                    {children}
+                    <UploadPanel />
+                    <CommandPalette />
+                  </PlatformAdapter>
+                </JobProvider>
               </UploadProvider>
             </TooltipProvider>
             <Toaster position="top-center" />

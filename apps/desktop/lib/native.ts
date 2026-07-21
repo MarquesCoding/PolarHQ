@@ -1,5 +1,6 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core"
 import { listen } from "@tauri-apps/api/event"
+import type { Job, JobPatch, JobsHost } from "@workspace/core/host"
 
 /**
  * Write decrypted media bytes to a temp file and return an asset-protocol URL the webview can load.
@@ -58,6 +59,24 @@ export const sharpSetup = async (onPhase?: (phase: string) => void): Promise<voi
   } finally {
     unlisten?.()
   }
+}
+
+/** The desktop job manager, backed by the Rust `JobManager`. Every long-running action is a tracked
+ *  job; the frontend subscribes to `job://update` and drives cancel/report over IPC. */
+export const jobs: JobsHost = {
+  list: () => invoke<Job[]>("jobs_list"),
+  create: (kind, name, key) => invoke<string>("job_create", { kind, name, key: key ?? null }),
+  report: (id, patch: JobPatch) => invoke("job_report", { id, patch }),
+  cancel: (id) => invoke("job_cancel", { id }),
+  remove: (id) => invoke("job_remove", { id }),
+  cancelled: (id) => invoke<boolean>("job_cancelled", { id }),
+  subscribe: (onUpdate, onRemove) => {
+    const unlisten = [
+      listen<Job>("job://update", (event) => onUpdate(event.payload)),
+      listen<string>("job://removed", (event) => onRemove(event.payload)),
+    ]
+    return () => void Promise.all(unlisten).then((fns) => fns.forEach((fn) => fn()))
+  },
 }
 
 /** Current peer-to-peer device-link status (e.g. `"offline"`). */
