@@ -30,6 +30,49 @@ export interface HostCapabilities {
    *  ("installing-uv" | "downloading-sharp" | "creating-env" | "installing-deps" |
    *  "downloading-model" | "ready"). Desktop only. */
   sharpSetup?: (onPhase?: (phase: string) => void) => Promise<void>
+  /** The desktop job store — every long-running action is a tracked {@link Job}. Absent on web. */
+  jobs?: JobsHost
+}
+
+/** Lifecycle of a background job in the desktop job manager. */
+export type JobState = "queued" | "running" | "done" | "failed" | "cancelled" | "interrupted"
+
+export interface Job {
+  id: string
+  /** Stable per-action key for dedup/retry (e.g. a synced folder id); null when one-shot. */
+  key: string | null
+  kind: string
+  name: string
+  state: JobState
+  progress: { done: number; total: number; current: string | null }
+  error: string | null
+  retriable: boolean
+  createdAt: number
+  updatedAt: number
+}
+
+/** A partial update pushed to a job by a webview-orchestrated action. */
+export interface JobPatch {
+  state?: JobState
+  done?: number
+  total?: number
+  current?: string | null
+  error?: string | null
+  name?: string
+  retriable?: boolean
+}
+
+/** The desktop job manager, backed by the Rust store. Webview-orchestrated actions (sync, uploads)
+ *  create + report into it so all jobs share one authoritative, persisted store. */
+export interface JobsHost {
+  list: () => Promise<Job[]>
+  create: (kind: string, name: string, key?: string) => Promise<string>
+  report: (id: string, patch: JobPatch) => Promise<void>
+  cancel: (id: string) => Promise<void>
+  remove: (id: string) => Promise<void>
+  cancelled: (id: string) => Promise<boolean>
+  /** Live job updates; returns an unsubscribe. */
+  subscribe: (onUpdate: (job: Job) => void, onRemove: (id: string) => void) => () => void
 }
 
 let host: HostCapabilities = { isDesktop: false }

@@ -2,6 +2,7 @@ import { listen } from "@tauri-apps/api/event"
 import { type Store, load } from "@tauri-apps/plugin-store"
 import {
   type SyncEntry,
+  jobs,
   pickFolder,
   syncIndex,
   syncReadFile,
@@ -132,6 +133,12 @@ const sync = async (
   const record = records.find((entry) => entry.id === id)
   if (!record) return { uploaded: 0, failed: 0 }
 
+  const jobId = await jobs.create("sync", record.name, record.id).catch(() => null)
+  const report = (patch: Parameters<typeof jobs.report>[1]) => {
+    if (jobId) void jobs.report(jobId, patch).catch(() => undefined)
+  }
+  report({ state: "running", current: null })
+
   const entries: SyncEntry[] = await syncIndex(record.localPath)
   const dirs = entries
     .filter((entry) => entry.isDir)
@@ -141,6 +148,7 @@ const sync = async (
   // Publish the real total up front so the UI shows "0/N" (or an honest 0/0 for an empty folder)
   // immediately, instead of sitting at the seeded 0/0 until the first file is processed.
   onProgress?.({ total: files.length, done: 0, current: null })
+  report({ total: files.length, done: 0 })
 
   // Recreate the folder tree, parent before child. Seed from the manifest so a re-sync reuses folders
   // it already made instead of duplicating them.
@@ -163,8 +171,14 @@ const sync = async (
   let uploaded = 0
   let failed = 0
   let done = 0
+  let cancelled = false
   for (const file of files) {
+    if (jobId && (await jobs.cancelled(jobId).catch(() => false))) {
+      cancelled = true
+      break
+    }
     onProgress?.({ total: files.length, done, current: relName(file.relPath) })
+    report({ done, current: relName(file.relPath) })
     const prev = record.manifest[file.relPath]
     if (prev && !prev.dir && prev.hash === file.hash) {
       done += 1
@@ -189,6 +203,18 @@ const sync = async (
   record.lastSyncedAt = Date.now()
   await writeRecords(records)
   onProgress?.({ total: files.length, done, current: null })
+  report(
+    cancelled
+      ? { state: "cancelled", done }
+      : failed > 0
+        ? {
+            state: "failed",
+            done,
+            error: `${failed} of ${files.length} file(s) failed to upload`,
+            retriable: true,
+          }
+        : { state: "done", done, current: null },
+  )
   return { uploaded, failed }
 }
 

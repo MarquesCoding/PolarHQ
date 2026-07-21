@@ -27,7 +27,16 @@ pub async fn generate_splat(app: tauri::AppHandle, input_path: String) -> Result
         .unwrap_or(0);
     let output = dir.join(format!("splat-{stamp}.ply"));
 
-    tauri::async_runtime::spawn_blocking(move || {
+    let name = std::path::Path::new(&input_path)
+        .file_stem()
+        .and_then(|s| s.to_str())
+        .map(|s| format!("3D · {s}"))
+        .unwrap_or_else(|| "Generate 3D".into());
+    let job = app.state::<crate::jobs::JobManager>().create(&app, "splat", &name, None);
+    app.state::<crate::jobs::JobManager>()
+        .progress(&app, &job, 0, 1, Some("Generating…".into()));
+
+    let result = tauri::async_runtime::spawn_blocking(move || {
         match crate::sharp::generate_splat_ply(&input_path, &dir) {
             Ok(ply) => {
                 std::fs::rename(&ply, &output)
@@ -39,10 +48,17 @@ pub async fn generate_splat(app: tauri::AppHandle, input_path: String) -> Result
                     .map_err(|e| format!("{sharp_err}; heuristic fallback failed: {e}"))?;
             }
         }
-        Ok(output.to_string_lossy().into_owned())
+        Ok::<String, String>(output.to_string_lossy().into_owned())
     })
     .await
-    .map_err(|e| e.to_string())?
+    .map_err(|e| e.to_string())?;
+
+    let manager = app.state::<crate::jobs::JobManager>();
+    match &result {
+        Ok(_) => manager.finish(&app, &job, None, false),
+        Err(err) => manager.finish(&app, &job, Some(err.clone()), false),
+    }
+    result
 }
 
 /// Whether Apple SHARP is provisioned (real 3DGS available) vs. the offline heuristic fallback.
@@ -55,9 +71,25 @@ pub fn sharp_available() -> bool {
 /// progress phases; runs off the UI thread.
 #[tauri::command]
 pub async fn sharp_setup(app: tauri::AppHandle) -> Result<(), String> {
-    tauri::async_runtime::spawn_blocking(move || crate::sharp::setup(&app))
+    use tauri::Manager;
+
+    let job = app
+        .state::<crate::jobs::JobManager>()
+        .create(&app, "sharpSetup", "Set up 3D", None);
+    app.state::<crate::jobs::JobManager>()
+        .progress(&app, &job, 0, 1, Some("Preparing…".into()));
+
+    let worker = app.clone();
+    let result = tauri::async_runtime::spawn_blocking(move || crate::sharp::setup(&worker))
         .await
-        .map_err(|e| e.to_string())?
+        .map_err(|e| e.to_string())?;
+
+    let manager = app.state::<crate::jobs::JobManager>();
+    match &result {
+        Ok(_) => manager.finish(&app, &job, None, false),
+        Err(err) => manager.finish(&app, &job, Some(err.clone()), true),
+    }
+    result
 }
 
 /// Report peer-to-peer device-link status. Stub: always reports offline until the p2p stack lands.

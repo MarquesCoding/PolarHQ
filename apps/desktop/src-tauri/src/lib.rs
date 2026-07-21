@@ -1,4 +1,5 @@
 mod commands;
+mod jobs;
 mod sharp;
 mod splat;
 mod sync;
@@ -22,8 +23,12 @@ pub fn run() {
 
     builder
         .manage(sync::SyncState::default())
+        .manage(jobs::JobManager::default())
         .setup(|app| {
+            use tauri::Manager;
             build_main_window(app)?;
+            let handle = app.handle().clone();
+            handle.state::<jobs::JobManager>().load(&handle);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -35,6 +40,12 @@ pub fn run() {
             commands::sharp_setup,
             commands::sync_now,
             commands::write_temp_media,
+            jobs::jobs_list,
+            jobs::job_create,
+            jobs::job_report,
+            jobs::job_cancel,
+            jobs::job_remove,
+            jobs::job_cancelled,
             sync::sync_index,
             sync::sync_read_file,
             sync::sync_start_watch,
