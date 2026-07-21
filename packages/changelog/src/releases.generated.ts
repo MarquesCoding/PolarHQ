@@ -3,6 +3,17 @@ import type { Release } from "./types"
 
 export const RELEASES: Release[] = [
   {
+    "version": "0.8.0",
+    "date": "2026-07-21",
+    "title": "Photos in 3D, Drive tags, and a themeable app",
+    "tags": [
+      "Release",
+      "Photos",
+      "Drive"
+    ],
+    "content": "Turn a photo into a real 3D scene, tag and colour-code your files, and make the whole app your own with themes. Plus a richer marketing site with a dedicated security page, and fixes so the desktop app works against a remote server.\n\n### Added\n- **Photos in 3D** — turn any photo into a real 3D Gaussian splat with **Apple SHARP**, running on your own GPU (macOS, Windows and Linux), fully offline. Orbit it in a proper viewer that opens at the original angle and follows your theme; the result is saved as an **end-to-end-encrypted derivative** that syncs to your other devices and shows in the photo's details. The heavy model isn't bundled — a one-time in-app setup provisions it on demand.\n- **Drive tags** — Spacedrive-style coloured tags for files and folders: a **Tags** section in the sidebar, a **right-click Tags** menu to apply, remove or create tags, tag **chips in the details panel**, and a per-tag filter view. Tag names are end-to-end encrypted like everything else.\n- **Make the app yours** — new **accent colours** (Violet, Blue, Emerald, Rose, Amber) and full **neutral palettes** (Sand, Slate) that compose with light/dark, chosen from **Account → Appearance** and applied instantly.\n- **A richer site** — a scroll-reveal feature showcase with pinned media, direct **per-platform download** links, a dedicated **Security** page (how your data stays end-to-end encrypted and zero-knowledge), and a 3D spotlight section.\n\n### Fixed\n- **The desktop app now works against a remote server** — thumbnails, originals and downloads authenticate with your session token instead of a cookie, so images load when the app connects to a self-hosted instance.\n- **Only real devices are shown** — browser tabs no longer register as devices, and offline devices drop off the list; the Devices section shows your desktop and mobile apps, synced folders and the Cloud.\n\n### Notes\n- Still moving fast. Keep your **recovery code** safe — without your password, encrypted data can't be recovered.\n- Generating 3D needs the one-time SHARP setup (a few GB, downloaded on first use); it then runs entirely on your device."
+  },
+  {
     "version": "0.7.0",
     "date": "2026-07-20",
     "title": "A reimagined Drive, and devices that see each other",
