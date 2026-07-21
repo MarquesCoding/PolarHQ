@@ -59,6 +59,7 @@ export interface JobPatch {
   current?: string | null
   error?: string | null
   name?: string
+  retriable?: boolean
 }
 
 /** The desktop job manager, backed by the Rust store. Webview-orchestrated actions (sync, uploads)

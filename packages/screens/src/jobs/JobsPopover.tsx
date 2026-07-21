@@ -4,7 +4,7 @@ import type { Job } from "@workspace/core/host"
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
-import { X } from "@phosphor-icons/react"
+import { ArrowClockwise, X } from "@phosphor-icons/react"
 import { useJobs } from "./JobProvider"
 
 const STATE_DOT: Record<Job["state"], string> = {
@@ -20,13 +20,16 @@ const JobRow = ({
   job,
   onCancel,
   onRemove,
+  onRetry,
 }: {
   job: Job
   onCancel: (id: string) => void
   onRemove: (id: string) => void
+  onRetry: (id: string) => void
 }) => {
   const { t } = useTranslation("drive")
   const active = job.state === "running" || job.state === "queued"
+  const canRetry = job.retriable && (job.state === "failed" || job.state === "interrupted")
   const pct =
     job.progress.total > 0 ? Math.round((job.progress.done / job.progress.total) * 100) : 0
   return (
@@ -34,6 +37,17 @@ const JobRow = ({
       <div className="flex items-center gap-2">
         <span className={cn("size-1.5 shrink-0 rounded-full", STATE_DOT[job.state])} />
         <span className="flex-1 truncate text-sm font-medium">{job.name}</span>
+        {canRetry ? (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t("jobs.retry", { defaultValue: "Retry" })}
+            onClick={() => onRetry(job.id)}
+            className="size-6 shrink-0 rounded-full"
+          >
+            <ArrowClockwise className="size-3.5" />
+          </Button>
+        ) : null}
         <Button
           variant="ghost"
           size="icon-sm"
@@ -70,7 +84,7 @@ interface JobsPopoverProps {
 /** A sidebar-footer popover listing jobs from the store — reused for both the Job Manager (all jobs)
  *  and the Sync Monitor (sync jobs). */
 const JobsPopover = ({ trigger, title, emptyLabel, filter, triggerLabel }: JobsPopoverProps) => {
-  const { jobs, cancel, remove } = useJobs()
+  const { jobs, cancel, remove, retry } = useJobs()
   const shown = filter ? jobs.filter(filter) : jobs
   const running = shown.filter((job) => job.state === "running").length
 
@@ -103,7 +117,7 @@ const JobsPopover = ({ trigger, title, emptyLabel, filter, triggerLabel }: JobsP
             <p className="text-muted-foreground px-3 py-6 text-center text-sm">{emptyLabel}</p>
           ) : (
             shown.map((job) => (
-              <JobRow key={job.id} job={job} onCancel={cancel} onRemove={remove} />
+              <JobRow key={job.id} job={job} onCancel={cancel} onRemove={remove} onRetry={retry} />
             ))
           )}
         </div>

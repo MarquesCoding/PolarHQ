@@ -1,18 +1,36 @@
 import { type ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react"
 import { type Job, getHost } from "@workspace/core/host"
+import { getSyncBridge } from "@workspace/screens/syncBridge"
 import { type UploadItem, useUploadManager } from "@workspace/screens/uploadManager"
 
 interface JobContextValue {
   jobs: Job[]
   cancel: (id: string) => void
   remove: (id: string) => void
+  /** Re-run a failed/interrupted job. No-op for jobs whose action can't be replayed (e.g. a splat,
+   *  which needs its source image). */
+  retry: (id: string) => void
 }
 
 const JobContext = createContext<JobContextValue>({
   jobs: [],
   cancel: () => {},
   remove: () => {},
+  retry: () => {},
 })
+
+/** Re-run a Rust-native job by kind. Returns false when the kind can't be replayed. */
+const replayJob = (job: Job): boolean => {
+  if (job.kind === "sync" && job.key) {
+    void getSyncBridge()?.sync(job.key)
+    return true
+  }
+  if (job.kind === "sharpSetup") {
+    void getHost().sharpSetup?.()
+    return true
+  }
+  return false
+}
 
 /** Prefix marking a merged upload-manager item, so cancel/remove routes back to it (not the Rust store). */
 const UPLOAD_PREFIX = "upload:"
@@ -50,7 +68,14 @@ export const JobProvider = ({ children }: { children: ReactNode }) => {
     if (!host) return
     let active = true
     void host.list().then((list) => {
-      if (active) setRustJobs(list)
+      if (!active) return
+      setRustJobs(list)
+      // Resume-on-restart: anything the store marked Interrupted (was running when the app last
+      // closed) and can be safely replayed is re-queued now; its stale entry is dropped so the fresh
+      // run's job takes its place. Splats aren't replayable, so they just stay flagged for a manual look.
+      for (const job of list) {
+        if (job.state === "interrupted" && replayJob(job)) void host.remove(job.id)
+      }
     })
     const unsubscribe = host.subscribe(
       (job) =>
@@ -80,8 +105,18 @@ export const JobProvider = ({ children }: { children: ReactNode }) => {
     if (id.startsWith(UPLOAD_PREFIX)) upload.remove(id.slice(UPLOAD_PREFIX.length))
     else void getHost().jobs?.remove(id)
   }
+  const retry = (id: string) => {
+    if (id.startsWith(UPLOAD_PREFIX)) {
+      upload.retry(id.slice(UPLOAD_PREFIX.length))
+      return
+    }
+    const job = rustJobs.find((existing) => existing.id === id)
+    if (job && replayJob(job)) void getHost().jobs?.remove(id)
+  }
 
-  return <JobContext.Provider value={{ jobs, cancel, remove }}>{children}</JobContext.Provider>
+  return (
+    <JobContext.Provider value={{ jobs, cancel, remove, retry }}>{children}</JobContext.Provider>
+  )
 }
 
 export const useJobs = (): JobContextValue => useContext(JobContext)

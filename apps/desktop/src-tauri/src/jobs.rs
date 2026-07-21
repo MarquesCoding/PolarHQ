@@ -64,6 +64,7 @@ pub struct JobPatch {
     pub current: Option<Option<String>>,
     pub error: Option<Option<String>>,
     pub name: Option<String>,
+    pub retriable: Option<bool>,
 }
 
 #[derive(Default)]
@@ -157,6 +158,9 @@ impl JobManager {
             if let Some(name) = patch.name {
                 job.name = name;
             }
+            if let Some(retriable) = patch.retriable {
+                job.retriable = retriable;
+            }
             job.updated_at = now_ms();
             (job.clone(), job.state != previous_state)
         };
@@ -181,9 +185,9 @@ impl JobManager {
         );
     }
 
-    /// Mark a job finished — `Done` when `error` is None, else `Failed` (retriable).
-    pub fn finish(&self, app: &AppHandle, id: &str, error: Option<String>) {
-        let retriable = error.is_some();
+    /// Mark a job finished — `Done` when `error` is None, else `Failed`. `retriable` says whether the
+    /// UI should offer a re-run (e.g. SHARP setup can retry; a splat can't without its source image).
+    pub fn finish(&self, app: &AppHandle, id: &str, error: Option<String>, retriable: bool) {
         self.apply(
             app,
             id,
@@ -194,14 +198,10 @@ impl JobManager {
                     JobState::Done
                 }),
                 error: Some(error),
+                retriable: Some(retriable),
                 ..Default::default()
             },
         );
-        if retriable {
-            if let Some(job) = self.jobs.lock().unwrap().get_mut(id) {
-                job.retriable = true;
-            }
-        }
         self.cancels.lock().unwrap().remove(id);
     }
 

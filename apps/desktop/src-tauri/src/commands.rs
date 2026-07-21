@@ -55,8 +55,8 @@ pub async fn generate_splat(app: tauri::AppHandle, input_path: String) -> Result
 
     let manager = app.state::<crate::jobs::JobManager>();
     match &result {
-        Ok(_) => manager.finish(&app, &job, None),
-        Err(err) => manager.finish(&app, &job, Some(err.clone())),
+        Ok(_) => manager.finish(&app, &job, None, false),
+        Err(err) => manager.finish(&app, &job, Some(err.clone()), false),
     }
     result
 }
@@ -86,8 +86,8 @@ pub async fn sharp_setup(app: tauri::AppHandle) -> Result<(), String> {
 
     let manager = app.state::<crate::jobs::JobManager>();
     match &result {
-        Ok(_) => manager.finish(&app, &job, None),
-        Err(err) => manager.finish(&app, &job, Some(err.clone())),
+        Ok(_) => manager.finish(&app, &job, None, false),
+        Err(err) => manager.finish(&app, &job, Some(err.clone()), true),
     }
     result
 }

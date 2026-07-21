@@ -207,7 +207,12 @@ const sync = async (
     cancelled
       ? { state: "cancelled", done }
       : failed > 0
-        ? { state: "failed", done, error: `${failed} of ${files.length} file(s) failed to upload` }
+        ? {
+            state: "failed",
+            done,
+            error: `${failed} of ${files.length} file(s) failed to upload`,
+            retriable: true,
+          }
         : { state: "done", done, current: null },
   )
   return { uploaded, failed }
