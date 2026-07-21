@@ -31,25 +31,31 @@ export const getDeviceId = (): string => {
   return id
 }
 
+/** Only native app installs count as devices — desktop app or mobile app, never a browser tab. */
+export const isNativeApp = (): boolean => {
+  const host = getHost()
+  return Boolean(host.isDesktop || host.isMobileApp)
+}
+
 const detectPlatform = (): DevicePlatform => {
-  if (getHost().isDesktop) {
-    const ua = typeof navigator !== "undefined" ? navigator.userAgent : ""
+  const host = getHost()
+  const ua = typeof navigator !== "undefined" ? navigator.userAgent : ""
+  if (host.isDesktop) {
     if (/Mac/i.test(ua)) return "macos"
     if (/Win/i.test(ua)) return "windows"
     return "linux"
   }
+  if (host.isMobileApp) return /Android/i.test(ua) ? "android" : "ios"
   return "web"
 }
 
 /** Describe this client for the registry: a friendly name (desktop supplies the machine name) plus
- *  its platform + kind. */
+ *  its platform + kind. Only meaningful for native apps (see {@link isNativeApp}). */
 export const describeThisDevice = (): { deviceId: string; name: string; platform: DevicePlatform; kind: DeviceKind } => {
   const host = getHost()
   const platform = detectPlatform()
-  const kind: DeviceKind = host.isDesktop ? "desktop" : "web"
-  const name =
-    host.deviceName ||
-    (host.isDesktop ? "Desktop" : typeof navigator !== "undefined" && /Mobi/i.test(navigator.userAgent) ? "Mobile browser" : "Web browser")
+  const kind: DeviceKind = host.isDesktop ? "desktop" : host.isMobileApp ? "mobile" : "web"
+  const name = host.deviceName || (host.isDesktop ? "Desktop" : host.isMobileApp ? "Mobile" : "Web")
   return { deviceId: getDeviceId(), name, platform, kind }
 }
 

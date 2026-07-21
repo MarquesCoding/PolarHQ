@@ -6,6 +6,8 @@
  */
 export interface HostCapabilities {
   isDesktop: boolean
+  /** True in the native mobile (React Native) app, so it registers as a real device (not a browser). */
+  isMobileApp?: boolean
   /** Friendly name of the local machine (e.g. macOS ComputerName). Desktop-only. */
   deviceName?: string
   /** Open a URL in the user's real browser (not the app webview). Desktop-only. */
