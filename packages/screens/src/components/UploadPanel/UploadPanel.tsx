@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { getHost } from "@workspace/core/host"
 import { useUploadManager } from "@workspace/screens/uploadManager"
 import { CaretDown } from "@phosphor-icons/react"
 import { Button } from "@workspace/ui/components/button"
@@ -7,10 +8,17 @@ import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { JobRow } from "@components/UploadPanel/jobRow"
 
+/**
+ * The floating upload/download tray (bottom-right). Web only — on desktop the same items are surfaced
+ * through the sidebar Job Manager popover (see {@link JobProvider}), so a second floating tray would be
+ * redundant.
+ */
 const UploadPanel = () => {
   const { t } = useTranslation("common")
   const { items, remove, clearFinished, retry } = useUploadManager()
   const [collapsed, setCollapsed] = useState(false)
+
+  if (getHost().isDesktop) return null
 
   const uploading = items.filter(
     (item) => item.kind === "upload" && item.status === "uploading",
