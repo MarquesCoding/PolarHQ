@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="apps/web/public/logo.png" width="92" alt="PolarHQ logo" />
+<img src="apps/web/public/stickers/bear-hide.png" width="92" alt="PolarHQ logo" />
 
 # PolarHQ
 
@@ -130,3 +130,7 @@ project, the branch and commit conventions, and how to open a pull request.
 
 [AGPL-3.0](LICENSE.md) — PolarHQ is free software. You can self-host, modify and redistribute it;
 if you run a modified version as a network service, you must share your changes.
+
+## Note
+
+UI & Flow inspired by [SpaceDrive](https://github.com/spacedriveapp/spacedrive) & [AtlasForMac](https://atlasformac.com/)
