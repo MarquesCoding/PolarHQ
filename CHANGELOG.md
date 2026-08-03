@@ -8,6 +8,32 @@ commits; you may polish the wording in the Release PR before merging.
 Format: each release is `## [version] - date — Title`, an optional `<!-- tags: a, b -->` line,
 then Markdown notes.
 
+## [0.9.0](https://github.com/MarquesCoding/PolarHQ/compare/v0.8.0...v0.9.0) (2026-08-03)
+
+
+### Added
+
+* **core:** jobs host capability + JobProvider ([7d4e303](https://github.com/MarquesCoding/PolarHQ/commit/7d4e3035177be5669429cc219924b35d890556be))
+* **desktop:** consolidate the upload tray into the Job Manager ([b58f71f](https://github.com/MarquesCoding/PolarHQ/commit/b58f71f72af330bf798a1dfef7e4c2a7c174a575))
+* **desktop:** Rust task/job system (Sync Monitor + Job Manager) ([be914c3](https://github.com/MarquesCoding/PolarHQ/commit/be914c3f3e776398359b6d9a7e9d42c25eb68832))
+* **jobs:** hide the floating upload tray on desktop ([90501a3](https://github.com/MarquesCoding/PolarHQ/commit/90501a3aeb0c627e377d61581142b560dcf3faa0))
+* **jobs:** merge upload-manager items into the job view ([3d8e981](https://github.com/MarquesCoding/PolarHQ/commit/3d8e981bb1e88cf87eacba945c7a9ab30606ec76))
+* **jobs:** retry failed jobs + resume interrupted ones on restart ([5464c82](https://github.com/MarquesCoding/PolarHQ/commit/5464c82eb84282130323fd941d31e10b574eee9e))
+* **jobs:** Rust job manager + job:// events ([7105627](https://github.com/MarquesCoding/PolarHQ/commit/7105627d7573ec3e41709f4c30d6b7e845564040))
+* **jobs:** splat generation + SHARP setup as tracked jobs ([769955c](https://github.com/MarquesCoding/PolarHQ/commit/769955cee8b012c888c4f15a2531ea6d0399d8a2))
+* **jobs:** Sync Monitor + Job Manager sidebar popovers ([014e843](https://github.com/MarquesCoding/PolarHQ/commit/014e84399176eae133a0357ba6ed05b5ad6fa276))
+
+
+### Fixed
+
+* **live:** authenticate the WebSocket with a bearer token (desktop live events) ([d4107f1](https://github.com/MarquesCoding/PolarHQ/commit/d4107f1a855bab1c9c2275d69284e9d821977e96))
+* **live:** authenticate the WebSocket with a bearer token query param ([74f3801](https://github.com/MarquesCoding/PolarHQ/commit/74f3801307ffd7334bcb0b86c2f52e0406681e00))
+
+
+### Improved
+
+* **sync:** run folder sync as a tracked job ([c2be726](https://github.com/MarquesCoding/PolarHQ/commit/c2be726bf0aae91e388d199a65d0e7b6aec694ca))
+
 ## [0.8.0] - 2026-07-21 — Photos in 3D, Drive tags, and a themeable app
 <!-- tags: Release, Photos, Drive -->
 
